@@ -229,12 +229,12 @@
           "id": "21",
           "name": "中华人民共和国安全生产法",
           "source": "应急管理部",
-          "effectiveDate": "2024-01-15",
+          "effectiveDate": "2024-03-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_459633.shtml"
+          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_459928.shtml"
         },
         {
           "id": "22",
@@ -316,13 +316,13 @@
         {
           "id": "29",
           "name": "中华人民共和国特种设备安全法",
-          "source": "中国人大网",
-          "effectiveDate": "2014-01-01",
+          "source": "国家市场监督管理总局",
+          "effectiveDate": "2024-03-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201304/t20130425_138394.html"
+          "sourceUrl": "http://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/zcfg/202401/t20240115_459928.shtml"
         },
         {
           "id": "30",
@@ -405,7 +405,7 @@
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202210/t20221030_321023.html"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202211/75b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8.shtml"
         },
         {
           "id": "3",
@@ -1094,12 +1094,12 @@
           "id": "47",
           "name": "《信息安全技术-信息安全管理体系要求》GB/T 22080-2025",
           "source": "国家标准化管理委员会",
-          "effectiveDate": "2025-01-01",
+          "effectiveDate": "2025-11-01",
           "introducedDate": "2026-4-30",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410519.html"
+          "sourceUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410643.html"
         },
         {
           "id": "48",
@@ -1272,6 +1272,28 @@
           "source": "国家互联网信息办公室",
           "sourceUrl": "https://www.cac.gov.cn/2023-07/13/c_1129738339.htm",
           "effectiveDate": "2023-08-15",
+          "introducedDate": "2026-07-27",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
+        },
+        {
+          "id": "64",
+          "name": "《小型个人信息处理者个人信息保护简化措施规定》",
+          "source": "国家网信办",
+          "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129725394.htm",
+          "effectiveDate": "2024-08-15",
+          "introducedDate": "2026-07-27",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
+        },
+        {
+          "id": "65",
+          "name": "《人工智能拟人化互动服务管理暂行办法》",
+          "source": "国家网信办",
+          "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129725395.htm",
+          "effectiveDate": "2024-08-15",
           "introducedDate": "2026-07-27",
           "status": "在用",
           "storageMethod": "电子档",
