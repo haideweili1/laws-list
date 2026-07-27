@@ -96,13 +96,13 @@
         {
           "id": "9",
           "name": "中华人民共和国环境保护法",
-          "source": "中国人大网",
+          "source": "生态环境部",
           "effectiveDate": "2015-01-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201404/t20140425_1824185.html"
+          "sourceUrl": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk01/202401/t20240120_1055470.shtml"
         },
         {
           "id": "10",
@@ -234,7 +234,7 @@
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_479629.shtml"
+          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_459633.shtml"
         },
         {
           "id": "22",
@@ -631,13 +631,13 @@
         {
           "id": "5",
           "name": "商用密码管理条例",
-          "source": "中国政府网",
-          "effectiveDate": "2023-07-01",
+          "source": "国务院",
+          "effectiveDate": "2023-09-01",
           "introducedDate": "2026-4-30",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.gov.cn/zhengce/content/202305/content_6875921.htm"
+          "sourceUrl": "http://www.gov.cn/zhengce/content/2023-07/24/content_5946130.htm"
         },
         {
           "id": "6",
@@ -1261,6 +1261,17 @@
           "source": "国家网信办",
           "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129728442.htm",
           "effectiveDate": "2024-08-15",
+          "introducedDate": "2026-07-27",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
+        },
+        {
+          "id": "63",
+          "name": "生成式人工智能服务安全管理暂行办法",
+          "source": "国家互联网信息办公室",
+          "sourceUrl": "https://www.cac.gov.cn/2023-07/13/c_1129738339.htm",
+          "effectiveDate": "2023-08-15",
           "introducedDate": "2026-07-27",
           "status": "在用",
           "storageMethod": "电子档",
