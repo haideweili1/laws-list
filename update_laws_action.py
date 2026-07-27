@@ -9,7 +9,7 @@
 
 依赖的环境变量：
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
-  MODEL            (可选)  模型名，默认 glm-4（支持 web_search 的模型）
+  MODEL            (可选)  模型名，默认 glm-4-air（支持 web_search 的模型）
 
 设计说明：
   - 只保留「正在实施、非废止」的文件；若发现已有法规被废止/修订会做标记。
@@ -20,6 +20,7 @@ import os
 import json
 import re
 import sys
+import traceback
 from datetime import date
 
 try:
@@ -144,7 +145,7 @@ def main():
         print("缺少环境变量 ZHIPU_API_KEY，跳过更新（保持原数据）。")
         sys.exit(0)
 
-    model = os.environ.get("MODEL") or "glm-4"
+    model = os.environ.get("MODEL") or "glm-4-air"
     client = ZhipuAI(api_key=api_key)
 
     try:
@@ -230,4 +231,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception as e:
+        traceback.print_exc()
+        print(f"\n[致命错误] 更新脚本异常退出: {repr(e)}", file=sys.stderr)
+        sys.exit(1)
