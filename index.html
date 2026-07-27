@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法律法规及其他要求清单</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e0e6ed;
+  padding: 20px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.header-left h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+.update-info {
+  font-size: 13px;
+  color: #8892a6;
+  margin-top: 6px;
+}
+.update-info .label { color: #8892a6; }
+.update-info .value { color: #1a1a2e; font-weight: 500; }
+.header-right {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-excel { background: #1d9e75; color: #fff; }
+.btn-excel:hover { background: #0f6e56; }
+.btn-pdf { background: #e24b4a; color: #fff; }
+.btn-pdf:hover { background: #a32d2d; }
+.btn-img { background: #378add; color: #fff; }
+.btn-img:hover { background: #185fa5; }
+.btn-edit { background: #6c5ce7; color: #fff; }
+.btn-edit:hover { background: #5a4bd1; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+.btn-outline {
+  background: #fff;
+  border: 1px solid #d3d8e0;
+  color: #5f6b7d;
+}
+.btn-outline:hover { border-color: #378add; color: #378add; }
+.btn-danger {
+  background: #fff;
+  border: 1px solid #e24b4a;
+  color: #e24b4a;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-danger:hover { background: #fcebeb; }
+.btn-restore {
+  background: #fff;
+  border: 1px solid #1d9e75;
+  color: #1d9e75;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-restore:hover { background: #e1f5ee; }
+
+/* ===== Toolbar ===== */
+.toolbar {
+  background: #fff;
+  padding: 12px 32px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e0e6ed;
+}
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid #d3d8e0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-box input:focus { border-color: #378add; }
+.search-box .icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8892a6;
+  font-size: 16px;
+}
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d3d8e0;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+.filter-select:focus { border-color: #378add; }
+.toolbar-info {
+  font-size: 12px;
+  color: #8892a6;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+  background: #fff;
+  padding: 0 32px;
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #f0f2f5;
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 12px 20px;
+  font-size: 14px;
+  color: #5f6b7d;
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.tab:hover { color: #378add; }
+.tab.active {
+  color: #185fa5;
+  border-bottom-color: #378add;
+}
+.tab .count {
+  display: inline-block;
+  background: #e8ecf1;
+  color: #5f6b7d;
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+.tab.active .count {
+  background: #d0e3fa;
+  color: #185fa5;
+}
+
+/* ===== Table ===== */
+.table-container {
+  padding: 20px 32px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+thead { background: #f8f9fb; }
+th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 2px solid #e0e6ed;
+  white-space: nowrap;
+}
+td {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #333;
+  border-bottom: 1px solid #f0f2f5;
+}
+tbody tr:hover { background: #f8fafe; }
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-active { background: #e1f5ee; color: #085041; }
+.status-inactive { background: #fcebeb; color: #791f1f; }
+.manual-badge {
+  display: inline-block;
+  background: #ede7f6;
+  color: #5e35b1;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+  font-weight: 500;
+}
+.modified-badge {
+  display: inline-block;
+  background: #fff3e0;
+  color: #e65100;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+  font-weight: 500;
+}
+.source-link {
+  color: #378add;
+  text-decoration: none;
+  cursor: pointer;
+}
+.source-link:hover { text-decoration: underline; }
+.law-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #8892a6;
+  font-size: 14px;
+}
+.footer {
+  padding: 16px 32px;
+  text-align: right;
+  font-size: 13px;
+  color: #8892a6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: #8892a6;
+  font-size: 14px;
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+.modal-wide {
+  max-width: 820px;
+}
+.modal h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #1a1a2e;
+}
+.modal .form-group {
+  margin-bottom: 16px;
+}
+.modal label {
+  display: block;
+  font-size: 13px;
+  color: #4a5568;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.modal label .required { color: #e24b4a; }
+.modal input, .modal select, .modal textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d3d8e0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: #378add; }
+.modal input:disabled, .modal select:disabled {
+  background: #f5f7fa;
+  color: #8892a6;
+  cursor: not-allowed;
+}
+.modal .form-row {
+  display: flex;
+  gap: 16px;
+}
+.modal .form-row .form-group { flex: 1; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* ===== Manage List ===== */
+.manage-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.manage-toolbar input[type="text"] {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid #d3d8e0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+.manage-toolbar input[type="text"]:focus { border-color: #378add; }
+.manage-toolbar .checkbox-label {
+  font-size: 13px;
+  color: #5f6b7d;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.manage-list-wrap {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e0e6ed;
+  border-radius: 6px;
+}
+.manage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.manage-table th {
+  padding: 8px 10px;
+  text-align: left;
+  background: #f8f9fb;
+  border-bottom: 2px solid #e0e6ed;
+  font-weight: 600;
+  color: #4a5568;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.manage-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+}
+.manage-table tr:hover { background: #f8fafe; }
+.manage-stats {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #8892a6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ===== Progress Dialog ===== */
+.dialog-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+.dialog-overlay.show { display: flex; }
+.dialog-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+.dialog-box h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #1a1a2e;
+}
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e0e6ed;
+  border-top-color: #378add;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.info-text {
+  font-size: 13px;
+  color: #5f6b7d;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<div class="header">
+  <div class="header-left">
+    <h1>法律法规及其他要求清单</h1>
+    <div class="update-info">
+      <span class="label">数据更新时间：</span><span class="value" id="lastUpdated">--</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-edit" onclick="openManageModal()">&#x270F;&#xFE0F; 编辑法规</button>
+    <button class="btn btn-excel" onclick="exportExcel()">导出 Excel</button>
+    <button class="btn btn-pdf" id="btnPdf" onclick="exportPDF()">导出 PDF</button>
+    <button class="btn btn-img" onclick="exportImage()">导出图片</button>
+  </div>
+</div>
+
+<!-- ===== Toolbar ===== -->
+<div class="toolbar">
+  <div class="search-box">
+    <span class="icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="搜索法规名称..." oninput="renderTable()">
+  </div>
+  <select class="filter-select" id="statusFilter" onchange="renderTable()">
+    <option value="">全部状态</option>
+    <option value="在用">在用</option>
+    <option value="废止">废止</option>
+  </select>
+  <select class="filter-select" id="sourceFilter" onchange="renderTable()">
+    <option value="">全部来源</option>
+    <option value="manual">仅手动添加</option>
+    <option value="auto">仅自动检索</option>
+    <option value="modified">仅已修改</option>
+  </select>
+  <span class="toolbar-info" id="manualCountInfo"></span>
+</div>
+
+<!-- ===== Tabs ===== -->
+<div class="tabs" id="tabs"></div>
+
+<!-- ===== Table ===== -->
+<div class="table-container" id="tableContainer">
+  <div class="loading">正在加载法律法规数据...</div>
+</div>
+
+<!-- ===== Footer ===== -->
+<div class="footer" id="footer"></div>
+
+<!-- ===== Management Modal ===== -->
+<div class="modal-overlay" id="manageModal">
+  <div class="modal modal-wide">
+
+    <!-- List View -->
+    <div id="manageListView">
+      <h2>法规管理</h2>
+      <div class="manage-toolbar">
+        <button class="btn btn-edit btn-sm" onclick="showFormView(null)">&#x2795; 新增法规</button>
+        <input type="text" id="manageSearch" placeholder="搜索法规名称..." oninput="renderManageList()">
+        <select class="filter-select" id="manageCategoryFilter" onchange="renderManageList()">
+          <option value="">全部分类</option>
+        </select>
+        <label class="checkbox-label">
+          <input type="checkbox" id="showDeleted" onchange="renderManageList()"> 显示已删除
+        </label>
+      </div>
+      <div class="manage-list-wrap" id="manageListWrap"></div>
+      <div class="manage-stats" id="manageStats"></div>
+      <div class="modal-actions">
+        <button class="btn btn-outline btn-sm" id="exportManualBtn" onclick="exportManualLaws()" style="display:none;">导出手动法规</button>
+        <button class="btn btn-outline" onclick="closeManageModal()">关闭</button>
+      </div>
+    </div>
+
+    <!-- Form View -->
+    <div id="manageFormView" style="display:none;">
+      <h2 id="formTitle">新增法规</h2>
+      <div class="form-group">
+        <label>法规名称 <span class="required">*</span></label>
+        <input type="text" id="formName" placeholder="如：中华人民共和国XX法">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>所属分类 <span class="required">*</span></label>
+          <select id="formCategory">
+            <option value="trisystem">三体系 (ISO 9001/14001/45001)</option>
+            <option value="social">社会责任</option>
+            <option value="antiterror">反恐/供应链安全</option>
+            <option value="infosec">信息安全</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>使用状态</label>
+          <select id="formStatus">
+            <option value="在用">在用</option>
+            <option value="废止">废止</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>来源网站</label>
+        <select id="formSource">
+          <option value="中国人大网">中国人大网 (npc.gov.cn)</option>
+          <option value="中国政府网">中国政府网 (gov.cn)</option>
+          <option value="国家网信办">国家网信办 (cac.gov.cn)</option>
+          <option value="工业和信息化部">工业和信息化部 (miit.gov.cn)</option>
+          <option value="国家标准化管理委员会">国家标准化管理委员会 (openstd.samr.gov.cn)</option>
+          <option value="海关总署">海关总署 (customs.gov.cn)</option>
+          <option value="国家市场监督管理总局">国家市场监督管理总局 (samr.gov.cn)</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>来源链接 <span class="required">*</span></label>
+        <input type="url" id="formSourceUrl" placeholder="https://...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>实施时间</label>
+          <input type="date" id="formEffectiveDate">
+        </div>
+        <div class="form-group">
+          <label>引入时间</label>
+          <input type="date" id="formIntroducedDate">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>保管方式</label>
+          <select id="formStorageMethod">
+            <option value="电子档">电子档</option>
+            <option value="纸质">纸质</option>
+            <option value="电子档+纸质">电子档+纸质</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>保管期限</label>
+          <select id="formRetentionPeriod">
+            <option value="三年">三年</option>
+            <option value="五年">五年</option>
+            <option value="十年">十年</option>
+            <option value="长期">长期</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="showListView()">返回列表</button>
+        <button class="btn btn-edit" onclick="saveLaw()">保存</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== Progress Dialog ===== -->
+<div class="dialog-overlay" id="progressDialog">
+  <div class="dialog-box">
+    <h2 id="progressTitle"><span class="spinner"></span>正在处理...</h2>
+    <div id="progressBody" class="info-text">请稍候...</div>
+  </div>
+</div>
+
+<script>
+// ===== Global State =====
+let lawsData = null;
+let currentCategory = 'all';
+let manualLaws = [];
+let lawOverrides = {};   // { "categoryId::lawId": { field: value, ... } }
+let deletedLawKeys = []; // ["categoryId::lawId", ...]
+let formContext = null;  // { mode, type, key, categoryId, originalLaw }
+let tableLawsCache = [];
+let manageListCache = [];
+
+// ===== Key Utilities =====
+function makeKey(categoryId, lawId) {
+  return categoryId + '::' + lawId;
+}
+function parseKey(key) {
+  const idx = key.indexOf('::');
+  return { categoryId: key.substring(0, idx), lawId: key.substring(idx + 2) };
+}
+
+// ===== localStorage Management =====
+const STORAGE_KEY = 'manualLaws_v2';
+const OVERRIDES_KEY = 'lawOverrides_v2';
+const DELETIONS_KEY = 'deletedLaws_v2';
+
+function loadFromStorage() {
+  try { manualLaws = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { manualLaws = []; }
+  try { lawOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY)) || {}; } catch(e) { lawOverrides = {}; }
+  try { deletedLawKeys = JSON.parse(localStorage.getItem(DELETIONS_KEY)) || []; } catch(e) { deletedLawKeys = []; }
+}
+function saveManualLaws() { localStorage.setItem(STORAGE_KEY, JSON.stringify(manualLaws)); }
+function saveOverrides() { localStorage.setItem(OVERRIDES_KEY, JSON.stringify(lawOverrides)); }
+function saveDeletions() { localStorage.setItem(DELETIONS_KEY, JSON.stringify(deletedLawKeys)); }
+
+// ===== Data Loading =====
+async function loadData() {
+  try {
+    const res = await fetch('laws.json');
+    lawsData = await res.json();
+    document.getElementById('lastUpdated').textContent = lawsData.lastUpdated || '--';
+    loadFromStorage();
+    renderTabs();
+    renderTable();
+    updateManualCountInfo();
+  } catch (e) {
+    document.getElementById('tableContainer').innerHTML = '<div class="no-data">数据加载失败，请刷新重试</div>';
+    console.error(e);
+  }
+}
+
+// ===== Merged Data (apply overrides + deletions + manual laws) =====
+function getMergedData() {
+  if (!lawsData) return null;
+  const merged = JSON.parse(JSON.stringify(lawsData));
+  merged.categories.forEach(cat => {
+    cat.laws = cat.laws.map(law => {
+      const key = makeKey(cat.id, law.id);
+      const ov = lawOverrides[key];
+      return { ...law, ...(ov || {}), _key: key, _type: 'builtin', _modified: !!ov };
+    });
+    cat.laws = cat.laws.filter(law => !deletedLawKeys.includes(law._key));
+  });
+  manualLaws.forEach(ml => {
+    const cat = merged.categories.find(c => c.id === ml.category);
+    if (cat) {
+      cat.laws.push({ ...ml, _key: ml.id, _type: 'manual', _modified: false });
+    }
+  });
+  return merged;
+}
+
+// ===== Tabs =====
+function renderTabs() {
+  const merged = getMergedData();
+  if (!merged) return;
+  const tabsEl = document.getElementById('tabs');
+  let html = '<button class="tab active" onclick="switchCategory(\'all\')">全部 <span class="count">' + getTotalCount() + '</span></button>';
+  merged.categories.forEach(cat => {
+    html += '<button class="tab" onclick="switchCategory(\'' + cat.id + '\')">' + escapeHtml(cat.name) + ' <span class="count">' + cat.laws.length + '</span></button>';
+  });
+  tabsEl.innerHTML = html;
+}
+function getTotalCount() {
+  const merged = getMergedData();
+  return merged ? merged.categories.reduce((s, c) => s + c.laws.length, 0) : 0;
+}
+function switchCategory(catId) {
+  currentCategory = catId;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.tab');
+  if (catId === 'all') { tabs[0].classList.add('active'); }
+  else {
+    const merged = getMergedData();
+    const idx = merged.categories.findIndex(c => c.id === catId) + 1;
+    if (tabs[idx]) tabs[idx].classList.add('active');
+  }
+  renderTable();
+}
+
+// ===== Filtered Laws =====
+function getFilteredLaws() {
+  const merged = getMergedData();
+  let laws = [];
+  if (currentCategory === 'all') {
+    merged.categories.forEach(cat => {
+      cat.laws.forEach(law => laws.push({ ...law, categoryName: cat.name }));
+    });
+  } else {
+    const cat = merged.categories.find(c => c.id === currentCategory);
+    if (cat) laws = cat.laws.map(l => ({ ...l, categoryName: cat.name }));
+  }
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const status = document.getElementById('statusFilter').value;
+  const sf = document.getElementById('sourceFilter').value;
+  if (search) laws = laws.filter(l => l.name.toLowerCase().includes(search));
+  if (status) laws = laws.filter(l => l.status === status);
+  if (sf === 'manual') laws = laws.filter(l => l._type === 'manual');
+  else if (sf === 'auto') laws = laws.filter(l => l._type !== 'manual');
+  else if (sf === 'modified') laws = laws.filter(l => l._modified);
+  return laws;
+}
+
+// ===== Render Table =====
+function renderTable() {
+  if (!lawsData) return;
+  const laws = getFilteredLaws();
+  tableLawsCache = laws;
+  const container = document.getElementById('tableContainer');
+  const showCat = currentCategory === 'all';
+
+  let html = '<table id="lawTable"><thead><tr>';
+  html += '<th>编号</th>';
+  if (showCat) html += '<th>分类</th>';
+  html += '<th>文件名</th><th>文件来源</th><th>实施时间</th><th>引入时间</th><th>使用状态</th><th>保管方式</th><th>保管期限</th>';
+  html += '<th>操作</th>';
+  html += '</tr></thead><tbody>';
+
+  if (laws.length === 0) {
+    const colCount = showCat ? 10 : 9;
+    html += '<tr><td colspan="' + colCount + '" class="no-data">没有匹配的记录</td></tr>';
+  } else {
+    laws.forEach((law, i) => {
+      const sc = law.status === '在用' ? 'status-active' : 'status-inactive';
+      const badges = [];
+      if (law._type === 'manual') badges.push('<span class="manual-badge">手动</span>');
+      if (law._modified) badges.push('<span class="modified-badge">已修改</span>');
+      html += '<tr>';
+      html += '<td>' + (i + 1) + '</td>';
+      if (showCat) html += '<td>' + escapeHtml(law.categoryName) + '</td>';
+      html += '<td><div class="law-name-cell">' + escapeHtml(law.name) + badges.join('') + '</div></td>';
+      if (law.sourceUrl) {
+        html += '<td><a class="source-link" href="' + escapeHtml(law.sourceUrl) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(law.sourceUrl) + '">' + escapeHtml(law.source || '') + '</a></td>';
+      } else {
+        html += '<td>' + escapeHtml(law.source || '') + '</td>';
+      }
+      html += '<td>' + escapeHtml(law.effectiveDate || '') + '</td>';
+      html += '<td>' + escapeHtml(law.introducedDate || '') + '</td>';
+      html += '<td><span class="status-badge ' + sc + '">' + escapeHtml(law.status || '') + '</span></td>';
+      html += '<td>' + escapeHtml(law.storageMethod || '') + '</td>';
+      html += '<td>' + escapeHtml(law.retentionPeriod || '') + '</td>';
+      html += '<td style="white-space:nowrap;">';
+      html += '<button class="btn-sm btn-outline" onclick="quickEdit(' + i + ')">编辑</button> ';
+      html += '<button class="btn-danger" onclick="quickDelete(' + i + ')">删除</button>';
+      html += '</td>';
+      html += '</tr>';
+    });
+  }
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  const mc = laws.filter(l => l._type === 'manual').length;
+  const mo = laws.filter(l => l._modified).length;
+  let footerText = '共 ' + laws.length + ' 条记录';
+  if (mc > 0) footerText += ' | 手动 ' + mc + ' 条';
+  if (mo > 0) footerText += ' | 已修改 ' + mo + ' 条';
+  document.getElementById('footer').innerHTML = '<span>' + footerText + '</span><span style="color:#ccc;">点击编辑可修改任意法规信息</span>';
+}
+
+function updateManualCountInfo() {
+  const info = document.getElementById('manualCountInfo');
+  const parts = [];
+  if (manualLaws.length > 0) parts.push('手动 ' + manualLaws.length + ' 条');
+  const oc = Object.keys(lawOverrides).length;
+  if (oc > 0) parts.push('已修改 ' + oc + ' 条');
+  if (deletedLawKeys.length > 0) parts.push('已删除 ' + deletedLawKeys.length + ' 条');
+  info.textContent = parts.join(' | ');
+  info.style.color = parts.length > 0 ? '#5e35b1' : '';
+  // Show/hide export manual button
+  document.getElementById('exportManualBtn').style.display = manualLaws.length > 0 ? '' : 'none';
+}
+
+// ===== Utility =====
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function ensureSourceOption(source) {
+  const sel = document.getElementById('formSource');
+  for (let i = 0; i < sel.options.length; i++) { if (sel.options[i].value === source) return; }
+  if (source) {
+    const opt = document.createElement('option');
+    opt.value = source; opt.textContent = source;
+    sel.appendChild(opt);
+  }
+}
+function showProgress(title, body) {
+  document.getElementById('progressTitle').innerHTML = '<span class="spinner"></span>' + title;
+  document.getElementById('progressBody').innerHTML = body || '请稍候...';
+  document.getElementById('progressDialog').classList.add('show');
+}
+function closeProgress() {
+  document.getElementById('progressDialog').classList.remove('show');
+}
+
+// ===== Management Modal =====
+function openManageModal() {
+  // Populate category filter
+  const filter = document.getElementById('manageCategoryFilter');
+  filter.innerHTML = '<option value="">全部分类</option>';
+  lawsData.categories.forEach(cat => {
+    filter.innerHTML += '<option value="' + cat.id + '">' + escapeHtml(cat.name) + '</option>';
+  });
+  filter.value = currentCategory !== 'all' ? currentCategory : '';
+  showListView();
+  renderManageList();
+  document.getElementById('manageModal').classList.add('show');
+}
+function closeManageModal() {
+  document.getElementById('manageModal').classList.remove('show');
+}
+
+function showListView() {
+  document.getElementById('manageListView').style.display = 'block';
+  document.getElementById('manageFormView').style.display = 'none';
+}
+function showFormView(law) {
+  document.getElementById('manageListView').style.display = 'none';
+  document.getElementById('manageFormView').style.display = 'block';
+
+  if (law) {
+    // Edit mode
+    if (law._type === 'builtin') {
+      const parsed = parseKey(law._key);
+      const cat = lawsData.categories.find(c => c.id === parsed.categoryId);
+      const originalLaw = cat ? cat.laws.find(l => l.id === parsed.lawId) : null;
+      formContext = { mode: 'edit', type: 'builtin', key: law._key, categoryId: parsed.categoryId, originalLaw: originalLaw };
+      document.getElementById('formCategory').disabled = true;
+    } else {
+      formContext = { mode: 'edit', type: 'manual', key: law._key, categoryId: law.category, originalLaw: null };
+      document.getElementById('formCategory').disabled = false;
+    }
+    document.getElementById('formTitle').textContent = '编辑法规';
+    document.getElementById('formName').value = law.name || '';
+    document.getElementById('formCategory').value = formContext.categoryId;
+    document.getElementById('formStatus').value = law.status || '在用';
+    ensureSourceOption(law.source);
+    document.getElementById('formSource').value = law.source || '中国人大网';
+    document.getElementById('formSourceUrl').value = law.sourceUrl || '';
+    document.getElementById('formEffectiveDate').value = law.effectiveDate || '';
+    document.getElementById('formIntroducedDate').value = law.introducedDate || '';
+    document.getElementById('formStorageMethod').value = law.storageMethod || '电子档';
+    document.getElementById('formRetentionPeriod').value = law.retentionPeriod || '三年';
+  } else {
+    // Add mode
+    formContext = { mode: 'add', type: 'manual', key: null, categoryId: currentCategory !== 'all' ? currentCategory : 'trisystem', originalLaw: null };
+    document.getElementById('formTitle').textContent = '新增法规';
+    document.getElementById('formCategory').disabled = false;
+    document.getElementById('formName').value = '';
+    document.getElementById('formCategory').value = formContext.categoryId;
+    document.getElementById('formStatus').value = '在用';
+    document.getElementById('formSource').value = '中国人大网';
+    document.getElementById('formSourceUrl').value = '';
+    document.getElementById('formEffectiveDate').value = '';
+    document.getElementById('formIntroducedDate').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('formStorageMethod').value = '电子档';
+    document.getElementById('formRetentionPeriod').value = '三年';
+  }
+  document.getElementById('formName').focus();
+}
+
+function saveLaw() {
+  const name = document.getElementById('formName').value.trim();
+  const category = document.getElementById('formCategory').value;
+  const status = document.getElementById('formStatus').value;
+  const source = document.getElementById('formSource').value;
+  const sourceUrl = document.getElementById('formSourceUrl').value.trim();
+  const effectiveDate = document.getElementById('formEffectiveDate').value;
+  const introducedDate = document.getElementById('formIntroducedDate').value;
+  const storageMethod = document.getElementById('formStorageMethod').value;
+  const retentionPeriod = document.getElementById('formRetentionPeriod').value;
+
+  if (!name) { alert('请输入法规名称'); return; }
+  if (!sourceUrl) { alert('请输入来源链接'); return; }
+
+  const formData = { name, source, sourceUrl, effectiveDate, introducedDate, status, storageMethod, retentionPeriod };
+
+  if (formContext.mode === 'add') {
+    manualLaws.push({
+      id: 'manual_' + Date.now(),
+      category: category,
+      ...formData,
+      manual: true,
+      manualAddedDate: new Date().toISOString().slice(0, 10)
+    });
+    saveManualLaws();
+  } else if (formContext.mode === 'edit') {
+    if (formContext.type === 'manual') {
+      const idx = manualLaws.findIndex(l => l.id === formContext.key);
+      if (idx >= 0) {
+        manualLaws[idx] = { ...manualLaws[idx], ...formData, category };
+        saveManualLaws();
+      }
+    } else {
+      // Built-in: store diff as override
+      const original = formContext.originalLaw;
+      if (original) {
+        const ov = {};
+        ['name','source','sourceUrl','effectiveDate','introducedDate','status','storageMethod','retentionPeriod'].forEach(f => {
+          if (formData[f] !== (original[f] || '')) ov[f] = formData[f];
+        });
+        if (Object.keys(ov).length > 0) lawOverrides[formContext.key] = ov;
+        else delete lawOverrides[formContext.key];
+        saveOverrides();
+      }
+    }
+  }
+
+  showListView();
+  renderManageList();
+  renderTabs();
+  renderTable();
+  updateManualCountInfo();
+}
+
+// ===== Management List Rendering =====
+function renderManageList() {
+  const search = document.getElementById('manageSearch').value.toLowerCase().trim();
+  const catFilter = document.getElementById('manageCategoryFilter').value;
+  const showDeleted = document.getElementById('showDeleted').checked;
+
+  const allLaws = [];
+
+  // Built-in laws (including deleted)
+  lawsData.categories.forEach(cat => {
+    if (catFilter && cat.id !== catFilter) return;
+    cat.laws.forEach(law => {
+      const key = makeKey(cat.id, law.id);
+      const isDeleted = deletedLawKeys.includes(key);
+      const isModified = !!lawOverrides[key];
+      if (isDeleted && !showDeleted) return;
+      const displayLaw = isModified ? { ...law, ...lawOverrides[key] } : { ...law };
+      allLaws.push({
+        ...displayLaw,
+        categoryName: cat.name,
+        categoryId: cat.id,
+        _key: key,
+        _type: 'builtin',
+        _modified: isModified,
+        _deleted: isDeleted
+      });
+    });
+  });
+
+  // Manual laws
+  manualLaws.forEach(law => {
+    if (catFilter && law.category !== catFilter) return;
+    const cat = lawsData.categories.find(c => c.id === law.category);
+    allLaws.push({
+      ...law,
+      categoryName: cat ? cat.name : '',
+      categoryId: law.category,
+      _key: law.id,
+      _type: 'manual',
+      _modified: false,
+      _deleted: false
+    });
+  });
+
+  // Filter by search
+  let filtered = allLaws;
+  if (search) filtered = filtered.filter(l => l.name.toLowerCase().includes(search));
+  manageListCache = filtered;
+
+  // Render table
+  let html = '<table class="manage-table"><thead><tr>';
+  html += '<th>法规名称</th><th>分类</th><th>状态</th><th style="width:130px;">操作</th>';
+  html += '</tr></thead><tbody>';
+
+  if (filtered.length === 0) {
+    html += '<tr><td colspan="4" style="text-align:center;padding:20px;color:#8892a6;">没有匹配的法规</td></tr>';
+  } else {
+    filtered.forEach((law, i) => {
+      const badges = [];
+      if (law._type === 'manual') badges.push('<span class="manual-badge">手动</span>');
+      if (law._modified) badges.push('<span class="modified-badge">已修改</span>');
+      if (law._deleted) badges.push('<span class="manual-badge" style="background:#fcebeb;color:#791f1f;">已删除</span>');
+      const sc = law.status === '在用' ? 'status-active' : 'status-inactive';
+      const rowStyle = law._deleted ? ' style="opacity:0.5;"' : '';
+
+      html += '<tr' + rowStyle + '>';
+      html += '<td>' + escapeHtml(law.name) + badges.join('') + '</td>';
+      html += '<td>' + escapeHtml(law.categoryName) + '</td>';
+      html += '<td><span class="status-badge ' + sc + '">' + escapeHtml(law.status || '') + '</span></td>';
+      html += '<td style="white-space:nowrap;">';
+      if (law._deleted) {
+        html += '<button class="btn-restore" onclick="manageRestore(' + i + ')">恢复</button>';
+      } else {
+        html += '<button class="btn-sm btn-outline" onclick="manageEdit(' + i + ')">编辑</button> ';
+        html += '<button class="btn-danger" onclick="manageDelete(' + i + ')">删除</button>';
+      }
+      html += '</td>';
+      html += '</tr>';
+    });
+  }
+  html += '</tbody></table>';
+  document.getElementById('manageListWrap').innerHTML = html;
+
+  // Stats
+  const oc = Object.keys(lawOverrides).length;
+  const dc = deletedLawKeys.length;
+  let stats = '共 ' + filtered.length + ' 条';
+  if (manualLaws.length > 0) stats += ' | 手动 ' + manualLaws.length + ' 条';
+  if (oc > 0) stats += ' | 已修改 ' + oc + ' 条';
+  if (dc > 0) stats += ' | 已删除 ' + dc + ' 条';
+  let statsHtml = '<span>' + stats + '</span>';
+  if (oc > 0 || dc > 0) {
+    statsHtml += '<button class="btn-sm btn-outline" onclick="resetAllChanges()">恢复全部原始数据</button>';
+  }
+  document.getElementById('manageStats').innerHTML = statsHtml;
+}
+
+function manageEdit(index) {
+  const law = manageListCache[index];
+  if (law) showFormView(law);
+}
+function manageDelete(index) {
+  const law = manageListCache[index];
+  if (!law) return;
+  if (!confirm('确定要删除「' + law.name + '」吗？')) return;
+  doDelete(law);
+  renderManageList();
+  renderTabs();
+  renderTable();
+  updateManualCountInfo();
+}
+function manageRestore(index) {
+  const law = manageListCache[index];
+  if (!law || !law._deleted) return;
+  deletedLawKeys = deletedLawKeys.filter(k => k !== law._key);
+  saveDeletions();
+  renderManageList();
+  renderTabs();
+  renderTable();
+  updateManualCountInfo();
+}
+function doDelete(law) {
+  if (law._type === 'builtin') {
+    if (!deletedLawKeys.includes(law._key)) {
+      deletedLawKeys.push(law._key);
+      saveDeletions();
+    }
+  } else {
+    manualLaws = manualLaws.filter(l => l.id !== law._key);
+    saveManualLaws();
+  }
+}
+function resetAllChanges() {
+  if (!confirm('确定要恢复全部原始数据吗？\n所有对内置法规的修改和删除将被撤销。\n手动添加的法规不受影响。')) return;
+  lawOverrides = {};
+  deletedLawKeys = [];
+  saveOverrides();
+  saveDeletions();
+  renderManageList();
+  renderTabs();
+  renderTable();
+  updateManualCountInfo();
+}
+
+// ===== Quick Actions (from table) =====
+function quickEdit(index) {
+  const law = tableLawsCache[index];
+  if (!law) return;
+  openManageModal();
+  showFormView(law);
+}
+function quickDelete(index) {
+  const law = tableLawsCache[index];
+  if (!law) return;
+  if (!confirm('确定要删除「' + law.name + '」吗？')) return;
+  doDelete(law);
+  renderTabs();
+  renderTable();
+  updateManualCountInfo();
+}
+
+// ===== Export Manual Laws (for automation sync) =====
+function exportManualLaws() {
+  if (manualLaws.length === 0) { alert('没有手动添加的法规可导出'); return; }
+  const data = { exportDate: new Date().toISOString(), laws: manualLaws };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.download = 'custom-laws.json';
+  link.href = URL.createObjectURL(blob);
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+// ===== Export Excel =====
+function exportExcel() {
+  if (!lawsData) return;
+  const merged = getMergedData();
+  const wb = XLSX.utils.book_new();
+  const headers = ['编号','文件名','文件来源','来源链接','实施时间','引入时间','使用状态','保管方式','保管期限','添加方式'];
+  merged.categories.forEach(cat => {
+    const data = [headers];
+    cat.laws.forEach((law, i) => {
+      data.push([
+        i + 1, law.name, law.source || '', law.sourceUrl || '',
+        law.effectiveDate || '', law.introducedDate || '',
+        law.status || '', law.storageMethod || '', law.retentionPeriod || '',
+        law._type === 'manual' ? '手动添加' : (law._modified ? '已修改' : '自动检索')
+      ]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{wch:6},{wch:50},{wch:16},{wch:60},{wch:14},{wch:14},{wch:10},{wch:10},{wch:10},{wch:10}];
+    let sheetName = cat.name.replace(/[\\\/\?\*\[\]]/g,'').substring(0,31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+  const dateStr = lawsData.lastUpdated || new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, '法律法规及其他要求清单_' + dateStr + '.xlsx');
+}
+
+// ===== Export PDF (html2canvas + jsPDF) =====
+function exportPDF() {
+  if (!lawsData) return;
+  const btn = document.getElementById('btnPdf');
+  btn.disabled = true;
+  const tableEl = document.getElementById('lawTable');
+  if (!tableEl) { btn.disabled = false; return; }
+
+  showProgress('正在生成 PDF...', '正在生成 PDF 文件，请稍候...');
+
+  const wrap = document.createElement('div');
+  wrap.style.position = 'absolute';
+  wrap.style.left = '-9999px';
+  wrap.style.top = '0';
+  wrap.style.background = '#ffffff';
+  wrap.style.width = '1400px';
+  wrap.style.padding = '20px';
+
+  const titleDiv = document.createElement('div');
+  titleDiv.style.fontSize = '18px';
+  titleDiv.style.fontWeight = 'bold';
+  titleDiv.style.marginBottom = '10px';
+  titleDiv.style.color = '#1a1a2e';
+  const titleText = currentCategory === 'all'
+    ? '法律法规及其他要求清单（全部）'
+    : '法律法规及其他要求清单 - ' + (lawsData.categories.find(c => c.id === currentCategory)?.name || '');
+  titleDiv.textContent = titleText;
+
+  const dateDiv = document.createElement('div');
+  dateDiv.style.fontSize = '12px';
+  dateDiv.style.color = '#8892a6';
+  dateDiv.style.marginBottom = '16px';
+  dateDiv.textContent = '最后更新: ' + (lawsData.lastUpdated || '--') + '    共 ' + getFilteredLaws().length + ' 条记录';
+
+  // Clone table, remove operation column
+  const clone = tableEl.cloneNode(true);
+  clone.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
+  clone.style.width = '100%';
+
+  wrap.appendChild(titleDiv);
+  wrap.appendChild(dateDiv);
+  wrap.appendChild(clone);
+  document.body.appendChild(wrap);
+
+  html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true, windowWidth: 1400 }).then(canvas => {
+    document.body.removeChild(wrap);
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pw = pdf.internal.pageSize.getWidth();
+    const ph = pdf.internal.pageSize.getHeight();
+    const margin = 5;
+    const imgW = pw - 2 * margin;
+    const imgH = (canvas.height / canvas.width) * imgW;
+    let heightLeft = imgH;
+    let position = margin;
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
+    heightLeft -= (ph - 2 * margin);
+    while (heightLeft > 0) {
+      position = margin - (imgH - heightLeft);
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
+      heightLeft -= (ph - 2 * margin);
+    }
+    const dateStr = lawsData.lastUpdated || new Date().toISOString().slice(0,10);
+    pdf.save('法律法规清单_' + dateStr + '.pdf');
+    closeProgress();
+    btn.disabled = false;
+  }).catch(err => {
+    console.error('PDF导出失败:', err);
+    document.body.removeChild(wrap);
+    closeProgress();
+    btn.disabled = false;
+    alert('PDF导出失败，请重试');
+  });
+}
+
+// ===== Export Image =====
+function exportImage() {
+  if (!lawsData) return;
+  const tableEl = document.getElementById('lawTable');
+  if (!tableEl) return;
+  showProgress('正在生成图片...', '正在生成图片，请稍候...');
+
+  // Clone table, remove operation column
+  const wrap = document.createElement('div');
+  wrap.style.position = 'absolute';
+  wrap.style.left = '-9999px';
+  wrap.style.top = '0';
+  wrap.style.background = '#ffffff';
+  wrap.style.padding = '20px';
+  const clone = tableEl.cloneNode(true);
+  clone.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
+  wrap.appendChild(clone);
+  document.body.appendChild(wrap);
+
+  html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
+    document.body.removeChild(wrap);
+    const link = document.createElement('a');
+    const dateStr = lawsData.lastUpdated || new Date().toISOString().slice(0,10);
+    link.download = '法律法规清单_' + dateStr + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    closeProgress();
+  }).catch(err => {
+    console.error('图片导出失败:', err);
+    document.body.removeChild(wrap);
+    closeProgress();
+    alert('图片导出失败，请重试');
+  });
+}
+
+// ===== Init =====
+loadData();
+</script>
+</body>
+</html>
