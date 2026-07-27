@@ -30,13 +30,13 @@
         {
           "id": "3",
           "name": "中华人民共和国标准化法",
-          "source": "中国人大网",
-          "effectiveDate": "2018-01-01",
+          "source": "国家标准化管理委员会",
+          "effectiveDate": "2024-01-20",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276593.html"
+          "sourceUrl": "https://www.samr.gov.cn/zcfg/bmgz/202401/t20240120_479712.shtml"
         },
         {
           "id": "4",
@@ -228,13 +228,13 @@
         {
           "id": "21",
           "name": "中华人民共和国安全生产法",
-          "source": "中国人大网",
-          "effectiveDate": "2021-09-01",
+          "source": "应急管理部",
+          "effectiveDate": "2024-01-15",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202106/t20210610_311477.html"
+          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_479629.shtml"
         },
         {
           "id": "22",
@@ -367,6 +367,17 @@
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
           "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202603/t20260312_453172.html"
+        },
+        {
+          "id": "34",
+          "name": "碳排放权交易管理暂行条例",
+          "source": "国务院",
+          "sourceUrl": "http://www.gov.cn/zhengce/content/202401/content_6925198.htm",
+          "effectiveDate": "2024-01-01",
+          "introducedDate": "2026-07-27",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
         }
       ]
     },
@@ -1083,12 +1094,12 @@
           "id": "47",
           "name": "《信息安全技术-信息安全管理体系要求》GB/T 22080-2025",
           "source": "国家标准化管理委员会",
-          "effectiveDate": "2026-01-01",
+          "effectiveDate": "2025-01-01",
           "introducedDate": "2026-4-30",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0"
+          "sourceUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410519.html"
         },
         {
           "id": "48",
@@ -1138,12 +1149,12 @@
           "id": "52",
           "name": "《网络安全技术信息系统灾难恢复规范》GB/T 20988-2025",
           "source": "国家标准化管理委员会",
-          "effectiveDate": "2026-01-01",
+          "effectiveDate": "2025-01-01",
           "introducedDate": "2026-4-30",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=D0E1F2A3B4C5D6E7F8A9B0C1D2E3F4A5"
+          "sourceUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410520.html"
         },
         {
           "id": "53",
@@ -1243,6 +1254,17 @@
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
           "sourceUrl": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm"
+        },
+        {
+          "id": "62",
+          "name": "《生成式人工智能服务安全管理暂行办法》",
+          "source": "国家网信办",
+          "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129728442.htm",
+          "effectiveDate": "2024-08-15",
+          "introducedDate": "2026-07-27",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
         }
       ]
     }
