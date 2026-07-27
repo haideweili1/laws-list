@@ -11,7 +11,7 @@
 
 ## 费用
 - **GitHub Pages**：免费
-- **更新检索**：用 Google Gemini 免费额度 + Google 搜索接地（grounding），每周跑一次完全在免费额度内，**不花钱**，只需要一个免费申请的 `GEMINI_API_KEY`
+- **更新检索**：用 智谱 GLM（bigmodel.cn 免费额度，国内可直连）+ 自带的 web_search 联网搜索，每周跑一次完全在免费额度内，**不花钱**，只需要一个免费申请的 `ZHIPU_API_KEY`
 
 ## 一键部署步骤
 
@@ -36,12 +36,12 @@ git push -u origin main
 3. Branch 选 **main**，目录选 **/ (root)**
 4. 保存。几分钟后访问 `https://你的用户名.github.io/laws-list/`
 
-### 3. 配置免费的 Gemini API Key（自动更新必需）
-1. 打开 https://aistudio.google.com/apikey ，用 Google 账号**免费**申请一个 API Key
+### 3. 配置免费的智谱 API Key（自动更新必需）
+1. 打开 https://open.bigmodel.cn ，用手机号**免费**注册，进入「API 密钥」页面申请一个 API Key
 2. 进入仓库 **Settings → Secrets and variables → Actions → Secrets → New repository secret**
-3. Name 填 `GEMINI_API_KEY`，Value 粘贴刚申请的 Key，保存
+3. Name 填 `ZHIPU_API_KEY`，Value 粘贴刚申请的 Key，保存
 
-（可选）仓库 **Settings → Secrets and variables → Actions → Variables** 里可加变量 `MODEL`，值填 `gemini-2.5-flash`（默认即此；若免费额度不支持 grounding，可改 `gemini-2.0-flash`）。
+（可选）仓库 **Settings → Secrets and variables → Actions → Variables** 里可加变量 `MODEL`，值填 `glm-4`（默认即此；如需更省钱可改 `glm-4-air`，如需更强模型可改 `glm-4-plus`）。
 
 ### 4. 让它跑起来
 - **自动**：每周一北京时间 9 点自动运行（已配置 cron）
@@ -53,7 +53,7 @@ git push -u origin main
 ```
 index.html                 # 网页（纯前端，依赖公共 CDN 库）
 laws.json                  # 法规数据（由 Actions 自动更新）
-update_laws_action.py      # 自动更新脚本（Gemini + 联网检索）
+update_laws_action.py      # 自动更新脚本（智谱 GLM + 联网检索）
 requirements.txt           # Python 依赖
 .github/workflows/update.yml  # 定时任务配置
 ```

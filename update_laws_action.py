@@ -3,13 +3,13 @@
 """
 法律法规清单自动更新脚本（在 GitHub Actions 环境中运行）
 =========================================================
-- 使用 Google Gemini（免费额度）自带的 Google Search 联网检索能力
+- 使用 智谱 GLM（国内可访问、有免费额度）自带的 web_search 联网检索能力
 - 检索最近两周中国新发布 / 修订 / 废止的法律法规
 - 更新同目录下的 laws.json 并交回 GitHub Actions 提交
 
 依赖的环境变量：
-  GEMINI_API_KEY  (必填)  Google AI Studio 免费申请的 API Key
-  MODEL            (可选)  模型名，默认 gemini-2.5-flash
+  ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
+  MODEL            (可选)  模型名，默认 glm-4（支持 web_search 的模型）
 
 设计说明：
   - 只保留「正在实施、非废止」的文件；若发现已有法规被废止/修订会做标记。
@@ -23,10 +23,9 @@ import sys
 from datetime import date
 
 try:
-    from google import genai
-    from google.genai import types
+    from zhipuai import ZhipuAI
 except ImportError:
-    print("缺少 google-genai 库，请先执行: pip install google-genai")
+    print("缺少 zhipuai 库，请先执行: pip install zhipuai")
     sys.exit(1)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -66,7 +65,7 @@ CATEGORY_NAMES = {
 def build_prompt(category_id, existing_names):
     domain = DOMAINS[category_id]
     names_block = "\n".join(f"- {n}" for n in existing_names) or "（暂无）"
-    return f"""你是中国法律法规检索助手。请使用联网搜索，查找最近两周内（重点是最新发布、实施或修订）中国国家级、与以下领域相关的法律法规、行政法规、部门规章、国家标准(GB/T)的变更：
+    return f"""你是中国法律法规检索助手。请使用联网搜索（web_search），查找最近两周内（重点是最新发布、实施或修订）中国国家级、与以下领域相关的法律法规、行政法规、部门规章、国家标准(GB/T)的变更：
 
 领域：{domain}
 
@@ -112,15 +111,13 @@ def extract_json(text):
 def search_category(client, model, category_id, existing_names):
     prompt = build_prompt(category_id, existing_names)
     try:
-        resp = client.models.generate_content(
+        resp = client.chat.completions.create(
             model=model,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[types.Tool(google_search=types.GoogleSearch())],
-                response_mime_type="application/json",
-            ),
+            messages=[{"role": "user", "content": prompt}],
+            tools=[{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
+            temperature=0.2,
         )
-        return json.loads(extract_json(resp.text))
+        return json.loads(extract_json(resp.choices[0].message.content))
     except Exception as e:
         print(f"  [{category_id}] 检索出错: {e}")
         return {"changes": [], "summary": f"检索出错: {e}"}
@@ -142,13 +139,13 @@ def _name_match(name, laws):
 
 
 def main():
-    api_key = os.environ.get("GEMINI_API_KEY")
+    api_key = os.environ.get("ZHIPU_API_KEY")
     if not api_key:
-        print("缺少环境变量 GEMINI_API_KEY，跳过更新（保持原数据）。")
+        print("缺少环境变量 ZHIPU_API_KEY，跳过更新（保持原数据）。")
         sys.exit(0)
 
-    model = os.environ.get("MODEL") or "gemini-2.5-flash"
-    client = genai.Client(api_key=api_key)
+    model = os.environ.get("MODEL") or "glm-4"
+    client = ZhipuAI(api_key=api_key)
 
     try:
         with open(LAWS_PATH, "r", encoding="utf-8") as f:

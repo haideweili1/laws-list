@@ -29,7 +29,7 @@ jobs:
 
       - name: 联网检索并更新法规
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           MODEL: ${{ vars.MODEL }}
         run: python update_laws_action.py
 
