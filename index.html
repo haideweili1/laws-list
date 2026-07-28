@@ -633,25 +633,19 @@ tbody tr:hover { background: #f8fafe; }
 <!-- ===== Cloud Sync Modal ===== -->
 <div class="modal-overlay" id="syncModal">
   <div class="modal">
-    <h2>&#x2601; 跨设备云端同步</h2>
+    <h2>&#x2601; 团队同步（多人共同编辑）</h2>
     <p class="sync-note">
-      本网页是一个<strong>多人共同使用的工作空间</strong>：仓库是<strong>公开</strong>的，同事或任意设备打开本网页都会<strong>自动看到所有人的修改</strong>，无需令牌。<br>
-      你<strong>保存修改回云端</strong>时需要令牌：请生成一个<strong>仅本仓库、可读写 Contents</strong>的细粒度令牌（fine-grained PAT）并粘贴到下方。
+      这是一个<strong>多人共同使用的工作空间</strong>：所有人打开网页都会<strong>自动看到彼此的修改</strong>，无需任何账号。<br>
+      要<strong>保存你自己的修改</strong>，只需在下面粘贴<strong>管理员发给你的同步令牌</strong>，点"保存令牌"即可。<strong>不需要注册 GitHub，也不需要自己生成令牌。</strong>
     </p>
     <div id="syncHint" class="sync-hint">
-      <strong>想让同事也能编辑？（完全不花钱）</strong><br>
-      仓库 <code>Settings → Collaborators</code> → 把同事的 GitHub 账号加为 <strong>Write</strong> 协作者（公开仓库免费）。<br>
-      同事各自在自己的电脑/手机上打开本网页，点「☁ 同步」粘贴<strong>他们自己的</strong>该仓库令牌即可，无需共享你的密码，每个人的修改都会实时同步给大家。
+      <strong>给管理员（你来做一次）：</strong><br>
+      在 GitHub 生成一个<strong>仅本仓库、可读写 Contents</strong>的细粒度令牌（Fine-grained PAT），复制后通过微信 / 邮件发给同事即可。<br>
+      生成步骤：GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token；Repository access 选 <code>haideweili1/laws-list</code>，Permissions → Contents → 设为 Read and write。
     </div>
     <div class="sync-row">
-      <input type="password" id="syncTokenInput" placeholder="粘贴 GitHub 令牌（ghp_... 或 fine-grained）" autocomplete="off">
+      <input type="password" id="syncTokenInput" placeholder="粘贴管理员发给你的同步令牌" autocomplete="off">
     </div>
-    <p class="sync-note" style="margin-top:0;">
-      <strong>如何生成你自己的令牌：</strong><br>
-      1. GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token<br>
-      2. Repository access 选 <code>haideweili1/laws-list</code>，Permissions → Contents → 设为 Read and write<br>
-      3. 生成后复制，粘贴到上方，点"保存令牌"（会自动把本机现有修改上传到云端）
-    </p>
     <div class="manage-stats" style="margin:10px 0 0;"><span id="syncDetail"></span></div>
     <div class="modal-actions">
       <button class="btn btn-outline btn-sm" onclick="syncToCloud()">同步到云端</button>
