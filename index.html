@@ -635,23 +635,12 @@ tbody tr:hover { background: #f8fafe; }
   <div class="modal">
     <h2>&#x2601; 团队同步（多人共同编辑）</h2>
     <p class="sync-note">
-      这是一个<strong>多人共同使用的工作空间</strong>：所有人打开网页都会<strong>自动看到彼此的修改</strong>，无需任何账号。<br>
-      要<strong>保存你自己的修改</strong>，只需在下面粘贴<strong>管理员发给你的同步令牌</strong>，点"保存令牌"即可。<strong>不需要注册 GitHub，也不需要自己生成令牌。</strong>
+      这是一个<strong>多人共同使用的工作空间</strong>：所有人打开网页都会<strong>自动看到彼此的修改</strong>，也能直接修改并同步——<strong>无需任何账号、无需令牌</strong>。
     </p>
-    <div id="syncHint" class="sync-hint">
-      <strong>给管理员（你来做一次）：</strong><br>
-      在 GitHub 生成一个<strong>仅本仓库、可读写 Contents</strong>的细粒度令牌（Fine-grained PAT），复制后通过微信 / 邮件发给同事即可。<br>
-      生成步骤：GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token；Repository access 选 <code>haideweili1/laws-list</code>，Permissions → Contents → 设为 Read and write。
-    </div>
-    <div class="sync-row">
-      <input type="password" id="syncTokenInput" placeholder="粘贴管理员发给你的同步令牌" autocomplete="off">
-    </div>
     <div class="manage-stats" style="margin:10px 0 0;"><span id="syncDetail"></span></div>
     <div class="modal-actions">
-      <button class="btn btn-outline btn-sm" onclick="syncToCloud()">同步到云端</button>
+      <button class="btn btn-edit" onclick="syncToCloud()">同步到云端</button>
       <button class="btn btn-outline btn-sm" onclick="pullFromCloud()">从云端刷新</button>
-      <button class="btn btn-outline btn-sm" onclick="clearSyncToken()">清除令牌</button>
-      <button class="btn btn-edit" onclick="saveSyncToken()">保存令牌</button>
       <button class="btn btn-outline" onclick="closeSyncModal()">关闭</button>
     </div>
   </div>
@@ -725,29 +714,13 @@ function markDeleted(key, del) {
   saveDeletions();
 }
 
-// ===== Cloud Sync（多人共同编辑的工作空间，以公开 GitHub 仓库托底） =====
-// 仓库公开 → user-edits.json 任何人可读取，同事/手机打开即见；
-// 仅"保存修改回云端"需要令牌（写回仓库）。推荐把同事加为仓库协作者，
-// 各自用自己的令牌，互不共享密码。
-const SYNC_OWNER = 'haideweili1';
-const SYNC_REPO  = 'laws-list';
-const SYNC_PATH  = 'user-edits.json';
-const GH_TOKEN_KEY = 'ghSyncToken_v1';
+// ===== Cloud Sync（多人共同编辑的工作空间，经 Cloudflare Worker 代理写回 GitHub） =====
+// 仓库公开 → user-edits.json 任何人可读取（网页直接读同站文件），同事/手机打开即见；
+// 写回云端走 Cloudflare Worker 代理（SYNC_PROXY），令牌放在 Worker 服务端（Secret: GH_TOKEN），
+// 不在网页里、不被 GitHub 拦截，也不要求同事登录或填令牌。
+// 把下面的地址换成你部署好的 Cloudflare Worker 地址（*.workers.dev）。
+const SYNC_PROXY = '';
 
-function getSyncToken() {
-  try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch(e) { return ''; }
-}
-function setSyncToken(t) {
-  try {
-    if (t) localStorage.setItem(GH_TOKEN_KEY, t);
-    else localStorage.removeItem(GH_TOKEN_KEY);
-  } catch(e) {}
-}
-function clearSyncToken() {
-  setSyncToken('');
-  updateSyncStatus('已清除令牌');
-  closeSyncModal();
-}
 function collectEdits() {
   return {
     version: 2,
@@ -821,7 +794,7 @@ function applyMerged(merged) {
 }
 async function loadCloudEdits() {
   try {
-    const res = await fetch(SYNC_PATH + '?t=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch('user-edits.json?t=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) return;
     const data = await res.json();
     if (!data || !data.manualLaws) return;
@@ -842,14 +815,11 @@ function b64decodeUtf8(b64) {
   return decodeURIComponent(escape(bin));
 }
 async function pushCloudEdits() {
-  const token = getSyncToken();
-  if (!token) { updateSyncStatus('未配置令牌：当前只能查看，无法保存修改'); return; }
-  const apiUrl = 'https://api.github.com/repos/' + SYNC_OWNER + '/' + SYNC_REPO + '/contents/' + SYNC_PATH;
+  if (!SYNC_PROXY) { updateSyncStatus('未配置同步代理地址（请联系管理员设置）'); return; }
+  const apiUrl = SYNC_PROXY;
   try {
     let cloudSha = null, cloudData = null;
-    const getRes = await fetch(apiUrl, {
-      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
-    });
+    const getRes = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
     if (getRes.ok) {
       const j = await getRes.json();
       cloudSha = j.sha;
@@ -864,11 +834,7 @@ async function pushCloudEdits() {
     if (cloudSha) body.sha = cloudSha;
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     if (!putRes.ok) {
@@ -889,26 +855,10 @@ function updateSyncStatus(text) {
   if (d) d.textContent = text || '';
 }
 function openSyncModal() {
-  const token = getSyncToken();
-  const inp = document.getElementById('syncTokenInput');
-  inp.value = token ? '********' : '';
-  inp.dataset.has = token ? '1' : '';
-  const hint = document.getElementById('syncHint');
-  if (hint) hint.style.display = token ? 'none' : 'block';
-  updateSyncStatus(token ? '已配置令牌（可共同编辑）' : '未配置令牌：当前只能查看，无法保存修改');
+  updateSyncStatus(SYNC_PROXY ? '已启用团队同步（免登录、免令牌）' : '未配置同步代理地址（请联系管理员设置）');
   document.getElementById('syncModal').classList.add('show');
 }
 function closeSyncModal() { document.getElementById('syncModal').classList.remove('show'); }
-function saveSyncToken() {
-  const inp = document.getElementById('syncTokenInput');
-  const val = inp.value.trim();
-  if (inp.dataset.has === '1' && val === '********') { closeSyncModal(); return; }
-  if (!val) { clearSyncToken(); return; }
-  setSyncToken(val);
-  updateSyncStatus('令牌已保存，正在上传本机现有修改...');
-  closeSyncModal();
-  pushCloudEdits();
-}
 function syncToCloud() { pushCloudEdits(); }
 async function pullFromCloud() {
   await loadCloudEdits();
@@ -916,8 +866,7 @@ async function pullFromCloud() {
 }
 let _autoSyncTimer = null;
 function initSync() {
-  const token = getSyncToken();
-  updateSyncStatus(token ? '已配置云端同步（可共同编辑）' : '未配置令牌：当前只能查看，无法保存修改');
+  updateSyncStatus(SYNC_PROXY ? '已启用团队同步（免登录、免令牌）' : '未配置同步代理地址（请联系管理员设置）');
   // 多人协作：定时从云端拉取同事的修改
   if (_autoSyncTimer) clearInterval(_autoSyncTimer);
   _autoSyncTimer = setInterval(() => {
