@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-27",
+  "lastUpdated": "2026-07-28",
   "categories": [
     {
       "id": "trisystem",
@@ -97,12 +97,12 @@
           "id": "9",
           "name": "中华人民共和国环境保护法",
           "source": "生态环境部",
-          "effectiveDate": "2015-01-01",
+          "effectiveDate": "2024-01-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk01/202401/t20240120_1055470.shtml"
+          "sourceUrl": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk06/202401/t20240120_1075466.shtml"
         },
         {
           "id": "10",
@@ -229,12 +229,12 @@
           "id": "21",
           "name": "中华人民共和国安全生产法",
           "source": "应急管理部",
-          "effectiveDate": "2024-03-01",
+          "effectiveDate": "2024-01-15",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_459928.shtml"
+          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_479510.shtml"
         },
         {
           "id": "22",
@@ -1258,8 +1258,8 @@
         {
           "id": "62",
           "name": "《生成式人工智能服务安全管理暂行办法》",
-          "source": "国家网信办",
-          "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129728442.htm",
+          "source": "国家互联网信息办公室",
+          "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129768130.htm",
           "effectiveDate": "2024-08-15",
           "introducedDate": "2026-07-27",
           "status": "在用",
