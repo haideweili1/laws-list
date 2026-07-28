@@ -221,13 +221,15 @@ def main():
                     print(f"    [更新] {name}")
                 total_changes += 1
 
+    # 无论是否有法规内容变更，都更新"最近更新时间"为本次运行日期
+    # （对应需求：点击运行/定时任务执行后，立即刷新更新时间）
+    data["lastUpdated"] = today
+    with open(LAWS_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
     if total_changes > 0:
-        data["lastUpdated"] = today
-        with open(LAWS_PATH, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"\n共更新 {total_changes} 条，lastUpdated -> {today}")
     else:
-        print("\n本次无变更，数据保持不变。")
+        print(f"\n本次无法规内容变更，但已刷新更新时间 -> {today}")
 
 
 if __name__ == "__main__":
