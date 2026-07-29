@@ -719,7 +719,7 @@ function markDeleted(key, del) {
 // 写回云端走腾讯云 SCF 代理（SYNC_PROXY），令牌放在云端函数环境变量（GITHUB_TOKEN），
 // 不在网页里、不被 GitHub 拦截，也不要求同事登录或填令牌。腾讯云国内 100% 可达。
 // 把下面地址换成你部署好的腾讯云函数 URL（*.ap-guangzhou.tencentcs.com）。
-const SYNC_PROXY = 'https://1460512300-c8zm53ghd.ap-guangzhou.tencentcs.com';
+const SYNC_PROXY = 'https://1460512300-c9zrn53ghd.ap-guangzhou.tencentscf.com';
 
 function utf8ToBase64(str) {
   const bytes = new TextEncoder().encode(str);
