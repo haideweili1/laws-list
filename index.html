@@ -719,7 +719,7 @@ function markDeleted(key, del) {
 // 写回云端走 Cloudflare Worker 代理（SYNC_PROXY），令牌放在 Worker 服务端（Secret: GH_TOKEN），
 // 不在网页里、不被 GitHub 拦截，也不要求同事登录或填令牌。
 // 把下面的地址换成你部署好的 Cloudflare Worker 地址（*.workers.dev）。
-const SYNC_PROXY = '';
+const SYNC_PROXY = 'https://laws-sync.2801839427.workers.dev/';
 
 function collectEdits() {
   return {
