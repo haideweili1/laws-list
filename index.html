@@ -714,37 +714,22 @@ function markDeleted(key, del) {
   saveDeletions();
 }
 
-// ===== Cloud Sync（多人共同编辑的工作空间，数据存 Supabase，网页直连读写，免登录） =====
-// Supabase 免费、永久额度、国内可达；浏览器直连其 REST API（自带跨域），无需任何代理服务器。
-// 数据存在 Supabase 表 law_edits（单行 id=1，data 字段为协同编辑 JSON）。
-// 匿名（anon）即可读写（建表时已放开 RLS 公共权限），同事/手机打开网页即改即同步，无需登录或填令牌。
-const SUPABASE_URL = 'https://wmolnkpdxqxnfbhvgyi.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_zD8TuSZ3hh4NysJsLiDdXQ_clrflJAP';
-const SUPABASE_TABLE = 'law_edits';
+// ===== Cloud Sync（多人共同编辑的工作空间，经腾讯云云函数 SCF 代理写回 GitHub） =====
+// 仓库公开 → user-edits.json 任何人可读取（网页直接读同站文件），同事/手机打开即见；
+// 写回云端走腾讯云 SCF 代理（SYNC_PROXY），令牌放在云端函数环境变量（GITHUB_TOKEN），
+// 不在网页里、不被 GitHub 拦截，也不要求同事登录或填令牌。腾讯云国内 100% 可达。
+// 把下面地址换成你部署好的腾讯云函数 URL（*.ap-guangzhou.tencentcs.com）。
+const SYNC_PROXY = 'https://1460512300-c8zm53ghd.ap-guangzhou.tencentcs.com';
 
-async function supabaseGet() {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE + '?select=data&id=eq.1', {
-    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
-  });
-  if (!res.ok) throw new Error('读取云端失败: ' + res.status);
-  const arr = await res.json();
-  return (arr && arr[0] && arr[0].data) ? arr[0].data : null;
+function utf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
 }
-async function supabaseUpsert(data) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates, return=minimal'
-    },
-    body: JSON.stringify({ id: 1, data: data, updated_at: new Date().toISOString() })
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || ('推送失败: ' + res.status));
-  }
+function b64decodeUtf8(b64) {
+  const bin = atob(b64.replace(/\s/g, ''));
+  return decodeURIComponent(escape(bin));
 }
 
 function collectEdits() {
@@ -820,7 +805,9 @@ function applyMerged(merged) {
 }
 async function loadCloudEdits() {
   try {
-    const data = await supabaseGet();
+    const res = await fetch('user-edits.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
     if (!data || !data.manualLaws) return;
     // 本地优先：保护尚未上传成功的本机修改
     const merged = mergeEdits(collectEdits(), data, true);
@@ -839,12 +826,32 @@ function b64decodeUtf8(b64) {
   return decodeURIComponent(escape(bin));
 }
 async function pushCloudEdits() {
+  if (!SYNC_PROXY) { updateSyncStatus('未配置同步代理地址（请联系管理员设置）'); return; }
+  const apiUrl = SYNC_PROXY;
   try {
-    let cloudData = null;
-    try { cloudData = await supabaseGet(); } catch(e) { cloudData = null; }
+    let cloudSha = null, cloudData = null;
+    const getRes = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+    if (getRes.ok) {
+      const j = await getRes.json();
+      cloudSha = j.sha;
+      try { cloudData = JSON.parse(b64decodeUtf8(j.content)); } catch(e) { cloudData = null; }
+    } else if (getRes.status !== 404) {
+      throw new Error('读取云端失败: ' + getRes.status);
+    }
     // 以云端为基准合并，本地较新者覆盖（同事的更新不会被你的旧副本抹掉）
     const merged = mergeEdits(collectEdits(), cloudData || { manualLaws: [], manualTs: {}, lawOverrides: {}, overrideTs: {}, deletions: {} }, false);
-    await supabaseUpsert(merged);
+    const content = utf8ToBase64(JSON.stringify(merged, null, 2));
+    const body = { message: '协同同步法规编辑 ' + new Date().toISOString(), content: content };
+    if (cloudSha) body.sha = cloudSha;
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || ('推送失败: ' + putRes.status));
+    }
     applyMerged(merged); // 推送成功后同步本地视图（含同事的修改）
     updateSyncStatus('已同步到云端 ' + new Date().toLocaleTimeString());
   } catch(e) {
@@ -859,7 +866,7 @@ function updateSyncStatus(text) {
   if (d) d.textContent = text || '';
 }
 function openSyncModal() {
-  updateSyncStatus('已启用团队同步（Supabase 云端，免登录、免令牌）');
+  updateSyncStatus(SYNC_PROXY ? '已启用团队同步（免登录、免令牌）' : '未配置同步代理地址（请联系管理员设置）');
   document.getElementById('syncModal').classList.add('show');
 }
 function closeSyncModal() { document.getElementById('syncModal').classList.remove('show'); }
@@ -870,7 +877,7 @@ async function pullFromCloud() {
 }
 let _autoSyncTimer = null;
 function initSync() {
-  updateSyncStatus('已启用团队同步（Supabase 云端，免登录、免令牌）');
+  updateSyncStatus(SYNC_PROXY ? '已启用团队同步（免登录、免令牌）' : '未配置同步代理地址（请联系管理员设置）');
   // 多人协作：定时从云端拉取同事的修改
   if (_autoSyncTimer) clearInterval(_autoSyncTimer);
   _autoSyncTimer = setInterval(() => {
