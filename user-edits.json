@@ -2,7 +2,14 @@
   "version": 2,
   "manualLaws": [],
   "manualTs": {},
-  "lawOverrides": {},
-  "overrideTs": {},
+  "lawOverrides": {
+    "trisystem::3": {
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201905/t20190521_278360.html"
+    }
+  },
+  "overrideTs": {
+    "trisystem::3": 0
+  },
   "deletions": {}
 }
