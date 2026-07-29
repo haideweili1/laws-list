@@ -6,10 +6,15 @@
     "trisystem::3": {
       "source": "中国人大网",
       "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201905/t20190521_278360.html"
+    },
+    "trisystem::4": {
+      "source": "国家市场监督管理总局",
+      "sourceUrl": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/bgt/art/2023/art_c7eb1ede24c3424795bbcf3c7e6bb60a.html"
     }
   },
   "overrideTs": {
-    "trisystem::3": 0
+    "trisystem::3": 0,
+    "trisystem::4": 1785342715218
   },
   "deletions": {}
 }
