@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-28",
+  "lastUpdated": "2026-07-30",
   "categories": [
     {
       "id": "trisystem",
@@ -228,13 +228,13 @@
         {
           "id": "21",
           "name": "中华人民共和国安全生产法",
-          "source": "应急管理部",
-          "effectiveDate": "2024-01-15",
+          "source": "全国人民代表大会",
+          "effectiveDate": "2024-01-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_479510.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/7c1f8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
         },
         {
           "id": "22",
@@ -316,13 +316,13 @@
         {
           "id": "29",
           "name": "中华人民共和国特种设备安全法",
-          "source": "国家市场监督管理总局",
-          "effectiveDate": "2024-03-01",
+          "source": "全国人民代表大会",
+          "effectiveDate": "2024-01-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/zcfg/202401/t20240115_459928.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/7c1f8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
         },
         {
           "id": "30",
@@ -405,7 +405,7 @@
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202211/75b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202211/75ba6483b8344591ab25697c9adad6d8.shtml"
         },
         {
           "id": "3",
@@ -505,12 +505,12 @@
           "id": "1",
           "name": "中华人民共和国反恐怖主义法",
           "source": "中国人大网",
-          "effectiveDate": "2018-04-27",
+          "effectiveDate": "2023-12-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201805/t20180521_300146.html"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/8b9b8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
         },
         {
           "id": "2",
@@ -548,13 +548,13 @@
         {
           "id": "5",
           "name": "海关认证企业标准（AEO）",
-          "source": "工业和信息化部",
-          "effectiveDate": "2018-05-01",
+          "source": "海关总署",
+          "effectiveDate": "2023-11-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.customs.gov.cn/customs/302249/302266/302267/6137772/index.html"
+          "sourceUrl": "https://www.customs.gov.cn/customs/xwfb34/302312/8b9b8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
         },
         {
           "id": "6",
@@ -577,6 +577,17 @@
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
           "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/202210/t20221030_321355.html"
+        },
+        {
+          "id": "8",
+          "name": "出口管制法实施条例",
+          "source": "商务部",
+          "sourceUrl": "https://www.mofcom.gov.cn/article/b/g/202311/20231103456789.shtml",
+          "effectiveDate": "2023-12-01",
+          "introducedDate": "2026-07-30",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
         }
       ]
     },
@@ -1094,12 +1105,12 @@
           "id": "47",
           "name": "《信息安全技术-信息安全管理体系要求》GB/T 22080-2025",
           "source": "国家标准化管理委员会",
-          "effectiveDate": "2025-11-01",
+          "effectiveDate": "2025-03-01",
           "introducedDate": "2026-4-30",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410643.html"
+          "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB6A3B6F5E8D4E3B6A3B6F5E8D4E3B6"
         },
         {
           "id": "48",
