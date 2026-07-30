@@ -1,0 +1,35 @@
+{
+  "updatedAt": "2026-07-30",
+  "hasUpdates": true,
+  "counts": {
+    "added": 1,
+    "abolished": 0,
+    "updated": 3
+  },
+  "changes": [
+    {
+      "type": "update",
+      "name": "中华人民共和国特种设备安全法",
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "detail": "更新：实施时间、来源链接、来源网站"
+    },
+    {
+      "type": "update",
+      "name": "中华人民共和国安全生产法",
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "detail": "更新：实施时间、来源链接、来源网站"
+    },
+    {
+      "type": "update",
+      "name": "中华人民共和国反恐怖主义法",
+      "category": "反恐/供应链安全",
+      "detail": "更新：实施时间、来源链接、来源网站"
+    },
+    {
+      "type": "add",
+      "name": "海关AEO认证与信用管理办法（修订）",
+      "category": "反恐/供应链安全",
+      "detail": "新增法规"
+    }
+  ]
+}
