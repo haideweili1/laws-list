@@ -1012,7 +1012,7 @@ function startRetrievePolling(runId) {
         if (deployStatus === 'succeeded') {
           localStorage.removeItem(RETRIEVE_RUN_KEY);
           setRetrieveIcon('done');
-          updateRetrieveStatus('部署成功 ✓ 已是最新');
+          updateRetrieveStatus('部署成功 ✓ 网页自动更新中，请稍后刷新查看更新说明');
           const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
           _retrieveTimer = null;
           loadUpdateSummary();

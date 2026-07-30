@@ -101,18 +101,9 @@ async function checkStatus(token, runId) {
     if (runConclusion !== 'success') {
       return { status: 200, body: JSON.stringify({ runStatus, runConclusion, deployStatus: 'not_needed' }) };
     }
-    // 运行成功，查询 Pages 部署状态
-    let deployStatus = 'building';
-    try {
-      const depUrl = `https://api.github.com/repos/${REPO}/pages/deployments?per_page=1`;
-      const depRes = await fetch(depUrl, { headers: GH_HEADERS(token) });
-      if (depRes.ok) {
-        const deps = await depRes.json();
-        if (Array.isArray(deps) && deps.length) {
-          deployStatus = deps[0].status; // queued | in_progress | building | succeeded | failed
-        }
-      }
-    } catch (e) {}
+    // 本仓库 Pages 采用「从 main 分支自动发布」：Actions 运行成功后 GitHub 会自动重建站点，
+    // 不会产生独立的 deployment 记录（/pages/deployments 通常为空），故运行成功即视为部署成功。
+    const deployStatus = 'succeeded';
     return { status: 200, body: JSON.stringify({ runStatus, runConclusion: 'success', deployStatus }) };
   } catch (e) {
     return { status: 200, body: JSON.stringify({ runStatus: 'unknown', runConclusion: null, deployStatus: 'unknown' }) };
