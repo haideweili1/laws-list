@@ -612,7 +612,7 @@ tbody tr:hover { background: #f8fafe; }
       <div class="form-group">
         <label>来源网站</label>
         <select id="formSource" onchange="onSourceChange()">
-          <option value="">请选择来源网站</option>
+          <option value=""></option>
           <option value="中国人大网">中国人大网 (npc.gov.cn)</option>
           <option value="中国政府网">中国政府网 (gov.cn)</option>
           <option value="国家网信办">国家网信办 (cac.gov.cn)</option>
@@ -1118,9 +1118,9 @@ function renderTable() {
       if (showCat) html += '<td>' + escapeHtml(law.categoryName) + '</td>';
       html += '<td><div class="law-name-cell">' + escapeHtml(law.name) + badges.join('') + '</div></td>';
       if (law.sourceUrl) {
-        html += '<td><a class="source-link" href="' + escapeHtml(law.sourceUrl) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(law.sourceUrl) + '">' + escapeHtml(law.source || '—') + '</a></td>';
+        html += '<td><a class="source-link" href="' + escapeHtml(law.sourceUrl) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(law.sourceUrl) + '">' + escapeHtml(law.source || '') + '</a></td>';
       } else {
-        html += '<td>' + escapeHtml(law.source || '—') + '</td>';
+        html += '<td>' + escapeHtml(law.source || '') + '</td>';
       }
       html += '<td>' + escapeHtml(law.effectiveDate || '') + '</td>';
       html += '<td>' + escapeHtml(law.introducedDate || '') + '</td>';
@@ -1280,7 +1280,7 @@ function showFormView(law) {
     document.getElementById('formName').value = law.name || '';
     document.getElementById('formCategory').value = formContext.categoryId;
     document.getElementById('formStatus').value = law.status || '在用';
-    // 内置来源选项直接选中；自定义来源（历史手动填的）走"其他"；空来源显示"请选择"
+    // 内置来源选项直接选中；自定义来源（历史手动填的）走"其他"；空来源显示空白
     const baseSources = ['中国人大网','中国政府网','国家网信办','工业和信息化部','国家标准化管理委员会','海关总署','国家市场监督管理总局','其他'];
     if (!law.source) {
       document.getElementById('formSource').value = '';
@@ -1320,7 +1320,10 @@ function showFormView(law) {
 function saveLaw() {
   const name = document.getElementById('formName').value.trim();
   let source = document.getElementById('formSource').value;
-  if (source === '其他') source = document.getElementById('formOtherSource').value.trim() || '其他';
+  if (source === '其他') {
+    const t = document.getElementById('formOtherSource').value.trim();
+    source = t || '';
+  }
   const category = document.getElementById('formCategory').value;
   const status = document.getElementById('formStatus').value;
   const sourceUrl = document.getElementById('formSourceUrl').value.trim();
@@ -1330,7 +1333,6 @@ function saveLaw() {
   const retentionPeriod = document.getElementById('formRetentionPeriod').value;
 
   if (!name) { alert('请输入法规名称'); return; }
-  if (!source) { alert('请选择来源网站'); return; }
   if (!sourceUrl) { alert('请输入来源链接'); return; }
 
   const formData = { name, source, sourceUrl, effectiveDate, introducedDate, status, storageMethod, retentionPeriod };
