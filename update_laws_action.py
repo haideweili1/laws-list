@@ -31,6 +31,11 @@ except ImportError:
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 LAWS_PATH = os.path.join(ROOT, "laws.json")
+USER_EDITS_PATH = os.path.join(ROOT, "user-edits.json")
+
+# 参与"政府更新 vs 用户手动修改"比对的字段
+FIELDS = ["name", "source", "sourceUrl", "effectiveDate", "introducedDate",
+          "status", "storageMethod", "retentionPeriod"]
 
 # 四大分类的检索领域说明（喂给模型做定向检索）
 DOMAINS = {
@@ -75,8 +80,11 @@ def build_prompt(category_id, existing_names):
 
 要求：
 1. 只关注「正在实施、非废止」的文件；若发现清单中某部法规已被废止或修订，请标记。
-2. sourceUrl 必须是政府官网链接，优先使用：npc.gov.cn / gov.cn / cac.gov.cn / miit.gov.cn / openstd.samr.gov.cn
-3. 请勿编造不存在的法规，没有确凿依据时不要返回。
+2. sourceUrl 必须是【能直接查看该法规正文】的官方页面链接，优先使用：npc.gov.cn / gov.cn / cac.gov.cn / miit.gov.cn / openstd.samr.gov.cn。
+3. 严禁返回以下"非正文"链接：搜索结果页、列表页、栏目首页、官网首页、新闻稿页（除非该新闻稿页就是法规正文发布页）。
+   判断标准：打开该链接后，页面应直接显示法规的【标题 + 完整条文】；若只是目录或搜索框，则该链接不合格，请继续查找"全文"页。
+   例如：中国政府网应优先用"政策文件库"的具体条文页（URL 形如 .../zhengce/.../content_....shtml），而非 /zhengce/ 栏目首页。
+4. 请勿编造不存在的法规，没有确凿依据时不要返回。
 
 请以 JSON 格式返回（无变更则 changes 为空数组）：
 {{
@@ -137,6 +145,85 @@ def _name_match(name, laws):
         if name in l["name"] or l["name"] in name:
             return l
     return None
+
+
+def get_prev_laws_from_git():
+    """读取上一次提交的 laws.json（作为"政府更新前的基线"用于比对）。失败返回 None。"""
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["git", "show", "HEAD:laws.json"],
+            cwd=ROOT, capture_output=True, text=True, timeout=30
+        )
+        if out.returncode != 0:
+            return None
+        return json.loads(out.stdout)
+    except Exception as e:
+        print(f"  [reconcile] 无法读取上版本 laws.json（跳过覆盖清理）：{e}")
+        return None
+
+
+def reconcile_user_overrides(prev_data, new_data):
+    """
+    需求 7：自动检索更新了某部法规的正文/状态等字段时，应当覆盖用户对该字段的手动修改，
+    并清除网页上的"已修改"标识；用户修改过、但政府【未】变更的字段则保留（不被覆盖）。
+    做法：比对 prev_data 与 new_data 的逐字段差异，凡是政府变更的字段，就从 user-edits.json
+    的 lawOverrides 中删掉对应字段（即清除"已修改"标记，显示政府最新值）。
+    """
+    if not prev_data:
+        return
+    if not os.path.exists(USER_EDITS_PATH):
+        return  # 没有用户手动编辑，无需处理
+    try:
+        with open(USER_EDITS_PATH, "r", encoding="utf-8") as f:
+            ue = json.load(f)
+    except Exception as e:
+        print(f"  [reconcile] 读取 user-edits.json 失败，跳过：{e}")
+        return
+
+    prev_by_key = {}
+    for c in prev_data.get("categories", []):
+        for l in c.get("laws", []):
+            prev_by_key[f"{c['id']}::{l['id']}"] = l
+
+    overrides = ue.get("lawOverrides") or {}
+    override_ts = ue.get("overrideTs") or {}
+    changed = False
+    for c in new_data.get("categories", []):
+        for l in c.get("laws", []):
+            key = f"{c['id']}::{l['id']}"
+            prev_law = prev_by_key.get(key)
+            if not prev_law:
+                continue  # 新增法规，没有历史覆盖
+            ov = overrides.get(key)
+            if not ov:
+                continue
+            # 找出政府本次变更的字段
+            changed_fields = [fld for fld in FIELDS
+                              if (l.get(fld) or "") != (prev_law.get(fld) or "")]
+            if not changed_fields:
+                continue
+            for fld in changed_fields:
+                if fld in ov:
+                    del ov[fld]
+                    override_ts.pop(key, None)
+                    changed = True
+                    print(f"    [覆盖手动修改] {l.get('name','')} 的字段「{fld}」已被政府更新，清除'已修改'标识")
+            if len(ov) == 0:
+                overrides.pop(key, None)
+                override_ts.pop(key, None)
+
+    if changed:
+        ue["lawOverrides"] = overrides
+        ue["overrideTs"] = override_ts
+        try:
+            with open(USER_EDITS_PATH, "w", encoding="utf-8") as f:
+                json.dump(ue, f, ensure_ascii=False, indent=2)
+            print("  [reconcile] 已更新 user-edits.json，清除被政府覆盖的'已修改'字段")
+        except Exception as e:
+            print(f"  [reconcile] 写回 user-edits.json 失败：{e}")
+    else:
+        print("  [reconcile] 无需要清除的用户手动修改字段")
 
 
 def main():
@@ -226,6 +313,11 @@ def main():
     data["lastUpdated"] = today
     with open(LAWS_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+    # 需求 7：政府更新了法规字段时，覆盖用户的手动修改并清除"已修改"标识
+    prev_data = get_prev_laws_from_git()
+    reconcile_user_overrides(prev_data, data)
+
     if total_changes > 0:
         print(f"\n共更新 {total_changes} 条，lastUpdated -> {today}")
     else:

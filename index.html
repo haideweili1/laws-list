@@ -300,7 +300,69 @@ tbody tr:hover { background: #f8fafe; }
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  position: relative;
 }
+.modal-wide {
+  max-width: 820px;
+}
+.modal h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #1a1a2e;
+}
+.modal .form-group {
+  margin-bottom: 16px;
+}
+.modal label {
+  display: block;
+  font-size: 13px;
+  color: #4a5568;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.modal label .required { color: #e24b4a; }
+.modal input, .modal select, .modal textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d3d8e0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: #378add; }
+.modal input:disabled, .modal select:disabled {
+  background: #f5f7fa;
+  color: #8892a6;
+  cursor: not-allowed;
+}
+.modal .form-row {
+  display: flex;
+  gap: 16px;
+}
+.modal .form-row .form-group { flex: 1; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: #8892a6;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: #f0f2f5; color: #333; }
 .modal-wide {
   max-width: 820px;
 }
@@ -477,11 +539,12 @@ tbody tr:hover { background: #f8fafe; }
     </div>
   </div>
   <div class="header-right">
-    <button class="btn btn-edit" onclick="openManageModal()">&#x270F;&#xFE0F; 编辑法规</button>
+    <button class="btn btn-edit" onclick="openAddModal()">&#x2795; 新增法规</button>
+    <button class="btn btn-outline" onclick="openChangeLogModal()">&#x1F4CB; 变更记录</button>
     <button class="btn btn-excel" onclick="exportExcel()">导出 Excel</button>
     <button class="btn btn-pdf" id="btnPdf" onclick="exportPDF()">导出 PDF</button>
     <button class="btn btn-img" onclick="exportImage()">导出图片</button>
-    <button class="btn btn-sync" onclick="openSyncModal()">&#x2601; 同步</button>
+    <button class="btn btn-sync" id="syncBtn" onclick="syncNow()">&#x2601; 同步</button>
   </div>
 </div>
 
@@ -517,33 +580,12 @@ tbody tr:hover { background: #f8fafe; }
 <!-- ===== Footer ===== -->
 <div class="footer" id="footer"></div>
 
-<!-- ===== Management Modal ===== -->
+<!-- ===== Management Modal（新增 / 编辑法规） ===== -->
 <div class="modal-overlay" id="manageModal">
   <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeManageModal()" title="关闭">&#x2715;</button>
 
-    <!-- List View -->
-    <div id="manageListView">
-      <h2>法规管理</h2>
-      <div class="manage-toolbar">
-        <button class="btn btn-edit btn-sm" onclick="showFormView(null)">&#x2795; 新增法规</button>
-        <input type="text" id="manageSearch" placeholder="搜索法规名称..." oninput="renderManageList()">
-        <select class="filter-select" id="manageCategoryFilter" onchange="renderManageList()">
-          <option value="">全部分类</option>
-        </select>
-        <label class="checkbox-label">
-          <input type="checkbox" id="showDeleted" onchange="renderManageList()"> 显示已删除
-        </label>
-      </div>
-      <div class="manage-list-wrap" id="manageListWrap"></div>
-      <div class="manage-stats" id="manageStats"></div>
-      <div class="modal-actions">
-        <button class="btn btn-outline btn-sm" id="exportManualBtn" onclick="exportManualLaws()" style="display:none;">导出手动法规</button>
-        <button class="btn btn-outline" onclick="closeManageModal()">关闭</button>
-      </div>
-    </div>
-
-    <!-- Form View -->
-    <div id="manageFormView" style="display:none;">
+    <div id="manageFormView">
       <h2 id="formTitle">新增法规</h2>
       <div class="form-group">
         <label>法规名称 <span class="required">*</span></label>
@@ -569,7 +611,7 @@ tbody tr:hover { background: #f8fafe; }
       </div>
       <div class="form-group">
         <label>来源网站</label>
-        <select id="formSource">
+        <select id="formSource" onchange="onSourceChange()">
           <option value="中国人大网">中国人大网 (npc.gov.cn)</option>
           <option value="中国政府网">中国政府网 (gov.cn)</option>
           <option value="国家网信办">国家网信办 (cac.gov.cn)</option>
@@ -579,6 +621,10 @@ tbody tr:hover { background: #f8fafe; }
           <option value="国家市场监督管理总局">国家市场监督管理总局 (samr.gov.cn)</option>
           <option value="其他">其他</option>
         </select>
+      </div>
+      <div class="form-group" id="otherSourceGroup" style="display:none;">
+        <label>其他来源网站名称 <span style="color:#8892a6;font-weight:400;">（选填，上面选“其他”时填写）</span></label>
+        <input type="text" id="formOtherSource" placeholder="如：XX省生态环境厅官网">
       </div>
       <div class="form-group">
         <label>来源链接 <span class="required">*</span></label>
@@ -614,7 +660,7 @@ tbody tr:hover { background: #f8fafe; }
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-outline" onclick="showListView()">返回列表</button>
+        <button class="btn btn-outline" onclick="closeManageModal()">取消</button>
         <button class="btn btn-edit" onclick="saveLaw()">保存</button>
       </div>
     </div>
@@ -625,23 +671,26 @@ tbody tr:hover { background: #f8fafe; }
 <!-- ===== Progress Dialog ===== -->
 <div class="dialog-overlay" id="progressDialog">
   <div class="dialog-box">
+    <button class="modal-close" onclick="closeProgress()" title="关闭">&#x2715;</button>
     <h2 id="progressTitle"><span class="spinner"></span>正在处理...</h2>
     <div id="progressBody" class="info-text">请稍候...</div>
   </div>
 </div>
 
-<!-- ===== Cloud Sync Modal ===== -->
-<div class="modal-overlay" id="syncModal">
-  <div class="modal">
-    <h2>&#x2601; 团队同步（多人共同编辑）</h2>
-    <p class="sync-note">
-      这是一个<strong>多人共同使用的工作空间</strong>：所有人打开网页都会<strong>自动看到彼此的修改</strong>，也能直接修改并同步——<strong>无需任何账号、无需令牌</strong>。
+<!-- ===== Change Log Modal（变更记录 / 恢复已删法规） ===== -->
+<div class="modal-overlay" id="changeLogModal">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeChangeLogModal()" title="关闭">&#x2715;</button>
+    <h2>&#x1F4CB; 变更记录</h2>
+    <p class="sync-hint" style="margin:0 0 12px;">
+      本页记录<strong>所有人（含同事）</strong>对清单的<span style="color:#5e35b1;">新增 / 修改 / 删除 / 恢复</span>操作，自动同步，按时间倒序。
     </p>
-    <div class="manage-stats" style="margin:10px 0 0;"><span id="syncDetail"></span></div>
+    <div class="manage-stats" style="margin:0 0 12px;gap:10px;">
+      <button class="btn-sm btn-outline" onclick="resetAllChanges()">恢复全部原始数据</button>
+    </div>
+    <div class="manage-list-wrap" id="changeLogWrap" style="max-height:420px;"></div>
     <div class="modal-actions">
-      <button class="btn btn-edit" onclick="syncToCloud()">同步到云端</button>
-      <button class="btn btn-outline btn-sm" onclick="pullFromCloud()">从云端刷新</button>
-      <button class="btn btn-outline" onclick="closeSyncModal()">关闭</button>
+      <button class="btn btn-outline" onclick="closeChangeLogModal()">关闭</button>
     </div>
   </div>
 </div>
@@ -658,7 +707,23 @@ let overrideTs = {};     // { "categoryId::lawId": ts }
 let deletionMap = {};    // { "categoryId::lawId": { ts, del } } del:true=已删除 false=已恢复
 let formContext = null;  // { mode, type, key, categoryId, originalLaw }
 let tableLawsCache = [];
-let manageListCache = [];
+let changeLog = [];       // [{ id, ts, action, lawName, categoryId, categoryName, device }]
+let clientUpdatedAt = null; // 最近一次手动编辑时间（ISO），用于"数据更新时间"
+
+// ===== localStorage Management =====
+const STORAGE_KEY = 'manualLaws_v2';
+const OVERRIDES_KEY = 'lawOverrides_v2';
+const DELETIONS_KEY = 'deletedLaws_v2';      // 旧键（仅数组），用于首次迁移
+const MANUAL_TS_KEY = 'manualTs_v1';
+const OVERRIDE_TS_KEY = 'overrideTs_v1';
+const DELETION_MAP_KEY = 'deletionMap_v1';
+const CHANGELOG_KEY = 'changeLog_v1';
+const CLIENT_UPDATED_KEY = 'clientUpdatedAt_v1';
+const DEVICE_TAG = (localStorage.getItem('deviceTag_v1') || (function(){
+  const t = '设备' + (Math.floor(Math.random()*9000)+1000);
+  localStorage.setItem('deviceTag_v1', t);
+  return t;
+})());
 
 // ===== Key Utilities =====
 function makeKey(categoryId, lawId) {
@@ -670,13 +735,6 @@ function parseKey(key) {
 }
 
 // ===== localStorage Management =====
-const STORAGE_KEY = 'manualLaws_v2';
-const OVERRIDES_KEY = 'lawOverrides_v2';
-const DELETIONS_KEY = 'deletedLaws_v2';      // 旧键（仅数组），用于首次迁移
-const MANUAL_TS_KEY = 'manualTs_v1';
-const OVERRIDE_TS_KEY = 'overrideTs_v1';
-const DELETION_MAP_KEY = 'deletionMap_v1';
-
 function loadFromStorage() {
   try { manualLaws = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { manualLaws = []; }
   try { lawOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY)) || {}; } catch(e) { lawOverrides = {}; }
@@ -693,6 +751,8 @@ function loadFromStorage() {
     } catch(e) { deletionMap = {}; }
   }
   recomputeDeleted();
+  try { changeLog = JSON.parse(localStorage.getItem(CHANGELOG_KEY)) || []; } catch(e) { changeLog = []; }
+  try { clientUpdatedAt = localStorage.getItem(CLIENT_UPDATED_KEY) || null; } catch(e) { clientUpdatedAt = null; }
 }
 function recomputeDeleted() {
   deletedLawKeys = Object.keys(deletionMap).filter(k => deletionMap[k] && deletionMap[k].del);
@@ -700,6 +760,17 @@ function recomputeDeleted() {
 function saveManualLaws() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(manualLaws));
   localStorage.setItem(MANUAL_TS_KEY, JSON.stringify(manualTs));
+}
+function saveChangeLog() {
+  localStorage.setItem(CHANGELOG_KEY, JSON.stringify(changeLog));
+}
+function saveClientUpdatedAt() {
+  if (clientUpdatedAt) localStorage.setItem(CLIENT_UPDATED_KEY, clientUpdatedAt);
+}
+function touchUpdated() {
+  clientUpdatedAt = new Date().toISOString();
+  saveClientUpdatedAt();
+  updateDisplayUpdatedAt();
 }
 function saveOverrides() {
   localStorage.setItem(OVERRIDES_KEY, JSON.stringify(lawOverrides));
@@ -740,12 +811,14 @@ function collectEdits() {
     manualTs: manualTs,
     lawOverrides: lawOverrides,
     overrideTs: overrideTs,
-    deletions: deletionMap
+    deletions: deletionMap,
+    changeLog: changeLog,
+    clientUpdatedAt: clientUpdatedAt || ''
   };
 }
 // 合并两份 edits：按 id / key 取较新者；平局时按 preferBase 决定胜负
 function mergeEdits(base, incoming, preferBase) {
-  const out = { version: 2, manualLaws: [], manualTs: {}, lawOverrides: {}, overrideTs: {}, deletions: {} };
+  const out = { version: 2, manualLaws: [], manualTs: {}, lawOverrides: {}, overrideTs: {}, deletions: {}, changeLog: [], clientUpdatedAt: '' };
   // 手动法规：按 id
   const bM = {}, iM = {};
   (base.manualLaws || []).forEach(m => { bM[m.id] = m; });
@@ -790,6 +863,19 @@ function mergeEdits(base, incoming, preferBase) {
     else pick = i;
     if (pick) out.deletions[key] = pick;
   });
+  // 变更记录：合并双方，按 id 去重，按时间倒序，最多保留 300 条
+  const seenLog = {};
+  const combinedLog = [].concat(base.changeLog || [], incoming.changeLog || []);
+  const mergedLog = [];
+  combinedLog.forEach(e => {
+    if (e && e.id && !seenLog[e.id]) { seenLog[e.id] = true; mergedLog.push(e); }
+  });
+  mergedLog.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  out.changeLog = mergedLog.slice(0, 300);
+  // 更新时间：取较新者
+  const bt = base.clientUpdatedAt ? new Date(base.clientUpdatedAt).getTime() : 0;
+  const it = incoming.clientUpdatedAt ? new Date(incoming.clientUpdatedAt).getTime() : 0;
+  out.clientUpdatedAt = (bt >= it ? base.clientUpdatedAt : incoming.clientUpdatedAt) || '';
   return out;
 }
 function applyMerged(merged) {
@@ -798,10 +884,11 @@ function applyMerged(merged) {
   lawOverrides = merged.lawOverrides || {};
   overrideTs = merged.overrideTs || {};
   deletionMap = merged.deletions || {};
+  changeLog = merged.changeLog || [];
+  clientUpdatedAt = merged.clientUpdatedAt || clientUpdatedAt;
   recomputeDeleted();
-  saveManualLaws(); saveOverrides(); saveDeletions();
-  renderTabs(); renderTable(); updateManualCountInfo();
-  if (typeof renderManageList === 'function') renderManageList();
+  saveManualLaws(); saveOverrides(); saveDeletions(); saveChangeLog(); saveClientUpdatedAt();
+  renderTabs(); renderTable(); updateManualCountInfo(); updateDisplayUpdatedAt();
 }
 async function loadCloudEdits() {
   try {
@@ -815,19 +902,10 @@ async function loadCloudEdits() {
     console.log('已从云端载入/合并共享编辑');
   } catch(e) { console.warn('云端编辑载入失败（可忽略）', e); }
 }
-function utf8ToBase64(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  bytes.forEach(b => { bin += String.fromCharCode(b); });
-  return btoa(bin);
-}
-function b64decodeUtf8(b64) {
-  const bin = atob(b64.replace(/\s/g, ''));
-  return decodeURIComponent(escape(bin));
-}
 async function pushCloudEdits() {
-  if (!SYNC_PROXY) { updateSyncStatus('未配置同步代理地址（请联系管理员设置）'); return; }
+  if (!SYNC_PROXY) { updateSyncStatus('未配置同步代理地址（请联系管理员设置）'); setSyncIcon('error'); return; }
   const apiUrl = SYNC_PROXY;
+  setSyncIcon('loading');
   try {
     let cloudSha = null, cloudData = null;
     const getRes = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
@@ -854,9 +932,11 @@ async function pushCloudEdits() {
     }
     applyMerged(merged); // 推送成功后同步本地视图（含同事的修改）
     updateSyncStatus('已同步到云端 ' + new Date().toLocaleTimeString());
+    setSyncIcon('ok');
   } catch(e) {
     console.error(e);
     updateSyncStatus('同步失败：' + e.message);
+    setSyncIcon('error');
   }
 }
 function updateSyncStatus(text) {
@@ -865,12 +945,15 @@ function updateSyncStatus(text) {
   const d = document.getElementById('syncDetail');
   if (d) d.textContent = text || '';
 }
-function openSyncModal() {
-  updateSyncStatus(SYNC_PROXY ? '已启用团队同步（免登录、免令牌）' : '未配置同步代理地址（请联系管理员设置）');
-  document.getElementById('syncModal').classList.add('show');
+function setSyncIcon(state) {
+  const btn = document.getElementById('syncBtn');
+  if (!btn) return;
+  if (state === 'loading') btn.innerHTML = '&#x23F3; 同步中';
+  else if (state === 'ok') btn.innerHTML = '&#x2714; 已同步';
+  else if (state === 'error') btn.innerHTML = '&#x2717; 同步失败';
+  else btn.innerHTML = '&#x2601; 同步';
 }
-function closeSyncModal() { document.getElementById('syncModal').classList.remove('show'); }
-function syncToCloud() { pushCloudEdits(); }
+function syncNow() { pushCloudEdits(); }
 async function pullFromCloud() {
   await loadCloudEdits();
   updateSyncStatus('已从云端刷新 ' + new Date().toLocaleTimeString());
@@ -881,10 +964,10 @@ function initSync() {
   // 多人协作：定时从云端拉取同事的修改
   if (_autoSyncTimer) clearInterval(_autoSyncTimer);
   _autoSyncTimer = setInterval(() => {
-    if (document.visibilityState === 'visible' && !document.getElementById('syncModal').classList.contains('show')) pullFromCloud();
+    if (document.visibilityState === 'visible') pullFromCloud();
   }, 45000);
   window.addEventListener('focus', () => {
-    if (!document.getElementById('syncModal').classList.contains('show')) pullFromCloud();
+    pullFromCloud();
   });
 }
 
@@ -893,8 +976,8 @@ async function loadData() {
   try {
     const res = await fetch('laws.json');
     lawsData = await res.json();
-    document.getElementById('lastUpdated').textContent = lawsData.lastUpdated || '--';
     loadFromStorage();
+    updateDisplayUpdatedAt();
     renderTabs();
     renderTable();
     updateManualCountInfo();
@@ -903,6 +986,21 @@ async function loadData() {
     document.getElementById('tableContainer').innerHTML = '<div class="no-data">数据加载失败，请刷新重试</div>';
     console.error(e);
   }
+}
+
+// 取"数据更新时间"：服务器 laws.json 的 lastUpdated 与本地手动编辑时间 clientUpdatedAt 的较新者
+function getEffectiveUpdatedAt() {
+  const server = (lawsData && lawsData.lastUpdated) || '';
+  let best = server, bestT = server ? new Date(server).getTime() : 0;
+  if (clientUpdatedAt) {
+    const t = new Date(clientUpdatedAt).getTime();
+    if (t > bestT) { best = clientUpdatedAt; bestT = t; }
+  }
+  return best || '--';
+}
+function updateDisplayUpdatedAt() {
+  const el = document.getElementById('lastUpdated');
+  if (el) el.textContent = getEffectiveUpdatedAt();
 }
 
 // ===== Merged Data (apply overrides + deletions + manual laws) =====
@@ -918,6 +1016,7 @@ function getMergedData() {
     cat.laws = cat.laws.filter(law => !deletedLawKeys.includes(law._key));
   });
   manualLaws.forEach(ml => {
+    if (deletedLawKeys.includes(ml.id)) return; // 已软删除的手动法规不显示
     const cat = merged.categories.find(c => c.id === ml.category);
     if (cat) {
       cat.laws.push({ ...ml, _key: ml.id, _type: 'manual', _modified: false });
@@ -1042,8 +1141,6 @@ function updateManualCountInfo() {
   if (deletedLawKeys.length > 0) parts.push('已删除 ' + deletedLawKeys.length + ' 条');
   info.textContent = parts.join(' | ');
   info.style.color = parts.length > 0 ? '#5e35b1' : '';
-  // Show/hide export manual button
-  document.getElementById('exportManualBtn').style.display = manualLaws.length > 0 ? '' : 'none';
 }
 
 // ===== Utility =====
@@ -1069,31 +1166,74 @@ function closeProgress() {
   document.getElementById('progressDialog').classList.remove('show');
 }
 
-// ===== Management Modal =====
-function openManageModal() {
-  // Populate category filter
-  const filter = document.getElementById('manageCategoryFilter');
-  filter.innerHTML = '<option value="">全部分类</option>';
-  lawsData.categories.forEach(cat => {
-    filter.innerHTML += '<option value="' + cat.id + '">' + escapeHtml(cat.name) + '</option>';
-  });
-  filter.value = currentCategory !== 'all' ? currentCategory : '';
-  showListView();
-  renderManageList();
+// ===== Management Modal（新增 / 编辑法规） =====
+function openAddModal() {
+  showFormView(null);
+  document.getElementById('manageModal').classList.add('show');
+}
+function openEditModal(law) {
+  showFormView(law);
   document.getElementById('manageModal').classList.add('show');
 }
 function closeManageModal() {
   document.getElementById('manageModal').classList.remove('show');
 }
-
-function showListView() {
-  document.getElementById('manageListView').style.display = 'block';
-  document.getElementById('manageFormView').style.display = 'none';
+function onSourceChange() {
+  const v = document.getElementById('formSource').value;
+  document.getElementById('otherSourceGroup').style.display = (v === '其他') ? 'block' : 'none';
 }
-function showFormView(law) {
-  document.getElementById('manageListView').style.display = 'none';
-  document.getElementById('manageFormView').style.display = 'block';
+function addChangeLog(action, lawName, categoryId, key) {
+  const cat = lawsData ? lawsData.categories.find(c => c.id === categoryId) : null;
+  const entry = {
+    id: Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    ts: Date.now(),
+    action: action,
+    lawName: lawName,
+    categoryId: categoryId,
+    categoryName: cat ? cat.name : '',
+    device: DEVICE_TAG
+  };
+  changeLog.unshift(entry);
+  if (changeLog.length > 300) changeLog = changeLog.slice(0, 300);
+  saveChangeLog();
+}
+function openChangeLogModal() {
+  renderChangeLog();
+  document.getElementById('changeLogModal').classList.add('show');
+}
+function closeChangeLogModal() {
+  document.getElementById('changeLogModal').classList.remove('show');
+}
+function renderChangeLog() {
+  const wrap = document.getElementById('changeLogWrap');
+  if (!wrap) return;
+  if (!changeLog || changeLog.length === 0) {
+    wrap.innerHTML = '<div style="padding:20px;color:#8892a6;text-align:center;">暂无变更记录</div>';
+    return;
+  }
+  const actionMap = { add:'新增', edit:'修改', delete:'删除', restore:'恢复' };
+  let html = '<table class="manage-table"><thead><tr><th>时间</th><th>法规</th><th>分类</th><th>操作</th><th style="width:80px;">操作</th></tr></thead><tbody>';
+  changeLog.forEach((e, i) => {
+    const ac = actionMap[e.action] || e.action;
+    const t = new Date(e.ts).toLocaleString('zh-CN');
+    const restoreBtn = (e.action === 'delete') ? '<button class="btn-restore" onclick="restoreFromChangeLog(' + i + ')">恢复</button>' : '';
+    html += '<tr><td>' + escapeHtml(t) + '</td><td>' + escapeHtml(e.lawName || '') + '</td><td>' + escapeHtml(e.categoryName || '') + '</td><td>' + ac + '</td><td>' + restoreBtn + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+function restoreFromChangeLog(index) {
+  const e = changeLog[index];
+  if (!e) return;
+  markDeleted(e.key, false);
+  addChangeLog('restore', e.lawName, e.categoryId, e.key);
+  updateDisplayUpdatedAt();
+  renderChangeLog();
+  renderTabs(); renderTable(); updateManualCountInfo();
+  pushCloudEdits();
+}
 
+function showFormView(law) {
   if (law) {
     // Edit mode
     if (law._type === 'builtin') {
@@ -1110,8 +1250,15 @@ function showFormView(law) {
     document.getElementById('formName').value = law.name || '';
     document.getElementById('formCategory').value = formContext.categoryId;
     document.getElementById('formStatus').value = law.status || '在用';
-    ensureSourceOption(law.source);
-    document.getElementById('formSource').value = law.source || '中国人大网';
+    // 内置来源选项直接选中；自定义来源（历史手动填的）走"其他"
+    const baseSources = ['中国人大网','中国政府网','国家网信办','工业和信息化部','国家标准化管理委员会','海关总署','国家市场监督管理总局','其他'];
+    if (baseSources.includes(law.source)) {
+      document.getElementById('formSource').value = law.source;
+      document.getElementById('formOtherSource').value = '';
+    } else {
+      document.getElementById('formSource').value = '其他';
+      document.getElementById('formOtherSource').value = law.source || '';
+    }
     document.getElementById('formSourceUrl').value = law.sourceUrl || '';
     document.getElementById('formEffectiveDate').value = law.effectiveDate || '';
     document.getElementById('formIntroducedDate').value = law.introducedDate || '';
@@ -1126,20 +1273,23 @@ function showFormView(law) {
     document.getElementById('formCategory').value = formContext.categoryId;
     document.getElementById('formStatus').value = '在用';
     document.getElementById('formSource').value = '中国人大网';
+    document.getElementById('formOtherSource').value = '';
     document.getElementById('formSourceUrl').value = '';
     document.getElementById('formEffectiveDate').value = '';
     document.getElementById('formIntroducedDate').value = new Date().toISOString().slice(0, 10);
     document.getElementById('formStorageMethod').value = '电子档';
     document.getElementById('formRetentionPeriod').value = '三年';
   }
+  onSourceChange();
   document.getElementById('formName').focus();
 }
 
 function saveLaw() {
   const name = document.getElementById('formName').value.trim();
+  let source = document.getElementById('formSource').value;
+  if (source === '其他') source = document.getElementById('formOtherSource').value.trim() || '其他';
   const category = document.getElementById('formCategory').value;
   const status = document.getElementById('formStatus').value;
-  const source = document.getElementById('formSource').value;
   const sourceUrl = document.getElementById('formSourceUrl').value.trim();
   const effectiveDate = document.getElementById('formEffectiveDate').value;
   const introducedDate = document.getElementById('formIntroducedDate').value;
@@ -1162,6 +1312,7 @@ function saveLaw() {
     });
     manualTs[newId] = Date.now();
     saveManualLaws();
+    addChangeLog('add', name, category, newId);
   } else if (formContext.mode === 'edit') {
     if (formContext.type === 'manual') {
       const idx = manualLaws.findIndex(l => l.id === formContext.key);
@@ -1170,6 +1321,7 @@ function saveLaw() {
         manualTs[formContext.key] = Date.now();
         saveManualLaws();
       }
+      addChangeLog('edit', name, formContext.categoryId, formContext.key);
     } else {
       // Built-in: store diff as override
       const original = formContext.originalLaw;
@@ -1182,163 +1334,40 @@ function saveLaw() {
         else { delete lawOverrides[formContext.key]; delete overrideTs[formContext.key]; }
         saveOverrides();
       }
+      addChangeLog('edit', name, formContext.categoryId, formContext.key);
     }
   }
 
-  showListView();
-  renderManageList();
+  closeManageModal();
   renderTabs();
   renderTable();
   updateManualCountInfo();
+  touchUpdated();
   pushCloudEdits();
 }
 
-// ===== Management List Rendering =====
-function renderManageList() {
-  const search = document.getElementById('manageSearch').value.toLowerCase().trim();
-  const catFilter = document.getElementById('manageCategoryFilter').value;
-  const showDeleted = document.getElementById('showDeleted').checked;
-
-  const allLaws = [];
-
-  // Built-in laws (including deleted)
-  lawsData.categories.forEach(cat => {
-    if (catFilter && cat.id !== catFilter) return;
-    cat.laws.forEach(law => {
-      const key = makeKey(cat.id, law.id);
-      const isDeleted = deletedLawKeys.includes(key);
-      const isModified = !!lawOverrides[key];
-      if (isDeleted && !showDeleted) return;
-      const displayLaw = isModified ? { ...law, ...lawOverrides[key] } : { ...law };
-      allLaws.push({
-        ...displayLaw,
-        categoryName: cat.name,
-        categoryId: cat.id,
-        _key: key,
-        _type: 'builtin',
-        _modified: isModified,
-        _deleted: isDeleted
-      });
-    });
-  });
-
-  // Manual laws
-  manualLaws.forEach(law => {
-    if (catFilter && law.category !== catFilter) return;
-    const cat = lawsData.categories.find(c => c.id === law.category);
-    allLaws.push({
-      ...law,
-      categoryName: cat ? cat.name : '',
-      categoryId: law.category,
-      _key: law.id,
-      _type: 'manual',
-      _modified: false,
-      _deleted: false
-    });
-  });
-
-  // Filter by search
-  let filtered = allLaws;
-  if (search) filtered = filtered.filter(l => l.name.toLowerCase().includes(search));
-  manageListCache = filtered;
-
-  // Render table
-  let html = '<table class="manage-table"><thead><tr>';
-  html += '<th>法规名称</th><th>分类</th><th>状态</th><th style="width:130px;">操作</th>';
-  html += '</tr></thead><tbody>';
-
-  if (filtered.length === 0) {
-    html += '<tr><td colspan="4" style="text-align:center;padding:20px;color:#8892a6;">没有匹配的法规</td></tr>';
-  } else {
-    filtered.forEach((law, i) => {
-      const badges = [];
-      if (law._type === 'manual') badges.push('<span class="manual-badge">手动</span>');
-      if (law._modified) badges.push('<span class="modified-badge">已修改</span>');
-      if (law._deleted) badges.push('<span class="manual-badge" style="background:#fcebeb;color:#791f1f;">已删除</span>');
-      const sc = law.status === '在用' ? 'status-active' : 'status-inactive';
-      const rowStyle = law._deleted ? ' style="opacity:0.5;"' : '';
-
-      html += '<tr' + rowStyle + '>';
-      html += '<td>' + escapeHtml(law.name) + badges.join('') + '</td>';
-      html += '<td>' + escapeHtml(law.categoryName) + '</td>';
-      html += '<td><span class="status-badge ' + sc + '">' + escapeHtml(law.status || '') + '</span></td>';
-      html += '<td style="white-space:nowrap;">';
-      if (law._deleted) {
-        html += '<button class="btn-restore" onclick="manageRestore(' + i + ')">恢复</button>';
-      } else {
-        html += '<button class="btn-sm btn-outline" onclick="manageEdit(' + i + ')">编辑</button> ';
-        html += '<button class="btn-danger" onclick="manageDelete(' + i + ')">删除</button>';
-      }
-      html += '</td>';
-      html += '</tr>';
-    });
-  }
-  html += '</tbody></table>';
-  document.getElementById('manageListWrap').innerHTML = html;
-
-  // Stats
-  const oc = Object.keys(lawOverrides).length;
-  const dc = deletedLawKeys.length;
-  let stats = '共 ' + filtered.length + ' 条';
-  if (manualLaws.length > 0) stats += ' | 手动 ' + manualLaws.length + ' 条';
-  if (oc > 0) stats += ' | 已修改 ' + oc + ' 条';
-  if (dc > 0) stats += ' | 已删除 ' + dc + ' 条';
-  let statsHtml = '<span>' + stats + '</span>';
-  if (oc > 0 || dc > 0) {
-    statsHtml += '<button class="btn-sm btn-outline" onclick="resetAllChanges()">恢复全部原始数据</button>';
-  }
-  document.getElementById('manageStats').innerHTML = statsHtml;
-}
-
-function manageEdit(index) {
-  const law = manageListCache[index];
-  if (law) showFormView(law);
-}
-function manageDelete(index) {
-  const law = manageListCache[index];
-  if (!law) return;
-  if (!confirm('确定要删除「' + law.name + '」吗？')) return;
-  doDelete(law);
-  renderManageList();
-  renderTabs();
-  renderTable();
-  updateManualCountInfo();
-}
-function manageRestore(index) {
-  const law = manageListCache[index];
-  if (!law || !law._deleted) return;
-  markDeleted(law._key, false);
-  renderManageList();
-  renderTabs();
-  renderTable();
-  updateManualCountInfo();
-  pushCloudEdits();
-}
 function doDelete(law) {
-  if (law._type === 'builtin') {
-    markDeleted(law._key, true);
-  } else {
-    manualLaws = manualLaws.filter(l => l.id !== law._key);
-    delete manualTs[law._key];
-    saveManualLaws();
-  }
+  // 软删除：内置与手动均只标记删除，不移除数组，避免被云端旧副本重新"复活"
+  const categoryId = law._type === 'builtin' ? parseKey(law._key).categoryId : law.category;
+  markDeleted(law._key, true);
+  addChangeLog('delete', law.name, categoryId, law._key);
+  renderTabs(); renderTable(); updateManualCountInfo(); updateDisplayUpdatedAt();
+  touchUpdated();
   pushCloudEdits();
 }
 function resetAllChanges() {
-  if (!confirm('确定要恢复全部原始数据吗？\n所有对内置法规的修改和删除将被撤销。\n手动添加的法规不受影响。\n（同事在云端做的修改仍会保留并重新显示）')) return;
+  if (!confirm('确定要恢复全部原始数据吗？\n所有对内置法规的修改和删除将被撤销（恢复为系统原始内容）。\n手动添加的法规会保留（含你删除的手动法规）。\n（同事在云端做的修改仍会保留并重新显示）')) return;
   lawOverrides = {};
   overrideTs = {};
-  manualLaws = [];
-  manualTs = {};
-  deletionMap = {};
+  // 仅清除系统内置法规的删除标记；手动法规（manual_ 开头）的删除状态保留，避免误复活
+  const kept = {};
+  Object.keys(deletionMap).forEach(k => { if (k.indexOf('manual_') === 0) kept[k] = deletionMap[k]; });
+  deletionMap = kept;
   recomputeDeleted();
   saveOverrides();
-  saveManualLaws();
   saveDeletions();
-  renderManageList();
-  renderTabs();
-  renderTable();
-  updateManualCountInfo();
+  renderTabs(); renderTable(); updateManualCountInfo(); updateDisplayUpdatedAt();
+  if (typeof renderChangeLog === 'function') renderChangeLog();
   pushCloudEdits();
 }
 
@@ -1346,8 +1375,7 @@ function resetAllChanges() {
 function quickEdit(index) {
   const law = tableLawsCache[index];
   if (!law) return;
-  openManageModal();
-  showFormView(law);
+  openEditModal(law);
 }
 function quickDelete(index) {
   const law = tableLawsCache[index];
@@ -1357,18 +1385,6 @@ function quickDelete(index) {
   renderTabs();
   renderTable();
   updateManualCountInfo();
-}
-
-// ===== Export Manual Laws (for automation sync) =====
-function exportManualLaws() {
-  if (manualLaws.length === 0) { alert('没有手动添加的法规可导出'); return; }
-  const data = { exportDate: new Date().toISOString(), laws: manualLaws };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const link = document.createElement('a');
-  link.download = 'custom-laws.json';
-  link.href = URL.createObjectURL(blob);
-  link.click();
-  URL.revokeObjectURL(link.href);
 }
 
 // ===== Export Excel =====
