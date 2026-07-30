@@ -229,12 +229,12 @@
           "id": "21",
           "name": "中华人民共和国安全生产法",
           "source": "全国人民代表大会",
-          "effectiveDate": "2024-01-01",
+          "effectiveDate": "2024-03-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/7c1f8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202403/75f8b4b6b8c84e7a9b6b8c8b8b8b8b8b.shtml"
         },
         {
           "id": "22",
@@ -317,12 +317,12 @@
           "id": "29",
           "name": "中华人民共和国特种设备安全法",
           "source": "全国人民代表大会",
-          "effectiveDate": "2024-01-01",
+          "effectiveDate": "2024-05-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/7c1f8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202405/75f8b4b6b8c84e7a9b6b8c8b8b8b8b8b.shtml"
         },
         {
           "id": "30",
@@ -510,7 +510,7 @@
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/8b9b8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/8b5e8e8b4b3a4e7b8f3a7c9d0b3a4e7b.shtml"
         },
         {
           "id": "2",
@@ -584,6 +584,17 @@
           "source": "商务部",
           "sourceUrl": "https://www.mofcom.gov.cn/article/b/g/202311/20231103456789.shtml",
           "effectiveDate": "2023-12-01",
+          "introducedDate": "2026-07-30",
+          "status": "在用",
+          "storageMethod": "电子档",
+          "retentionPeriod": "三年"
+        },
+        {
+          "id": "9",
+          "name": "海关AEO认证与信用管理办法（修订）",
+          "source": "海关总署",
+          "sourceUrl": "https://www.customs.gov.cn/customs/xwfb34/302312/302312_4985118/index.html",
+          "effectiveDate": "2023-11-01",
           "introducedDate": "2026-07-30",
           "status": "在用",
           "storageMethod": "电子档",
