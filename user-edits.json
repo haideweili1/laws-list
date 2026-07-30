@@ -10,11 +10,16 @@
     "trisystem::4": {
       "source": "国家市场监督管理总局",
       "sourceUrl": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/bgt/art/2023/art_c7eb1ede24c3424795bbcf3c7e6bb60a.html"
+    },
+    "infosec::63": {
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/zcfg/qtl/art/2023/art_f4e8f71ae1dc43b0980b962907b7738f.html"
     }
   },
   "overrideTs": {
     "trisystem::3": 0,
-    "trisystem::4": 1785342715218
+    "trisystem::4": 1785342715218,
+    "infosec::63": 1785402807221
   },
   "deletions": {
     "infosec::62": {
