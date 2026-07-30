@@ -55,6 +55,22 @@
     "infosec::65": {
       "ts": 1785402883468,
       "del": true
+    },
+    "manual_1785414077329": {
+      "ts": 1785418377763,
+      "del": true
     }
-  }
+  },
+  "changeLog": [
+    {
+      "id": "1785418377763_dk1x77",
+      "ts": 1785418377763,
+      "action": "delete",
+      "lawName": "1111",
+      "categoryId": "trisystem",
+      "categoryName": "三体系 (ISO 9001/14001/45001)",
+      "device": "设备8097"
+    }
+  ],
+  "clientUpdatedAt": "2026-07-30T13:32:57.766Z"
 }
