@@ -612,6 +612,7 @@ tbody tr:hover { background: #f8fafe; }
       <div class="form-group">
         <label>来源网站</label>
         <select id="formSource" onchange="onSourceChange()">
+          <option value="">请选择来源网站</option>
           <option value="中国人大网">中国人大网 (npc.gov.cn)</option>
           <option value="中国政府网">中国政府网 (gov.cn)</option>
           <option value="国家网信办">国家网信办 (cac.gov.cn)</option>
@@ -988,6 +989,18 @@ async function loadData() {
   }
 }
 
+// 把 ISO 时间(2026-07-30T21:47:18.123Z) 显示成好认的 2026-07-30 21:47:18；纯日期(2026-07-30)原样
+function formatUpdatedAt(s) {
+  if (!s || s === '--') return '--';
+  if (s.indexOf('T') >= 0) {
+    const d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      const p = n => String(n).padStart(2, '0');
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+  }
+  return s;
+}
 // 取"数据更新时间"：服务器 laws.json 的 lastUpdated 与本地手动编辑时间 clientUpdatedAt 的较新者
 function getEffectiveUpdatedAt() {
   const server = (lawsData && lawsData.lastUpdated) || '';
@@ -1000,7 +1013,7 @@ function getEffectiveUpdatedAt() {
 }
 function updateDisplayUpdatedAt() {
   const el = document.getElementById('lastUpdated');
-  if (el) el.textContent = getEffectiveUpdatedAt();
+  if (el) el.textContent = formatUpdatedAt(getEffectiveUpdatedAt());
 }
 
 // ===== Merged Data (apply overrides + deletions + manual laws) =====
@@ -1105,9 +1118,9 @@ function renderTable() {
       if (showCat) html += '<td>' + escapeHtml(law.categoryName) + '</td>';
       html += '<td><div class="law-name-cell">' + escapeHtml(law.name) + badges.join('') + '</div></td>';
       if (law.sourceUrl) {
-        html += '<td><a class="source-link" href="' + escapeHtml(law.sourceUrl) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(law.sourceUrl) + '">' + escapeHtml(law.source || '') + '</a></td>';
+        html += '<td><a class="source-link" href="' + escapeHtml(law.sourceUrl) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(law.sourceUrl) + '">' + escapeHtml(law.source || '—') + '</a></td>';
       } else {
-        html += '<td>' + escapeHtml(law.source || '') + '</td>';
+        html += '<td>' + escapeHtml(law.source || '—') + '</td>';
       }
       html += '<td>' + escapeHtml(law.effectiveDate || '') + '</td>';
       html += '<td>' + escapeHtml(law.introducedDate || '') + '</td>';
@@ -1191,7 +1204,8 @@ function addChangeLog(action, lawName, categoryId, key) {
     lawName: lawName,
     categoryId: categoryId,
     categoryName: cat ? cat.name : '',
-    device: DEVICE_TAG
+    device: DEVICE_TAG,
+    key: key || null   // 必须保存 key，否则恢复时找不到对应法规（已修复）
   };
   changeLog.unshift(entry);
   if (changeLog.length > 300) changeLog = changeLog.slice(0, 300);
@@ -1222,14 +1236,30 @@ function renderChangeLog() {
   html += '</tbody></table>';
   wrap.innerHTML = html;
 }
+function resolveRestoreKey(e) {
+  if (e && e.key) return e.key;
+  // 兼容旧版（无 key 字段）的变更记录：按 分类 + 法规名 反查
+  if (!e) return null;
+  const cat = lawsData && lawsData.categories.find(c => c.id === e.categoryId);
+  if (cat) {
+    const law = cat.laws.find(l => l.name === e.lawName);
+    if (law) return makeKey(cat.id, law.id);
+  }
+  const ml = manualLaws.find(l => l.name === e.lawName && l.category === e.categoryId);
+  if (ml) return ml.id;
+  return null;
+}
 function restoreFromChangeLog(index) {
   const e = changeLog[index];
   if (!e) return;
-  markDeleted(e.key, false);
-  addChangeLog('restore', e.lawName, e.categoryId, e.key);
+  const key = resolveRestoreKey(e);
+  if (!key) { alert('找不到对应的法规，无法恢复（可能是很早就删除且记录已清理）'); return; }
+  markDeleted(key, false);
+  addChangeLog('restore', e.lawName, e.categoryId, key);
   updateDisplayUpdatedAt();
   renderChangeLog();
   renderTabs(); renderTable(); updateManualCountInfo();
+  touchUpdated();
   pushCloudEdits();
 }
 
@@ -1250,9 +1280,12 @@ function showFormView(law) {
     document.getElementById('formName').value = law.name || '';
     document.getElementById('formCategory').value = formContext.categoryId;
     document.getElementById('formStatus').value = law.status || '在用';
-    // 内置来源选项直接选中；自定义来源（历史手动填的）走"其他"
+    // 内置来源选项直接选中；自定义来源（历史手动填的）走"其他"；空来源显示"请选择"
     const baseSources = ['中国人大网','中国政府网','国家网信办','工业和信息化部','国家标准化管理委员会','海关总署','国家市场监督管理总局','其他'];
-    if (baseSources.includes(law.source)) {
+    if (!law.source) {
+      document.getElementById('formSource').value = '';
+      document.getElementById('formOtherSource').value = '';
+    } else if (baseSources.includes(law.source)) {
       document.getElementById('formSource').value = law.source;
       document.getElementById('formOtherSource').value = '';
     } else {
@@ -1272,7 +1305,7 @@ function showFormView(law) {
     document.getElementById('formName').value = '';
     document.getElementById('formCategory').value = formContext.categoryId;
     document.getElementById('formStatus').value = '在用';
-    document.getElementById('formSource').value = '中国人大网';
+    document.getElementById('formSource').value = '';
     document.getElementById('formOtherSource').value = '';
     document.getElementById('formSourceUrl').value = '';
     document.getElementById('formEffectiveDate').value = '';
@@ -1297,6 +1330,7 @@ function saveLaw() {
   const retentionPeriod = document.getElementById('formRetentionPeriod').value;
 
   if (!name) { alert('请输入法规名称'); return; }
+  if (!source) { alert('请选择来源网站'); return; }
   if (!sourceUrl) { alert('请输入来源链接'); return; }
 
   const formData = { name, source, sourceUrl, effectiveDate, introducedDate, status, storageMethod, retentionPeriod };
