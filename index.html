@@ -684,7 +684,7 @@ tbody tr:hover { background: #f8fafe; }
     <button class="modal-close" onclick="closeChangeLogModal()" title="关闭">&#x2715;</button>
     <h2>&#x1F4CB; 变更记录</h2>
     <p class="sync-hint" style="margin:0 0 12px;">
-      本页记录<strong>所有人（含同事）</strong>对清单的<span style="color:#5e35b1;">新增 / 修改 / 删除 / 恢复</span>操作，自动同步，按时间倒序。
+      本页记录对清单的<span style="color:#5e35b1;">新增 / 修改 / 删除 / 恢复</span>操作，自动同步，按时间倒序。
     </p>
     <div class="manage-stats" style="margin:0 0 12px;gap:10px;">
       <button class="btn-sm btn-outline" onclick="resetAllChanges()">恢复全部原始数据</button>
@@ -708,7 +708,7 @@ let overrideTs = {};     // { "categoryId::lawId": ts }
 let deletionMap = {};    // { "categoryId::lawId": { ts, del } } del:true=已删除 false=已恢复
 let formContext = null;  // { mode, type, key, categoryId, originalLaw }
 let tableLawsCache = [];
-let changeLog = [];       // [{ id, ts, action, lawName, categoryId, categoryName, device }]
+let changeLog = [];       // [{ id, ts, action, lawName, categoryId, categoryName, device, key, detail }]
 let clientUpdatedAt = null; // 最近一次手动编辑时间（ISO），用于"数据更新时间"
 
 // ===== localStorage Management =====
@@ -1195,7 +1195,7 @@ function onSourceChange() {
   const v = document.getElementById('formSource').value;
   document.getElementById('otherSourceGroup').style.display = (v === '其他') ? 'block' : 'none';
 }
-function addChangeLog(action, lawName, categoryId, key) {
+function addChangeLog(action, lawName, categoryId, key, detail) {
   const cat = lawsData ? lawsData.categories.find(c => c.id === categoryId) : null;
   const entry = {
     id: Date.now() + '_' + Math.random().toString(36).slice(2, 8),
@@ -1205,11 +1205,36 @@ function addChangeLog(action, lawName, categoryId, key) {
     categoryId: categoryId,
     categoryName: cat ? cat.name : '',
     device: DEVICE_TAG,
-    key: key || null   // 必须保存 key，否则恢复时找不到对应法规（已修复）
+    key: key || null,   // 必须保存 key，否则恢复时找不到对应法规（已修复）
+    detail: detail || ''  // 具体修改了什么（如「使用状态：在用 → 废止」）
   };
   changeLog.unshift(entry);
   if (changeLog.length > 300) changeLog = changeLog.slice(0, 300);
   saveChangeLog();
+}
+// 字段中文名
+const FIELD_LABELS = {
+  name: '法规名称', source: '来源网站', sourceUrl: '来源链接',
+  effectiveDate: '实施时间', introducedDate: '引入时间',
+  status: '使用状态', storageMethod: '保管方式', retentionPeriod: '保管期限'
+};
+function fieldLabel(f) { return FIELD_LABELS[f] || f; }
+// 由「被修改的字段(新值) + 原始对象」生成「旧 → 新」明细
+function buildEditDetail(changed, original) {
+  const parts = [];
+  Object.keys(changed).forEach(f => {
+    const oldV = original ? (original[f] || '(空)') : '(空)';
+    const newV = changed[f] || '(空)';
+    parts.push(fieldLabel(f) + '：' + oldV + ' → ' + newV);
+  });
+  return parts.join('；');
+}
+// 由完整表单数据生成「新增」明细（只列有值的字段）
+function buildAddDetail(d) {
+  const order = ['status','source','effectiveDate','introducedDate','storageMethod','retentionPeriod','sourceUrl'];
+  const parts = [];
+  order.forEach(f => { if (d[f]) parts.push(fieldLabel(f) + '：' + d[f]); });
+  return parts.join('；');
 }
 function openChangeLogModal() {
   renderChangeLog();
@@ -1226,12 +1251,13 @@ function renderChangeLog() {
     return;
   }
   const actionMap = { add:'新增', edit:'修改', delete:'删除', restore:'恢复' };
-  let html = '<table class="manage-table"><thead><tr><th>时间</th><th>法规</th><th>分类</th><th>操作</th><th style="width:80px;">操作</th></tr></thead><tbody>';
+  let html = '<table class="manage-table"><thead><tr><th>时间</th><th>法规</th><th>分类</th><th>操作</th><th style="min-width:280px;">修改内容</th><th style="width:80px;">操作</th></tr></thead><tbody>';
   changeLog.forEach((e, i) => {
     const ac = actionMap[e.action] || e.action;
     const t = new Date(e.ts).toLocaleString('zh-CN');
+    const detail = e.detail ? '<div style="line-height:1.5;word-break:break-all;">' + escapeHtml(e.detail) + '</div>' : '<span style="color:#8892a6;">—</span>';
     const restoreBtn = (e.action === 'delete') ? '<button class="btn-restore" onclick="restoreFromChangeLog(' + i + ')">恢复</button>' : '';
-    html += '<tr><td>' + escapeHtml(t) + '</td><td>' + escapeHtml(e.lawName || '') + '</td><td>' + escapeHtml(e.categoryName || '') + '</td><td>' + ac + '</td><td>' + restoreBtn + '</td></tr>';
+    html += '<tr><td>' + escapeHtml(t) + '</td><td>' + escapeHtml(e.lawName || '') + '</td><td>' + escapeHtml(e.categoryName || '') + '</td><td>' + ac + '</td><td>' + detail + '</td><td>' + restoreBtn + '</td></tr>';
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
@@ -1255,7 +1281,7 @@ function restoreFromChangeLog(index) {
   const key = resolveRestoreKey(e);
   if (!key) { alert('找不到对应的法规，无法恢复（可能是很早就删除且记录已清理）'); return; }
   markDeleted(key, false);
-  addChangeLog('restore', e.lawName, e.categoryId, key);
+  addChangeLog('restore', e.lawName, e.categoryId, key, '恢复已删除的法规');
   updateDisplayUpdatedAt();
   renderChangeLog();
   renderTabs(); renderTable(); updateManualCountInfo();
@@ -1348,16 +1374,21 @@ function saveLaw() {
     });
     manualTs[newId] = Date.now();
     saveManualLaws();
-    addChangeLog('add', name, category, newId);
+    addChangeLog('add', name, category, newId, buildAddDetail(formData));
   } else if (formContext.mode === 'edit') {
     if (formContext.type === 'manual') {
       const idx = manualLaws.findIndex(l => l.id === formContext.key);
       if (idx >= 0) {
-        manualLaws[idx] = { ...manualLaws[idx], ...formData, category };
+        const original = manualLaws[idx];
+        const changed = {};
+        ['name','source','sourceUrl','effectiveDate','introducedDate','status','storageMethod','retentionPeriod'].forEach(f => {
+          if (formData[f] !== (original[f] || '')) changed[f] = formData[f];
+        });
+        manualLaws[idx] = { ...original, ...formData, category };
         manualTs[formContext.key] = Date.now();
         saveManualLaws();
+        if (Object.keys(changed).length > 0) addChangeLog('edit', name, formContext.categoryId, formContext.key, buildEditDetail(changed, original));
       }
-      addChangeLog('edit', name, formContext.categoryId, formContext.key);
     } else {
       // Built-in: store diff as override
       const original = formContext.originalLaw;
@@ -1369,8 +1400,8 @@ function saveLaw() {
         if (Object.keys(ov).length > 0) { lawOverrides[formContext.key] = ov; overrideTs[formContext.key] = Date.now(); }
         else { delete lawOverrides[formContext.key]; delete overrideTs[formContext.key]; }
         saveOverrides();
+        if (Object.keys(ov).length > 0) addChangeLog('edit', name, formContext.categoryId, formContext.key, buildEditDetail(ov, original));
       }
-      addChangeLog('edit', name, formContext.categoryId, formContext.key);
     }
   }
 
