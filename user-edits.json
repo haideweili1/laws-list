@@ -5,7 +5,7 @@
       "id": "manual_1785414077329",
       "category": "trisystem",
       "name": "1111",
-      "source": "中国人大网",
+      "source": "",
       "sourceUrl": "1",
       "effectiveDate": "",
       "introducedDate": "2026-07-30",
@@ -17,7 +17,7 @@
     }
   ],
   "manualTs": {
-    "manual_1785414077329": 1785414077329
+    "manual_1785414077329": 1785420404438
   },
   "lawOverrides": {
     "trisystem::3": {
@@ -67,6 +67,16 @@
   },
   "changeLog": [
     {
+      "id": "1785420404438_umymsw",
+      "ts": 1785420404438,
+      "action": "edit",
+      "lawName": "1111",
+      "categoryId": "trisystem",
+      "categoryName": "三体系 (ISO 9001/14001/45001)",
+      "device": "设备8097",
+      "key": "manual_1785414077329"
+    },
+    {
       "id": "1785420390382_2cw055",
       "ts": 1785420390382,
       "action": "restore",
@@ -95,5 +105,5 @@
       "device": "设备8097"
     }
   ],
-  "clientUpdatedAt": "2026-07-30T14:06:30.383Z"
+  "clientUpdatedAt": "2026-07-30T14:06:44.439Z"
 }
