@@ -522,6 +522,19 @@ tbody tr:hover { background: #f8fafe; }
 .btn-retrieve { background:#1aa179; }
 .btn-retrieve:hover { background:#138a66; }
 .sync-status { font-size:12px; color:#6b7785; margin-left:auto; }
+.retrieve-status { font-size:12px; color:#5a6573; margin-left:6px; }
+.update-info .btn-retrieve { margin-left:10px; vertical-align:middle; }
+.update-notes {
+  margin-top:8px; max-width:680px;
+  font-size:13px; line-height:1.6; color:#4a5568;
+  background:#f5f7fa; border:1px solid #e3e8ef; border-radius:8px;
+  padding:10px 12px; display:none;
+}
+.update-notes.show { display:block; }
+.update-notes.has-updates { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+.update-notes .un-title { font-weight:600; }
+.update-notes ul { margin:6px 0 0 18px; }
+.update-notes li { margin:2px 0; }
 .sync-note { font-size:12px; color:#5a6573; line-height:1.7; background:#f5f7fa; padding:10px 12px; border-radius:8px; margin:6px 0 12px; }
 .sync-note code { background:#e9edf3; padding:1px 5px; border-radius:4px; font-size:11px; }
 .sync-row { display:flex; gap:8px; align-items:center; margin:4px 0 8px; }
@@ -538,7 +551,10 @@ tbody tr:hover { background: #f8fafe; }
     <h1>法律法规及其他要求清单</h1>
     <div class="update-info">
       <span class="label">数据更新时间：</span><span class="value" id="lastUpdated">--</span>
+      <button class="btn btn-retrieve btn-sm" id="retrieveBtn" onclick="triggerRetrieval()">&#x1F50D; 自动检索</button>
+      <span class="retrieve-status" id="retrieveStatus"></span>
     </div>
+    <div class="update-notes" id="updateNotes"></div>
   </div>
   <div class="header-right">
     <button class="btn btn-edit" onclick="openAddModal()">&#x2795; 新增法规</button>
@@ -547,7 +563,6 @@ tbody tr:hover { background: #f8fafe; }
     <button class="btn btn-pdf" id="btnPdf" onclick="exportPDF()">导出 PDF</button>
     <button class="btn btn-img" onclick="exportImage()">导出图片</button>
     <button class="btn btn-sync" id="syncBtn" onclick="syncNow()">&#x2601; 同步</button>
-    <button class="btn btn-retrieve" id="retrieveBtn" onclick="triggerRetrieval()">&#x1F50D; 自动检索</button>
   </div>
 </div>
 
@@ -570,7 +585,6 @@ tbody tr:hover { background: #f8fafe; }
   </select>
   <span class="toolbar-info" id="manualCountInfo"></span>
   <span class="sync-status" id="syncStatus"></span>
-  <span class="sync-status" id="retrieveStatus"></span>
 </div>
 
 <!-- ===== Tabs ===== -->
@@ -960,17 +974,23 @@ function setSyncIcon(state) {
 }
 function syncNow() { pushCloudEdits(); }
 
-// ===== 手动触发自动检索（经 SCF 代理触发 GitHub Actions） =====
+// ===== 手动触发自动检索（经 SCF 代理触发 GitHub Actions，并轮询状态/部署） =====
+const RETRIEVE_RUN_KEY = 'retrieveRunId_v1';
+let _retrieveTimer = null;
+
 async function triggerRetrieval() {
+  if (_retrieveTimer) return; // 正在轮询中，忽略重复点击
   if (!SYNC_PROXY) { alert('未配置同步代理地址（请联系管理员设置）'); return; }
   setRetrieveIcon('loading');
-  updateRetrieveStatus('正在请求自动检索...');
+  updateRetrieveStatus('正在触发自动检索...');
   try {
     const res = await fetch(SYNC_PROXY + '/trigger-update', { method: 'POST' });
     const data = await res.json().catch(() => ({}));
     if (res.ok) {
-      setRetrieveIcon('ok');
-      updateRetrieveStatus('已触发，约 1-3 分钟后刷新页面查看更新');
+      const runId = data.run_id || 'latest';
+      localStorage.setItem(RETRIEVE_RUN_KEY, runId);
+      document.getElementById('retrieveBtn').disabled = true;
+      startRetrievePolling(runId);
     } else {
       setRetrieveIcon('error');
       updateRetrieveStatus('触发失败：' + (data.message || res.status));
@@ -980,10 +1000,104 @@ async function triggerRetrieval() {
     updateRetrieveStatus('触发失败：' + e.message);
   }
 }
+
+function startRetrievePolling(runId) {
+  if (_retrieveTimer) clearTimeout(_retrieveTimer);
+  const poll = async () => {
+    try {
+      const res = await fetch(SYNC_PROXY + '/check-status?run_id=' + encodeURIComponent(runId), { cache: 'no-store' });
+      const s = await res.json().catch(() => ({}));
+      const runStatus = s.runStatus, runConclusion = s.runConclusion, deployStatus = s.deployStatus;
+      if (runStatus === 'completed' && runConclusion === 'success') {
+        if (deployStatus === 'succeeded') {
+          localStorage.removeItem(RETRIEVE_RUN_KEY);
+          setRetrieveIcon('done');
+          updateRetrieveStatus('部署成功 ✓ 已是最新');
+          const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
+          _retrieveTimer = null;
+          loadUpdateSummary();
+          return;
+        } else if (deployStatus === 'failed') {
+          localStorage.removeItem(RETRIEVE_RUN_KEY);
+          setRetrieveIcon('error');
+          updateRetrieveStatus('部署失败，请稍后重试');
+          const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
+          _retrieveTimer = null;
+          return;
+        } else {
+          setRetrieveIcon('loading');
+          updateRetrieveStatus('部署中…');
+          _retrieveTimer = setTimeout(poll, 4000);
+        }
+      } else if (runStatus === 'completed') {
+        localStorage.removeItem(RETRIEVE_RUN_KEY);
+        setRetrieveIcon('error');
+        updateRetrieveStatus('检索未成功：' + (runConclusion || '未知'));
+        const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
+        _retrieveTimer = null;
+      } else {
+        setRetrieveIcon('loading');
+        updateRetrieveStatus('检索中…');
+        _retrieveTimer = setTimeout(poll, 4000);
+      }
+    } catch (e) {
+      setRetrieveIcon('loading');
+      updateRetrieveStatus('检索中…（查询状态）');
+      _retrieveTimer = setTimeout(poll, 4000);
+    }
+  };
+  poll();
+}
+
+async function loadUpdateSummary() {
+  try {
+    const res = await fetch('update-summary.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const s = await res.json();
+    renderUpdateSummary(s);
+  } catch (e) { console.warn('读取更新说明失败', e); }
+}
+
+function renderUpdateSummary(s) {
+  const el = document.getElementById('updateNotes');
+  if (!el) return;
+  if (!s || !s.hasUpdates) {
+    const d = (s && s.updatedAt) ? '（' + escapeHtml(s.updatedAt) + '）' : '';
+    el.className = 'update-notes show';
+    el.innerHTML = '<span class="un-title">检索完成</span>' + d + '：本次无更新。';
+    return;
+  }
+  const dateStr = (s.updatedAt) ? '（' + escapeHtml(s.updatedAt) + '）' : '';
+  const c = s.counts || {};
+  let html = '<span class="un-title">本次更新' + dateStr + '</span>：新增 ' + (c.added || 0) + ' 条 / 修改 ' + (c.updated || 0) + ' 条 / 废止 ' + (c.abolished || 0) + ' 条';
+  const changes = (s.changes || []);
+  if (changes.length) {
+    html += '<ul>';
+    changes.forEach(ch => {
+      const tag = ch.type === 'add' ? '新增' : (ch.type === 'abolish' ? '废止' : '修改');
+      html += '<li>[' + tag + '] ' + escapeHtml(ch.name) + '（' + escapeHtml(ch.category || '') + '）' + (ch.detail ? ' — ' + escapeHtml(ch.detail) : '') + '</li>';
+    });
+    html += '</ul>';
+  }
+  el.className = 'update-notes show has-updates';
+  el.innerHTML = html;
+}
+
+function resumeRetrieveIfNeeded() {
+  const runId = localStorage.getItem(RETRIEVE_RUN_KEY);
+  if (runId) {
+    const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = true;
+    startRetrievePolling(runId);
+  } else {
+    loadUpdateSummary();
+  }
+}
+
 function setRetrieveIcon(state) {
   const btn = document.getElementById('retrieveBtn');
   if (!btn) return;
   if (state === 'loading') btn.innerHTML = '&#x23F3; 检索中';
+  else if (state === 'done') btn.innerHTML = '&#x2705; 已更新';
   else if (state === 'ok') btn.innerHTML = '&#x2705; 已触发';
   else if (state === 'error') btn.innerHTML = '&#x2717; 触发失败';
   else btn.innerHTML = '&#x1F50D; 自动检索';
@@ -1020,6 +1134,7 @@ async function loadData() {
     renderTable();
     updateManualCountInfo();
     await loadCloudEdits();
+    resumeRetrieveIfNeeded();
   } catch (e) {
     document.getElementById('tableContainer').innerHTML = '<div class="no-data">数据加载失败，请刷新重试</div>';
     console.error(e);

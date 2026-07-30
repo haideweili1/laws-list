@@ -6,6 +6,7 @@
 - 使用 智谱 GLM（国内可访问、有免费额度）自带的 web_search 联网检索能力
 - 检索最近两周中国新发布 / 修订 / 废止的法律法规
 - 更新同目录下的 laws.json 并交回 GitHub Actions 提交
+- 同时写出 update-summary.json（本次更新说明，供网页"更新说明"面板展示）
 
 依赖的环境变量：
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
@@ -20,6 +21,7 @@ import os
 import json
 import re
 import sys
+import subprocess
 import traceback
 from datetime import date
 
@@ -32,6 +34,7 @@ except ImportError:
 ROOT = os.path.dirname(os.path.abspath(__file__))
 LAWS_PATH = os.path.join(ROOT, "laws.json")
 USER_EDITS_PATH = os.path.join(ROOT, "user-edits.json")
+SUMMARY_PATH = os.path.join(ROOT, "update-summary.json")
 
 # 参与"政府更新 vs 用户手动修改"比对的字段
 FIELDS = ["name", "source", "sourceUrl", "effectiveDate", "introducedDate",
@@ -244,7 +247,10 @@ def main():
 
     cat_by_id = {c["id"]: c for c in data["categories"]}
     today = date.today().isoformat()
-    total_changes = 0
+
+    # 本次变更统计与说明
+    n_added = n_abolished = n_updated = 0
+    summary_changes = []
 
     for cid in DOMAINS:
         cat = cat_by_id.get(cid)
@@ -289,7 +295,13 @@ def main():
                     "retentionPeriod": "三年",
                 })
                 print(f"    [新增] {name}")
-                total_changes += 1
+                summary_changes.append({
+                    "type": "add",
+                    "name": name,
+                    "category": CATEGORY_NAMES.get(cid, cid),
+                    "detail": "新增法规",
+                })
+                n_added += 1
             else:
                 target = _name_match(name, cat["laws"])
                 if not target:
@@ -298,15 +310,33 @@ def main():
                 if action == "abolish":
                     target["status"] = "废止"
                     print(f"    [废止] {name}")
+                    summary_changes.append({
+                        "type": "abolish",
+                        "name": name,
+                        "category": CATEGORY_NAMES.get(cid, cid),
+                        "detail": "使用状态：在用 → 废止",
+                    })
+                    n_abolished += 1
                 else:
+                    updated_fields = []
                     if ch.get("effectiveDate"):
                         target["effectiveDate"] = ch["effectiveDate"]
+                        updated_fields.append("实施时间")
                     if ch.get("sourceUrl"):
                         target["sourceUrl"] = ch["sourceUrl"]
+                        updated_fields.append("来源链接")
                     if ch.get("source"):
                         target["source"] = ch["source"]
-                    print(f"    [更新] {name}")
-                total_changes += 1
+                        updated_fields.append("来源网站")
+                    detail = "更新：" + "、".join(updated_fields) if updated_fields else "内容已更新"
+                    print(f"    [更新] {name}（{detail}）")
+                    summary_changes.append({
+                        "type": "update",
+                        "name": name,
+                        "category": CATEGORY_NAMES.get(cid, cid),
+                        "detail": detail,
+                    })
+                    n_updated += 1
 
     # 无论是否有法规内容变更，都更新"最近更新时间"为本次运行日期
     # （对应需求：点击运行/定时任务执行后，立即刷新更新时间）
@@ -314,12 +344,33 @@ def main():
     with open(LAWS_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+    # 写出本次更新说明（供网页"更新说明"面板展示）
+    summary = {
+        "updatedAt": today,
+        "hasUpdates": (n_added + n_abolished + n_updated) > 0,
+        "counts": {"added": n_added, "abolished": n_abolished, "updated": n_updated},
+        "changes": summary_changes,
+    }
+    try:
+        with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
+            json.dump(summary, f, ensure_ascii=False, indent=2)
+        print(f"  已写出更新说明 update-summary.json（hasUpdates={summary['hasUpdates']}）")
+        # 脚本自行把说明文件加入暂存区（workflow 仅 git add laws.json，避免需要 workflow 权限）
+        try:
+            subprocess.run(["git", "add", "--", "update-summary.json"], cwd=ROOT, check=False)
+            print("  已 git add update-summary.json")
+        except Exception as ge:
+            print(f"  git add update-summary.json 失败（可忽略）：{ge}")
+    except Exception as e:
+        print(f"  写出 update-summary.json 失败：{e}")
+
     # 需求 7：政府更新了法规字段时，覆盖用户的手动修改并清除"已修改"标识
     prev_data = get_prev_laws_from_git()
     reconcile_user_overrides(prev_data, data)
 
-    if total_changes > 0:
-        print(f"\n共更新 {total_changes} 条，lastUpdated -> {today}")
+    total = n_added + n_abolished + n_updated
+    if total > 0:
+        print(f"\n共更新 {total} 条（新增 {n_added} / 修改 {n_updated} / 废止 {n_abolished}），lastUpdated -> {today}")
     else:
         print(f"\n本次无法规内容变更，但已刷新更新时间 -> {today}")
 
