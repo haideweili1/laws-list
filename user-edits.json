@@ -1,7 +1,24 @@
 {
   "version": 2,
-  "manualLaws": [],
-  "manualTs": {},
+  "manualLaws": [
+    {
+      "id": "manual_1785414077329",
+      "category": "trisystem",
+      "name": "1111",
+      "source": "中国人大网",
+      "sourceUrl": "1",
+      "effectiveDate": "",
+      "introducedDate": "2026-07-30",
+      "status": "在用",
+      "storageMethod": "电子档",
+      "retentionPeriod": "三年",
+      "manual": true,
+      "manualAddedDate": "2026-07-30"
+    }
+  ],
+  "manualTs": {
+    "manual_1785414077329": 1785414077329
+  },
   "lawOverrides": {
     "trisystem::3": {
       "source": "中国人大网",
