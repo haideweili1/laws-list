@@ -5,8 +5,8 @@
       "id": "manual_1785414077329",
       "category": "trisystem",
       "name": "1111",
-      "source": "",
-      "sourceUrl": "1",
+      "source": "123",
+      "sourceUrl": "2",
       "effectiveDate": "",
       "introducedDate": "2026-07-30",
       "status": "在用",
@@ -17,7 +17,7 @@
     }
   ],
   "manualTs": {
-    "manual_1785414077329": 1785420418846
+    "manual_1785414077329": 1785421064957
   },
   "lawOverrides": {
     "trisystem::3": {
@@ -66,6 +66,17 @@
     }
   },
   "changeLog": [
+    {
+      "id": "1785421064957_ivbh5m",
+      "ts": 1785421064957,
+      "action": "edit",
+      "lawName": "1111",
+      "categoryId": "trisystem",
+      "categoryName": "三体系 (ISO 9001/14001/45001)",
+      "device": "设备8097",
+      "key": "manual_1785414077329",
+      "detail": "来源网站：(空) → 123；来源链接：1 → 2"
+    },
     {
       "id": "1785421039213_ufplks",
       "ts": 1785421039213,
@@ -136,5 +147,5 @@
       "device": "设备8097"
     }
   ],
-  "clientUpdatedAt": "2026-07-30T14:17:19.222Z"
+  "clientUpdatedAt": "2026-07-30T14:17:44.959Z"
 }
