@@ -16,5 +16,10 @@
     "trisystem::3": 0,
     "trisystem::4": 1785342715218
   },
-  "deletions": {}
+  "deletions": {
+    "infosec::62": {
+      "ts": 1785402775813,
+      "del": true
+    }
+  }
 }
