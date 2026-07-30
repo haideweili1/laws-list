@@ -57,8 +57,8 @@
       "del": true
     },
     "manual_1785414077329": {
-      "ts": 1785421039213,
-      "del": false
+      "ts": 1785422285583,
+      "del": true
     },
     "undefined": {
       "ts": 1785418527233,
@@ -66,6 +66,17 @@
     }
   },
   "changeLog": [
+    {
+      "id": "1785422285584_ksnou4",
+      "ts": 1785422285584,
+      "action": "delete",
+      "lawName": "1111",
+      "categoryId": "trisystem",
+      "categoryName": "三体系 (ISO 9001/14001/45001)",
+      "device": "设备8097",
+      "key": "manual_1785414077329",
+      "detail": ""
+    },
     {
       "id": "1785421064957_ivbh5m",
       "ts": 1785421064957,
@@ -147,5 +158,5 @@
       "device": "设备8097"
     }
   ],
-  "clientUpdatedAt": "2026-07-30T14:17:44.959Z"
+  "clientUpdatedAt": "2026-07-30T14:38:05.586Z"
 }
