@@ -974,79 +974,87 @@ function setSyncIcon(state) {
 }
 function syncNow() { pushCloudEdits(); }
 
-// ===== 手动触发自动检索（经 SCF 代理触发 GitHub Actions，并轮询状态/部署） =====
-const RETRIEVE_RUN_KEY = 'retrieveRunId_v1';
+// ===== 手动触发自动检索（经 SCF 代理触发 GitHub Actions；状态改读免费静态文件，避免消耗代理资源） =====
+const RETRIEVE_STATUS_FILE = 'retrieval-status.json';   // 由 Actions 脚本写出，走 GitHub Pages 免费托管
+const RETRIEVE_STARTED_AT_KEY = 'retrieveStartedAt_v1';
+const RETRIEVE_POLL_INTERVAL = 12000;  // A: 轮询间隔 12 秒（原 4 秒，省约 2/3 调用）
+const RETRIEVE_POLL_MAX = 30;          // B: 安全阀，最多轮询 30 次（约 6 分钟）自动停止
 let _retrieveTimer = null;
+let _retrieveCount = 0;
 
 async function triggerRetrieval() {
   if (_retrieveTimer) return; // 正在轮询中，忽略重复点击
   if (!SYNC_PROXY) { alert('未配置同步代理地址（请联系管理员设置）'); return; }
+  const btn = document.getElementById('retrieveBtn');
+  if (btn) btn.disabled = true;
   setRetrieveIcon('loading');
   updateRetrieveStatus('正在触发自动检索...');
   try {
     const res = await fetch(SYNC_PROXY + '/trigger-update', { method: 'POST' });
     const data = await res.json().catch(() => ({}));
     if (res.ok) {
-      const runId = data.run_id || 'latest';
-      localStorage.setItem(RETRIEVE_RUN_KEY, runId);
-      document.getElementById('retrieveBtn').disabled = true;
-      startRetrievePolling(runId);
+      // C: 记录本次触发时间，轮询只采纳"晚于此时刻"的状态，避免读到上一次残留结果
+      localStorage.setItem(RETRIEVE_STARTED_AT_KEY, String(Date.now()));
+      updateRetrieveStatus('检索中…');
+      startRetrievePolling();
     } else {
       setRetrieveIcon('error');
       updateRetrieveStatus('触发失败：' + (data.message || res.status));
+      if (btn) btn.disabled = false;
     }
   } catch (e) {
     setRetrieveIcon('error');
     updateRetrieveStatus('触发失败：' + e.message);
+    if (btn) btn.disabled = false;
   }
 }
 
-function startRetrievePolling(runId) {
+function startRetrievePolling() {
   if (_retrieveTimer) clearTimeout(_retrieveTimer);
+  _retrieveCount = 0;
+  const startedAt = Number(localStorage.getItem(RETRIEVE_STARTED_AT_KEY)) || Date.now();
   const poll = async () => {
+    _retrieveCount++;
     try {
-      const res = await fetch(SYNC_PROXY + '/check-status?run_id=' + encodeURIComponent(runId), { cache: 'no-store' });
-      const s = await res.json().catch(() => ({}));
-      const runStatus = s.runStatus, runConclusion = s.runConclusion, deployStatus = s.deployStatus;
-      if (runStatus === 'completed' && runConclusion === 'success') {
-        if (deployStatus === 'succeeded') {
-          localStorage.removeItem(RETRIEVE_RUN_KEY);
-          setRetrieveIcon('done');
-          updateRetrieveStatus('部署成功 ✓ 网页自动更新中，请稍后刷新查看更新说明');
-          const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
-          _retrieveTimer = null;
-          loadUpdateSummary();
-          return;
-        } else if (deployStatus === 'failed') {
-          localStorage.removeItem(RETRIEVE_RUN_KEY);
-          setRetrieveIcon('error');
-          updateRetrieveStatus('部署失败，请稍后重试');
-          const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
-          _retrieveTimer = null;
-          return;
-        } else {
-          setRetrieveIcon('loading');
-          updateRetrieveStatus('部署中…');
-          _retrieveTimer = setTimeout(poll, 4000);
+      // C: 直接读免费静态文件，不再打 SCF 代理
+      const res = await fetch(RETRIEVE_STATUS_FILE + '?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) {
+        const s = await res.json().catch(() => ({}));
+        const t = s.updatedAt ? Date.parse(s.updatedAt) : 0;
+        // 只采纳晚于本次触发时刻的状态
+        if (!isNaN(t) && t >= startedAt) {
+          if (s.status === 'success') {
+            finishRetrieve('done', '部署成功 ✓ 网页自动更新中，请稍后刷新查看更新说明', true);
+            return;
+          } else if (s.status === 'failed') {
+            finishRetrieve('error', '检索失败：' + (s.error || '未知错误') + '，请稍后重试', false);
+            return;
+          }
         }
-      } else if (runStatus === 'completed') {
-        localStorage.removeItem(RETRIEVE_RUN_KEY);
-        setRetrieveIcon('error');
-        updateRetrieveStatus('检索未成功：' + (runConclusion || '未知'));
-        const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
-        _retrieveTimer = null;
-      } else {
-        setRetrieveIcon('loading');
-        updateRetrieveStatus('检索中…');
-        _retrieveTimer = setTimeout(poll, 4000);
       }
+      setRetrieveIcon('loading');
+      updateRetrieveStatus('检索中…');
     } catch (e) {
       setRetrieveIcon('loading');
-      updateRetrieveStatus('检索中…（查询状态）');
-      _retrieveTimer = setTimeout(poll, 4000);
+      updateRetrieveStatus('检索中…');
     }
+    // B: 安全阀，超过上限自动停止，绝不无限轮询
+    if (_retrieveCount >= RETRIEVE_POLL_MAX) {
+      finishRetrieve('error', '查询超时，请刷新页面查看是否已有更新', false);
+      return;
+    }
+    _retrieveTimer = setTimeout(poll, RETRIEVE_POLL_INTERVAL);
   };
   poll();
+}
+
+function finishRetrieve(icon, msg, loadSummary) {
+  if (_retrieveTimer) { clearTimeout(_retrieveTimer); _retrieveTimer = null; }
+  localStorage.removeItem(RETRIEVE_STARTED_AT_KEY);
+  setRetrieveIcon(icon);
+  updateRetrieveStatus(msg);
+  const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
+  if (loadSummary) loadUpdateSummary();
 }
 
 async function loadUpdateSummary() {
@@ -1083,14 +1091,23 @@ function renderUpdateSummary(s) {
   el.innerHTML = html;
 }
 
-function resumeRetrieveIfNeeded() {
-  const runId = localStorage.getItem(RETRIEVE_RUN_KEY);
-  if (runId) {
-    const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = true;
-    startRetrievePolling(runId);
-  } else {
-    loadUpdateSummary();
-  }
+async function resumeRetrieveIfNeeded() {
+  // 断点续查：若 Actions 仍在运行（最近 15 分钟内写过 running），自动接着轮询
+  try {
+    const res = await fetch(RETRIEVE_STATUS_FILE + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) { loadUpdateSummary(); return; }
+    const s = await res.json().catch(() => ({}));
+    const t = s.updatedAt ? Date.parse(s.updatedAt) : 0;
+    if (s.status === 'running' && !isNaN(t) && (Date.now() - t) < 15 * 60 * 1000) {
+      const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = true;
+      localStorage.setItem(RETRIEVE_STARTED_AT_KEY, String(t));
+      setRetrieveIcon('loading');
+      updateRetrieveStatus('检索中…（续查）');
+      startRetrievePolling();
+      return;
+    }
+  } catch (e) {}
+  loadUpdateSummary();
 }
 
 function setRetrieveIcon(state) {

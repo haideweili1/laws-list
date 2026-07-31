@@ -23,7 +23,7 @@ import re
 import sys
 import subprocess
 import traceback
-from datetime import date
+from datetime import date, datetime
 
 try:
     from zhipuai import ZhipuAI
@@ -35,6 +35,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 LAWS_PATH = os.path.join(ROOT, "laws.json")
 USER_EDITS_PATH = os.path.join(ROOT, "user-edits.json")
 SUMMARY_PATH = os.path.join(ROOT, "update-summary.json")
+RETRIEVAL_STATUS_PATH = os.path.join(ROOT, "retrieval-status.json")
 
 # 参与"政府更新 vs 用户手动修改"比对的字段
 FIELDS = ["name", "source", "sourceUrl", "effectiveDate", "introducedDate",
@@ -229,6 +230,57 @@ def reconcile_user_overrides(prev_data, new_data):
         print("  [reconcile] 无需要清除的用户手动修改字段")
 
 
+def now_iso():
+    return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def _git_config():
+    subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=ROOT, check=False)
+    subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], cwd=ROOT, check=False)
+
+
+def git_commit_push(files, message):
+    """把指定文件加入暂存区并提交、推送到 origin（依赖 Actions checkout 注入的凭据）。"""
+    try:
+        _git_config()
+        subprocess.run(["git", "add", "--"] + files, cwd=ROOT, check=False)
+        r = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT)
+        if r.returncode == 0:
+            return  # 无暂存变化，跳过
+        subprocess.run(["git", "commit", "-m", message], cwd=ROOT, check=False)
+        subprocess.run(["git", "push"], cwd=ROOT, check=False)
+    except Exception as e:
+        print("  [git] 提交/推送失败（可忽略）:", e)
+
+
+def write_running_status():
+    """检索刚开始：写出 running 状态（前端据此显示'检索中'）。"""
+    try:
+        with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
+            json.dump({"status": "running", "updatedAt": now_iso()}, f, ensure_ascii=False, indent=2)
+        git_commit_push([RETRIEVAL_STATUS_PATH], "chore: 检索进行中")
+        print("  已写入检索状态：running")
+    except Exception as e:
+        print("  写入 running 状态失败（可忽略）:", e)
+
+
+def write_final_status(status, last_updated=None, error=None):
+    """检索结束：写出 success/failed 状态，连同 laws.json 与 update-summary.json 一并提交。"""
+    try:
+        data = {"status": status, "updatedAt": now_iso()}
+        if last_updated:
+            data["lastUpdated"] = last_updated
+        if error:
+            data["error"] = error
+        with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        git_commit_push([RETRIEVAL_STATUS_PATH, "update-summary.json", "laws.json"],
+                        f"chore: 检索{status}")
+        print(f"  已写入检索状态：{status}")
+    except Exception as e:
+        print("  写入 final 状态失败（可忽略）:", e)
+
+
 def main():
     api_key = os.environ.get("ZHIPU_API_KEY")
     if not api_key:
@@ -237,6 +289,7 @@ def main():
 
     model = os.environ.get("MODEL") or "glm-4-air"
     client = ZhipuAI(api_key=api_key)
+    write_running_status()
 
     try:
         with open(LAWS_PATH, "r", encoding="utf-8") as f:
@@ -355,12 +408,6 @@ def main():
         with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
             json.dump(summary, f, ensure_ascii=False, indent=2)
         print(f"  已写出更新说明 update-summary.json（hasUpdates={summary['hasUpdates']}）")
-        # 脚本自行把说明文件加入暂存区（workflow 仅 git add laws.json，避免需要 workflow 权限）
-        try:
-            subprocess.run(["git", "add", "--", "update-summary.json"], cwd=ROOT, check=False)
-            print("  已 git add update-summary.json")
-        except Exception as ge:
-            print(f"  git add update-summary.json 失败（可忽略）：{ge}")
     except Exception as e:
         print(f"  写出 update-summary.json 失败：{e}")
 
@@ -373,6 +420,7 @@ def main():
         print(f"\n共更新 {total} 条（新增 {n_added} / 修改 {n_updated} / 废止 {n_abolished}），lastUpdated -> {today}")
     else:
         print(f"\n本次无法规内容变更，但已刷新更新时间 -> {today}")
+    write_final_status("success", last_updated=today)
 
 
 if __name__ == "__main__":
@@ -382,5 +430,5 @@ if __name__ == "__main__":
         raise
     except Exception as e:
         traceback.print_exc()
-        print(f"\n[致命错误] 更新脚本异常退出: {repr(e)}", file=sys.stderr)
+        write_final_status("failed", error=repr(e))
         sys.exit(1)
