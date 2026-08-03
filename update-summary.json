@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-31",
+  "updatedAt": "2026-08-03",
   "hasUpdates": true,
   "counts": {
     "added": 0,
     "abolished": 0,
-    "updated": 4
+    "updated": 3
   },
   "changes": [
     {
@@ -22,12 +22,6 @@
     {
       "type": "update",
       "name": "中华人民共和国妇女权益保障法",
-      "category": "社会责任",
-      "detail": "更新：实施时间、来源链接、来源网站"
-    },
-    {
-      "type": "update",
-      "name": "中华人民共和国未成年人保护法",
       "category": "社会责任",
       "detail": "更新：实施时间、来源链接、来源网站"
     }
