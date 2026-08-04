@@ -23,6 +23,9 @@ import re
 import sys
 import subprocess
 import traceback
+import urllib.request
+import urllib.parse
+import ssl
 from datetime import date, datetime
 
 try:
@@ -40,6 +43,75 @@ RETRIEVAL_STATUS_PATH = os.path.join(ROOT, "retrieval-status.json")
 # 参与"政府更新 vs 用户手动修改"比对的字段
 FIELDS = ["name", "source", "sourceUrl", "effectiveDate", "introducedDate",
           "status", "storageMethod", "retentionPeriod"]
+
+# ===== 链接校验与回退（仅对新增/变更的少量链接触发，低资源） =====
+_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+       "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
+
+
+def is_homepage(url):
+    """判断 URL 是否为网站根/首页（不含具体路径）"""
+    if not url:
+        return False
+    try:
+        p = urllib.parse.urlparse(str(url).strip())
+        path = (p.path or "").rstrip("/")
+        return path == ""
+    except Exception:
+        return False
+
+
+def link_alive(url, timeout=8):
+    """跟随重定向探测链接是否可访问且未跳回首页。404 视为死；
+    其他 HTTP 错误（如 403 反爬）保守视为活着，避免误删好链接。"""
+    url = (url or "").strip()
+    if not url:
+        return False
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    try:
+        req = urllib.request.Request(
+            url, method="GET",
+            headers={"User-Agent": _UA, "Accept": "*/*", "Range": "bytes=0-0"})
+        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+            final = r.geturl()
+            code = getattr(r, "status", 200)
+            if code >= 400:
+                return False
+            if is_homepage(final) and not is_homepage(url):
+                return False  # 被重定向回首页
+            return True
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return False
+        return True  # 403 等反爬，保守当作活着
+    except Exception:
+        return False
+
+
+# 主要来源站点的站内搜索入口（回退第一级）
+_SITE_SEARCH = [
+    ("中国人大网", "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword="),
+    ("中国政府网", "https://www.gov.cn/zhengce/advanced_search?q="),
+    ("国家网信办", "https://www.cac.gov.cn/search.htm?keyword="),
+    ("工信部", "https://www.miit.gov.cn/search?q="),
+    ("国家标准委", "https://std.samr.gov.cn/search?q="),
+    ("生态环境部", "https://www.mee.gov.cn/search?q="),
+    ("应急管理部", "https://www.mem.gov.cn/search?q="),
+]
+
+
+def build_fallback_url(source, name):
+    """链接失效时的回退：第一级该官网站内搜索；第二级（不限官网）通用搜索。"""
+    name = (name or "").strip()
+    if not name:
+        return ""
+    for key, base in _SITE_SEARCH:
+        if key in (source or ""):
+            return base + urllib.parse.quote(name)
+    # 第二级：通用搜索引擎搜"法规名 正文"，点开可见各官网正文入口，零额外调用
+    return "https://www.baidu.com/s?wd=" + urllib.parse.quote(name + " 正文")
 
 # 四大分类的检索领域说明（喂给模型做定向检索）
 DOMAINS = {
@@ -372,24 +444,55 @@ def main():
                     n_abolished += 1
                 else:
                     updated_fields = []
-                    if ch.get("effectiveDate"):
+                    # 实施时间：仅当 AI 给的值与现有值不同才写
+                    if ch.get("effectiveDate") and ch["effectiveDate"] != target.get("effectiveDate"):
                         target["effectiveDate"] = ch["effectiveDate"]
                         updated_fields.append("实施时间")
-                    if ch.get("sourceUrl"):
-                        target["sourceUrl"] = ch["sourceUrl"]
-                        updated_fields.append("来源链接")
-                    if ch.get("source"):
+                    # 来源网站：仅当不同才写
+                    if ch.get("source") and ch["source"] != target.get("source"):
                         target["source"] = ch["source"]
                         updated_fields.append("来源网站")
-                    detail = "更新：" + "、".join(updated_fields) if updated_fields else "内容已更新"
-                    print(f"    [更新] {name}（{detail}）")
-                    summary_changes.append({
-                        "type": "update",
-                        "name": name,
-                        "category": CATEGORY_NAMES.get(cid, cid),
-                        "detail": detail,
-                    })
-                    n_updated += 1
+                    # 来源链接：保护现有深链；仅在现有缺失/是首页时补充，且新链需探活
+                    new_url = (ch.get("sourceUrl") or "").strip()
+                    existing_url = (target.get("sourceUrl") or "").strip()
+                    if new_url and new_url != existing_url:
+                        if is_homepage(new_url):
+                            pass  # AI 给的是首页/根，不覆盖现有（保护深链）
+                        elif not existing_url:
+                            # 现有无链接：探活新链，活着才采用，否则回退
+                            if link_alive(new_url):
+                                target["sourceUrl"] = new_url
+                                updated_fields.append("来源链接")
+                            else:
+                                fb = build_fallback_url(ch.get("source") or target.get("source", ""), target.get("name", ""))
+                                if fb:
+                                    target["sourceUrl"] = fb
+                                    updated_fields.append("来源链接(回退)")
+                        elif is_homepage(existing_url):
+                            # 现有是首页：AI 给深链则采用（探活），否则回退通用搜索
+                            if link_alive(new_url):
+                                target["sourceUrl"] = new_url
+                                updated_fields.append("来源链接")
+                            else:
+                                fb = build_fallback_url(ch.get("source") or target.get("source", ""), target.get("name", ""))
+                                if fb:
+                                    target["sourceUrl"] = fb
+                                    updated_fields.append("来源链接(回退)")
+                        else:
+                            # 现有是深链：信任现有，不覆盖（保护用户原好链接）
+                            pass
+                    if updated_fields:
+                        detail = "更新：" + "、".join(updated_fields)
+                        print(f"    [更新] {name}（{detail}）")
+                        summary_changes.append({
+                            "type": "update",
+                            "name": name,
+                            "category": CATEGORY_NAMES.get(cid, cid),
+                            "detail": detail,
+                        })
+                        n_updated += 1
+                    else:
+                        print(f"    [无实质变更，跳过] {name}")
 
     # 无论是否有法规内容变更，都更新"最近更新时间"为本次运行日期
     # （对应需求：点击运行/定时任务执行后，立即刷新更新时间）
