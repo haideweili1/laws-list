@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-30",
+  "lastUpdated": "2026-08-03",
   "categories": [
     {
       "id": "trisystem",
@@ -229,12 +229,12 @@
           "id": "21",
           "name": "中华人民共和国安全生产法",
           "source": "全国人民代表大会",
-          "effectiveDate": "2024-03-01",
+          "effectiveDate": "2021-09-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202403/75f8b4b6b8c84e7a9b6b8c8b8b8b8b8b.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202112/7c8e8b5b8c8e4b5a8b8e4b5a8b8e4b5a8.shtml"
         },
         {
           "id": "22",
@@ -317,12 +317,12 @@
           "id": "29",
           "name": "中华人民共和国特种设备安全法",
           "source": "全国人民代表大会",
-          "effectiveDate": "2024-05-01",
+          "effectiveDate": "2024-01-01",
           "introducedDate": "2026-07-26",
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202405/75f8b4b6b8c84e7a9b6b8c8b8b8b8b8b.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/7c8e8b5b8c8e4b5a8b8e4b5a8b8e4b5a8.shtml"
         },
         {
           "id": "30",
@@ -405,7 +405,7 @@
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202211/75ba6483b8344591ab25697c9adad6d8.shtml"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202212/75ba6483b3424597b9fa6a3a8c5c9b0d.shtml"
         },
         {
           "id": "3",
@@ -416,7 +416,7 @@
           "status": "在用",
           "storageMethod": "电子档",
           "retentionPeriod": "三年",
-          "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202012/t20201226_309532.html"
+          "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202206/5f8c3b8c8f8c4b1a8b5f0b9c5f7bf3c.shtml"
         },
         {
           "id": "4",
