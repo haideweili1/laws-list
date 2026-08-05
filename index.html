@@ -264,7 +264,7 @@ const state={top:"laws",lawSub:"全部",
 /* ---------- 工具 ---------- */
 function $(s){return document.querySelector(s)}
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
-function loadLS(k){try{return JSON.parse(localStorage.getItem(k))||{}}catch(e){return {}}}
+function loadLS(k){try{const _v=localStorage.getItem(k);return _v?JSON.parse(_v):null}catch(e){return null}}
 function saveLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function keyOf(table,id){return table+"::"+id}
 function statusBadge(s){const m={"现行有效":"ok","即将实施":"warn","已废止":"bad"};const c=m[s]||"gray";return `<span class="badge ${c}">${s||"-"}</span>`}
@@ -288,7 +288,7 @@ async function init(){
   }
   $("#lastUpdated").textContent=DATA.lastUpdated||"-";
   // 本地编辑
-  edits.overrides=loadLS(LS_OVR); edits.deleted=loadLS(LS_DEL)||[]; edits.manual=loadLS(LS_MAN)||[]; edits.log=loadLS(LS_LOG)||[];
+  edits.overrides=loadLS(LS_OVR)||{}; edits.deleted=loadLS(LS_DEL)||[]; edits.manual=loadLS(LS_MAN)||[]; edits.log=loadLS(LS_LOG)||[];
   // 云端合并（best-effort）
   await loadCloud();
   renderChangePreview();
@@ -305,7 +305,7 @@ function getMerged(table){
   // 覆盖
   for(const k in edits.overrides){ if(k.startsWith(prefix)){const id=k.slice(prefix.length);const rec=arr.find(x=>x.id===id);if(rec)Object.assign(rec,edits.overrides[k]);} }
   // 删除
-  const del=new Set(edits.deleted.filter(k=>k.startsWith(prefix)).map(k=>k.slice(prefix.length)));
+  const del=new Set((Array.isArray(edits.deleted)?edits.deleted:[]).filter(k=>k.startsWith(prefix)).map(k=>k.slice(prefix.length)));
   arr=arr.filter(r=>!del.has(r.id));
   // 手动新增
   for(const m of edits.manual){ if(m.table===table) arr.push({...m}); }
