@@ -118,7 +118,7 @@
 <section id="view-laws">
   <div class="sub-tabs" id="lawSubTabs"></div>
   <div class="toolbar">
-    <input type="search" id="lawSearch" placeholder="搜索法规名称/发文字号/部门…" oninput="onSearch('laws',this.value)">
+    <input type="search" id="lawSearch" placeholder="搜索法规名称/发文字号/部门/备注…" oninput="onSearch('laws',this.value)">
     <button class="btn pri" onclick="openEdit('laws')">+ 新增法规</button>
     <button class="btn" onclick="exportExcel('laws')">导出Excel</button>
     <button class="btn" onclick="exportPDF('laws')">导出PDF</button>
@@ -137,7 +137,7 @@
         <th>序号</th><th>法规名称</th><th>发文字号</th><th>发布部门</th><th>实施日期</th>
         <th>状态<span class="fbtn" data-f="status">▾筛选</span></th>
         <th>所属领域<span class="fbtn" data-f="domains">▾筛选</span></th>
-        <th>原文链接</th><th>操作<br><input type="checkbox" id="selAllLaws" onclick="toggleSelAll('laws',this.checked)"></th>
+        <th>原文链接</th><th>备注</th><th>操作<br><input type="checkbox" id="selAllLaws" onclick="toggleSelAll('laws',this.checked)"></th>
       </tr></thead>
       <tbody></tbody>
     </table>
@@ -147,7 +147,7 @@
 <!-- 产品标准视图 -->
 <section id="view-standards" class="hidden">
   <div class="toolbar">
-    <input type="search" id="stdSearch" placeholder="搜索标准名称/编号/类型/发布单位…" oninput="onSearch('standards',this.value)">
+    <input type="search" id="stdSearch" placeholder="搜索标准名称/编号/类型/发布单位/备注…" oninput="onSearch('standards',this.value)">
     <button class="btn pri" onclick="openEdit('standards')">+ 新增标准</button>
     <button class="btn" onclick="exportExcel('standards')">导出Excel</button>
     <button class="btn" onclick="exportPDF('standards')">导出PDF</button>
@@ -166,7 +166,7 @@
         <th>标准类型<span class="fbtn" data-f="stdType">▾筛选</span></th>
         <th>发布单位</th><th>实施日期</th>
         <th>状态<span class="fbtn" data-f="status">▾筛选</span></th>
-        <th>原文链接</th><th>操作<br><input type="checkbox" id="selAllStds" onclick="toggleSelAll('standards',this.checked)"></th>
+        <th>原文链接</th><th>备注</th><th>操作<br><input type="checkbox" id="selAllStds" onclick="toggleSelAll('standards',this.checked)"></th>
       </tr></thead>
       <tbody></tbody>
     </table>
@@ -205,6 +205,7 @@
     <label>所属领域（多选，逗号分隔）</label>
     <input id="eDomains" placeholder="质量,环境,职业健康安全,信息安全,社会责任,反恐">
     <label>原文链接</label><input id="eLink" placeholder="https://">
+    <label>备注</label><textarea id="eRemark" rows="3"></textarea>
     <div class="acts">
       <button class="btn" onclick="closeEdit()">取消</button>
       <button class="btn pri" onclick="saveEdit()">保存</button>
@@ -305,7 +306,7 @@ function getMerged(table){
 }
 
 /* ---------- 法律法规渲染 ---------- */
-const LAW_COLS=["name","docNumber","dept","effectiveDate","status","domains","link"];
+const LAW_COLS=["name","docNumber","dept","effectiveDate","status","domains","link","remark"];
 function renderLaws(){
   let arr=getMerged("laws");
   if(state.lawSub!=="全部") arr=arr.filter(r=>r.category===state.lawSub);
@@ -320,13 +321,14 @@ function renderLaws(){
       <td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(r.docNumber)}</td><td>${esc(r.dept)}</td><td>${esc(r.effectiveDate)}</td>
       <td>${statusBadge(r.status)}</td><td>${domainsTags(r.domains)}</td>
       <td>${r.link?`<a class="link" href="${esc(r.link)}" target="_blank">查看</a>`:"-"}</td>
+      <td>${esc(r.remark)}</td>
       <td><input type="checkbox" class="sel" data-k="${keyOf('laws',r.id)}" ${selected.has(keyOf('laws',r.id))?'checked':''} onchange="onRowCheck(this)"> <a class="link" onclick="openEdit('laws','${r.id}')">改</a> <a class="link" onclick="delRec('laws','${r.id}')">删</a></td>
     </tr>`;
   }).join("");
   $("#lawCnt").textContent=`共 ${arr.length} 条`;
   renderBatchBar("laws");
 }
-const STD_COLS=["stdNo","name","stdType","publisher","effectiveDate","status","link"];
+const STD_COLS=["stdNo","name","stdType","publisher","effectiveDate","status","link","remark"];
 function renderStandards(){
   let arr=getMerged("standards");
   const f=state.filters.standards, q=state.search.standards.trim().toLowerCase();
@@ -340,6 +342,7 @@ function renderStandards(){
       <td>${i+1}</td><td>${esc(r.stdNo)}</td><td>${esc(r.name)}</td><td>${esc(r.stdType)}</td><td>${esc(r.publisher)}</td>
       <td>${esc(r.effectiveDate)}</td><td>${statusBadge(r.status)}</td>
       <td>${r.link?`<a class="link" href="${esc(r.link)}" target="_blank">查看</a>`:"-"}</td>
+      <td>${esc(r.remark)}</td>
       <td><input type="checkbox" class="sel" data-k="${keyOf('standards',r.id)}" ${selected.has(keyOf('standards',r.id))?'checked':''} onchange="onRowCheck(this)"> <a class="link" onclick="openEdit('standards','${r.id}')">改</a> <a class="link" onclick="delRec('standards','${r.id}')">删</a></td>
     </tr>`;
   }).join("");
@@ -396,7 +399,7 @@ function openEdit(table,id){
   $("#eStatus").value=rec.status||"现行有效";
   $("#eType").value=rec.stdType||"国家标准";
   $("#eDomains").value=(rec.domains||[]).join(",");
-  $("#eLink").value=rec.link||"";
+  $("#eLink").value=rec.link||""; $("#eRemark").value=rec.remark||"";
   $("#editMask").style.display="flex";
 }
 function closeEdit(){$("#editMask").style.display="none"}
@@ -415,6 +418,7 @@ function saveEdit(){
     stdType:table==="standards"?$("#eType").value:"",
     domains:table==="laws"?$("#eDomains").value.split(",").map(s=>s.trim()).filter(Boolean):[],
     link:$("#eLink").value.trim(),
+    remark:$("#eRemark").value.trim(),
     region:name.includes("广东")?"广东":""
   };
   let op, diff=null, logName=name;
@@ -658,8 +662,8 @@ function currentRows(table){return getMerged(table);}
 function exportExcel(table){
   const rows=currentRows(table);
   const cols=table==="laws"
-    ?[["法规名称","name"],["发文字号","docNumber"],["发布部门","dept"],["实施日期","effectiveDate"],["状态","status"],["所属领域","domains"],["原文链接","link"]]
-    :[["标准编号","stdNo"],["标准名称","name"],["标准类型","stdType"],["发布单位","publisher"],["实施日期","effectiveDate"],["状态","status"],["原文链接","link"]];
+    ?[["法规名称","name"],["发文字号","docNumber"],["发布部门","dept"],["实施日期","effectiveDate"],["状态","status"],["所属领域","domains"],["原文链接","link"],["备注","remark"]]
+    :[["标准编号","stdNo"],["标准名称","name"],["标准类型","stdType"],["发布单位","publisher"],["实施日期","effectiveDate"],["状态","status"],["原文链接","link"],["备注","remark"]];
   const head=["序号",...cols.map(c=>c[0])];
   const data=rows.map((r,i)=>[i+1,...cols.map(c=>Array.isArray(r[c[1]])?r[c[1]].join("/"):(r[c[1]]||""))]);
   const ws=XLSX.utils.aoa_to_sheet([head,...data]);
