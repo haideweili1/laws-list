@@ -249,6 +249,7 @@
   </div>
 </div>
 
+<script src="data-inline.js"></script>
 <script>
 const SYNC_PROXY = "https://1460512300-c8zm53ghd.ap-guangzhou.tencentcs.com";
 const LS_OVR="lawOverrides_v3", LS_DEL="deletedLaws_v3", LS_MAN="manualLaws_v3", LS_LOG="changeLog_v1";
@@ -271,12 +272,12 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;"
 
 /* ---------- 数据加载与合并 ---------- */
 async function init(){
+  // 优先用内联数据（data-inline.js），即使 data.json 在线不可达/CDN缓存也能正常显示
+  DATA = window.DATA || {laws:[],standards:[],lastUpdated:""};
   try{
     const r=await fetch("data.json?t="+Date.now());
-    DATA=await r.json();
-  }catch(e){
-    if(window.DATA) DATA=window.DATA; else {toast("加载 data.json 失败");return;}
-  }
+    if(r.ok){ const d=await r.json(); if(d && (d.laws||d.standards)) DATA=d; }
+  }catch(e){ /* 保留内联数据，不影响显示 */ }
   $("#lastUpdated").textContent=DATA.lastUpdated||"-";
   // 本地编辑
   edits.overrides=loadLS(LS_OVR); edits.deleted=loadLS(LS_DEL)||[]; edits.manual=loadLS(LS_MAN)||[]; edits.log=loadLS(LS_LOG)||[];
