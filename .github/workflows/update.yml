@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   update:
+    if: false   # 暂停：新版网站改用 data.json，旧 laws.json 自动更新已停用（2026-08-05）
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

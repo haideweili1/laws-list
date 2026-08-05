@@ -3,1766 +3,700 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>法律法规及其他要求清单</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<title>法律法规与产品标准清单</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: #f5f7fa;
-  color: #333;
-  min-height: 100vh;
-}
-
-/* ===== Header ===== */
-.header {
-  background: #fff;
-  border-bottom: 1px solid #e0e6ed;
-  padding: 20px 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.header-left h1 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #1a1a2e;
-}
-.update-info {
-  font-size: 13px;
-  color: #8892a6;
-  margin-top: 6px;
-}
-.update-info .label { color: #8892a6; }
-.update-info .value { color: #1a1a2e; font-weight: 500; }
-.header-right {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-.btn-excel { background: #1d9e75; color: #fff; }
-.btn-excel:hover { background: #0f6e56; }
-.btn-pdf { background: #e24b4a; color: #fff; }
-.btn-pdf:hover { background: #a32d2d; }
-.btn-img { background: #378add; color: #fff; }
-.btn-img:hover { background: #185fa5; }
-.btn-edit { background: #6c5ce7; color: #fff; }
-.btn-edit:hover { background: #5a4bd1; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-sm {
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 4px;
-}
-.btn-outline {
-  background: #fff;
-  border: 1px solid #d3d8e0;
-  color: #5f6b7d;
-}
-.btn-outline:hover { border-color: #378add; color: #378add; }
-.btn-danger {
-  background: #fff;
-  border: 1px solid #e24b4a;
-  color: #e24b4a;
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-danger:hover { background: #fcebeb; }
-.btn-restore {
-  background: #fff;
-  border: 1px solid #1d9e75;
-  color: #1d9e75;
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-restore:hover { background: #e1f5ee; }
-
-/* ===== Toolbar ===== */
-.toolbar {
-  background: #fff;
-  padding: 12px 32px;
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #e0e6ed;
-}
-.search-box {
-  flex: 1;
-  min-width: 200px;
-  position: relative;
-}
-.search-box input {
-  width: 100%;
-  padding: 8px 12px 8px 36px;
-  border: 1px solid #d3d8e0;
-  border-radius: 6px;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.search-box input:focus { border-color: #378add; }
-.search-box .icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #8892a6;
-  font-size: 16px;
-}
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid #d3d8e0;
-  border-radius: 6px;
-  font-size: 13px;
-  background: #fff;
-  cursor: pointer;
-  outline: none;
-}
-.filter-select:focus { border-color: #378add; }
-.toolbar-info {
-  font-size: 12px;
-  color: #8892a6;
-}
-
-/* ===== Tabs ===== */
-.tabs {
-  background: #fff;
-  padding: 0 32px;
-  display: flex;
-  gap: 4px;
-  border-bottom: 2px solid #f0f2f5;
-  overflow-x: auto;
-  flex-wrap: wrap;
-}
-.tab {
-  padding: 12px 20px;
-  font-size: 14px;
-  color: #5f6b7d;
-  cursor: pointer;
-  border: none;
-  background: none;
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s;
-  white-space: nowrap;
-  font-weight: 500;
-}
-.tab:hover { color: #378add; }
-.tab.active {
-  color: #185fa5;
-  border-bottom-color: #378add;
-}
-.tab .count {
-  display: inline-block;
-  background: #e8ecf1;
-  color: #5f6b7d;
-  font-size: 11px;
-  padding: 1px 7px;
-  border-radius: 10px;
-  margin-left: 6px;
-}
-.tab.active .count {
-  background: #d0e3fa;
-  color: #185fa5;
-}
-
-/* ===== Table ===== */
-.table-container {
-  padding: 20px 32px;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-thead { background: #f8f9fb; }
-th {
-  padding: 12px 14px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: #4a5568;
-  border-bottom: 2px solid #e0e6ed;
-  white-space: nowrap;
-}
-td {
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #333;
-  border-bottom: 1px solid #f0f2f5;
-}
-tbody tr:hover { background: #f8fafe; }
-.status-badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
-.status-active { background: #e1f5ee; color: #085041; }
-.status-inactive { background: #fcebeb; color: #791f1f; }
-.manual-badge {
-  display: inline-block;
-  background: #ede7f6;
-  color: #5e35b1;
-  font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 3px;
-  margin-left: 6px;
-  font-weight: 500;
-}
-.modified-badge {
-  display: inline-block;
-  background: #fff3e0;
-  color: #e65100;
-  font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 3px;
-  margin-left: 6px;
-  font-weight: 500;
-}
-.source-link {
-  color: #378add;
-  text-decoration: none;
-  cursor: pointer;
-}
-.source-link:hover { text-decoration: underline; }
-.law-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.no-data {
-  text-align: center;
-  padding: 40px;
-  color: #8892a6;
-  font-size: 14px;
-}
-.footer {
-  padding: 16px 32px;
-  text-align: right;
-  font-size: 13px;
-  color: #8892a6;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.loading {
-  text-align: center;
-  padding: 60px;
-  color: #8892a6;
-  font-size: 14px;
-}
-
-/* ===== Modal ===== */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-}
-.modal-overlay.show { display: flex; }
-.modal {
-  background: #fff;
-  border-radius: 10px;
-  padding: 28px;
-  width: 90%;
-  max-width: 520px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-  position: relative;
-}
-.modal-wide {
-  max-width: 820px;
-}
-.modal h2 {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #1a1a2e;
-}
-.modal .form-group {
-  margin-bottom: 16px;
-}
-.modal label {
-  display: block;
-  font-size: 13px;
-  color: #4a5568;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-.modal label .required { color: #e24b4a; }
-.modal input, .modal select, .modal textarea {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #d3d8e0;
-  border-radius: 6px;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-  font-family: inherit;
-}
-.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: #378add; }
-.modal input:disabled, .modal select:disabled {
-  background: #f5f7fa;
-  color: #8892a6;
-  cursor: not-allowed;
-}
-.modal .form-row {
-  display: flex;
-  gap: 16px;
-}
-.modal .form-row .form-group { flex: 1; }
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 24px;
-}
-.modal-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  line-height: 1;
-  color: #8892a6;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
-.modal-close:hover { background: #f0f2f5; color: #333; }
-.modal-wide {
-  max-width: 820px;
-}
-.modal h2 {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #1a1a2e;
-}
-.modal .form-group {
-  margin-bottom: 16px;
-}
-.modal label {
-  display: block;
-  font-size: 13px;
-  color: #4a5568;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-.modal label .required { color: #e24b4a; }
-.modal input, .modal select, .modal textarea {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #d3d8e0;
-  border-radius: 6px;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-  font-family: inherit;
-}
-.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: #378add; }
-.modal input:disabled, .modal select:disabled {
-  background: #f5f7fa;
-  color: #8892a6;
-  cursor: not-allowed;
-}
-.modal .form-row {
-  display: flex;
-  gap: 16px;
-}
-.modal .form-row .form-group { flex: 1; }
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 24px;
-}
-
-/* ===== Manage List ===== */
-.manage-toolbar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.manage-toolbar input[type="text"] {
-  flex: 1;
-  min-width: 150px;
-  padding: 8px 12px;
-  border: 1px solid #d3d8e0;
-  border-radius: 6px;
-  font-size: 13px;
-  outline: none;
-}
-.manage-toolbar input[type="text"]:focus { border-color: #378add; }
-.manage-toolbar .checkbox-label {
-  font-size: 13px;
-  color: #5f6b7d;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.manage-list-wrap {
-  max-height: 400px;
-  overflow-y: auto;
-  border: 1px solid #e0e6ed;
-  border-radius: 6px;
-}
-.manage-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.manage-table th {
-  padding: 8px 10px;
-  text-align: left;
-  background: #f8f9fb;
-  border-bottom: 2px solid #e0e6ed;
-  font-weight: 600;
-  color: #4a5568;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.manage-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #f0f2f5;
-  vertical-align: middle;
-}
-.manage-table tr:hover { background: #f8fafe; }
-.manage-stats {
-  margin-top: 12px;
-  font-size: 13px;
-  color: #8892a6;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* ===== Progress Dialog ===== */
-.dialog-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-}
-.dialog-overlay.show { display: flex; }
-.dialog-box {
-  background: #fff;
-  border-radius: 10px;
-  padding: 28px;
-  width: 90%;
-  max-width: 480px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-}
-.dialog-box h2 {
-  font-size: 18px;
-  margin-bottom: 16px;
-  color: #1a1a2e;
-}
-.spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 3px solid #e0e6ed;
-  border-top-color: #378add;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  vertical-align: middle;
-  margin-right: 8px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.info-text {
-  font-size: 13px;
-  color: #5f6b7d;
-  line-height: 1.6;
-}
-.btn-sync { background:#2f6fed; }
-.btn-sync:hover { background:#2257c4; }
-.btn-retrieve { background:#1aa179; }
-.btn-retrieve:hover { background:#138a66; }
-.sync-status { font-size:12px; color:#6b7785; margin-left:auto; }
-.retrieve-status { font-size:12px; color:#5a6573; margin-left:6px; }
-.update-info .btn-retrieve { margin-left:10px; vertical-align:middle; }
-.update-notes {
-  margin-top:8px; max-width:680px;
-  font-size:13px; line-height:1.6; color:#4a5568;
-  background:#f5f7fa; border:1px solid #e3e8ef; border-radius:8px;
-  padding:10px 12px; display:none;
-}
-.update-notes.show { display:block; }
-.update-notes.has-updates { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
-.update-notes .un-title { font-weight:600; }
-.update-notes ul { margin:6px 0 0 18px; }
-.update-notes li { margin:2px 0; }
-.sync-note { font-size:12px; color:#5a6573; line-height:1.7; background:#f5f7fa; padding:10px 12px; border-radius:8px; margin:6px 0 12px; }
-.sync-note code { background:#e9edf3; padding:1px 5px; border-radius:4px; font-size:11px; }
-.sync-row { display:flex; gap:8px; align-items:center; margin:4px 0 8px; }
-.sync-row input { flex:1; padding:8px 10px; border:1px solid #d4dae3; border-radius:8px; }
-.sync-hint { font-size:12px; color:#1f5d2a; line-height:1.7; background:#eef9f0; border:1px solid #cfe9d4; padding:10px 12px; border-radius:8px; margin:0 0 12px; }
-.sync-hint code { background:#dcefe0; padding:1px 5px; border-radius:4px; font-size:11px; }
+  :root{
+    --bg:#f5f7fa; --card:#fff; --line:#e3e8ef; --text:#1f2733; --muted:#6b7785;
+    --pri:#2563eb; --pri-d:#1d4ed8; --ok:#16a34a; --warn:#ea580c; --bad:#dc2626; --gray:#94a3b8;
+    --tag:#eef2ff; --tag-t:#4338ca;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Microsoft YaHei",Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+  header{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  header h1{margin:0;font-size:18px;font-weight:600}
+  header .meta{font-size:12px;opacity:.85}
+  .top-tabs{display:flex;gap:4px;padding:10px 22px 0;background:var(--card);border-bottom:1px solid var(--line)}
+  .top-tabs button{border:none;background:none;padding:10px 18px;font-size:15px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;font-weight:600}
+  .top-tabs button.active{color:var(--pri);border-bottom-color:var(--pri)}
+  .sub-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:10px 22px;background:var(--card)}
+  .sub-tabs button{border:1px solid var(--line);background:#fff;padding:6px 14px;border-radius:16px;cursor:pointer;color:var(--muted);font-size:13px}
+  .sub-tabs button.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+  .toolbar{display:flex;gap:10px;align-items:center;padding:10px 22px;flex-wrap:wrap;background:var(--card);border-bottom:1px solid var(--line)}
+  .toolbar input[type=search]{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+  .btn{border:1px solid var(--line);background:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text)}
+  .btn:hover{background:#f0f4ff}
+  .btn.pri{background:var(--pri);color:#fff;border-color:var(--pri)}
+  .btn.pri:hover{background:var(--pri-d)}
+  .wrap{padding:0 22px 40px;background:var(--card)}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f5f9;position:relative;white-space:nowrap}
+  th .fbtn{cursor:pointer;color:var(--pri);margin-left:4px;font-size:11px;user-select:none}
+  tbody tr:nth-child(even){background:#fafbfc}
+  tbody tr:hover{background:#eff6ff}
+  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}
+  .badge.ok{background:#dcfce7;color:var(--ok)}
+  .badge.warn{background:#ffedd5;color:var(--warn)}
+  .badge.bad{background:#fee2e2;color:var(--bad)}
+  .badge.gray{background:#e2e8f0;color:var(--gray)}
+  .tag{display:inline-block;background:var(--tag);color:var(--tag-t);padding:1px 7px;border-radius:8px;font-size:11px;margin:1px 2px}
+  a.link{color:var(--pri);text-decoration:none}
+  a.link:hover{text-decoration:underline}
+  .cnt{color:var(--muted);font-size:12px;margin-left:auto}
+  .filter-pop{position:absolute;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);padding:8px;z-index:50;min-width:160px;max-height:260px;overflow:auto;display:none}
+  .filter-pop label{display:block;padding:4px 6px;cursor:pointer;font-size:13px;white-space:nowrap}
+  .filter-pop .fp-actions{display:flex;gap:6px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
+  .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:100}
+  .modal{background:#fff;border-radius:12px;padding:20px;width:520px;max-width:92vw;max-height:90vh;overflow:auto;position:relative}
+  .modal h3{margin:0 0 14px}
+  .close-x{position:absolute;top:12px;right:14px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;user-select:none}
+  .close-x:hover{background:#f1f5f9;color:var(--text)}
+  .modal label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+  .modal input,.modal select,.modal textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit}
+  .modal .row{display:flex;gap:10px}
+  .modal .row>div{flex:1}
+  .modal .acts{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gray);margin-right:6px}
+  .dot.synced{background:var(--ok)} .dot.err{background:var(--bad)}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2733;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.3s;z-index:200}
+  .toast.show{opacity:1}
+  .manual{background:#faf5ff} .modified{background:#fff7ed}
+  .hidden{display:none!important}
+.head-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn .ico{display:inline-block;width:14px;text-align:center}
+.btn.loading{position:relative}
+.btn.loading .ico::after{content:"";display:inline-block;width:10px;height:10px;border:2px solid #cbd5e1;border-top-color:var(--pri);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn.ok{color:var(--ok);border-color:var(--ok)}
+.btn.err{color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:4px 10px;font-size:12px}
+.btn:disabled{opacity:.7;cursor:default}
+.change-card{margin:10px 22px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.cc-head{display:flex;justify-content:space-between;align-items:center;font-weight:600;margin-bottom:6px}
+.cc-body .cri{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:13px;border-bottom:1px dashed #eef}
+.cc-body .cri:last-child{border-bottom:none}
+.ct{display:inline-block;padding:1px 7px;border-radius:8px;font-size:11px}
+.ct.manual{background:#ede9fe;color:#6d28d9}
+.ct.auto{background:#dcfce7;color:#15803d}
+.ct-time{color:var(--muted);font-size:12px}
+.muted{color:var(--muted)}
+.cl-entry{border-bottom:1px solid var(--line);padding:8px 0}
+.cl-entry:last-child{border-bottom:none}
+.cl-meta{color:var(--muted);font-size:12px;margin-bottom:2px}
+.cl-entry ul{margin:4px 0 0;padding-left:18px}
+.old{color:var(--bad)} .new{color:var(--ok)}
+.batchbar{display:flex;gap:10px;align-items:center;padding:8px 22px;background:#eff6ff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.batchbar.hidden{display:none}
+.batchbar .btn[disabled]{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
+<header>
+  <h1>法律法规与产品标准清单</h1>
+  <div class="meta">数据更新时间：<span id="lastUpdated">-</span> ｜ <span class="dot" id="syncDot"></span><span id="syncText">本地</span></div>
+  <div class="head-actions">
+    <button class="btn" id="syncBtn" onclick="manualSync()"><span class="ico"></span>同步</button>
+    <button class="btn" id="retrieveBtn" onclick="triggerRetrieve()"><span class="ico"></span>自动检索</button>
+  </div>
+</header>
 
-<!-- ===== Header ===== -->
-<div class="header">
-  <div class="header-left">
-    <h1>法律法规及其他要求清单</h1>
-    <div class="update-info">
-      <span class="label">数据更新时间：</span><span class="value" id="lastUpdated">--</span>
-      <button class="btn btn-retrieve btn-sm" id="retrieveBtn" onclick="triggerRetrieval()">&#x1F50D; 自动检索</button>
-      <span class="retrieve-status" id="retrieveStatus"></span>
+<div class="top-tabs">
+  <button id="tab-laws" class="active" onclick="switchTop('laws')">法律法规</button>
+  <button id="tab-standards" onclick="switchTop('standards')">产品标准</button>
+</div>
+
+<!-- 最近变更预览卡 -->
+<div class="change-card">
+  <div class="cc-head"><span>最近变更</span><button class="btn sm" onclick="openChangelog()">查看详细记录</button></div>
+  <div id="changePreview" class="cc-body"><span class="muted">暂无变更记录</span></div>
+</div>
+
+<!-- 法律法规视图 -->
+<section id="view-laws">
+  <div class="sub-tabs" id="lawSubTabs"></div>
+  <div class="toolbar">
+    <input type="search" id="lawSearch" placeholder="搜索法规名称/发文字号/部门/备注…" oninput="onSearch('laws',this.value)">
+    <button class="btn pri" onclick="openEdit('laws')">+ 新增法规</button>
+    <button class="btn" onclick="exportExcel('laws')">导出Excel</button>
+    <button class="btn" onclick="exportPDF('laws')">导出PDF</button>
+    <button class="btn" onclick="exportPNG('laws')">导出图片</button>
+    <span class="cnt" id="lawCnt"></span>
+  </div>
+  <div class="batchbar hidden" id="batchBar-laws">
+    <span id="batchInfo-laws"></span>
+    <button class="btn pri sm" onclick="batchDelete('laws')">批量删除</button>
+    <button class="btn sm" onclick="openBatchStatus('laws')">批量改状态</button>
+    <button class="btn sm" onclick="openBatchDomain('laws')">批量设领域</button>
+  </div>
+  <div class="wrap">
+    <table id="lawTable">
+      <thead><tr>
+        <th>序号</th><th>法规名称</th><th>发文字号</th><th>发布部门</th><th>实施日期</th>
+        <th>状态<span class="fbtn" data-f="status">▾筛选</span></th>
+        <th>所属领域<span class="fbtn" data-f="domains">▾筛选</span></th>
+        <th>原文链接</th><th>备注</th><th>操作<br><input type="checkbox" id="selAllLaws" onclick="toggleSelAll('laws',this.checked)"></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 产品标准视图 -->
+<section id="view-standards" class="hidden">
+  <div class="toolbar">
+    <input type="search" id="stdSearch" placeholder="搜索标准名称/编号/类型/发布单位/备注…" oninput="onSearch('standards',this.value)">
+    <button class="btn pri" onclick="openEdit('standards')">+ 新增标准</button>
+    <button class="btn" onclick="exportExcel('standards')">导出Excel</button>
+    <button class="btn" onclick="exportPDF('standards')">导出PDF</button>
+    <button class="btn" onclick="exportPNG('standards')">导出图片</button>
+    <span class="cnt" id="stdCnt"></span>
+  </div>
+  <div class="batchbar hidden" id="batchBar-standards">
+    <span id="batchInfo-standards"></span>
+    <button class="btn pri sm" onclick="batchDelete('standards')">批量删除</button>
+    <button class="btn sm" onclick="openBatchStatus('standards')">批量改状态</button>
+  </div>
+  <div class="wrap">
+    <table id="stdTable">
+      <thead><tr>
+        <th>序号</th><th>标准编号</th><th>标准名称</th>
+        <th>标准类型<span class="fbtn" data-f="stdType">▾筛选</span></th>
+        <th>发布单位</th><th>实施日期</th>
+        <th>状态<span class="fbtn" data-f="status">▾筛选</span></th>
+        <th>原文链接</th><th>备注</th><th>操作<br><input type="checkbox" id="selAllStds" onclick="toggleSelAll('standards',this.checked)"></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 筛选弹层容器 -->
+<div id="filterLayer"></div>
+
+<!-- 编辑弹窗 -->
+<div class="modal-mask" id="editMask" onclick="if(event.target===this)closeEdit()">
+  <div class="modal">
+    <span class="close-x" onclick="closeEdit()" title="关闭">✕</span>
+    <h3 id="editTitle">编辑</h3>
+    <input type="hidden" id="eTable"><input type="hidden" id="eId">
+    <div class="row">
+      <div><label id="lblName">法规名称 *</label><input id="eName"></div>
+      <div><label id="lblNo">发文字号</label><input id="eNo"></div>
     </div>
-    <div class="update-notes" id="updateNotes"></div>
-  </div>
-  <div class="header-right">
-    <button class="btn btn-edit" onclick="openAddModal()">&#x2795; 新增法规</button>
-    <button class="btn btn-outline" onclick="openChangeLogModal()">&#x1F4CB; 变更记录</button>
-    <button class="btn btn-excel" onclick="exportExcel()">导出 Excel</button>
-    <button class="btn btn-pdf" id="btnPdf" onclick="exportPDF()">导出 PDF</button>
-    <button class="btn btn-img" onclick="exportImage()">导出图片</button>
-    <button class="btn btn-sync" id="syncBtn" onclick="syncNow()">&#x2601; 同步</button>
-  </div>
-</div>
-
-<!-- ===== Toolbar ===== -->
-<div class="toolbar">
-  <div class="search-box">
-    <span class="icon">&#128269;</span>
-    <input type="text" id="searchInput" placeholder="搜索法规名称..." oninput="renderTable()">
-  </div>
-  <select class="filter-select" id="statusFilter" onchange="renderTable()">
-    <option value="">全部状态</option>
-    <option value="在用">在用</option>
-    <option value="废止">废止</option>
-  </select>
-  <select class="filter-select" id="sourceFilter" onchange="renderTable()">
-    <option value="">全部来源</option>
-    <option value="manual">仅手动添加</option>
-    <option value="auto">仅自动检索</option>
-    <option value="modified">仅已修改</option>
-  </select>
-  <span class="toolbar-info" id="manualCountInfo"></span>
-  <span class="sync-status" id="syncStatus"></span>
-</div>
-
-<!-- ===== Tabs ===== -->
-<div class="tabs" id="tabs"></div>
-
-<!-- ===== Table ===== -->
-<div class="table-container" id="tableContainer">
-  <div class="loading">正在加载法律法规数据...</div>
-</div>
-
-<!-- ===== Footer ===== -->
-<div class="footer" id="footer"></div>
-
-<!-- ===== Management Modal（新增 / 编辑法规） ===== -->
-<div class="modal-overlay" id="manageModal">
-  <div class="modal modal-wide">
-    <button class="modal-close" onclick="closeManageModal()" title="关闭">&#x2715;</button>
-
-    <div id="manageFormView">
-      <h2 id="formTitle">新增法规</h2>
-      <div class="form-group">
-        <label>法规名称 <span class="required">*</span></label>
-        <input type="text" id="formName" placeholder="如：中华人民共和国XX法">
+    <div class="row">
+      <div><label id="lblDept">发布部门</label><input id="eDept"></div>
+      <div><label>实施日期</label><input id="eDate" placeholder="YYYY-MM-DD"></div>
+    </div>
+    <div class="row">
+      <div><label>状态</label>
+        <select id="eStatus"><option>现行有效</option><option>即将实施</option><option>已废止</option></select>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>所属分类 <span class="required">*</span></label>
-          <select id="formCategory">
-            <option value="trisystem">三体系 (ISO 9001/14001/45001)</option>
-            <option value="social">社会责任</option>
-            <option value="antiterror">反恐/供应链安全</option>
-            <option value="infosec">信息安全</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>使用状态</label>
-          <select id="formStatus">
-            <option value="在用">在用</option>
-            <option value="废止">废止</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>来源网站</label>
-        <select id="formSource" onchange="onSourceChange()">
-          <option value=""></option>
-          <option value="中国人大网">中国人大网 (npc.gov.cn)</option>
-          <option value="中国政府网">中国政府网 (gov.cn)</option>
-          <option value="国家网信办">国家网信办 (cac.gov.cn)</option>
-          <option value="工业和信息化部">工业和信息化部 (miit.gov.cn)</option>
-          <option value="国家标准化管理委员会">国家标准化管理委员会 (openstd.samr.gov.cn)</option>
-          <option value="海关总署">海关总署 (customs.gov.cn)</option>
-          <option value="国家市场监督管理总局">国家市场监督管理总局 (samr.gov.cn)</option>
-          <option value="其他">其他</option>
+      <div><label id="lblType">标准类型</label>
+        <select id="eType">
+          <option>国家标准</option><option>国际标准</option><option>欧盟标准</option><option>美国FDA</option>
+          <option>法国法令</option><option>法国食品级法规通告</option><option>德国LFGB</option><option>德国标准</option>
+          <option>意大利标准</option><option>SVHC</option><option>美国加州</option><option>巴西497法令</option><option>行业标准</option><option>其他</option>
         </select>
       </div>
-      <div class="form-group" id="otherSourceGroup" style="display:none;">
-        <label>其他来源网站名称 <span style="color:#8892a6;font-weight:400;">（选填，上面选“其他”时填写）</span></label>
-        <input type="text" id="formOtherSource" placeholder="如：XX省生态环境厅官网">
-      </div>
-      <div class="form-group">
-        <label>来源链接 <span class="required">*</span></label>
-        <input type="url" id="formSourceUrl" placeholder="https://...">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>实施时间</label>
-          <input type="date" id="formEffectiveDate">
-        </div>
-        <div class="form-group">
-          <label>引入时间</label>
-          <input type="date" id="formIntroducedDate">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>保管方式</label>
-          <select id="formStorageMethod">
-            <option value="电子档">电子档</option>
-            <option value="纸质">纸质</option>
-            <option value="电子档+纸质">电子档+纸质</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>保管期限</label>
-          <select id="formRetentionPeriod">
-            <option value="三年">三年</option>
-            <option value="五年">五年</option>
-            <option value="十年">十年</option>
-            <option value="长期">长期</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-outline" onclick="closeManageModal()">取消</button>
-        <button class="btn btn-edit" onclick="saveLaw()">保存</button>
-      </div>
     </div>
-
+    <label>所属领域（多选，逗号分隔）</label>
+    <input id="eDomains" placeholder="质量,环境,职业健康安全,信息安全,社会责任,反恐">
+    <label>原文链接</label><input id="eLink" placeholder="https://">
+    <label>备注</label><textarea id="eRemark" rows="3"></textarea>
+    <div class="acts">
+      <button class="btn" onclick="closeEdit()">取消</button>
+      <button class="btn pri" onclick="saveEdit()">保存</button>
+    </div>
   </div>
 </div>
 
-<!-- ===== Progress Dialog ===== -->
-<div class="dialog-overlay" id="progressDialog">
-  <div class="dialog-box">
-    <button class="modal-close" onclick="closeProgress()" title="关闭">&#x2715;</button>
-    <h2 id="progressTitle"><span class="spinner"></span>正在处理...</h2>
-    <div id="progressBody" class="info-text">请稍候...</div>
+<div class="toast" id="toast"></div>
+
+<!-- 批量改状态弹窗 -->
+<div class="modal-mask" id="batchStatusMask" onclick="if(event.target===this)closeBatchStatus()">
+  <div class="modal">
+    <span class="close-x" onclick="closeBatchStatus()" title="关闭">✕</span>
+    <h3>批量改状态</h3>
+    <p class="muted" id="batchStatusInfo"></p>
+    <label>选择状态</label>
+    <select id="bStatus"><option>现行有效</option><option>即将实施</option><option>已废止</option></select>
+    <div class="acts"><button class="btn" onclick="closeBatchStatus()">取消</button><button class="btn pri" onclick="applyBatchStatus()">应用</button></div>
   </div>
 </div>
 
-<!-- ===== Change Log Modal（变更记录 / 恢复已删法规） ===== -->
-<div class="modal-overlay" id="changeLogModal">
-  <div class="modal modal-wide">
-    <button class="modal-close" onclick="closeChangeLogModal()" title="关闭">&#x2715;</button>
-    <h2>&#x1F4CB; 变更记录</h2>
-    <p class="sync-hint" style="margin:0 0 12px;">
-      本页记录对清单的<span style="color:#5e35b1;">新增 / 修改 / 删除 / 恢复</span>操作，自动同步，按时间倒序。
-    </p>
-    <div class="manage-stats" style="margin:0 0 12px;gap:10px;">
-      <button class="btn-sm btn-outline" onclick="resetAllChanges()">恢复全部原始数据</button>
-    </div>
-    <div class="manage-list-wrap" id="changeLogWrap" style="max-height:420px;"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeChangeLogModal()">关闭</button>
-    </div>
+<!-- 批量设领域弹窗 -->
+<div class="modal-mask" id="batchDomainMask" onclick="if(event.target===this)closeBatchDomain()">
+  <div class="modal">
+    <span class="close-x" onclick="closeBatchDomain()" title="关闭">✕</span>
+    <h3>批量设领域</h3>
+    <p class="muted" id="batchDomainInfo"></p>
+    <label>所属领域（多选，逗号分隔）</label>
+    <input id="bDomain" placeholder="质量,环境,职业健康安全,信息安全,社会责任,反恐">
+    <div class="acts"><button class="btn" onclick="closeBatchDomain()">取消</button><button class="btn pri" onclick="applyBatchDomain()">应用</button></div>
+  </div>
+</div>
+
+<!-- 变更记录弹窗 -->
+<div class="modal-mask" id="clogMask" onclick="if(event.target===this)closeChangelog()">
+  <div class="modal">
+    <span class="close-x" onclick="closeChangelog()" title="关闭">✕</span>
+    <h3>变更记录</h3>
+    <div id="clogBody" style="max-height:60vh;overflow:auto"></div>
+    <div class="acts"><button class="btn pri" onclick="closeChangelog()">关闭</button></div>
   </div>
 </div>
 
 <script>
-// ===== Global State =====
-let lawsData = null;
-let currentCategory = 'all';
-let manualLaws = [];
-let lawOverrides = {};   // { "categoryId::lawId": { field: value, ... } }
-let deletedLawKeys = []; // ["categoryId::lawId", ...]（由 deletionMap 派生）
-let manualTs = {};       // { id: ts } 多人协同合并用时间戳
-let overrideTs = {};     // { "categoryId::lawId": ts }
-let deletionMap = {};    // { "categoryId::lawId": { ts, del } } del:true=已删除 false=已恢复
-let formContext = null;  // { mode, type, key, categoryId, originalLaw }
-let tableLawsCache = [];
-let changeLog = [];       // [{ id, ts, action, lawName, categoryId, categoryName, device, key, detail }]
-let clientUpdatedAt = null; // 最近一次手动编辑时间（ISO），用于"数据更新时间"
+const SYNC_PROXY = "https://1460512300-c8zm53ghd.ap-guangzhou.tencentcs.com";
+const LS_OVR="lawOverrides_v3", LS_DEL="deletedLaws_v3", LS_MAN="manualLaws_v3", LS_LOG="changeLog_v1";
+let DATA={laws:[],standards:[],lastUpdated:""};
+let edits={overrides:{},deleted:[],manual:[],log:[]};
+let selected=new Set();
+const state={top:"laws",lawSub:"全部",
+  filters:{laws:{status:new Set(),domains:new Set()},standards:{stdType:new Set(),status:new Set()}},
+  search:{laws:"",standards:""}};
 
-// ===== localStorage Management =====
-const STORAGE_KEY = 'manualLaws_v2';
-const OVERRIDES_KEY = 'lawOverrides_v2';
-const DELETIONS_KEY = 'deletedLaws_v2';      // 旧键（仅数组），用于首次迁移
-const MANUAL_TS_KEY = 'manualTs_v1';
-const OVERRIDE_TS_KEY = 'overrideTs_v1';
-const DELETION_MAP_KEY = 'deletionMap_v1';
-const CHANGELOG_KEY = 'changeLog_v1';
-const CLIENT_UPDATED_KEY = 'clientUpdatedAt_v1';
-const DEVICE_TAG = (localStorage.getItem('deviceTag_v1') || (function(){
-  const t = '设备' + (Math.floor(Math.random()*9000)+1000);
-  localStorage.setItem('deviceTag_v1', t);
-  return t;
-})());
+/* ---------- 工具 ---------- */
+function $(s){return document.querySelector(s)}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
+function loadLS(k){try{return JSON.parse(localStorage.getItem(k))||{}}catch(e){return {}}}
+function saveLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function keyOf(table,id){return table+"::"+id}
+function statusBadge(s){const m={"现行有效":"ok","即将实施":"warn","已废止":"bad"};const c=m[s]||"gray";return `<span class="badge ${c}">${s||"-"}</span>`}
+function domainsTags(arr){return (arr||[]).map(d=>`<span class="tag">${d}</span>`).join("")}
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 
-// ===== Key Utilities =====
-function makeKey(categoryId, lawId) {
-  return categoryId + '::' + lawId;
-}
-function parseKey(key) {
-  const idx = key.indexOf('::');
-  return { categoryId: key.substring(0, idx), lawId: key.substring(idx + 2) };
-}
-
-// ===== localStorage Management =====
-function loadFromStorage() {
-  try { manualLaws = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { manualLaws = []; }
-  try { lawOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY)) || {}; } catch(e) { lawOverrides = {}; }
-  try { manualTs = JSON.parse(localStorage.getItem(MANUAL_TS_KEY)) || {}; } catch(e) { manualTs = {}; }
-  try { overrideTs = JSON.parse(localStorage.getItem(OVERRIDE_TS_KEY)) || {}; } catch(e) { overrideTs = {}; }
-  // 删除状态：优先用 deletionMap；缺失时由旧数组迁移
-  try { deletionMap = JSON.parse(localStorage.getItem(DELETION_MAP_KEY)) || null; } catch(e) { deletionMap = null; }
-  if (!deletionMap || typeof deletionMap !== 'object') {
-    try {
-      const old = JSON.parse(localStorage.getItem(DELETIONS_KEY)) || [];
-      const t = Date.now() - 1000; // 旧数据时间戳略早，便于被云端新数据覆盖
-      deletionMap = {};
-      old.forEach(k => { deletionMap[k] = { ts: t, del: true }; });
-    } catch(e) { deletionMap = {}; }
+/* ---------- 数据加载与合并 ---------- */
+async function init(){
+  try{
+    const r=await fetch("data.json?t="+Date.now());
+    DATA=await r.json();
+  }catch(e){
+    if(window.DATA) DATA=window.DATA; else {toast("加载 data.json 失败");return;}
   }
-  recomputeDeleted();
-  try { changeLog = JSON.parse(localStorage.getItem(CHANGELOG_KEY)) || []; } catch(e) { changeLog = []; }
-  try { clientUpdatedAt = localStorage.getItem(CLIENT_UPDATED_KEY) || null; } catch(e) { clientUpdatedAt = null; }
+  $("#lastUpdated").textContent=DATA.lastUpdated||"-";
+  // 本地编辑
+  edits.overrides=loadLS(LS_OVR); edits.deleted=loadLS(LS_DEL)||[]; edits.manual=loadLS(LS_MAN)||[]; edits.log=loadLS(LS_LOG)||[];
+  // 云端合并（best-effort）
+  await loadCloud();
+  renderChangePreview();
+  // 子分类Tab
+  const subs=["全部","质量","环境与职业健康","信息安全","反恐"];
+  $("#lawSubTabs").innerHTML=subs.map(s=>`<button class="${s==='全部'?'active':''}" data-s="${s}" onclick="switchSub('${s}')">${s}</button>`).join("");
+  buildFilterOptions();
+  renderLaws();renderStandards();
 }
-function recomputeDeleted() {
-  deletedLawKeys = Object.keys(deletionMap).filter(k => deletionMap[k] && deletionMap[k].del);
-}
-function saveManualLaws() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(manualLaws));
-  localStorage.setItem(MANUAL_TS_KEY, JSON.stringify(manualTs));
-}
-function saveChangeLog() {
-  localStorage.setItem(CHANGELOG_KEY, JSON.stringify(changeLog));
-}
-function saveClientUpdatedAt() {
-  if (clientUpdatedAt) localStorage.setItem(CLIENT_UPDATED_KEY, clientUpdatedAt);
-}
-function touchUpdated() {
-  clientUpdatedAt = new Date().toISOString();
-  saveClientUpdatedAt();
-  updateDisplayUpdatedAt();
-}
-function saveOverrides() {
-  localStorage.setItem(OVERRIDES_KEY, JSON.stringify(lawOverrides));
-  localStorage.setItem(OVERRIDE_TS_KEY, JSON.stringify(overrideTs));
-}
-function saveDeletions() {
-  localStorage.setItem(DELETION_MAP_KEY, JSON.stringify(deletionMap));
-}
-function markDeleted(key, del) {
-  deletionMap[key] = { ts: Date.now(), del: !!del };
-  recomputeDeleted();
-  saveDeletions();
+function getMerged(table){
+  const base=table==="laws"?DATA.laws:DATA.standards;
+  const prefix=table+"::";
+  let arr=base.map(r=>({...r}));
+  // 覆盖
+  for(const k in edits.overrides){ if(k.startsWith(prefix)){const id=k.slice(prefix.length);const rec=arr.find(x=>x.id===id);if(rec)Object.assign(rec,edits.overrides[k]);} }
+  // 删除
+  const del=new Set(edits.deleted.filter(k=>k.startsWith(prefix)).map(k=>k.slice(prefix.length)));
+  arr=arr.filter(r=>!del.has(r.id));
+  // 手动新增
+  for(const m of edits.manual){ if(m.table===table) arr.push({...m}); }
+  return arr;
 }
 
-// ===== Cloud Sync（多人共同编辑的工作空间，经腾讯云云函数 SCF 代理写回 GitHub） =====
-// 仓库公开 → user-edits.json 任何人可读取（网页直接读同站文件），同事/手机打开即见；
-// 写回云端走腾讯云 SCF 代理（SYNC_PROXY），令牌放在云端函数环境变量（GITHUB_TOKEN），
-// 不在网页里、不被 GitHub 拦截，也不要求同事登录或填令牌。腾讯云国内 100% 可达。
-// 把下面地址换成你部署好的腾讯云函数 URL（*.ap-guangzhou.tencentcs.com）。
-const SYNC_PROXY = 'https://1460512300-c9zrn53ghd.ap-guangzhou.tencentscf.com';
-
-function utf8ToBase64(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  bytes.forEach(b => { bin += String.fromCharCode(b); });
-  return btoa(bin);
+/* ---------- 法律法规渲染 ---------- */
+const LAW_COLS=["name","docNumber","dept","effectiveDate","status","domains","link","remark"];
+function renderLaws(){
+  let arr=getMerged("laws");
+  if(state.lawSub!=="全部") arr=arr.filter(r=>r.category===state.lawSub);
+  const f=state.filters.laws, q=state.search.laws.trim().toLowerCase();
+  if(f.status.size) arr=arr.filter(r=>f.status.has(r.status));
+  if(f.domains.size) arr=arr.filter(r=>(r.domains||[]).some(d=>f.domains.has(d)));
+  if(q) arr=arr.filter(r=>LAW_COLS.some(c=>String(r[c]||"").toLowerCase().includes(q)));
+  const tb=$("#lawTable tbody"); tb.innerHTML=arr.map((r,i)=>{
+    const manual=edits.manual.some(m=>m.table==="laws"&&m.id===r.id);
+    const cls=manual?"manual":(edits.overrides[keyOf("laws",r.id)]?"modified":"");
+    return `<tr class="${cls}">
+      <td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(r.docNumber)}</td><td>${esc(r.dept)}</td><td>${esc(r.effectiveDate)}</td>
+      <td>${statusBadge(r.status)}</td><td>${domainsTags(r.domains)}</td>
+      <td>${r.link?`<a class="link" href="${esc(r.link)}" target="_blank">查看</a>`:"-"}</td>
+      <td>${esc(r.remark)}</td>
+      <td><input type="checkbox" class="sel" data-k="${keyOf('laws',r.id)}" ${selected.has(keyOf('laws',r.id))?'checked':''} onchange="onRowCheck(this)"> <a class="link" onclick="openEdit('laws','${r.id}')">改</a> <a class="link" onclick="delRec('laws','${r.id}')">删</a></td>
+    </tr>`;
+  }).join("");
+  $("#lawCnt").textContent=`共 ${arr.length} 条`;
+  renderBatchBar("laws");
 }
-function b64decodeUtf8(b64) {
-  const bin = atob(b64.replace(/\s/g, ''));
-  return decodeURIComponent(escape(bin));
+const STD_COLS=["stdNo","name","stdType","publisher","effectiveDate","status","link","remark"];
+function renderStandards(){
+  let arr=getMerged("standards");
+  const f=state.filters.standards, q=state.search.standards.trim().toLowerCase();
+  if(f.stdType.size) arr=arr.filter(r=>f.stdType.has(r.stdType));
+  if(f.status.size) arr=arr.filter(r=>f.status.has(r.status));
+  if(q) arr=arr.filter(r=>STD_COLS.some(c=>String(r[c]||"").toLowerCase().includes(q)));
+  const tb=$("#stdTable tbody"); tb.innerHTML=arr.map((r,i)=>{
+    const manual=edits.manual.some(m=>m.table==="standards"&&m.id===r.id);
+    const cls=manual?"manual":(edits.overrides[keyOf("standards",r.id)]?"modified":"");
+    return `<tr class="${cls}">
+      <td>${i+1}</td><td>${esc(r.stdNo)}</td><td>${esc(r.name)}</td><td>${esc(r.stdType)}</td><td>${esc(r.publisher)}</td>
+      <td>${esc(r.effectiveDate)}</td><td>${statusBadge(r.status)}</td>
+      <td>${r.link?`<a class="link" href="${esc(r.link)}" target="_blank">查看</a>`:"-"}</td>
+      <td>${esc(r.remark)}</td>
+      <td><input type="checkbox" class="sel" data-k="${keyOf('standards',r.id)}" ${selected.has(keyOf('standards',r.id))?'checked':''} onchange="onRowCheck(this)"> <a class="link" onclick="openEdit('standards','${r.id}')">改</a> <a class="link" onclick="delRec('standards','${r.id}')">删</a></td>
+    </tr>`;
+  }).join("");
+  $("#stdCnt").textContent=`共 ${arr.length} 条`;
+  renderBatchBar("standards");
 }
 
-function collectEdits() {
-  return {
-    version: 2,
-    updatedAt: new Date().toISOString(),
-    manualLaws: manualLaws,
-    manualTs: manualTs,
-    lawOverrides: lawOverrides,
-    overrideTs: overrideTs,
-    deletions: deletionMap,
-    changeLog: changeLog,
-    clientUpdatedAt: clientUpdatedAt || ''
+/* ---------- 筛选下拉 ---------- */
+function buildFilterOptions(){
+  const lawStatus=[...new Set(DATA.laws.map(r=>r.status))].filter(Boolean);
+  const lawDom=[...new Set(DATA.laws.flatMap(r=>r.domains||[]))].filter(Boolean);
+  const stdType=[...new Set(DATA.standards.map(r=>r.stdType))].filter(Boolean);
+  const stdStatus=[...new Set(DATA.standards.map(r=>r.status))].filter(Boolean);
+  window.__filt={laws:{status:lawStatus,domains:lawDom},standards:{stdType:stdType,status:stdStatus}};
+}
+document.addEventListener("click",e=>{
+  const fb=e.target.closest(".fbtn");
+  if(fb){ e.stopPropagation(); openFilter(fb); return; }
+  if(!e.target.closest(".filter-pop")) $("#filterLayer").innerHTML="";
+});
+function openFilter(btn){
+  const table=state.top; const fkey=btn.dataset.f;
+  const vals=window.__filt[table][fkey]||[];
+  const sel=state.filters[table][fkey];
+  const id="fp_"+table+"_"+fkey;
+  const html=`<div class="filter-pop" style="display:block" id="${id}">
+    ${vals.map(v=>`<label><input type="checkbox" value="${esc(v)}" ${sel.has(v)?"checked":""}> ${esc(v)}</label>`).join("")}
+    <div class="fp-actions"><button class="btn" onclick="clearFilter('${table}','${fkey}')">清除</button><button class="btn pri" onclick="$('#filterLayer').innerHTML=''">确定</button></div>
+  </div>`;
+  const layer=$("#filterLayer"); layer.innerHTML=html;
+  const pop=$("#"+id);
+  const r=btn.getBoundingClientRect(); pop.style.left=r.left+"px"; pop.style.top=(r.bottom+4)+"px";
+  pop.querySelectorAll("input").forEach(cb=>cb.onchange=()=>{cb.checked?sel.add(cb.value):sel.delete(cb.value); if(table==="laws")renderLaws();else renderStandards();});
+}
+function clearFilter(table,fkey){state.filters[table][fkey].clear(); if(table==="laws")renderLaws();else renderStandards(); $("#filterLayer").innerHTML="";}
+
+/* ---------- 搜索/切换 ---------- */
+function onSearch(table,v){state.search[table]=v; if(table==="laws")renderLaws();else renderStandards();}
+function switchTop(t){state.top=t; $("#tab-laws").classList.toggle("active",t==="laws"); $("#tab-standards").classList.toggle("active",t==="standards"); $("#view-laws").classList.toggle("hidden",t!=="laws"); $("#view-standards").classList.toggle("hidden",t!=="standards");}
+function switchSub(s){state.lawSub=s; document.querySelectorAll("#lawSubTabs button").forEach(b=>b.classList.toggle("active",b.dataset.s===s)); renderLaws();}
+
+/* ---------- 编辑 ---------- */
+function openEdit(table,id){
+  $("#eTable").value=table; $("#eId").value=id||"";
+  const isLaw=table==="laws";
+  $("#editTitle").textContent=(id?"编辑":"新增")+(isLaw?"法规":"标准");
+  $("#lblName").textContent=isLaw?"法规名称 *":"标准名称 *";
+  $("#lblNo").textContent=isLaw?"发文字号":"标准编号";
+  $("#lblDept").textContent=isLaw?"发布部门":"发布单位";
+  $("#lblType").parentElement.style.display=isLaw?"none":"";
+  const rec=id?(getMerged(table).find(r=>r.id===id)||{}):{};
+  $("#eName").value=rec.name||""; $("#eNo").value=rec.docNumber||rec.stdNo||"";
+  $("#eDept").value=rec.dept||rec.publisher||""; $("#eDate").value=rec.effectiveDate||"";
+  $("#eStatus").value=rec.status||"现行有效";
+  $("#eType").value=rec.stdType||"国家标准";
+  $("#eDomains").value=(rec.domains||[]).join(",");
+  $("#eLink").value=rec.link||""; $("#eRemark").value=rec.remark||"";
+  $("#editMask").style.display="flex";
+}
+function closeEdit(){$("#editMask").style.display="none"}
+function saveEdit(){
+  const table=$("#eTable").value, id=$("#eId").value, name=$("#eName").value.trim();
+  if(!name){toast("名称必填");return;}
+  const oldRec=id?getMerged(table).find(r=>r.id===id):null;
+  const rec={
+    name:name,
+    docNumber:table==="laws"?$("#eNo").value.trim():"",
+    stdNo:table==="standards"?$("#eNo").value.trim():"",
+    dept:table==="laws"?$("#eDept").value.trim():"",
+    publisher:table==="standards"?$("#eDept").value.trim():"",
+    effectiveDate:$("#eDate").value.trim(),
+    status:$("#eStatus").value,
+    stdType:table==="standards"?$("#eType").value:"",
+    domains:table==="laws"?$("#eDomains").value.split(",").map(s=>s.trim()).filter(Boolean):[],
+    link:$("#eLink").value.trim(), remark:$("#eRemark").value.trim(),
+    region:name.includes("广东")?"广东":""
   };
+  let op, diff=null, logName=name;
+  if(id){ // 覆盖
+    op="edit"; diff=fieldDiff(oldRec||{},rec,table); logName=(oldRec&&oldRec.name)||name;
+    const k=keyOf(table,id);
+    if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&x.id===id);Object.assign(m,rec);}
+    else edits.overrides[k]=rec;
+  }else{ // 新增
+    op="add";
+    rec.id=(table==="laws"?"mL":"mS")+Date.now(); rec.table=table;
+    if(table==="laws"){rec.category=rec.domains[0]||"质量";} 
+    edits.manual.push(rec);
+  }
+  edits.log.push({key:keyOf(table,id||rec.id)+"_"+Date.now(),table,recId:id||rec.id,name:logName,ts:Date.now(),op,diff});
+  trimLog();
+  persist(); closeEdit();
+  if(table==="laws")renderLaws();else renderStandards();
+  renderChangePreview();
+  toast("已保存（本地）"); pushCloud();
 }
-// 合并两份 edits：按 id / key 取较新者；平局时按 preferBase 决定胜负
-function mergeEdits(base, incoming, preferBase) {
-  const out = { version: 2, manualLaws: [], manualTs: {}, lawOverrides: {}, overrideTs: {}, deletions: {}, changeLog: [], clientUpdatedAt: '' };
-  // 手动法规：按 id
-  const bM = {}, iM = {};
-  (base.manualLaws || []).forEach(m => { bM[m.id] = m; });
-  (incoming.manualLaws || []).forEach(m => { iM[m.id] = m; });
-  new Set([...Object.keys(bM), ...Object.keys(iM)]).forEach(id => {
-    const b = bM[id], i = iM[id];
-    const bts = (base.manualTs && base.manualTs[id]) || 0;
-    const its = (incoming.manualTs && incoming.manualTs[id]) || 0;
-    let pick, ts;
-    if (!i) { pick = b; ts = bts; }
-    else if (!b) { pick = i; ts = its; }
-    else if (bts === its) { pick = preferBase ? b : i; ts = bts; }
-    else if (bts > its) { pick = b; ts = bts; }
-    else { pick = i; ts = its; }
-    out.manualLaws.push(pick);
-    out.manualTs[id] = ts;
-  });
-  // 内置法规修订：按 key
-  const allO = new Set([...Object.keys(base.lawOverrides || {}), ...Object.keys(incoming.lawOverrides || {})]);
-  allO.forEach(key => {
-    const b = (base.lawOverrides || {})[key], i = (incoming.lawOverrides || {})[key];
-    const bts = (base.overrideTs && base.overrideTs[key]) || 0;
-    const its = (incoming.overrideTs && incoming.overrideTs[key]) || 0;
-    let pick, ts;
-    if (!i) { pick = b; ts = bts; }
-    else if (!b) { pick = i; ts = its; }
-    else if (bts === its) { pick = preferBase ? b : i; ts = bts; }
-    else if (bts > its) { pick = b; ts = bts; }
-    else { pick = i; ts = its; }
-    if (pick && Object.keys(pick).length > 0) { out.lawOverrides[key] = pick; out.overrideTs[key] = ts; }
-  });
-  // 删除/恢复：按 key 取较新状态
-  const allD = new Set([...Object.keys(base.deletions || {}), ...Object.keys(incoming.deletions || {})]);
-  allD.forEach(key => {
-    const b = (base.deletions || {})[key], i = (incoming.deletions || {})[key];
-    const bts = b ? b.ts : 0, its = i ? i.ts : 0;
-    let pick;
-    if (!i) pick = b;
-    else if (!b) pick = i;
-    else if (bts === its) pick = preferBase ? b : i;
-    else if (bts > its) pick = b;
-    else pick = i;
-    if (pick) out.deletions[key] = pick;
-  });
-  // 变更记录：合并双方，按 id 去重，按时间倒序，最多保留 300 条
-  const seenLog = {};
-  const combinedLog = [].concat(base.changeLog || [], incoming.changeLog || []);
-  const mergedLog = [];
-  combinedLog.forEach(e => {
-    if (e && e.id && !seenLog[e.id]) { seenLog[e.id] = true; mergedLog.push(e); }
-  });
-  mergedLog.sort((a, b) => (b.ts || 0) - (a.ts || 0));
-  out.changeLog = mergedLog.slice(0, 300);
-  // 更新时间：取较新者
-  const bt = base.clientUpdatedAt ? new Date(base.clientUpdatedAt).getTime() : 0;
-  const it = incoming.clientUpdatedAt ? new Date(incoming.clientUpdatedAt).getTime() : 0;
-  out.clientUpdatedAt = (bt >= it ? base.clientUpdatedAt : incoming.clientUpdatedAt) || '';
-  return out;
+function removeRec(table,id){
+  const k=keyOf(table,id);
+  const rec=getMerged(table).find(r=>r.id===id);
+  const name=rec?rec.name:("记录"+id);
+  if(!edits.deleted.includes(k)) edits.deleted.push(k);
+  // 若属手动新增，直接从 manual 移除
+  edits.manual=edits.manual.filter(m=>!(m.table===table&&m.id===id));
+  return name;
 }
-function applyMerged(merged) {
-  manualLaws = merged.manualLaws || [];
-  manualTs = merged.manualTs || {};
-  lawOverrides = merged.lawOverrides || {};
-  overrideTs = merged.overrideTs || {};
-  deletionMap = merged.deletions || {};
-  changeLog = merged.changeLog || [];
-  clientUpdatedAt = merged.clientUpdatedAt || clientUpdatedAt;
-  recomputeDeleted();
-  saveManualLaws(); saveOverrides(); saveDeletions(); saveChangeLog(); saveClientUpdatedAt();
-  renderTabs(); renderTable(); updateManualCountInfo(); updateDisplayUpdatedAt();
+function delRec(table,id){
+  if(!confirm("确定删除该记录？"))return;
+  const name=removeRec(table,id);
+  edits.log.push({key:keyOf(table,id)+"_"+Date.now(),table,recId:id,name,ts:Date.now(),op:"delete"});
+  trimLog();
+  persist();
+  if(table==="laws")renderLaws();else renderStandards();
+  renderBatchBar(table); renderChangePreview();
+  toast("已删除（本地）"); pushCloud();
 }
-async function loadCloudEdits() {
-  try {
-    const res = await fetch('user-edits.json?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data || !data.manualLaws) return;
-    // 本地优先：保护尚未上传成功的本机修改
-    const merged = mergeEdits(collectEdits(), data, true);
-    applyMerged(merged);
-    console.log('已从云端载入/合并共享编辑');
-  } catch(e) { console.warn('云端编辑载入失败（可忽略）', e); }
+function persist(){
+  saveLS(LS_OVR,edits.overrides); saveLS(LS_DEL,edits.deleted); saveLS(LS_MAN,edits.manual); saveLS(LS_LOG,edits.log);
 }
-async function pushCloudEdits() {
-  if (!SYNC_PROXY) { updateSyncStatus('未配置同步代理地址（请联系管理员设置）'); setSyncIcon('error'); return; }
-  const apiUrl = SYNC_PROXY;
-  setSyncIcon('loading');
-  try {
-    let cloudSha = null, cloudData = null;
-    const getRes = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-    if (getRes.ok) {
-      const j = await getRes.json();
-      cloudSha = j.sha;
-      try { cloudData = JSON.parse(b64decodeUtf8(j.content)); } catch(e) { cloudData = null; }
-    } else if (getRes.status !== 404) {
-      throw new Error('读取云端失败: ' + getRes.status);
+function trimLog(){ if(edits.log.length>200) edits.log=edits.log.slice(-200); }
+function fmtTime(ts){ if(!ts)return"-"; const d=new Date(ts); const p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; }
+function fieldDiff(oldR,newR,table){
+  const fields=table==="laws"
+    ?[["name","法规名称"],["docNumber","发文字号"],["dept","发布部门"],["effectiveDate","实施日期"],["status","状态"],["domains","所属领域"],["link","原文链接"],["remark","备注"]]
+    :[["name","标准名称"],["stdNo","标准编号"],["publisher","发布单位"],["effectiveDate","实施日期"],["status","状态"],["stdType","标准类型"],["link","原文链接"],["remark","备注"]];
+  const diff=[];
+  for(const [f,label] of fields){
+    const o=Array.isArray(oldR[f])?oldR[f].join("/"):(oldR[f]||"");
+    const n=Array.isArray(newR[f])?newR[f].join("/"):(newR[f]||"");
+    if(o!==n) diff.push({f:label,old:o,new:n});
+  }
+  return diff;
+}
+
+/* ---------- 云端协同（best-effort） ---------- */
+async function loadCloud(){
+  if(!SYNC_PROXY)return;
+  try{
+    const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)return;
+    const c=await r.json(); const ts=c.ts||0;
+    // 覆盖：取较新
+    for(const k in (c.overrides||{})){ if(!edits.overrides[k]||ts> (edits._ts||0)) edits.overrides[k]=c.overrides[k]; }
+    edits.deleted=[...new Set([...edits.deleted,...(c.deleted||[])])];
+    for(const m of (c.manual||[])){ if(!edits.manual.some(x=>x.table===m.table&&x.id===m.id)) edits.manual.push(m); }
+    for(const e of (c.log||[])){ if(!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
+    edits._ts=ts;
+    $("#syncDot").className="dot synced"; $("#syncText").textContent="已同步云端";
+  }catch(e){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; }
+}
+async function pushCloud(){
+  if(!SYNC_PROXY)return;
+  try{
+    const body={overrides:edits.overrides,deleted:edits.deleted,manual:edits.manual,log:edits.log,ts:Date.now()};
+    const r=await fetch(SYNC_PROXY+"/user-edits.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(r.ok){$("#syncDot").className="dot synced";$("#syncText").textContent="已同步云端";}
+  }catch(e){}
+}
+
+/* ---------- 同步 / 自动检索 动画 ---------- */
+function setBtn(btn,st){
+  if(!btn)return;
+  const ico=btn.querySelector(".ico");
+  btn.classList.remove("loading","ok","err"); btn.disabled=false;
+  if(st==="loading"){ btn.classList.add("loading"); btn.disabled=true; }
+  else if(st==="ok"){ btn.classList.add("ok"); if(ico)ico.textContent="✓"; }
+  else if(st==="err"){ btn.classList.add("err"); if(ico)ico.textContent="✗"; }
+  else { if(ico)ico.textContent=""; }
+}
+async function manualSync(){
+  const btn=document.getElementById("syncBtn");
+  setBtn(btn,"loading");
+  try{ pushCloud(); await loadCloud(); setBtn(btn,"ok"); toast("已同步云端"); }
+  catch(e){ setBtn(btn,"err"); toast("同步失败"); }
+  finally{ setTimeout(()=>setBtn(btn,"idle"),1500); }
+}
+function triggerRetrieve(){
+  const btn=document.getElementById("retrieveBtn");
+  setBtn(btn,"loading");
+  setTimeout(()=>{ setBtn(btn,"idle"); toast("自动检索功能后端正在接入中，敬请期待"); },1000);
+}
+
+/* ---------- 变更记录（手动+自动合并） ---------- */
+async function renderChangePreview(){
+  const box=$("#changePreview");
+  const manual=edits.log.slice().sort((a,b)=>b.ts-a.ts);
+  let auto=null;
+  try{ auto=await fetch("update-summary.json?t="+Date.now()).then(r=>r.ok?r.json():null); }catch(e){}
+  const entries=[];
+  manual.forEach(e=>entries.push({kind:"手动",ts:e.ts,e}));
+  if(auto&&(auto.runAt||(auto.added||[]).length||(auto.modified||[]).length||(auto.abolished||[]).length))
+    entries.push({kind:"自动",ts:new Date(auto.runAt||0).getTime()||0,e:auto});
+  entries.sort((a,b)=>b.ts-a.ts);
+  if(!entries.length){ box.innerHTML='<span class="muted">暂无变更记录</span>'; return; }
+  box.innerHTML=entries.slice(0,5).map(en=>{
+    const tag=en.kind==="手动"?'<span class="ct manual">手动</span>':'<span class="ct auto">自动</span>';
+    const t=fmtTime(en.ts); let sum="";
+    if(en.kind==="手动"){ const e=en.e;
+      if(e.op==="add")sum="新增《"+esc(e.name)+"》";
+      else if(e.op==="delete")sum="删除《"+esc(e.name)+"》";
+      else sum="修改《"+esc(e.name)+"》"+(e.diff&&e.diff.length?("："+e.diff.slice(0,2).map(d=>d.f+" "+d.old+"→"+d.new).join("，")):"");
+    } else { const a=en.e; sum="更新：新增"+(a.added||[]).length+" 修改"+(a.modified||[]).length+" 废止"+(a.abolished||[]).length; }
+    return '<div class="cri">'+tag+'<span class="ct-time">'+t+'</span><span>'+sum+'</span></div>';
+  }).join("");
+}
+async function openChangelog(){
+  $("#clogMask").style.display="flex";
+  const box=$("#clogBody"); box.innerHTML="<p>加载中…</p>";
+  const manual=edits.log.slice().sort((a,b)=>b.ts-a.ts);
+  let auto=null;
+  try{ auto=await fetch("update-summary.json?t="+Date.now()).then(r=>r.ok?r.json():null); }catch(e){}
+  let h='<h4>手动变更（'+manual.length+'）</h4>';
+  if(!manual.length) h+='<p class="muted">暂无手动变更</p>';
+  else h+=manual.map(e=>{
+    let body;
+    if(e.op==="add") body='<p>➕ 新增《'+esc(e.name)+'》</p>';
+    else if(e.op==="delete") body='<p>🗑 删除《'+esc(e.name)+'》</p>';
+    else body='<p>✏ 修改《'+esc(e.name)+'》</p>'+(e.diff&&e.diff.length?'<ul>'+e.diff.map(d=>'<li>'+d.f+'：<span class="old">'+(esc(d.old)||'（空）')+'</span> → <span class="new">'+(esc(d.new)||'（空）')+'</span></li>').join("")+'</ul>':"");
+    return '<div class="cl-entry"><div class="cl-meta">'+fmtTime(e.ts)+'</div>'+body+'</div>';
+  }).join("");
+  h+='<h4>自动更新</h4>';
+  if(!auto) h+='<p class="muted">暂无自动更新记录（后端接入后显示）</p>';
+  else{
+    h+='<p>运行时间：'+esc(auto.runAt||"-")+'</p>';
+    if(auto.added&&auto.added.length) h+='<p>➕ 新增：'+auto.added.map(x=>typeof x==="string"?esc(x):esc(x.name)).join("、")+'</p>';
+    if(auto.modified&&auto.modified.length){
+      h+='<p>✏ 修改：</p><ul>'+auto.modified.map(x=>{
+        if(typeof x==="string") return '<li>'+esc(x)+'</li>';
+        const diff=(x.diff||[]).map(d=>d.f+'：'+(esc(d.old)||'（空）')+' → '+(esc(d.new)||'（空）')).join("；");
+        return '<li>'+esc(x.name)+(diff?'（'+diff+'）':'')+'</li>';
+      }).join("")+'</ul>';
     }
-    // 以云端为基准合并，本地较新者覆盖（同事的更新不会被你的旧副本抹掉）
-    const merged = mergeEdits(collectEdits(), cloudData || { manualLaws: [], manualTs: {}, lawOverrides: {}, overrideTs: {}, deletions: {} }, false);
-    const content = utf8ToBase64(JSON.stringify(merged, null, 2));
-    const body = { message: '协同同步法规编辑 ' + new Date().toISOString(), content: content };
-    if (cloudSha) body.sha = cloudSha;
-    const putRes = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: { 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!putRes.ok) {
-      const err = await putRes.json().catch(() => ({}));
-      throw new Error(err.message || ('推送失败: ' + putRes.status));
-    }
-    applyMerged(merged); // 推送成功后同步本地视图（含同事的修改）
-    updateSyncStatus('已同步到云端 ' + new Date().toLocaleTimeString());
-    setSyncIcon('ok');
-  } catch(e) {
-    console.error(e);
-    updateSyncStatus('同步失败：' + e.message);
-    setSyncIcon('error');
+    if(auto.abolished&&auto.abolished.length) h+='<p>🗑 废止：'+auto.abolished.map(x=>typeof x==="string"?esc(x):esc(x.name)).join("、")+'</p>';
   }
+  box.innerHTML=h;
 }
-function updateSyncStatus(text) {
-  const el = document.getElementById('syncStatus');
-  if (el) el.textContent = text || '';
-  const d = document.getElementById('syncDetail');
-  if (d) d.textContent = text || '';
-}
-function setSyncIcon(state) {
-  const btn = document.getElementById('syncBtn');
-  if (!btn) return;
-  if (state === 'loading') btn.innerHTML = '&#x23F3; 同步中';
-  else if (state === 'ok') btn.innerHTML = '&#x2714; 已同步';
-  else if (state === 'error') btn.innerHTML = '&#x2717; 同步失败';
-  else btn.innerHTML = '&#x2601; 同步';
-}
-function syncNow() { pushCloudEdits(); }
+function closeChangelog(){ $("#clogMask").style.display="none"; }
 
-// ===== 手动触发自动检索（经 SCF 代理触发 GitHub Actions；状态改读免费静态文件，避免消耗代理资源） =====
-const RETRIEVE_STATUS_FILE = 'retrieval-status.json';   // 由 Actions 脚本写出，走 GitHub Pages 免费托管
-const RETRIEVE_STARTED_AT_KEY = 'retrieveStartedAt_v1';
-const RETRIEVE_POLL_INTERVAL = 12000;  // A: 轮询间隔 12 秒（原 4 秒，省约 2/3 调用）
-const RETRIEVE_POLL_MAX = 30;          // B: 安全阀，最多轮询 30 次（约 6 分钟）自动停止
-let _retrieveTimer = null;
-let _retrieveCount = 0;
+/* ---------- 批量编辑 ---------- */
+function onRowCheck(cb){ const k=cb.dataset.k; if(cb.checked)selected.add(k); else selected.delete(k); renderBatchBar(state.top); }
+function toggleSelAll(table,checked){
+  document.querySelectorAll("#"+(table==="laws"?"lawTable":"stdTable")+" tbody .sel").forEach(cb=>{ cb.checked=checked; if(checked)selected.add(cb.dataset.k); else selected.delete(cb.dataset.k); });
+  renderBatchBar(table);
+}
+function renderBatchBar(table){
+  const bar=$("#batchBar-"+table); if(!bar)return;
+  const n=[...selected].filter(k=>k.startsWith(table+"::")).length;
+  if(n>0){ bar.classList.remove("hidden"); $("#batchInfo-"+table).textContent="已选 "+n+" 条"; }
+  else bar.classList.add("hidden");
+}
+function batchDelete(table){
+  const keys=[...selected].filter(k=>k.startsWith(table+"::"));
+  if(!keys.length)return;
+  if(!confirm("确定批量删除选中的 "+keys.length+" 条记录？"))return;
+  for(const k of keys){ const id=k.slice((table+"::").length); const name=removeRec(table,id); edits.log.push({key:k+"_"+Date.now(),table,recId:id,name,ts:Date.now(),op:"delete"}); selected.delete(k); }
+  trimLog(); persist();
+  if(table==="laws")renderLaws();else renderStandards();
+  renderBatchBar(table); renderChangePreview();
+  toast("已批量删除 "+keys.length+" 条"); pushCloud();
+}
 
-async function triggerRetrieval() {
-  if (_retrieveTimer) return; // 正在轮询中，忽略重复点击
-  if (!SYNC_PROXY) { alert('未配置同步代理地址（请联系管理员设置）'); return; }
-  const btn = document.getElementById('retrieveBtn');
-  if (btn) btn.disabled = true;
-  setRetrieveIcon('loading');
-  updateRetrieveStatus('正在触发自动检索...');
-  try {
-    const res = await fetch(SYNC_PROXY + '/trigger-update', { method: 'POST' });
-    const data = await res.json().catch(() => ({}));
-    if (res.ok) {
-      // C: 记录本次触发时间，轮询只采纳"晚于此时刻"的状态，避免读到上一次残留结果
-      localStorage.setItem(RETRIEVE_STARTED_AT_KEY, String(Date.now()));
-      updateRetrieveStatus('检索中…');
-      startRetrievePolling();
-    } else {
-      setRetrieveIcon('error');
-      updateRetrieveStatus('触发失败：' + (data.message || res.status));
-      if (btn) btn.disabled = false;
-    }
-  } catch (e) {
-    setRetrieveIcon('error');
-    updateRetrieveStatus('触发失败：' + e.message);
-    if (btn) btn.disabled = false;
+/* ---------- 批量改状态 / 批量设领域 ---------- */
+let batchTable=null;
+function openBatchStatus(table){
+  const keys=[...selected].filter(k=>k.startsWith(table+"::"));
+  if(!keys.length){toast("请先勾选要操作的记录");return;}
+  batchTable=table;
+  $("#batchStatusInfo").textContent="将选中的 "+keys.length+" 条记录统一设置为：";
+  $("#batchStatusMask").style.display="flex";
+}
+function closeBatchStatus(){ $("#batchStatusMask").style.display="none"; }
+function applyBatchStatus(){
+  const table=batchTable; const ns=$("#bStatus").value;
+  const keys=[...selected].filter(k=>k.startsWith(table+"::"));
+  if(!keys.length)return;
+  for(const k of keys){
+    const id=k.slice((table+"::").length);
+    const rec=getMerged(table).find(r=>r.id===id); if(!rec)continue;
+    const oldStatus=rec.status||""; if(oldStatus===ns)continue;
+    if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&m.id===id);m.status=ns;}
+    else edits.overrides[k]={...(edits.overrides[k]||rec),status:ns};
+    edits.log.push({key:k+"_"+Date.now(),table,recId:id,name:rec.name,ts:Date.now(),op:"edit",diff:[{f:"状态",old:oldStatus,new:ns}]});
   }
+  trimLog(); persist();
+  if(table==="laws")renderLaws();else renderStandards();
+  renderBatchBar(table); renderChangePreview();
+  closeBatchStatus(); toast("已批量改状态"); pushCloud();
 }
-
-function startRetrievePolling() {
-  if (_retrieveTimer) clearTimeout(_retrieveTimer);
-  _retrieveCount = 0;
-  const startedAt = Number(localStorage.getItem(RETRIEVE_STARTED_AT_KEY)) || Date.now();
-  const poll = async () => {
-    _retrieveCount++;
-    try {
-      // C: 直接读免费静态文件，不再打 SCF 代理
-      const res = await fetch(RETRIEVE_STATUS_FILE + '?t=' + Date.now(), { cache: 'no-store' });
-      if (res.ok) {
-        const s = await res.json().catch(() => ({}));
-        const t = s.updatedAt ? Date.parse(s.updatedAt) : 0;
-        // 只采纳晚于本次触发时刻的状态
-        if (!isNaN(t) && t >= startedAt) {
-          if (s.status === 'success') {
-            finishRetrieve('done', '部署成功 ✓ 网页自动更新中，请稍后刷新查看更新说明', true);
-            return;
-          } else if (s.status === 'failed') {
-            finishRetrieve('error', '检索失败：' + (s.error || '未知错误') + '，请稍后重试', false);
-            return;
-          }
-        }
-      }
-      setRetrieveIcon('loading');
-      updateRetrieveStatus('检索中…');
-    } catch (e) {
-      setRetrieveIcon('loading');
-      updateRetrieveStatus('检索中…');
-    }
-    // B: 安全阀，超过上限自动停止，绝不无限轮询
-    if (_retrieveCount >= RETRIEVE_POLL_MAX) {
-      finishRetrieve('error', '查询超时，请刷新页面查看是否已有更新', false);
-      return;
-    }
-    _retrieveTimer = setTimeout(poll, RETRIEVE_POLL_INTERVAL);
-  };
-  poll();
+function openBatchDomain(table){
+  const keys=[...selected].filter(k=>k.startsWith(table+"::"));
+  if(!keys.length){toast("请先勾选要操作的记录");return;}
+  batchTable=table;
+  $("#batchDomainInfo").textContent="将选中的 "+keys.length+" 条记录所属领域设置为（会替换原领域）：";
+  $("#batchDomainMask").style.display="flex";
 }
-
-function finishRetrieve(icon, msg, loadSummary) {
-  if (_retrieveTimer) { clearTimeout(_retrieveTimer); _retrieveTimer = null; }
-  localStorage.removeItem(RETRIEVE_STARTED_AT_KEY);
-  setRetrieveIcon(icon);
-  updateRetrieveStatus(msg);
-  const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = false;
-  if (loadSummary) loadUpdateSummary();
-}
-
-async function loadUpdateSummary() {
-  try {
-    const res = await fetch('update-summary.json?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) return;
-    const s = await res.json();
-    renderUpdateSummary(s);
-  } catch (e) { console.warn('读取更新说明失败', e); }
-}
-
-function renderUpdateSummary(s) {
-  const el = document.getElementById('updateNotes');
-  if (!el) return;
-  if (!s || !s.hasUpdates) {
-    const d = (s && s.updatedAt) ? '（' + escapeHtml(s.updatedAt) + '）' : '';
-    el.className = 'update-notes show';
-    el.innerHTML = '<span class="un-title">检索完成</span>' + d + '：本次无更新。';
-    return;
+function closeBatchDomain(){ $("#batchDomainMask").style.display="none"; }
+function applyBatchDomain(){
+  const table=batchTable;
+  const dom=$("#bDomain").value.split(",").map(s=>s.trim()).filter(Boolean);
+  const keys=[...selected].filter(k=>k.startsWith(table+"::"));
+  if(!keys.length)return;
+  for(const k of keys){
+    const id=k.slice((table+"::").length);
+    const rec=getMerged(table).find(r=>r.id===id); if(!rec)continue;
+    const oldDom=(rec.domains||[]).join("/"); const newDom=dom.join("/"); if(oldDom===newDom)continue;
+    if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&m.id===id);m.domains=dom;}
+    else edits.overrides[k]={...(edits.overrides[k]||rec),domains:dom};
+    edits.log.push({key:k+"_"+Date.now(),table,recId:id,name:rec.name,ts:Date.now(),op:"edit",diff:[{f:"所属领域",old:oldDom,new:newDom}]});
   }
-  const dateStr = (s.updatedAt) ? '（' + escapeHtml(s.updatedAt) + '）' : '';
-  const c = s.counts || {};
-  let html = '<span class="un-title">本次更新' + dateStr + '</span>：新增 ' + (c.added || 0) + ' 条 / 修改 ' + (c.updated || 0) + ' 条 / 废止 ' + (c.abolished || 0) + ' 条';
-  const changes = (s.changes || []);
-  if (changes.length) {
-    html += '<ul>';
-    changes.forEach(ch => {
-      const tag = ch.type === 'add' ? '新增' : (ch.type === 'abolish' ? '废止' : '修改');
-      html += '<li>[' + tag + '] ' + escapeHtml(ch.name) + '（' + escapeHtml(ch.category || '') + '）' + (ch.detail ? ' — ' + escapeHtml(ch.detail) : '') + '</li>';
-    });
-    html += '</ul>';
-  }
-  el.className = 'update-notes show has-updates';
-  el.innerHTML = html;
+  trimLog(); persist();
+  renderLaws(); renderBatchBar(table); renderChangePreview();
+  closeBatchDomain(); toast("已批量设领域"); pushCloud();
 }
 
-async function resumeRetrieveIfNeeded() {
-  // 断点续查：若 Actions 仍在运行（最近 15 分钟内写过 running），自动接着轮询
-  try {
-    const res = await fetch(RETRIEVE_STATUS_FILE + '?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) { loadUpdateSummary(); return; }
-    const s = await res.json().catch(() => ({}));
-    const t = s.updatedAt ? Date.parse(s.updatedAt) : 0;
-    if (s.status === 'running' && !isNaN(t) && (Date.now() - t) < 15 * 60 * 1000) {
-      const btn = document.getElementById('retrieveBtn'); if (btn) btn.disabled = true;
-      localStorage.setItem(RETRIEVE_STARTED_AT_KEY, String(t));
-      setRetrieveIcon('loading');
-      updateRetrieveStatus('检索中…（续查）');
-      startRetrievePolling();
-      return;
+/* ---------- 导出 ---------- */
+function currentRows(table){return getMerged(table);}
+function exportExcel(table){
+  const rows=currentRows(table);
+  const cols=table==="laws"
+    ?[["法规名称","name"],["发文字号","docNumber"],["发布部门","dept"],["实施日期","effectiveDate"],["状态","status"],["所属领域","domains"],["原文链接","link"],["备注","remark"]]
+    :[["标准编号","stdNo"],["标准名称","name"],["标准类型","stdType"],["发布单位","publisher"],["实施日期","effectiveDate"],["状态","status"],["原文链接","link"],["备注","remark"]];
+  const head=["序号",...cols.map(c=>c[0])];
+  const data=rows.map((r,i)=>[i+1,...cols.map(c=>Array.isArray(r[c[1]])?r[c[1]].join("/"):(r[c[1]]||""))]);
+  const ws=XLSX.utils.aoa_to_sheet([head,...data]);
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,table==="laws"?"法律法规":"产品标准");
+  XLSX.writeFile(wb,(table==="laws"?"法律法规":"产品标准")+"清单.xlsx");
+}
+function exportPDF(table){exportCanvas(table,true);}
+function exportPNG(table){exportCanvas(table,false);}
+function exportCanvas(table,asPdf){
+  const el=table==="laws"?$("#lawTable"):$("#stdTable");
+  html2canvas(el,{scale:2}).then(canvas=>{
+    if(!asPdf){const a=document.createElement("a");a.download=(table==="laws"?"法律法规":"产品标准")+"清单.png";a.href=canvas.toDataURL("image/png");a.click();return;}
+    const img=canvas.toDataURL("image/png");const p=new window.jspdf.jsPDF("l","mm","a4");
+    const pw=p.internal.pageSize.getWidth(),ph=p.internal.pageSize.getHeight();
+    const iw=pw, ih=canvas.height*ik(pw)/canvas.width; let y=0;
+    function ik(w){return w/canvas.width;}
+    let pos=0; const h=ih;
+    // 简单分页
+    let remaining=canvas.height, pageH=ph*canvas.width/pw;
+    const pageCanvas=document.createElement("canvas");pageCanvas.width=canvas.width;
+    const ctx=pageCanvas.getContext("2d");
+    let sy=0;
+    while(sy<canvas.height){
+      const sh=Math.min(pageH,canvas.height-sy);
+      pageCanvas.height=sh;
+      ctx.drawImage(canvas,0,sy,canvas.width,sh,0,0,canvas.width,sh);
+      const pImg=pageCanvas.toDataURL("image/png");
+      if(sy>0)p.addPage();
+      const dh=sh*ik(pw);
+      p.addImage(pImg,"PNG",0,0,pw,dh);
+      sy+=sh;
     }
-  } catch (e) {}
-  loadUpdateSummary();
-}
-
-function setRetrieveIcon(state) {
-  const btn = document.getElementById('retrieveBtn');
-  if (!btn) return;
-  if (state === 'loading') btn.innerHTML = '&#x23F3; 检索中';
-  else if (state === 'done') btn.innerHTML = '&#x2705; 已更新';
-  else if (state === 'ok') btn.innerHTML = '&#x2705; 已触发';
-  else if (state === 'error') btn.innerHTML = '&#x2717; 触发失败';
-  else btn.innerHTML = '&#x1F50D; 自动检索';
-}
-function updateRetrieveStatus(text) {
-  const el = document.getElementById('retrieveStatus');
-  if (el) el.textContent = text || '';
-}
-async function pullFromCloud() {
-  await loadCloudEdits();
-  updateSyncStatus('已从云端刷新 ' + new Date().toLocaleTimeString());
-}
-let _autoSyncTimer = null;
-function initSync() {
-  updateSyncStatus(SYNC_PROXY ? '已启用团队同步（免登录、免令牌）' : '未配置同步代理地址（请联系管理员设置）');
-  // 多人协作：定时从云端拉取同事的修改
-  if (_autoSyncTimer) clearInterval(_autoSyncTimer);
-  _autoSyncTimer = setInterval(() => {
-    if (document.visibilityState === 'visible') pullFromCloud();
-  }, 45000);
-  window.addEventListener('focus', () => {
-    pullFromCloud();
+    p.save((table==="laws"?"法律法规":"产品标准")+"清单.pdf");
   });
 }
-
-// ===== Data Loading =====
-async function loadData() {
-  try {
-    const res = await fetch('laws.json');
-    lawsData = await res.json();
-    loadFromStorage();
-    updateDisplayUpdatedAt();
-    renderTabs();
-    renderTable();
-    updateManualCountInfo();
-    await loadCloudEdits();
-    resumeRetrieveIfNeeded();
-  } catch (e) {
-    document.getElementById('tableContainer').innerHTML = '<div class="no-data">数据加载失败，请刷新重试</div>';
-    console.error(e);
-  }
-}
-
-// 把 ISO 时间(2026-07-30T21:47:18.123Z) 显示成好认的 2026-07-30 21:47:18；纯日期(2026-07-30)原样
-function formatUpdatedAt(s) {
-  if (!s || s === '--') return '--';
-  if (s.indexOf('T') >= 0) {
-    const d = new Date(s);
-    if (!isNaN(d.getTime())) {
-      const p = n => String(n).padStart(2, '0');
-      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
-    }
-  }
-  return s;
-}
-// 取"数据更新时间"：服务器 laws.json 的 lastUpdated 与本地手动编辑时间 clientUpdatedAt 的较新者
-function getEffectiveUpdatedAt() {
-  const server = (lawsData && lawsData.lastUpdated) || '';
-  let best = server, bestT = server ? new Date(server).getTime() : 0;
-  if (clientUpdatedAt) {
-    const t = new Date(clientUpdatedAt).getTime();
-    if (t > bestT) { best = clientUpdatedAt; bestT = t; }
-  }
-  return best || '--';
-}
-function updateDisplayUpdatedAt() {
-  const el = document.getElementById('lastUpdated');
-  if (el) el.textContent = formatUpdatedAt(getEffectiveUpdatedAt());
-}
-
-// ===== Merged Data (apply overrides + deletions + manual laws) =====
-function getMergedData() {
-  if (!lawsData) return null;
-  const merged = JSON.parse(JSON.stringify(lawsData));
-  merged.categories.forEach(cat => {
-    cat.laws = cat.laws.map(law => {
-      const key = makeKey(cat.id, law.id);
-      const ov = lawOverrides[key];
-      return { ...law, ...(ov || {}), _key: key, _type: 'builtin', _modified: !!ov };
-    });
-    cat.laws = cat.laws.filter(law => !deletedLawKeys.includes(law._key));
-  });
-  manualLaws.forEach(ml => {
-    if (deletedLawKeys.includes(ml.id)) return; // 已软删除的手动法规不显示
-    const cat = merged.categories.find(c => c.id === ml.category);
-    if (cat) {
-      cat.laws.push({ ...ml, _key: ml.id, _type: 'manual', _modified: false });
-    }
-  });
-  return merged;
-}
-
-// ===== Tabs =====
-function renderTabs() {
-  const merged = getMergedData();
-  if (!merged) return;
-  const tabsEl = document.getElementById('tabs');
-  let html = '<button class="tab active" onclick="switchCategory(\'all\')">全部 <span class="count">' + getTotalCount() + '</span></button>';
-  merged.categories.forEach(cat => {
-    html += '<button class="tab" onclick="switchCategory(\'' + cat.id + '\')">' + escapeHtml(cat.name) + ' <span class="count">' + cat.laws.length + '</span></button>';
-  });
-  tabsEl.innerHTML = html;
-}
-function getTotalCount() {
-  const merged = getMergedData();
-  return merged ? merged.categories.reduce((s, c) => s + c.laws.length, 0) : 0;
-}
-function switchCategory(catId) {
-  currentCategory = catId;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const tabs = document.querySelectorAll('.tab');
-  if (catId === 'all') { tabs[0].classList.add('active'); }
-  else {
-    const merged = getMergedData();
-    const idx = merged.categories.findIndex(c => c.id === catId) + 1;
-    if (tabs[idx]) tabs[idx].classList.add('active');
-  }
-  renderTable();
-}
-
-// ===== Filtered Laws =====
-function getFilteredLaws() {
-  const merged = getMergedData();
-  let laws = [];
-  if (currentCategory === 'all') {
-    merged.categories.forEach(cat => {
-      cat.laws.forEach(law => laws.push({ ...law, categoryName: cat.name }));
-    });
-  } else {
-    const cat = merged.categories.find(c => c.id === currentCategory);
-    if (cat) laws = cat.laws.map(l => ({ ...l, categoryName: cat.name }));
-  }
-  const search = document.getElementById('searchInput').value.toLowerCase().trim();
-  const status = document.getElementById('statusFilter').value;
-  const sf = document.getElementById('sourceFilter').value;
-  if (search) laws = laws.filter(l => l.name.toLowerCase().includes(search));
-  if (status) laws = laws.filter(l => l.status === status);
-  if (sf === 'manual') laws = laws.filter(l => l._type === 'manual');
-  else if (sf === 'auto') laws = laws.filter(l => l._type !== 'manual');
-  else if (sf === 'modified') laws = laws.filter(l => l._modified);
-  return laws;
-}
-
-// ===== Render Table =====
-function renderTable() {
-  if (!lawsData) return;
-  const laws = getFilteredLaws();
-  tableLawsCache = laws;
-  const container = document.getElementById('tableContainer');
-  const showCat = currentCategory === 'all';
-
-  let html = '<table id="lawTable"><thead><tr>';
-  html += '<th>编号</th>';
-  if (showCat) html += '<th>分类</th>';
-  html += '<th>文件名</th><th>文件来源</th><th>实施时间</th><th>引入时间</th><th>使用状态</th><th>保管方式</th><th>保管期限</th>';
-  html += '<th>操作</th>';
-  html += '</tr></thead><tbody>';
-
-  if (laws.length === 0) {
-    const colCount = showCat ? 10 : 9;
-    html += '<tr><td colspan="' + colCount + '" class="no-data">没有匹配的记录</td></tr>';
-  } else {
-    laws.forEach((law, i) => {
-      const sc = law.status === '在用' ? 'status-active' : 'status-inactive';
-      const badges = [];
-      if (law._type === 'manual') badges.push('<span class="manual-badge">手动</span>');
-      if (law._modified) badges.push('<span class="modified-badge">已修改</span>');
-      html += '<tr>';
-      html += '<td>' + (i + 1) + '</td>';
-      if (showCat) html += '<td>' + escapeHtml(law.categoryName) + '</td>';
-      html += '<td><div class="law-name-cell">' + escapeHtml(law.name) + badges.join('') + '</div></td>';
-      if (law.sourceUrl) {
-        html += '<td><a class="source-link" href="' + escapeHtml(law.sourceUrl) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(law.sourceUrl) + '">' + escapeHtml(law.source || '') + '</a></td>';
-      } else {
-        html += '<td>' + escapeHtml(law.source || '') + '</td>';
-      }
-      html += '<td>' + escapeHtml(law.effectiveDate || '') + '</td>';
-      html += '<td>' + escapeHtml(law.introducedDate || '') + '</td>';
-      html += '<td><span class="status-badge ' + sc + '">' + escapeHtml(law.status || '') + '</span></td>';
-      html += '<td>' + escapeHtml(law.storageMethod || '') + '</td>';
-      html += '<td>' + escapeHtml(law.retentionPeriod || '') + '</td>';
-      html += '<td style="white-space:nowrap;">';
-      html += '<button class="btn-sm btn-outline" onclick="quickEdit(' + i + ')">编辑</button> ';
-      html += '<button class="btn-danger" onclick="quickDelete(' + i + ')">删除</button>';
-      html += '</td>';
-      html += '</tr>';
-    });
-  }
-  html += '</tbody></table>';
-  container.innerHTML = html;
-
-  const mc = laws.filter(l => l._type === 'manual').length;
-  const mo = laws.filter(l => l._modified).length;
-  let footerText = '共 ' + laws.length + ' 条记录';
-  if (mc > 0) footerText += ' | 手动 ' + mc + ' 条';
-  if (mo > 0) footerText += ' | 已修改 ' + mo + ' 条';
-  document.getElementById('footer').innerHTML = '<span>' + footerText + '</span><span style="color:#ccc;">点击编辑可修改任意法规信息</span>';
-}
-
-function updateManualCountInfo() {
-  const info = document.getElementById('manualCountInfo');
-  const parts = [];
-  if (manualLaws.length > 0) parts.push('手动 ' + manualLaws.length + ' 条');
-  const oc = Object.keys(lawOverrides).length;
-  if (oc > 0) parts.push('已修改 ' + oc + ' 条');
-  if (deletedLawKeys.length > 0) parts.push('已删除 ' + deletedLawKeys.length + ' 条');
-  info.textContent = parts.join(' | ');
-  info.style.color = parts.length > 0 ? '#5e35b1' : '';
-}
-
-// ===== Utility =====
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-function ensureSourceOption(source) {
-  const sel = document.getElementById('formSource');
-  for (let i = 0; i < sel.options.length; i++) { if (sel.options[i].value === source) return; }
-  if (source) {
-    const opt = document.createElement('option');
-    opt.value = source; opt.textContent = source;
-    sel.appendChild(opt);
-  }
-}
-function showProgress(title, body) {
-  document.getElementById('progressTitle').innerHTML = '<span class="spinner"></span>' + title;
-  document.getElementById('progressBody').innerHTML = body || '请稍候...';
-  document.getElementById('progressDialog').classList.add('show');
-}
-function closeProgress() {
-  document.getElementById('progressDialog').classList.remove('show');
-}
-
-// ===== Management Modal（新增 / 编辑法规） =====
-function openAddModal() {
-  showFormView(null);
-  document.getElementById('manageModal').classList.add('show');
-}
-function openEditModal(law) {
-  showFormView(law);
-  document.getElementById('manageModal').classList.add('show');
-}
-function closeManageModal() {
-  document.getElementById('manageModal').classList.remove('show');
-}
-function onSourceChange() {
-  const v = document.getElementById('formSource').value;
-  document.getElementById('otherSourceGroup').style.display = (v === '其他') ? 'block' : 'none';
-}
-function addChangeLog(action, lawName, categoryId, key, detail) {
-  const cat = lawsData ? lawsData.categories.find(c => c.id === categoryId) : null;
-  const entry = {
-    id: Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-    ts: Date.now(),
-    action: action,
-    lawName: lawName,
-    categoryId: categoryId,
-    categoryName: cat ? cat.name : '',
-    device: DEVICE_TAG,
-    key: key || null,   // 必须保存 key，否则恢复时找不到对应法规（已修复）
-    detail: detail || ''  // 具体修改了什么（如「使用状态：在用 → 废止」）
-  };
-  changeLog.unshift(entry);
-  if (changeLog.length > 300) changeLog = changeLog.slice(0, 300);
-  saveChangeLog();
-}
-// 字段中文名
-const FIELD_LABELS = {
-  name: '法规名称', source: '来源网站', sourceUrl: '来源链接',
-  effectiveDate: '实施时间', introducedDate: '引入时间',
-  status: '使用状态', storageMethod: '保管方式', retentionPeriod: '保管期限'
-};
-function fieldLabel(f) { return FIELD_LABELS[f] || f; }
-// 由「被修改的字段(新值) + 原始对象」生成「旧 → 新」明细
-function buildEditDetail(changed, original) {
-  const parts = [];
-  Object.keys(changed).forEach(f => {
-    const oldV = original ? (original[f] || '(空)') : '(空)';
-    const newV = changed[f] || '(空)';
-    parts.push(fieldLabel(f) + '：' + oldV + ' → ' + newV);
-  });
-  return parts.join('；');
-}
-// 由完整表单数据生成「新增」明细（只列有值的字段）
-function buildAddDetail(d) {
-  const order = ['status','source','effectiveDate','introducedDate','storageMethod','retentionPeriod','sourceUrl'];
-  const parts = [];
-  order.forEach(f => { if (d[f]) parts.push(fieldLabel(f) + '：' + d[f]); });
-  return parts.join('；');
-}
-function openChangeLogModal() {
-  renderChangeLog();
-  document.getElementById('changeLogModal').classList.add('show');
-}
-function closeChangeLogModal() {
-  document.getElementById('changeLogModal').classList.remove('show');
-}
-function renderChangeLog() {
-  const wrap = document.getElementById('changeLogWrap');
-  if (!wrap) return;
-  if (!changeLog || changeLog.length === 0) {
-    wrap.innerHTML = '<div style="padding:20px;color:#8892a6;text-align:center;">暂无变更记录</div>';
-    return;
-  }
-  const actionMap = { add:'新增', edit:'修改', delete:'删除', restore:'恢复' };
-  let html = '<table class="manage-table"><thead><tr><th>时间</th><th>法规</th><th>分类</th><th>操作</th><th style="min-width:280px;">修改内容</th><th style="width:80px;">操作</th></tr></thead><tbody>';
-  changeLog.forEach((e, i) => {
-    const ac = actionMap[e.action] || e.action;
-    const t = new Date(e.ts).toLocaleString('zh-CN');
-    const detail = e.detail ? '<div style="line-height:1.5;word-break:break-all;">' + escapeHtml(e.detail) + '</div>' : '<span style="color:#8892a6;">—</span>';
-    const restoreBtn = (e.action === 'delete') ? '<button class="btn-restore" onclick="restoreFromChangeLog(' + i + ')">恢复</button>' : '';
-    html += '<tr><td>' + escapeHtml(t) + '</td><td>' + escapeHtml(e.lawName || '') + '</td><td>' + escapeHtml(e.categoryName || '') + '</td><td>' + ac + '</td><td>' + detail + '</td><td>' + restoreBtn + '</td></tr>';
-  });
-  html += '</tbody></table>';
-  wrap.innerHTML = html;
-}
-function resolveRestoreKey(e) {
-  if (e && e.key) return e.key;
-  // 兼容旧版（无 key 字段）的变更记录：按 分类 + 法规名 反查
-  if (!e) return null;
-  const cat = lawsData && lawsData.categories.find(c => c.id === e.categoryId);
-  if (cat) {
-    const law = cat.laws.find(l => l.name === e.lawName);
-    if (law) return makeKey(cat.id, law.id);
-  }
-  const ml = manualLaws.find(l => l.name === e.lawName && l.category === e.categoryId);
-  if (ml) return ml.id;
-  return null;
-}
-function restoreFromChangeLog(index) {
-  const e = changeLog[index];
-  if (!e) return;
-  const key = resolveRestoreKey(e);
-  if (!key) { alert('找不到对应的法规，无法恢复（可能是很早就删除且记录已清理）'); return; }
-  markDeleted(key, false);
-  addChangeLog('restore', e.lawName, e.categoryId, key, '恢复已删除的法规');
-  updateDisplayUpdatedAt();
-  renderChangeLog();
-  renderTabs(); renderTable(); updateManualCountInfo();
-  touchUpdated();
-  pushCloudEdits();
-}
-
-function showFormView(law) {
-  if (law) {
-    // Edit mode
-    if (law._type === 'builtin') {
-      const parsed = parseKey(law._key);
-      const cat = lawsData.categories.find(c => c.id === parsed.categoryId);
-      const originalLaw = cat ? cat.laws.find(l => l.id === parsed.lawId) : null;
-      formContext = { mode: 'edit', type: 'builtin', key: law._key, categoryId: parsed.categoryId, originalLaw: originalLaw };
-      document.getElementById('formCategory').disabled = true;
-    } else {
-      formContext = { mode: 'edit', type: 'manual', key: law._key, categoryId: law.category, originalLaw: null };
-      document.getElementById('formCategory').disabled = false;
-    }
-    document.getElementById('formTitle').textContent = '编辑法规';
-    document.getElementById('formName').value = law.name || '';
-    document.getElementById('formCategory').value = formContext.categoryId;
-    document.getElementById('formStatus').value = law.status || '在用';
-    // 内置来源选项直接选中；自定义来源（历史手动填的）走"其他"；空来源显示空白
-    const baseSources = ['中国人大网','中国政府网','国家网信办','工业和信息化部','国家标准化管理委员会','海关总署','国家市场监督管理总局','其他'];
-    if (!law.source) {
-      document.getElementById('formSource').value = '';
-      document.getElementById('formOtherSource').value = '';
-    } else if (baseSources.includes(law.source)) {
-      document.getElementById('formSource').value = law.source;
-      document.getElementById('formOtherSource').value = '';
-    } else {
-      document.getElementById('formSource').value = '其他';
-      document.getElementById('formOtherSource').value = law.source || '';
-    }
-    document.getElementById('formSourceUrl').value = law.sourceUrl || '';
-    document.getElementById('formEffectiveDate').value = law.effectiveDate || '';
-    document.getElementById('formIntroducedDate').value = law.introducedDate || '';
-    document.getElementById('formStorageMethod').value = law.storageMethod || '电子档';
-    document.getElementById('formRetentionPeriod').value = law.retentionPeriod || '三年';
-  } else {
-    // Add mode
-    formContext = { mode: 'add', type: 'manual', key: null, categoryId: currentCategory !== 'all' ? currentCategory : 'trisystem', originalLaw: null };
-    document.getElementById('formTitle').textContent = '新增法规';
-    document.getElementById('formCategory').disabled = false;
-    document.getElementById('formName').value = '';
-    document.getElementById('formCategory').value = formContext.categoryId;
-    document.getElementById('formStatus').value = '在用';
-    document.getElementById('formSource').value = '';
-    document.getElementById('formOtherSource').value = '';
-    document.getElementById('formSourceUrl').value = '';
-    document.getElementById('formEffectiveDate').value = '';
-    document.getElementById('formIntroducedDate').value = new Date().toISOString().slice(0, 10);
-    document.getElementById('formStorageMethod').value = '电子档';
-    document.getElementById('formRetentionPeriod').value = '三年';
-  }
-  onSourceChange();
-  document.getElementById('formName').focus();
-}
-
-function saveLaw() {
-  const name = document.getElementById('formName').value.trim();
-  let source = document.getElementById('formSource').value;
-  if (source === '其他') {
-    const t = document.getElementById('formOtherSource').value.trim();
-    source = t || '';
-  }
-  const category = document.getElementById('formCategory').value;
-  const status = document.getElementById('formStatus').value;
-  const sourceUrl = document.getElementById('formSourceUrl').value.trim();
-  const effectiveDate = document.getElementById('formEffectiveDate').value;
-  const introducedDate = document.getElementById('formIntroducedDate').value;
-  const storageMethod = document.getElementById('formStorageMethod').value;
-  const retentionPeriod = document.getElementById('formRetentionPeriod').value;
-
-  if (!name) { alert('请输入法规名称'); return; }
-  if (!sourceUrl) { alert('请输入来源链接'); return; }
-
-  const formData = { name, source, sourceUrl, effectiveDate, introducedDate, status, storageMethod, retentionPeriod };
-
-  if (formContext.mode === 'add') {
-    const newId = 'manual_' + Date.now();
-    manualLaws.push({
-      id: newId,
-      category: category,
-      ...formData,
-      manual: true,
-      manualAddedDate: new Date().toISOString().slice(0, 10)
-    });
-    manualTs[newId] = Date.now();
-    saveManualLaws();
-    addChangeLog('add', name, category, newId, buildAddDetail(formData));
-  } else if (formContext.mode === 'edit') {
-    if (formContext.type === 'manual') {
-      const idx = manualLaws.findIndex(l => l.id === formContext.key);
-      if (idx >= 0) {
-        const original = manualLaws[idx];
-        const changed = {};
-        ['name','source','sourceUrl','effectiveDate','introducedDate','status','storageMethod','retentionPeriod'].forEach(f => {
-          if (formData[f] !== (original[f] || '')) changed[f] = formData[f];
-        });
-        manualLaws[idx] = { ...original, ...formData, category };
-        manualTs[formContext.key] = Date.now();
-        saveManualLaws();
-        if (Object.keys(changed).length > 0) addChangeLog('edit', name, formContext.categoryId, formContext.key, buildEditDetail(changed, original));
-      }
-    } else {
-      // Built-in: store diff as override
-      const original = formContext.originalLaw;
-      if (original) {
-        const ov = {};
-        ['name','source','sourceUrl','effectiveDate','introducedDate','status','storageMethod','retentionPeriod'].forEach(f => {
-          if (formData[f] !== (original[f] || '')) ov[f] = formData[f];
-        });
-        if (Object.keys(ov).length > 0) { lawOverrides[formContext.key] = ov; overrideTs[formContext.key] = Date.now(); }
-        else { delete lawOverrides[formContext.key]; delete overrideTs[formContext.key]; }
-        saveOverrides();
-        if (Object.keys(ov).length > 0) addChangeLog('edit', name, formContext.categoryId, formContext.key, buildEditDetail(ov, original));
-      }
-    }
-  }
-
-  closeManageModal();
-  renderTabs();
-  renderTable();
-  updateManualCountInfo();
-  touchUpdated();
-  pushCloudEdits();
-}
-
-function doDelete(law) {
-  // 软删除：内置与手动均只标记删除，不移除数组，避免被云端旧副本重新"复活"
-  const categoryId = law._type === 'builtin' ? parseKey(law._key).categoryId : law.category;
-  markDeleted(law._key, true);
-  addChangeLog('delete', law.name, categoryId, law._key);
-  renderTabs(); renderTable(); updateManualCountInfo(); updateDisplayUpdatedAt();
-  touchUpdated();
-  pushCloudEdits();
-}
-function resetAllChanges() {
-  if (!confirm('确定要恢复全部原始数据吗？\n所有对内置法规的修改和删除将被撤销（恢复为系统原始内容）。\n手动添加的法规会保留（含你删除的手动法规）。\n（同事在云端做的修改仍会保留并重新显示）')) return;
-  lawOverrides = {};
-  overrideTs = {};
-  // 仅清除系统内置法规的删除标记；手动法规（manual_ 开头）的删除状态保留，避免误复活
-  const kept = {};
-  Object.keys(deletionMap).forEach(k => { if (k.indexOf('manual_') === 0) kept[k] = deletionMap[k]; });
-  deletionMap = kept;
-  recomputeDeleted();
-  saveOverrides();
-  saveDeletions();
-  renderTabs(); renderTable(); updateManualCountInfo(); updateDisplayUpdatedAt();
-  if (typeof renderChangeLog === 'function') renderChangeLog();
-  pushCloudEdits();
-}
-
-// ===== Quick Actions (from table) =====
-function quickEdit(index) {
-  const law = tableLawsCache[index];
-  if (!law) return;
-  openEditModal(law);
-}
-function quickDelete(index) {
-  const law = tableLawsCache[index];
-  if (!law) return;
-  if (!confirm('确定要删除「' + law.name + '」吗？')) return;
-  doDelete(law);
-  renderTabs();
-  renderTable();
-  updateManualCountInfo();
-}
-
-// ===== Export Excel =====
-function exportExcel() {
-  if (!lawsData) return;
-  const merged = getMergedData();
-  const wb = XLSX.utils.book_new();
-  const headers = ['编号','文件名','文件来源','来源链接','实施时间','引入时间','使用状态','保管方式','保管期限','添加方式'];
-  merged.categories.forEach(cat => {
-    const data = [headers];
-    cat.laws.forEach((law, i) => {
-      data.push([
-        i + 1, law.name, law.source || '', law.sourceUrl || '',
-        law.effectiveDate || '', law.introducedDate || '',
-        law.status || '', law.storageMethod || '', law.retentionPeriod || '',
-        law._type === 'manual' ? '手动添加' : (law._modified ? '已修改' : '自动检索')
-      ]);
-    });
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    ws['!cols'] = [{wch:6},{wch:50},{wch:16},{wch:60},{wch:14},{wch:14},{wch:10},{wch:10},{wch:10},{wch:10}];
-    let sheetName = cat.name.replace(/[\\\/\?\*\[\]]/g,'').substring(0,31);
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-  });
-  const dateStr = lawsData.lastUpdated || new Date().toISOString().slice(0,10);
-  XLSX.writeFile(wb, '法律法规及其他要求清单_' + dateStr + '.xlsx');
-}
-
-// ===== Export PDF (html2canvas + jsPDF) =====
-function exportPDF() {
-  if (!lawsData) return;
-  const btn = document.getElementById('btnPdf');
-  btn.disabled = true;
-  const tableEl = document.getElementById('lawTable');
-  if (!tableEl) { btn.disabled = false; return; }
-
-  showProgress('正在生成 PDF...', '正在生成 PDF 文件，请稍候...');
-
-  const wrap = document.createElement('div');
-  wrap.style.position = 'absolute';
-  wrap.style.left = '-9999px';
-  wrap.style.top = '0';
-  wrap.style.background = '#ffffff';
-  wrap.style.width = '1400px';
-  wrap.style.padding = '20px';
-
-  const titleDiv = document.createElement('div');
-  titleDiv.style.fontSize = '18px';
-  titleDiv.style.fontWeight = 'bold';
-  titleDiv.style.marginBottom = '10px';
-  titleDiv.style.color = '#1a1a2e';
-  const titleText = currentCategory === 'all'
-    ? '法律法规及其他要求清单（全部）'
-    : '法律法规及其他要求清单 - ' + (lawsData.categories.find(c => c.id === currentCategory)?.name || '');
-  titleDiv.textContent = titleText;
-
-  const dateDiv = document.createElement('div');
-  dateDiv.style.fontSize = '12px';
-  dateDiv.style.color = '#8892a6';
-  dateDiv.style.marginBottom = '16px';
-  dateDiv.textContent = '最后更新: ' + (lawsData.lastUpdated || '--') + '    共 ' + getFilteredLaws().length + ' 条记录';
-
-  // Clone table, remove operation column
-  const clone = tableEl.cloneNode(true);
-  clone.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
-  clone.style.width = '100%';
-
-  wrap.appendChild(titleDiv);
-  wrap.appendChild(dateDiv);
-  wrap.appendChild(clone);
-  document.body.appendChild(wrap);
-
-  html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true, windowWidth: 1400 }).then(canvas => {
-    document.body.removeChild(wrap);
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    const pw = pdf.internal.pageSize.getWidth();
-    const ph = pdf.internal.pageSize.getHeight();
-    const margin = 5;
-    const imgW = pw - 2 * margin;
-    const imgH = (canvas.height / canvas.width) * imgW;
-    let heightLeft = imgH;
-    let position = margin;
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
-    heightLeft -= (ph - 2 * margin);
-    while (heightLeft > 0) {
-      position = margin - (imgH - heightLeft);
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
-      heightLeft -= (ph - 2 * margin);
-    }
-    const dateStr = lawsData.lastUpdated || new Date().toISOString().slice(0,10);
-    pdf.save('法律法规清单_' + dateStr + '.pdf');
-    closeProgress();
-    btn.disabled = false;
-  }).catch(err => {
-    console.error('PDF导出失败:', err);
-    document.body.removeChild(wrap);
-    closeProgress();
-    btn.disabled = false;
-    alert('PDF导出失败，请重试');
-  });
-}
-
-// ===== Export Image =====
-function exportImage() {
-  if (!lawsData) return;
-  const tableEl = document.getElementById('lawTable');
-  if (!tableEl) return;
-  showProgress('正在生成图片...', '正在生成图片，请稍候...');
-
-  // Clone table, remove operation column
-  const wrap = document.createElement('div');
-  wrap.style.position = 'absolute';
-  wrap.style.left = '-9999px';
-  wrap.style.top = '0';
-  wrap.style.background = '#ffffff';
-  wrap.style.padding = '20px';
-  const clone = tableEl.cloneNode(true);
-  clone.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
-  wrap.appendChild(clone);
-  document.body.appendChild(wrap);
-
-  html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
-    document.body.removeChild(wrap);
-    const link = document.createElement('a');
-    const dateStr = lawsData.lastUpdated || new Date().toISOString().slice(0,10);
-    link.download = '法律法规清单_' + dateStr + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    closeProgress();
-  }).catch(err => {
-    console.error('图片导出失败:', err);
-    document.body.removeChild(wrap);
-    closeProgress();
-    alert('图片导出失败，请重试');
-  });
-}
-
-// ===== Init =====
-loadData();
-initSync();
+init();
 </script>
 </body>
 </html>
