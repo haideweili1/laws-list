@@ -1,0 +1,1193 @@
+{
+  "total": 118,
+  "counts": {
+    "ok": 22,
+    "dead": 47,
+    "jump_home": 0,
+    "homepage": 47,
+    "error": 2,
+    "empty": 0
+  },
+  "links": [
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国产品质量法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276613.html",
+      "status": "ok",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276613.html",
+      "title": "中华人民共和国计量法_中国人大网",
+      "suggestion": ""
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国计量法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276613.html",
+      "status": "ok",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276613.html",
+      "title": "中华人民共和国计量法_中国人大网",
+      "suggestion": ""
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国标准化法",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://www.samr.gov.cn/zcfg/bmgz/202401/t20240120_479712.shtml",
+      "status": "dead",
+      "finalUrl": "https://www.samr.gov.cn/zcfg/bmgz/202401/t20240120_479712.shtml",
+      "title": "",
+      "suggestion": "https://std.samr.gov.cn/search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%A0%87%E5%87%86%E5%8C%96%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国进出口商品检验法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/202210/t20221030_321355.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%BF%9B%E5%87%BA%E5%8F%A3%E5%95%86%E5%93%81%E6%A3%80%E9%AA%8C%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国认证认可条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/202308/content_6898899.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/202308/content_6898899.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%AE%A4%E8%AF%81%E8%AE%A4%E5%8F%AF%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国工业产品生产许可证管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2005-07/09/content_4591.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2005-07/09/content_4591.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%B7%A5%E4%B8%9A%E4%BA%A7%E5%93%81%E7%94%9F%E4%BA%A7%E8%AE%B8%E5%8F%AF%E8%AF%81%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "产品质量国家监督抽查管理办法",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/zjlzs/art/2023/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/zjlzs/art/2023/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E4%BA%A7%E5%93%81%E8%B4%A8%E9%87%8F%E5%9B%BD%E5%AE%B6%E7%9B%91%E7%9D%A3%E6%8A%BD%E6%9F%A5%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "计量器具新产品管理办法",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/jlzls/art/2023/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/jlzls/art/2023/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E8%AE%A1%E9%87%8F%E5%99%A8%E5%85%B7%E6%96%B0%E4%BA%A7%E5%93%81%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国环境保护法",
+      "source": "生态环境部",
+      "sourceUrl": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk06/202401/t20240120_1075466.shtml",
+      "status": "ok",
+      "finalUrl": "https://www.mee.gov.cn/404/index.shtml",
+      "title": "中华人民共和国生态环境部",
+      "suggestion": ""
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国大气污染防治法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201808/t20180831_300571.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%A4%A7%E6%B0%94%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国水污染防治法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201706/t20170628_293156.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%B0%B4%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国固体废物污染环境防治法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202004/t20200429_307159.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%9B%BA%E4%BD%93%E5%BA%9F%E7%89%A9%E6%B1%A1%E6%9F%93%E7%8E%AF%E5%A2%83%E9%98%B2%E6%B2%BB%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国噪声污染防治法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202112/t20211224_315923.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%99%AA%E5%A3%B0%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国土壤污染防治法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201908/t20190826_300531.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%9C%9F%E5%A3%A4%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国环境影响评价法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201812/t20181229_300447.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%8E%AF%E5%A2%83%E5%BD%B1%E5%93%8D%E8%AF%84%E4%BB%B7%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "排污许可管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2021-01/content_5581268.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2021-01/content_5581268.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E6%8E%92%E6%B1%A1%E8%AE%B8%E5%8F%AF%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国清洁生产促进法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201203/t20120301_1902689.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%B8%85%E6%B4%81%E7%94%9F%E4%BA%A7%E4%BF%83%E8%BF%9B%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国节约能源法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201808/t20180831_300571.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%8A%82%E7%BA%A6%E8%83%BD%E6%BA%90%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国循环经济促进法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/200808/t20080829_1530578.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%BE%AA%E7%8E%AF%E7%BB%8F%E6%B5%8E%E4%BF%83%E8%BF%9B%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国环境保护税法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201612/t20161225_2690988.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%8E%AF%E5%A2%83%E4%BF%9D%E6%8A%A4%E7%A8%8E%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国安全生产法",
+      "source": "全国人民代表大会",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202112/7c8e8b5b8c8e4b5a8b8e4b5a8b8e4b5a8.shtml",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.baidu.com/s?wd=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%AE%89%E5%85%A8%E7%94%9F%E4%BA%A7%E6%B3%95%20%E6%AD%A3%E6%96%87"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国职业病防治法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/c2/c30834/201905/t20190521_278497.html",
+      "status": "ok",
+      "finalUrl": "http://www.npc.gov.cn/c2/c30834/201905/t20190521_278497.html",
+      "title": "中华人民共和国职业病防治法_中国人大网",
+      "suggestion": ""
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国劳动法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276533.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%8A%B3%E5%8A%A8%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国劳动合同法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276553.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%8A%B3%E5%8A%A8%E5%90%88%E5%90%8C%E6%B3%95"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "工伤保险条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2010-12/content_6311.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2010-12/content_6311.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%B7%A5%E4%BC%A4%E4%BF%9D%E9%99%A9%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "生产安全事故应急条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2019-02/content_5359062.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2019-02/content_5359062.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E7%94%9F%E4%BA%A7%E5%AE%89%E5%85%A8%E4%BA%8B%E6%95%85%E5%BA%94%E6%80%A5%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "生产安全事故报告和调查处理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2007-04/content_577466.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2007-04/content_577466.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E7%94%9F%E4%BA%A7%E5%AE%89%E5%85%A8%E4%BA%8B%E6%95%85%E6%8A%A5%E5%91%8A%E5%92%8C%E8%B0%83%E6%9F%A5%E5%A4%84%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "危险化学品安全管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2013-12/content_4695.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2013-12/content_4695.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%8D%B1%E9%99%A9%E5%8C%96%E5%AD%A6%E5%93%81%E5%AE%89%E5%85%A8%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国特种设备安全法",
+      "source": "全国人民代表大会",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/7c8e8b5b8c8e4b5a8b8e4b5a8b8e4b5a8.shtml",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.baidu.com/s?wd=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%89%B9%E7%A7%8D%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E6%B3%95%20%E6%AD%A3%E6%96%87"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "女职工劳动保护特别规定",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2012-05/content_1297143.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2012-05/content_1297143.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%A5%B3%E8%81%8C%E5%B7%A5%E5%8A%B3%E5%8A%A8%E4%BF%9D%E6%8A%A4%E7%89%B9%E5%88%AB%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "安全生产许可证条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2014-07/content_8938.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2014-07/content_8938.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%AE%89%E5%85%A8%E7%94%9F%E4%BA%A7%E8%AE%B8%E5%8F%AF%E8%AF%81%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "重大事故隐患判定标准",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/zhengceku/202305/content_6875210.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/zhengceku/202305/content_6875210.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E9%87%8D%E5%A4%A7%E4%BA%8B%E6%95%85%E9%9A%90%E6%82%A3%E5%88%A4%E5%AE%9A%E6%A0%87%E5%87%86"
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "中华人民共和国生态环境法典",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202603/t20260312_453172.html",
+      "status": "ok",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202603/t20260312_453172.html",
+      "title": "生态环境法典表决通过！我国第二部以“法典”命名的法律诞生_中国人大网",
+      "suggestion": ""
+    },
+    {
+      "category": "三体系 (ISO 9001/14001/45001)",
+      "name": "碳排放权交易管理暂行条例",
+      "source": "国务院",
+      "sourceUrl": "http://www.gov.cn/zhengce/content/202401/content_6925198.htm",
+      "status": "dead",
+      "finalUrl": "http://www.gov.cn/zhengce/content/202401/content_6925198.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E7%A2%B3%E6%8E%92%E6%94%BE%E6%9D%83%E4%BA%A4%E6%98%93%E7%AE%A1%E7%90%86%E6%9A%82%E8%A1%8C%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "社会责任",
+      "name": "中华人民共和国社会保险法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276573.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%A4%BE%E4%BC%9A%E4%BF%9D%E9%99%A9%E6%B3%95"
+    },
+    {
+      "category": "社会责任",
+      "name": "中华人民共和国妇女权益保障法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202212/75ba6483b3424597b9fa6a3a8c5c9b0d.shtml",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%A6%87%E5%A5%B3%E6%9D%83%E7%9B%8A%E4%BF%9D%E9%9A%9C%E6%B3%95"
+    },
+    {
+      "category": "社会责任",
+      "name": "中华人民共和国未成年人保护法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202206/5f8c3b8c8f8c4b1a8b5f0b9c5f7bf3c.shtml",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%9C%AA%E6%88%90%E5%B9%B4%E4%BA%BA%E4%BF%9D%E6%8A%A4%E6%B3%95"
+    },
+    {
+      "category": "社会责任",
+      "name": "禁止使用童工规定",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/gongbao/content/2002/content_61742.htm",
+      "status": "ok",
+      "finalUrl": "https://www.gov.cn/gongbao/content/2002/content_61742.htm",
+      "title": "中华人民共和国国务院令（第361号）　　中华人民共和国导弹及相关物项和技术出口管制条例　　导弹及相关物项和技术出口管制清单__2002年第28号国务院公报_中国政府网",
+      "suggestion": ""
+    },
+    {
+      "category": "社会责任",
+      "name": "中华人民共和国工会法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/202112/t20211228_315907.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%B7%A5%E4%BC%9A%E6%B3%95"
+    },
+    {
+      "category": "社会责任",
+      "name": "中华人民共和国残疾人保障法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276593.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%AE%8B%E7%96%BE%E4%BA%BA%E4%BF%9D%E9%9A%9C%E6%B3%95"
+    },
+    {
+      "category": "社会责任",
+      "name": "最低工资规定",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/gfxwj/rcrs/202401/t20240101_511888.html",
+      "status": "homepage",
+      "finalUrl": "https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/gfxwj/rcrs/202401/t20240101_511888.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E6%9C%80%E4%BD%8E%E5%B7%A5%E8%B5%84%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "社会责任",
+      "name": "企业民主管理规定",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/gfxwj/rcrs/202401/t20240101_511888.html",
+      "status": "homepage",
+      "finalUrl": "https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/gfxwj/rcrs/202401/t20240101_511888.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E4%BC%81%E4%B8%9A%E6%B0%91%E4%B8%BB%E7%AE%A1%E7%90%86%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "社会责任",
+      "name": "中华人民共和国就业促进法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276513.html",
+      "status": "ok",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276513.html",
+      "title": "中华人民共和国主席令_中国人大网",
+      "suggestion": ""
+    },
+    {
+      "category": "社会责任",
+      "name": "超龄劳动者基本权益保障暂行规定",
+      "source": "人力资源社会保障部",
+      "sourceUrl": "https://www.mohrss.gov.cn/wap/zc/qwjd/202605/t20260525_576894.html",
+      "status": "homepage",
+      "finalUrl": "https://www.mohrss.gov.cn/wap/zc/qwjd/202605/t20260525_576894.html",
+      "title": "",
+      "suggestion": "https://www.baidu.com/s?wd=%E8%B6%85%E9%BE%84%E5%8A%B3%E5%8A%A8%E8%80%85%E5%9F%BA%E6%9C%AC%E6%9D%83%E7%9B%8A%E4%BF%9D%E9%9A%9C%E6%9A%82%E8%A1%8C%E8%A7%84%E5%AE%9A%20%E6%AD%A3%E6%96%87"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "中华人民共和国反恐怖主义法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202312/8b5e8e8b4b3a4e7b8f3a7c9d0b3a4e7b.shtml",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%8F%8D%E6%81%90%E6%80%96%E4%B8%BB%E4%B9%89%E6%B3%95"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "中华人民共和国海关法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/202110/t20211023_314540.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%B5%B7%E5%85%B3%E6%B3%95"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "中华人民共和国出境入境管理法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201210/t20121026_174780.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%87%BA%E5%A2%83%E5%85%A5%E5%A2%83%E7%AE%A1%E7%90%86%E6%B3%95"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "中华人民共和国反洗钱法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202409/t20240913_439497.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/index.html",
+      "title": "中国人大网",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%8F%8D%E6%B4%97%E9%92%B1%E6%B3%95"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "海关认证企业标准（AEO）",
+      "source": "海关总署",
+      "sourceUrl": "https://www.customs.gov.cn/customs/xwfb34/302312/8b9b8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml",
+      "status": "error",
+      "finalUrl": "https://www.customs.gov.cn/customs/xwfb34/302312/8b9b8b8b8b8b8b8b8b8b8b8b8b8b8b8b.shtml",
+      "title": "",
+      "suggestion": ""
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "中华人民共和国货物进出口管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2001-12/content_34843.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2001-12/content_34843.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%B4%A7%E7%89%A9%E8%BF%9B%E5%87%BA%E5%8F%A3%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "中华人民共和国对外贸易法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/202210/t20221030_321355.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/202210/t20221030_321355.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%AF%B9%E5%A4%96%E8%B4%B8%E6%98%93%E6%B3%95"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "出口管制法实施条例",
+      "source": "商务部",
+      "sourceUrl": "https://www.mofcom.gov.cn/article/b/g/202311/20231103456789.shtml",
+      "status": "dead",
+      "finalUrl": "https://www.mofcom.gov.cn/article/b/g/202311/20231103456789.shtml",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%87%BA%E5%8F%A3%E7%AE%A1%E5%88%B6%E6%B3%95%E5%AE%9E%E6%96%BD%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "反恐/供应链安全",
+      "name": "海关AEO认证与信用管理办法（修订）",
+      "source": "海关总署",
+      "sourceUrl": "https://www.customs.gov.cn/customs/xwfb34/302312/302312_4985118/index.html",
+      "status": "error",
+      "finalUrl": "https://www.customs.gov.cn/customs/xwfb34/302312/302312_4985118/index.html",
+      "title": "",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国会计法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202406/t20240628_437890.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202406/t20240628_437890.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E4%BC%9A%E8%AE%A1%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国商标法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201910/t20191026_300447.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/201910/t20191026_300447.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%95%86%E6%A0%87%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国档案法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202006/t20200620_308565.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202006/t20200620_308565.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%A1%A3%E6%A1%88%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国民法典",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202006/t20200602_306659.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202006/t20200602_306659.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%B0%91%E6%B3%95%E5%85%B8"
+    },
+    {
+      "category": "信息安全",
+      "name": "商用密码管理条例",
+      "source": "国务院",
+      "sourceUrl": "http://www.gov.cn/zhengce/content/2023-07/24/content_5946130.htm",
+      "status": "dead",
+      "finalUrl": "http://www.gov.cn/zhengce/content/2023-07/24/content_5946130.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%95%86%E7%94%A8%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "互联网信息服务管理办法",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/202412/content_6988898.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/202412/content_6988898.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%BA%92%E8%81%94%E7%BD%91%E4%BF%A1%E6%81%AF%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国技术进出口管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2020-11/content_5561849.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2020-11/content_5561849.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%8A%80%E6%9C%AF%E8%BF%9B%E5%87%BA%E5%8F%A3%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "计算机信息系统国际联网保密管理规定",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/aqbz/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/aqbz/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%9B%BD%E9%99%85%E8%81%94%E7%BD%91%E4%BF%9D%E5%AF%86%E7%AE%A1%E7%90%86%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国招标投标法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201712/t20171228_299416.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/201712/t20171228_299416.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%8B%9B%E6%A0%87%E6%8A%95%E6%A0%87%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国专利法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202010/t20201017_307884.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202010/t20201017_307884.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E4%B8%93%E5%88%A9%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国计算机信息系统安全保护条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2011-01/content_1297143.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2011-01/content_1297143.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E4%BF%9D%E6%8A%A4%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国计算机信息网络国际联网管理暂行规定",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2024-05/content_6954529.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2024-05/content_6954529.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BF%A1%E6%81%AF%E7%BD%91%E7%BB%9C%E5%9B%BD%E9%99%85%E8%81%94%E7%BD%91%E7%AE%A1%E7%90%86%E6%9A%82%E8%A1%8C%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国电子签名法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276593.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/201905/t20190521_276593.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%94%B5%E5%AD%90%E7%AD%BE%E5%90%8D%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国著作权法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202011/t20201111_309267.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202011/t20201111_309267.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%91%97%E4%BD%9C%E6%9D%83%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "互联网安全保护技术措施规定",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2005-12/25/c_1234567890.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2005-12/25/c_1234567890.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E4%BA%92%E8%81%94%E7%BD%91%E5%AE%89%E5%85%A8%E4%BF%9D%E6%8A%A4%E6%8A%80%E6%9C%AF%E6%8E%AA%E6%96%BD%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国刑法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202012/t20201226_309532.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202012/t20201226_309532.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%88%91%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国国家安全法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201507/t20150701_300512.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/201507/t20150701_300512.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%9B%BD%E5%AE%B6%E5%AE%89%E5%85%A8%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国保守国家秘密法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202402/t20240227_435421.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202402/t20240227_435421.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E4%BF%9D%E5%AE%88%E5%9B%BD%E5%AE%B6%E7%A7%98%E5%AF%86%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "计算机病毒防治管理办法",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/aqbz/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/aqbz/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%97%85%E6%AF%92%E9%98%B2%E6%B2%BB%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "计算机信息网络国际联网安全保护管理办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/1997-12/11/c_1234567890.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/1997-12/11/c_1234567890.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BF%A1%E6%81%AF%E7%BD%91%E7%BB%9C%E5%9B%BD%E9%99%85%E8%81%94%E7%BD%91%E5%AE%89%E5%85%A8%E4%BF%9D%E6%8A%A4%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "计算机软件保护条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2013-01/content_6905.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2013-01/content_6905.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%BD%AF%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国反不正当竞争法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202404/t20240426_432924.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202404/t20240426_432924.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%8F%8D%E4%B8%8D%E6%AD%A3%E5%BD%93%E7%AB%9E%E4%BA%89%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "会计档案管理办法",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.mof.gov.cn/zhengwuxinxi/caizhengwengao/wg2016/wg201601/201601/t20160125_1655050.htm",
+      "status": "ok",
+      "finalUrl": "http://www.mof.gov.cn/gkml/caizhengwengao/",
+      "title": "财政文告",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国网络安全法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201611/t20161107_305858.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/201611/t20161107_305858.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "世界知识产权组织版权条约（中国加入）",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/govchina/2007-06/09/content_5800396.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/govchina/2007-06/09/content_5800396.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E4%B8%96%E7%95%8C%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E7%BB%84%E7%BB%87%E7%89%88%E6%9D%83%E6%9D%A1%E7%BA%A6%EF%BC%88%E4%B8%AD%E5%9B%BD%E5%8A%A0%E5%85%A5%EF%BC%89"
+    },
+    {
+      "category": "信息安全",
+      "name": "互联网域名管理办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2017-08/16/c_1121828320.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2017-08/16/c_1121828320.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E4%BA%92%E8%81%94%E7%BD%91%E5%9F%9F%E5%90%8D%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "公共互联网网络安全威胁监测与处置办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2017-09/05/c_1121828320.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2017-09/05/c_1121828320.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E5%85%AC%E5%85%B1%E4%BA%92%E8%81%94%E7%BD%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A8%81%E8%83%81%E7%9B%91%E6%B5%8B%E4%B8%8E%E5%A4%84%E7%BD%AE%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "国家网络安全事件报告管理办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2025-09/content_1234567890.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2025-09/content_1234567890.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E5%9B%BD%E5%AE%B6%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E4%BA%8B%E4%BB%B6%E6%8A%A5%E5%91%8A%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "国务院关于印发“宽带中国”战略及实施方案的通知",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2013-08/content_1697.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2013-08/content_1697.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%9B%BD%E5%8A%A1%E9%99%A2%E5%85%B3%E4%BA%8E%E5%8D%B0%E5%8F%91%E2%80%9C%E5%AE%BD%E5%B8%A6%E4%B8%AD%E5%9B%BD%E2%80%9D%E6%88%98%E7%95%A5%E5%8F%8A%E5%AE%9E%E6%96%BD%E6%96%B9%E6%A1%88%E7%9A%84%E9%80%9A%E7%9F%A5"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国国民经济和社会发展第十五个五年规划纲要",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202603/t20260313_580001.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202603/t20260313_580001.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%9B%BD%E6%B0%91%E7%BB%8F%E6%B5%8E%E5%92%8C%E7%A4%BE%E4%BC%9A%E5%8F%91%E5%B1%95%E7%AC%AC%E5%8D%81%E4%BA%94%E4%B8%AA%E4%BA%94%E5%B9%B4%E8%A7%84%E5%88%92%E7%BA%B2%E8%A6%81"
+    },
+    {
+      "category": "信息安全",
+      "name": "通信网络安全防护管理办法",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "人大常委会关于加强网络信息保护决定",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201212/t20121228_544615.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/201212/t20121228_544615.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%BA%BA%E5%A4%A7%E5%B8%B8%E5%A7%94%E4%BC%9A%E5%85%B3%E4%BA%8E%E5%8A%A0%E5%BC%BA%E7%BD%91%E7%BB%9C%E4%BF%A1%E6%81%AF%E4%BF%9D%E6%8A%A4%E5%86%B3%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "规范互联网信息服务市场秩序若干规定",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2011-12/29/c_1234567890.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2011-12/29/c_1234567890.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E8%A7%84%E8%8C%83%E4%BA%92%E8%81%94%E7%BD%91%E4%BF%A1%E6%81%AF%E6%9C%8D%E5%8A%A1%E5%B8%82%E5%9C%BA%E7%A7%A9%E5%BA%8F%E8%8B%A5%E5%B9%B2%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "《信息安全技术个人信息安全规范》GB/T 35273-2020",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4568B7A8C2D1E3F4A5B6C7D8E9F0A1B2",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4568B7A8C2D1E3F4A5B6C7D8E9F0A1B2",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "物业管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2018-03/content_5275998.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2018-03/content_5275998.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E7%89%A9%E4%B8%9A%E7%AE%A1%E7%90%86%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "GB/T 36618-2018  信息安全技术 金融信息服务安全规范",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《信息安全技术 数据库管理系统安全技术要求》GB/T 20273-2019",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "GB/T 37973-2019 信息安全技术 大数据安全管理指南",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "GB/T 35274-2023 信息安全技术 大数据服务安全能力要求",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国个人信息保护法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E4%B8%AA%E4%BA%BA%E4%BF%A1%E6%81%AF%E4%BF%9D%E6%8A%A4%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国电信条例",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c12435/200009/t20000925_8466582.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c12435/200009/t20000925_8466582.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%94%B5%E4%BF%A1%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "电信服务规范",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E7%94%B5%E4%BF%A1%E6%9C%8D%E5%8A%A1%E8%A7%84%E8%8C%83"
+    },
+    {
+      "category": "信息安全",
+      "name": "电信和互联网用户个人信息保护规定",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E7%94%B5%E4%BF%A1%E5%92%8C%E4%BA%92%E8%81%94%E7%BD%91%E7%94%A8%E6%88%B7%E4%B8%AA%E4%BA%BA%E4%BF%A1%E6%81%AF%E4%BF%9D%E6%8A%A4%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "外商投资电信企业管理规定",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2022-04/content_5686496.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2022-04/content_5686496.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%A4%96%E5%95%86%E6%8A%95%E8%B5%84%E7%94%B5%E4%BF%A1%E4%BC%81%E4%B8%9A%E7%AE%A1%E7%90%86%E8%A7%84%E5%AE%9A"
+    },
+    {
+      "category": "信息安全",
+      "name": "电信业务分类目录(2015年版）",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E7%94%B5%E4%BF%A1%E4%B8%9A%E5%8A%A1%E5%88%86%E7%B1%BB%E7%9B%AE%E5%BD%95%282015%E5%B9%B4%E7%89%88%EF%BC%89"
+    },
+    {
+      "category": "信息安全",
+      "name": "工业和信息化部关于加强呼叫中心业务管理的通知",
+      "source": "工业和信息化部",
+      "sourceUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "status": "dead",
+      "finalUrl": "https://www.miit.gov.cn/jgsj/txs/wjfb/art/2020/art_5f0a5b2c3d4e5f6a.html",
+      "title": "",
+      "suggestion": "https://www.miit.gov.cn/search?q=%E5%B7%A5%E4%B8%9A%E5%92%8C%E4%BF%A1%E6%81%AF%E5%8C%96%E9%83%A8%E5%85%B3%E4%BA%8E%E5%8A%A0%E5%BC%BA%E5%91%BC%E5%8F%AB%E4%B8%AD%E5%BF%83%E4%B8%9A%E5%8A%A1%E7%AE%A1%E7%90%86%E7%9A%84%E9%80%9A%E7%9F%A5"
+    },
+    {
+      "category": "信息安全",
+      "name": "《信息安全技术-信息安全管理体系要求》GB/T 22080-2025",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB6A3B6F5E8D4E3B6A3B6F5E8D4E3B6",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=FFB6A3B6F5E8D4E3B6A3B6F5E8D4E3B6",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1D2",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1D2",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《信息技术安全技术信息安全事件管理 第1部分：事件管理原理》GB/T 20985-2017",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=B8C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=B8C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《信息安全技术网络安全事件分类分级指南》GB/T 20986-2023",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3F4",
+      "status": "ok",
+      "finalUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3F4",
+      "title": "国家标准",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《网络安全技术信息系统灾难恢复规范》GB/T 20988-2025",
+      "source": "国家标准化管理委员会",
+      "sourceUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410520.html",
+      "status": "dead",
+      "finalUrl": "https://www.samr.gov.cn/bgs/zjtz/202406/t20240603_410520.html",
+      "title": "",
+      "suggestion": "https://std.samr.gov.cn/search?q=%E3%80%8A%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%8A%80%E6%9C%AF%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E7%81%BE%E9%9A%BE%E6%81%A2%E5%A4%8D%E8%A7%84%E8%8C%83%E3%80%8BGB/T%2020988-2025"
+    },
+    {
+      "category": "信息安全",
+      "name": "《中华人民共和国密码法》",
+      "source": "国家法律法规数据库",
+      "sourceUrl": "https://flk.npc.gov.cn/",
+      "status": "ok",
+      "finalUrl": "https://flk.npc.gov.cn/",
+      "title": "国家法律法规数据库",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国数据安全法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/202106/t20210610_311477.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/202106/t20210610_311477.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "中华人民共和国电子商务法",
+      "source": "中国人大网",
+      "sourceUrl": "http://www.npc.gov.cn/npc/c2/c30834/201808/t20180831_300581.html",
+      "status": "homepage",
+      "finalUrl": "http://www.npc.gov.cn/npc/c2/c30834/201808/t20180831_300581.html",
+      "title": "",
+      "suggestion": "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%94%B5%E5%AD%90%E5%95%86%E5%8A%A1%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "关键信息基础设施安全保护条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2021-08/content_5632341.htm",
+      "status": "dead",
+      "finalUrl": "https://www.gov.cn/zhengce/content/2021-08/content_5632341.htm",
+      "title": "",
+      "suggestion": "https://www.gov.cn/zhengce/advanced_search?q=%E5%85%B3%E9%94%AE%E4%BF%A1%E6%81%AF%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E5%AE%89%E5%85%A8%E4%BF%9D%E6%8A%A4%E6%9D%A1%E4%BE%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "网络数据安全管理条例",
+      "source": "中国政府网",
+      "sourceUrl": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
+      "status": "ok",
+      "finalUrl": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
+      "title": "网络数据安全管理条例_信息产业（含电信）_中国政府网",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "信息安全等级保护管理办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2007-06/22/c_1234567890.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2007-06/22/c_1234567890.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E7%AD%89%E7%BA%A7%E4%BF%9D%E6%8A%A4%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "网络安全标识管理办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2025-06/content_1234567890.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2025-06/content_1234567890.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%A0%87%E8%AF%86%E7%AE%A1%E7%90%86%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "人工智能拟人化互动服务管理暂行办法",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm",
+      "status": "ok",
+      "finalUrl": "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm",
+      "title": "人工智能拟人化互动服务管理暂行办法_中央网络安全和信息化委员会办公室",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "小型个人信息处理者个人信息保护简化措施规定",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm",
+      "status": "ok",
+      "finalUrl": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm",
+      "title": "国家网信办、公安部联合公布《小型个人信息处理者个人信息保护简化措施规定》_中央网络安全和信息化委员会办公室",
+      "suggestion": ""
+    },
+    {
+      "category": "信息安全",
+      "name": "《生成式人工智能服务安全管理暂行办法》",
+      "source": "国家互联网信息办公室",
+      "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129768130.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2024-07/10/c_1129768130.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E3%80%8A%E7%94%9F%E6%88%90%E5%BC%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%AE%89%E5%85%A8%E7%AE%A1%E7%90%86%E6%9A%82%E8%A1%8C%E5%8A%9E%E6%B3%95%E3%80%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "生成式人工智能服务安全管理暂行办法",
+      "source": "国家互联网信息办公室",
+      "sourceUrl": "https://www.cac.gov.cn/2023-07/13/c_1129738339.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2023-07/13/c_1129738339.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E7%94%9F%E6%88%90%E5%BC%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%AE%89%E5%85%A8%E7%AE%A1%E7%90%86%E6%9A%82%E8%A1%8C%E5%8A%9E%E6%B3%95"
+    },
+    {
+      "category": "信息安全",
+      "name": "《小型个人信息处理者个人信息保护简化措施规定》",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129725394.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2024-07/10/c_1129725394.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E3%80%8A%E5%B0%8F%E5%9E%8B%E4%B8%AA%E4%BA%BA%E4%BF%A1%E6%81%AF%E5%A4%84%E7%90%86%E8%80%85%E4%B8%AA%E4%BA%BA%E4%BF%A1%E6%81%AF%E4%BF%9D%E6%8A%A4%E7%AE%80%E5%8C%96%E6%8E%AA%E6%96%BD%E8%A7%84%E5%AE%9A%E3%80%8B"
+    },
+    {
+      "category": "信息安全",
+      "name": "《人工智能拟人化互动服务管理暂行办法》",
+      "source": "国家网信办",
+      "sourceUrl": "https://www.cac.gov.cn/2024-07/10/c_1129725395.htm",
+      "status": "dead",
+      "finalUrl": "https://www.cac.gov.cn/2024-07/10/c_1129725395.htm",
+      "title": "",
+      "suggestion": "https://www.cac.gov.cn/search.htm?keyword=%E3%80%8A%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%8B%9F%E4%BA%BA%E5%8C%96%E4%BA%92%E5%8A%A8%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E6%9A%82%E8%A1%8C%E5%8A%9E%E6%B3%95%E3%80%8B"
+    }
+  ]
+}
