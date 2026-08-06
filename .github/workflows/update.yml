@@ -7,13 +7,12 @@ on:
   workflow_dispatch: {}   # 允许在 Actions 页面手动点「Run workflow」立即执行
 
 permissions:
-  contents: write        # 需要写权限以便提交更新后的 laws.json
+  contents: write        # 需要写权限以便提交更新后的 data.json
 
 jobs:
   update:
-    if: false   # 暂停：新版网站改用 data.json，旧 laws.json 自动更新已停用（2026-08-05）
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: 检出仓库
         uses: actions/checkout@v6
@@ -31,17 +30,17 @@ jobs:
           python -m pip install --no-cache-dir -r requirements.txt sniffio
           python -c "import zhipuai; print('zhipuai 已安装:', zhipuai.__version__)"
 
-      - name: 联网检索并更新法规
+      - name: 联网检索并更新法规/标准
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           MODEL: ${{ vars.MODEL }}
         run: python update_laws_action.py
 
-      - name: 提交变更（若有）
+      - name: 提交变更（脚本已提交则跳过；作为兜底）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add laws.json
+          git add data.json update-summary.json retrieval-status.json user-edits.json
           if git diff --cached --quiet; then
             echo "无变更，跳过提交"
           else

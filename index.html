@@ -202,6 +202,8 @@
         </select>
       </div>
     </div>
+    <label>废止日期（可选，填了到期后自动转为「已废止」）</label>
+    <input id="eAbolish" placeholder="YYYY-MM-DD，留空表示暂无废止计划">
     <label>所属领域（多选，逗号分隔）</label>
     <input id="eDomains" placeholder="质量,环境,职业健康安全,信息安全,社会责任,反恐">
     <label>原文链接</label><input id="eLink" placeholder="https://">
@@ -281,7 +283,11 @@ async function init(){
   }catch(e){ console.error("加载 data.json 失败",e); }
   $("#lastUpdated").textContent=DATA.lastUpdated||"-";
   // 本地编辑
-  edits.overrides=loadLS(LS_OVR)||{}; edits.deleted=loadLS(LS_DEL)||[]; edits.manual=loadLS(LS_MAN)||[]; edits.log=loadLS(LS_LOG)||[];
+  edits.overrides=loadLS(LS_OVR)||{}; edits.deleted=loadLS(LS_DEL)||[]; edits.manual=loadLS(LS_MAN)||[];
+  // 变更记录：丢弃旧版格式的残留记录（早期版本只记了时间，没有法规名和改动详情，显示为空的《》）
+  const _rawLog=loadLS(LS_LOG)||[];
+  edits.log=_rawLog.filter(e=>e&&e.op&&e.name&&e.ts);
+  if(edits.log.length!==_rawLog.length) saveLS(LS_LOG,edits.log);
   // 云端合并（best-effort）
   await loadCloud();
   renderChangePreview();
@@ -400,6 +406,7 @@ function openEdit(table,id){
   $("#eType").value=rec.stdType||"国家标准";
   $("#eDomains").value=(rec.domains||[]).join(",");
   $("#eLink").value=rec.link||""; $("#eRemark").value=rec.remark||"";
+  $("#eAbolish").value=rec.abolishDate||"";
   $("#editMask").style.display="flex";
 }
 function closeEdit(){$("#editMask").style.display="none"}
@@ -419,6 +426,7 @@ function saveEdit(){
     domains:table==="laws"?$("#eDomains").value.split(",").map(s=>s.trim()).filter(Boolean):[],
     link:$("#eLink").value.trim(),
     remark:$("#eRemark").value.trim(),
+    abolishDate:$("#eAbolish").value.trim(),
     region:name.includes("广东")?"广东":""
   };
   let op, diff=null, logName=name;
@@ -466,8 +474,8 @@ function trimLog(){ if(edits.log.length>200) edits.log=edits.log.slice(-200); }
 function fmtTime(ts){ if(!ts)return"-"; const d=new Date(ts); const p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; }
 function fieldDiff(oldR,newR,table){
   const fields=table==="laws"
-    ?[["name","法规名称"],["docNumber","发文字号"],["dept","发布部门"],["effectiveDate","实施日期"],["status","状态"],["domains","所属领域"],["link","原文链接"]]
-    :[["name","标准名称"],["stdNo","标准编号"],["publisher","发布单位"],["effectiveDate","实施日期"],["status","状态"],["stdType","标准类型"],["link","原文链接"]];
+    ?[["name","法规名称"],["docNumber","发文字号"],["dept","发布部门"],["effectiveDate","实施日期"],["abolishDate","废止日期"],["status","状态"],["domains","所属领域"],["link","原文链接"],["remark","备注"]]
+    :[["name","标准名称"],["stdNo","标准编号"],["publisher","发布单位"],["effectiveDate","实施日期"],["abolishDate","废止日期"],["status","状态"],["stdType","标准类型"],["link","原文链接"],["remark","备注"]];
   const diff=[];
   for(const [f,label] of fields){
     const o=Array.isArray(oldR[f])?oldR[f].join("/"):(oldR[f]||"");
@@ -484,11 +492,14 @@ async function loadCloud(){
     const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
     if(!r.ok)return;
     const c=await r.json(); const ts=c.ts||0;
+    // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
+    if(!c.ts && c.version){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端为旧版数据，已跳过）"; return; }
     // 覆盖：取较新
     for(const k in (c.overrides||{})){ if(!edits.overrides[k]||ts> (edits._ts||0)) edits.overrides[k]=c.overrides[k]; }
     edits.deleted=[...new Set([...edits.deleted,...(c.deleted||[])])];
     for(const m of (c.manual||[])){ if(!edits.manual.some(x=>x.table===m.table&&x.id===m.id)) edits.manual.push(m); }
-    for(const e of (c.log||[])){ if(!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
+    // 云端变更记录同样过滤旧格式残留
+    for(const e of (c.log||[])){ if(e&&e.op&&e.name&&e.ts&&!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
     edits._ts=ts;
     $("#syncDot").className="dot synced"; $("#syncText").textContent="已同步云端";
   }catch(e){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; }
