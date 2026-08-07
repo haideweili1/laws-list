@@ -493,11 +493,14 @@ function fieldDiff(oldR,newR,table){
 
 /* ---------- 云端协同（best-effort） ---------- */
 async function loadCloud(){
-  // 读走 jsDelivr CDN（实时从 GitHub 仓库取最新 user-edits.json，不等 Pages 重建），不消耗 SCF 资源；写才走 SCF 代理
+  // 读取走腾讯云 SCF 函数接口（实时读 GitHub，无 CDN 缓存，国内100%可达）；写才走 SCF 代理(POST)
   try{
-    const r=await fetch("https://cdn.jsdelivr.net/gh/haideweili1/laws-list@main/user-edits.json?t="+Date.now(),{cache:"no-store"});
+    const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
     if(!r.ok){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; return; }
-    const c=await r.json(); const ts=c.ts||0;
+    let c=await r.json();
+    // SCF 的 GET 返回 GitHub API 格式(content 为 base64 编码的原 JSON)，需解码
+    if(c && c.content){ const bin=atob(c.content.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); c=JSON.parse(new TextDecoder('utf-8').decode(bytes)); }
+    const ts=c.ts||0;
     // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
     if(!c.ts && c.version){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端为旧版数据，已跳过）"; return; }
     // 覆盖：取较新
@@ -510,7 +513,7 @@ async function loadCloud(){
     $("#syncDot").className="dot synced"; $("#syncText").textContent="已同步云端";
   }catch(e){     $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; }
 }
-// 只拉不推：从 jsDelivr CDN 实时合并同事修改，不调用 SCF、不写回，避免误覆盖他人数据且不产生费用
+// 只拉不推：从 SCF 函数接口实时合并同事修改（读 GitHub 无缓存），不调用 SCF 写回，避免误覆盖他人数据且不产生费用
 async function cloudPull(){
   if(!edits)return;
   if(document.visibilityState!=="visible")return; // 仅页面可见时拉取，省资源
