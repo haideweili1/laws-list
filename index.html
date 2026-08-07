@@ -258,10 +258,10 @@
 
 <script>
 const SYNC_PROXY = "https://1460512300-c9zrn53ghd.ap-guangzhou.tencentscf.com";
-const LS_OVR="lawOverrides_v3", LS_DEL="deletedLaws_v3", LS_MAN="manualLaws_v3", LS_LOG="changeLog_v1";
+const LS_OVR="lawOverrides_v3", LS_DEL="deletedLaws_v3", LS_MAN="manualLaws_v3", LS_LOG="changeLog_v1", LS_NEEDSYNC="lawNeedSync_v1";
 let DATA={laws:[],standards:[],lastUpdated:""};
 let edits={overrides:{},deleted:[],manual:[],log:[]};
-let dirty=false;                   // 本地有未推送的修改 → 显示"未同步(待同步)"
+let needSync=false;                   // 本地有未推送的修改 → 显示"未同步(待同步)"
 let syncedTs=0;                     // 上次成功同步时间戳
 let cloudOk=true;                   // 云端是否可用
 let selected=new Set();
@@ -294,9 +294,10 @@ async function init(){
   const _rawLog=loadLS(LS_LOG)||[];
   edits.log=_rawLog.filter(e=>e&&e.op&&e.name&&e.ts);
   if(edits.log.length!==_rawLog.length) saveLS(LS_LOG,edits.log);
-  // 云端合并（best-effort）
+  // 云端合并（best-effort，仅打开时拉一次）
   await loadCloud();
-  // 同步基线：以“加载+合并后”的本地 edits 为已同步基准，避免拉取同事修改后被误判为“未同步”
+  // 同步状态：以“本地是否有未推送修改”为准（持久化标记，刷新后仍正确）
+  needSync = loadLS(LS_NEEDSYNC)==="1";
   updateSyncUI();
   // 返回顶部按钮：滚动超过一屏才显示
   const bt=document.getElementById("backTop");
@@ -307,12 +308,8 @@ async function init(){
   $("#lawSubTabs").innerHTML=subs.map(s=>`<button class="${s==='全部'?'active':''}" data-s="${s}" onclick="switchSub('${s}')">${s}</button>`).join("");
   buildFilterOptions();
   renderLaws();renderStandards();
-  // 多人协同：每45秒自动从云端拉取同事修改（只读静态文件，不调 SCF、不收费）；切回窗口立即拉取
-  if(!window.__cloudTimer){
-    window.__cloudTimer=setInterval(cloudPull,45000);
-    window.addEventListener("focus",cloudPull);
-    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") cloudPull(); });
-  }
+  // 已取消后台自动轮询（原每45秒拉一次，耗 SCF 资源且会导致状态来回跳）。
+  // 改为：打开时拉一次云端(见上方 loadCloud)，之后只有点顶部「同步」才连云端（低消耗）。
 }
 function getMerged(table){
   const base=table==="laws"?DATA.laws:DATA.standards;
@@ -466,7 +463,7 @@ function saveEdit(){
     renderChangePreview();
     toast("已保存（本地）");
     closeEdit();
-    pushCloud();
+    // 手动同步：改完不再自动推送，需点顶部「同步」
   }catch(e){
     console.error("保存失败",e);
     try{closeEdit();}catch(_){}
@@ -490,11 +487,11 @@ function delRec(table,id){
   persist();
   if(table==="laws")renderLaws();else renderStandards();
   renderBatchBar(table); renderChangePreview();
-  toast("已删除（本地）"); pushCloud();
+  toast("已删除（本地），记得点顶部「同步」");
 }
 function persist(){
   saveLS(LS_OVR,edits.overrides); saveLS(LS_DEL,edits.deleted); saveLS(LS_MAN,edits.manual); saveLS(LS_LOG,edits.log);
-  dirty=true; updateSyncUI();   // 任何本地修改 → 标记未同步
+  needSync=true; saveLS(LS_NEEDSYNC,"1"); updateSyncUI();   // 任何本地修改 → 标记未同步
 }
 function trimLog(){ if(edits.log.length>200) edits.log=edits.log.slice(-200); }
 function fmtTime(ts){ if(!ts)return"-"; const d=new Date(ts); const p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; }
@@ -502,19 +499,19 @@ function fmtTime(ts){ if(!ts)return"-"; const d=new Date(ts); const p=n=>String(
 // 同步状态显示：有未同步改动→橙点"未同步(待同步)"；已同步→绿点"已同步 时间"；否则灰点"本地"
 function updateSyncUI(){
   const dot=$("#syncDot"), txt=$("#syncText");
-  if(dirty){ dot.className="dot dirty"; txt.textContent="未同步(待同步)"; return; }
+  if(needSync){ dot.className="dot dirty"; txt.textContent="未同步(待同步)"; return; }
   // 已同步状态稳定显示，临时连不上仅附加小提示，绝不翻回“本地”
   if(syncedTs){ dot.className="dot synced"; txt.textContent="已同步 "+fmtTime(syncedTs)+(cloudOk?"":"（云端暂不可达）"); return; }
   dot.className="dot"; txt.textContent="本地"+(cloudOk?"":"（云端不可用）");
 }
-function scrollTop(){
-  var root=document.scrollingElement||document.documentElement||document.body;
-  try{ root.scrollTo({top:0,left:0,behavior:"smooth"}); }catch(e){}
-  window.scrollTo(0,0);
-  document.documentElement.scrollTop=0;
-  document.body.scrollTop=0;
-  // 兜底：任何内部可滚动容器也归零
-  document.querySelectorAll("*").forEach(function(el){ try{ if(el.scrollHeight>el.clientHeight+4) el.scrollTop=0; }catch(e){} });
+function goToTop(){
+  var before = window.scrollY || document.documentElement.scrollTop || 0;
+  try{ (document.scrollingElement||document.documentElement||document.body).scrollTo(0,0); }catch(e){}
+  try{ window.scrollTo(0,0); }catch(e){}
+  try{ document.documentElement.scrollTop=0; }catch(e){}
+  try{ document.body.scrollTop=0; }catch(e){}
+  // 临时诊断：确认点击已进到 handler（强刷后仍不行时用它区分"点击没收到"还是"滚动方式无效"）
+  toast("返回顶部已执行（点击已收到，滚动前位置 "+before+"）");
 }
 function fieldDiff(oldR,newR,table){
   const fields=table==="laws"
@@ -548,7 +545,7 @@ async function loadCloud(){
     // 云端变更记录同样过滤旧格式残留
     for(const e of (c.log||[])){ if(e&&e.op&&e.name&&e.ts&&!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
     edits._ts=ts;
-    cloudOk=true; if(!dirty) syncedTs=Date.now(); updateSyncUI();
+    cloudOk=true; if(!needSync) syncedTs=Date.now(); updateSyncUI();
   }catch(e){     updateSyncUI(); }
 }
 // 只拉不推：从 SCF 函数接口实时合并同事修改（读 GitHub 无缓存），不调用 SCF 写回，避免误覆盖他人数据且不产生费用
@@ -565,7 +562,7 @@ async function pushCloud(){
   try{
     const body={overrides:edits.overrides,deleted:edits.deleted,manual:edits.manual,log:edits.log,ts:Date.now()};
     const r=await fetch(SYNC_PROXY+"/user-edits.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.ok){ dirty=false; syncedTs=Date.now(); updateSyncUI(); return true; }
+    if(r.ok){ needSync=false; saveLS(LS_NEEDSYNC,"0"); syncedTs=Date.now(); updateSyncUI(); return true; }
     // 非成功：把服务端返回的错误信息带出来，便于前端如实提示（不再假成功）
     let msg="同步失败(HTTP "+r.status+")";
     try{ const j=await r.json(); if(j&&j.message)msg=j.message; }catch(e){}
@@ -676,7 +673,7 @@ function batchDelete(table){
   trimLog(); persist();
   if(table==="laws")renderLaws();else renderStandards();
   renderBatchBar(table); renderChangePreview();
-  toast("已批量删除 "+keys.length+" 条"); pushCloud();
+  toast("已批量删除 "+keys.length+" 条，记得点顶部「同步」");
 }
 
 /* ---------- 批量改状态 / 批量设领域 ---------- */
@@ -704,7 +701,7 @@ function applyBatchStatus(){
   trimLog(); persist();
   if(table==="laws")renderLaws();else renderStandards();
   renderBatchBar(table); renderChangePreview();
-  closeBatchStatus(); toast("已批量改状态"); pushCloud();
+  closeBatchStatus(); toast("已批量改状态，记得点顶部「同步」");
 }
 function openBatchDomain(table){
   const keys=[...selected].filter(k=>k.startsWith(table+"::"));
@@ -729,7 +726,7 @@ function applyBatchDomain(){
   }
   trimLog(); persist();
   renderLaws(); renderBatchBar(table); renderChangePreview();
-  closeBatchDomain(); toast("已批量设领域"); pushCloud();
+  closeBatchDomain(); toast("已批量设领域，记得点顶部「同步」");
 }
 
 /* ---------- 导出 ---------- */
@@ -776,6 +773,6 @@ function exportCanvas(table,asPdf){
 }
 init();
 </script>
-<button id="backTop" class="back-top" onclick="scrollTop()" title="返回顶部">↑</button>
+<button id="backTop" class="back-top" type="button" onclick="goToTop()" title="返回顶部">↑</button>
 </body>
 </html>
