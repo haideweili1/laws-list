@@ -439,11 +439,11 @@ function saveEdit(){
   if(id){ // 覆盖
     op="edit"; diff=fieldDiff(oldRec||{},rec,table); logName=(oldRec&&oldRec.name)||name;
     const k=keyOf(table,id);
-    if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&x.id===id);Object.assign(m,rec);}
+    if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&m.id===id);Object.assign(m,rec);m.ts=Date.now();}
     else edits.overrides[k]=rec;
   }else{ // 新增
     op="add";
-    rec.id=(table==="laws"?"mL":"mS")+Date.now(); rec.table=table;
+    rec.id=(table==="laws"?"mL":"mS")+Date.now(); rec.table=table; rec.ts=Date.now();
     if(table==="laws"){rec.category=rec.domains[0]||"质量";} 
     edits.manual.push(rec);
   }
@@ -503,7 +503,7 @@ async function loadCloud(){
     // 覆盖：取较新
     for(const k in (c.overrides||{})){ if(!edits.overrides[k]||ts> (edits._ts||0)) edits.overrides[k]=c.overrides[k]; }
     edits.deleted=[...new Set([...edits.deleted,...(c.deleted||[])])];
-    for(const m of (c.manual||[])){ if(!edits.manual.some(x=>x.table===m.table&&x.id===m.id)) edits.manual.push(m); }
+    for(const m of (c.manual||[])){ const ex=edits.manual.find(x=>x.table===m.table&&x.id===m.id); if(ex){ if((m.ts||0)>=(ex.ts||0)) Object.assign(ex,m); } else edits.manual.push(m); }
     // 云端变更记录同样过滤旧格式残留
     for(const e of (c.log||[])){ if(e&&e.op&&e.name&&e.ts&&!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
     edits._ts=ts;
