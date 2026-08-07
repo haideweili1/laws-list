@@ -43,8 +43,13 @@
   .badge.bad{background:#fee2e2;color:var(--bad)}
   .badge.gray{background:#e2e8f0;color:var(--gray)}
   .tag{display:inline-block;background:var(--tag);color:var(--tag-t);padding:1px 7px;border-radius:8px;font-size:11px;margin:1px 2px}
-  a.link{color:var(--pri);text-decoration:none}
+  a.link{color:var(--pri);text-decoration:none;cursor:pointer}
   a.link:hover{text-decoration:underline}
+  /* 原文链接做成小按钮：加大点击热区，手机上也好点（仅用于“查看原文”，不影响操作列的改/删） */
+  a.link.doc{display:inline-block;padding:6px 12px;border:1px solid #cfe0f5;border-radius:6px;
+             background:#f2f7fd;white-space:nowrap;line-height:1.2;font-size:13px;text-decoration:none}
+  a.link.doc:hover{background:#e3eefb;border-color:#9dbfe6;text-decoration:none}
+  a.link.doc:active{background:#d4e4f7}
   .cnt{color:var(--muted);font-size:12px;margin-left:auto}
   .filter-pop{position:absolute;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);padding:8px;z-index:50;min-width:160px;max-height:260px;overflow:auto;display:none}
   .filter-pop label{display:block;padding:4px 6px;cursor:pointer;font-size:13px;white-space:nowrap}
@@ -121,7 +126,7 @@
 <section id="view-laws">
   <div class="sub-tabs" id="lawSubTabs"></div>
   <div class="toolbar">
-    <input type="search" id="lawSearch" placeholder="搜索法规名称/发文字号/部门/备注…" oninput="onSearch('laws',this.value)">
+    <input type="search" id="lawSearch" placeholder="搜索法规名称/发布部门/备注…" oninput="onSearch('laws',this.value)">
     <button class="btn pri" onclick="openEdit('laws')">+ 新增法规</button>
     <button class="btn" onclick="exportExcel('laws')">导出Excel</button>
     <button class="btn" onclick="exportPDF('laws')">导出PDF</button>
@@ -137,7 +142,7 @@
   <div class="wrap">
     <table id="lawTable">
       <thead><tr>
-        <th>序号</th><th>法规名称</th><th>发文字号</th><th>发布部门</th><th>实施日期</th>
+        <th>序号</th><th>法规名称</th><th>发布部门</th><th>实施日期</th>
         <th>状态<span class="fbtn" data-f="status">▾筛选</span></th>
         <th>所属领域<span class="fbtn" data-f="domains">▾筛选</span></th>
         <th>原文链接</th><th>备注</th><th>操作<br><input type="checkbox" id="selAllLaws" onclick="toggleSelAll('laws',this.checked)"></th>
@@ -187,7 +192,7 @@
     <input type="hidden" id="eTable"><input type="hidden" id="eId">
     <div class="row">
       <div><label id="lblName">法规名称 *</label><input id="eName"></div>
-      <div><label id="lblNo">发文字号</label><input id="eNo"></div>
+      <div id="rowNo"><label id="lblNo">标准编号</label><input id="eNo"></div>
     </div>
     <div class="row">
       <div><label id="lblDept">发布部门</label><input id="eDept"></div>
@@ -338,9 +343,9 @@ function renderLaws(){
     const manual=edits.manual.some(m=>m.table==="laws"&&m.id===r.id);
     const cls=manual?"manual":(edits.overrides[keyOf("laws",r.id)]?"modified":"");
     return `<tr class="${cls}">
-      <td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(r.docNumber)}</td><td>${esc(r.dept)}</td><td>${esc(r.effectiveDate)}</td>
+      <td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(r.dept)}</td><td>${esc(r.effectiveDate)}</td>
       <td>${statusBadge(r.status)}</td><td>${domainsTags(r.domains)}</td>
-      <td>${r.link?`<a class="link" href="${esc(r.link)}" target="_blank">查看</a>`:"-"}</td>
+      <td>${r.link?`<a class="link doc" href="${esc(r.link)}" target="_blank">查看原文</a>`:"-"}</td>
       <td>${esc(r.remark)}</td>
       <td><input type="checkbox" class="sel" data-k="${keyOf('laws',r.id)}" ${selected.has(keyOf('laws',r.id))?'checked':''} onchange="onRowCheck(this)"> <a class="link" onclick="openEdit('laws','${r.id}')">改</a> <a class="link" onclick="delRec('laws','${r.id}')">删</a></td>
     </tr>`;
@@ -361,7 +366,7 @@ function renderStandards(){
     return `<tr class="${cls}">
       <td>${i+1}</td><td>${esc(r.stdNo)}</td><td>${esc(r.name)}</td><td>${esc(r.stdType)}</td><td>${esc(r.publisher)}</td>
       <td>${esc(r.effectiveDate)}</td><td>${statusBadge(r.status)}</td>
-      <td>${r.link?`<a class="link" href="${esc(r.link)}" target="_blank">查看</a>`:"-"}</td>
+      <td>${r.link?`<a class="link doc" href="${esc(r.link)}" target="_blank">查看原文</a>`:"-"}</td>
       <td>${esc(r.remark)}</td>
       <td><input type="checkbox" class="sel" data-k="${keyOf('standards',r.id)}" ${selected.has(keyOf('standards',r.id))?'checked':''} onchange="onRowCheck(this)"> <a class="link" onclick="openEdit('standards','${r.id}')">改</a> <a class="link" onclick="delRec('standards','${r.id}')">删</a></td>
     </tr>`;
@@ -410,7 +415,8 @@ function openEdit(table,id){
   const isLaw=table==="laws";
   $("#editTitle").textContent=(id?"编辑":"新增")+(isLaw?"法规":"标准");
   $("#lblName").textContent=isLaw?"法规名称 *":"标准名称 *";
-  $("#lblNo").textContent=isLaw?"发文字号":"标准编号";
+  $("#lblNo").textContent="标准编号";
+  $("#rowNo").style.display=isLaw?"none":"";   // 法规不再展示发文字号（原值仍保留在 eNo 中，保存时原样写回，不丢数据）
   $("#lblDept").textContent=isLaw?"发布部门":"发布单位";
   $("#lblType").parentElement.style.display=isLaw?"none":"";
   const rec=id?(getMerged(table).find(r=>r.id===id)||{}):{};
@@ -461,7 +467,7 @@ function saveEdit(){
     persist();
     if(table==="laws")renderLaws();else renderStandards();
     renderChangePreview();
-    toast("已保存（本地）");
+    toast("已保存，请点击顶部「同步」上传云端");
     closeEdit();
     // 手动同步：改完不再自动推送，需点顶部「同步」
   }catch(e){
@@ -487,7 +493,7 @@ function delRec(table,id){
   persist();
   if(table==="laws")renderLaws();else renderStandards();
   renderBatchBar(table); renderChangePreview();
-  toast("已删除（本地），记得点顶部「同步」");
+  toast("已删除，请点击顶部「同步」上传云端");
 }
 function persist(){
   saveLS(LS_OVR,edits.overrides); saveLS(LS_DEL,edits.deleted); saveLS(LS_MAN,edits.manual); saveLS(LS_LOG,edits.log);
@@ -505,13 +511,11 @@ function updateSyncUI(){
   dot.className="dot"; txt.textContent="本地"+(cloudOk?"":"（云端不可用）");
 }
 function goToTop(){
-  var before = window.scrollY || document.documentElement.scrollTop || 0;
+  // 多方式兜底：不同浏览器/内核对滚动容器的判定不一致，全部试一遍
   try{ (document.scrollingElement||document.documentElement||document.body).scrollTo(0,0); }catch(e){}
   try{ window.scrollTo(0,0); }catch(e){}
   try{ document.documentElement.scrollTop=0; }catch(e){}
   try{ document.body.scrollTop=0; }catch(e){}
-  // 临时诊断：确认点击已进到 handler（强刷后仍不行时用它区分"点击没收到"还是"滚动方式无效"）
-  toast("返回顶部已执行（点击已收到，滚动前位置 "+before+"）");
 }
 function fieldDiff(oldR,newR,table){
   const fields=table==="laws"
@@ -673,7 +677,7 @@ function batchDelete(table){
   trimLog(); persist();
   if(table==="laws")renderLaws();else renderStandards();
   renderBatchBar(table); renderChangePreview();
-  toast("已批量删除 "+keys.length+" 条，记得点顶部「同步」");
+  toast("已删除 "+keys.length+" 条，请点击顶部「同步」上传云端");
 }
 
 /* ---------- 批量改状态 / 批量设领域 ---------- */
@@ -701,7 +705,7 @@ function applyBatchStatus(){
   trimLog(); persist();
   if(table==="laws")renderLaws();else renderStandards();
   renderBatchBar(table); renderChangePreview();
-  closeBatchStatus(); toast("已批量改状态，记得点顶部「同步」");
+  closeBatchStatus(); toast("状态已更新，请点击顶部「同步」上传云端");
 }
 function openBatchDomain(table){
   const keys=[...selected].filter(k=>k.startsWith(table+"::"));
@@ -726,7 +730,7 @@ function applyBatchDomain(){
   }
   trimLog(); persist();
   renderLaws(); renderBatchBar(table); renderChangePreview();
-  closeBatchDomain(); toast("已批量设领域，记得点顶部「同步」");
+  closeBatchDomain(); toast("所属领域已更新，请点击顶部「同步」上传云端");
 }
 
 /* ---------- 导出 ---------- */
@@ -734,7 +738,7 @@ function currentRows(table){return getMerged(table);}
 function exportExcel(table){
   const rows=currentRows(table);
   const cols=table==="laws"
-    ?[["法规名称","name"],["发文字号","docNumber"],["发布部门","dept"],["实施日期","effectiveDate"],["状态","status"],["所属领域","domains"],["原文链接","link"],["备注","remark"]]
+    ?[["法规名称","name"],["发布部门","dept"],["实施日期","effectiveDate"],["状态","status"],["所属领域","domains"],["原文链接","link"],["备注","remark"]]
     :[["标准编号","stdNo"],["标准名称","name"],["标准类型","stdType"],["发布单位","publisher"],["实施日期","effectiveDate"],["状态","status"],["原文链接","link"],["备注","remark"]];
   const head=["序号",...cols.map(c=>c[0])];
   const data=rows.map((r,i)=>[i+1,...cols.map(c=>Array.isArray(r[c[1]])?r[c[1]].join("/"):(r[c[1]]||""))]);
