@@ -487,10 +487,10 @@ function fieldDiff(oldR,newR,table){
 
 /* ---------- 云端协同（best-effort） ---------- */
 async function loadCloud(){
-  if(!SYNC_PROXY)return;
+  // 读走同站免费静态文件（GitHub Pages），不消耗 SCF 资源；写才走 SCF 代理
   try{
-    const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok)return;
+    const r=await fetch("user-edits.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; return; }
     const c=await r.json(); const ts=c.ts||0;
     // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
     if(!c.ts && c.version){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端为旧版数据，已跳过）"; return; }
