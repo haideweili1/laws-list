@@ -503,13 +503,18 @@ function fmtTime(ts){ if(!ts)return"-"; const d=new Date(ts); const p=n=>String(
 function updateSyncUI(){
   const dot=$("#syncDot"), txt=$("#syncText");
   if(dirty){ dot.className="dot dirty"; txt.textContent="未同步(待同步)"; return; }
-  if(!cloudOk){ dot.className="dot"; txt.textContent="本地（云端不可用）"; return; }
-  if(syncedTs){ dot.className="dot synced"; txt.textContent="已同步 "+fmtTime(syncedTs); }
-  else { dot.className="dot"; txt.textContent="本地"; }
+  // 已同步状态稳定显示，临时连不上仅附加小提示，绝不翻回“本地”
+  if(syncedTs){ dot.className="dot synced"; txt.textContent="已同步 "+fmtTime(syncedTs)+(cloudOk?"":"（云端暂不可达）"); return; }
+  dot.className="dot"; txt.textContent="本地"+(cloudOk?"":"（云端不可用）");
 }
 function scrollTop(){
-  try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ window.scrollTo(0,0); }
-  ["html","body",".content","main","#content"].forEach(s=>{ try{ const el=document.querySelector(s); if(el) el.scrollTop=0; }catch(e){} });
+  var root=document.scrollingElement||document.documentElement||document.body;
+  try{ root.scrollTo({top:0,left:0,behavior:"smooth"}); }catch(e){}
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  // 兜底：任何内部可滚动容器也归零
+  document.querySelectorAll("*").forEach(function(el){ try{ if(el.scrollHeight>el.clientHeight+4) el.scrollTop=0; }catch(e){} });
 }
 function fieldDiff(oldR,newR,table){
   const fields=table==="laws"
@@ -529,13 +534,13 @@ async function loadCloud(){
   // 读取走腾讯云 SCF 函数接口（实时读 GitHub，无 CDN 缓存，国内100%可达）；写才走 SCF 代理(POST)
   try{
     const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok){ cloudOk=false; updateSyncUI(); return; }
+    if(!r.ok){ updateSyncUI(); return; }
     let c=await r.json();
     // SCF 的 GET 返回 GitHub API 格式(content 为 base64 编码的原 JSON)，需解码
     if(c && c.content){ const bin=atob(c.content.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); c=JSON.parse(new TextDecoder('utf-8').decode(bytes)); }
     const ts=c.ts||0;
     // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
-    if(!c.ts && c.version){ cloudOk=false; updateSyncUI(); return; }
+    if(!c.ts && c.version){ updateSyncUI(); return; }
     // 覆盖：取较新
     for(const k in (c.overrides||{})){ if(!edits.overrides[k]||ts> (edits._ts||0)) edits.overrides[k]=c.overrides[k]; }
     edits.deleted=[...new Set([...edits.deleted,...(c.deleted||[])])];
@@ -544,7 +549,7 @@ async function loadCloud(){
     for(const e of (c.log||[])){ if(e&&e.op&&e.name&&e.ts&&!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
     edits._ts=ts;
     cloudOk=true; if(!dirty) syncedTs=Date.now(); updateSyncUI();
-  }catch(e){     cloudOk=false; updateSyncUI(); }
+  }catch(e){     updateSyncUI(); }
 }
 // 只拉不推：从 SCF 函数接口实时合并同事修改（读 GitHub 无缓存），不调用 SCF 写回，避免误覆盖他人数据且不产生费用
 async function cloudPull(){
