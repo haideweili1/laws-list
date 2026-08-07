@@ -417,42 +417,50 @@ function openEdit(table,id){
 }
 function closeEdit(){$("#editMask").style.display="none"}
 function saveEdit(){
-  const table=$("#eTable").value, id=$("#eId").value, name=$("#eName").value.trim();
-  if(!name){toast("名称必填");return;}
-  const oldRec=id?getMerged(table).find(r=>r.id===id):null;
-  const rec={
-    name:name,
-    docNumber:table==="laws"?$("#eNo").value.trim():"",
-    stdNo:table==="standards"?$("#eNo").value.trim():"",
-    dept:table==="laws"?$("#eDept").value.trim():"",
-    publisher:table==="standards"?$("#eDept").value.trim():"",
-    effectiveDate:$("#eDate").value.trim(),
-    status:$("#eStatus").value,
-    stdType:table==="standards"?$("#eType").value:"",
-    domains:table==="laws"?$("#eDomains").value.split(",").map(s=>s.trim()).filter(Boolean):[],
-    link:$("#eLink").value.trim(),
-    remark:$("#eRemark").value.trim(),
-    abolishDate:$("#eAbolish").value.trim(),
-    region:name.includes("广东")?"广东":""
-  };
-  let op, diff=null, logName=name;
-  if(id){ // 覆盖
-    op="edit"; diff=fieldDiff(oldRec||{},rec,table); logName=(oldRec&&oldRec.name)||name;
-    const k=keyOf(table,id);
-    if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&m.id===id);Object.assign(m,rec);m.ts=Date.now();}
-    else edits.overrides[k]=rec;
-  }else{ // 新增
-    op="add";
-    rec.id=(table==="laws"?"mL":"mS")+Date.now(); rec.table=table; rec.ts=Date.now();
-    if(table==="laws"){rec.category=rec.domains[0]||"质量";} 
-    edits.manual.push(rec);
+  try{
+    const table=$("#eTable").value, id=$("#eId").value, name=$("#eName").value.trim();
+    if(!name){toast("名称必填");return;}
+    const oldRec=id?getMerged(table).find(r=>r.id===id):null;
+    const rec={
+      name:name,
+      docNumber:table==="laws"?$("#eNo").value.trim():"",
+      stdNo:table==="standards"?$("#eNo").value.trim():"",
+      dept:table==="laws"?$("#eDept").value.trim():"",
+      publisher:table==="standards"?$("#eDept").value.trim():"",
+      effectiveDate:$("#eDate").value.trim(),
+      status:$("#eStatus").value,
+      stdType:table==="standards"?$("#eType").value:"",
+      domains:table==="laws"?$("#eDomains").value.split(",").map(s=>s.trim()).filter(Boolean):[],
+      link:$("#eLink").value.trim(),
+      remark:$("#eRemark").value.trim(),
+      abolishDate:$("#eAbolish").value.trim(),
+      region:name.includes("广东")?"广东":""
+    };
+    let op, diff=null, logName=name;
+    if(id){ // 覆盖
+      op="edit"; diff=fieldDiff(oldRec||{},rec,table); logName=(oldRec&&oldRec.name)||name;
+      const k=keyOf(table,id);
+      if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&m.id===id);Object.assign(m,rec);m.ts=Date.now();}
+      else edits.overrides[k]=rec;
+    }else{ // 新增
+      op="add";
+      rec.id=(table==="laws"?"mL":"mS")+Date.now(); rec.table=table; rec.ts=Date.now();
+      if(table==="laws"){rec.category=rec.domains[0]||"质量";} 
+      edits.manual.push(rec);
+    }
+    edits.log.push({key:keyOf(table,id||rec.id)+"_"+Date.now(),table,recId:id||rec.id,name:logName,ts:Date.now(),op,diff});
+    trimLog();
+    persist();
+    if(table==="laws")renderLaws();else renderStandards();
+    renderChangePreview();
+    toast("已保存（本地）");
+    closeEdit();
+    pushCloud();
+  }catch(e){
+    console.error("保存失败",e);
+    try{closeEdit();}catch(_){}
+    toast("保存失败："+(e&&e.message?e.message:e));
   }
-  edits.log.push({key:keyOf(table,id||rec.id)+"_"+Date.now(),table,recId:id||rec.id,name:logName,ts:Date.now(),op,diff});
-  trimLog();
-  persist(); closeEdit();
-  if(table==="laws")renderLaws();else renderStandards();
-  renderChangePreview();
-  toast("已保存（本地）"); pushCloud();
 }
 function removeRec(table,id){
   const k=keyOf(table,id);
