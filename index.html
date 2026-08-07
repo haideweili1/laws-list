@@ -493,9 +493,9 @@ function fieldDiff(oldR,newR,table){
 
 /* ---------- 云端协同（best-effort） ---------- */
 async function loadCloud(){
-  // 读走同站免费静态文件（GitHub Pages），不消耗 SCF 资源；写才走 SCF 代理
+  // 读走 jsDelivr CDN（实时从 GitHub 仓库取最新 user-edits.json，不等 Pages 重建），不消耗 SCF 资源；写才走 SCF 代理
   try{
-    const r=await fetch("user-edits.json?t="+Date.now(),{cache:"no-store"});
+    const r=await fetch("https://cdn.jsdelivr.net/gh/haideweili1/laws-list@main/user-edits.json?t="+Date.now(),{cache:"no-store"});
     if(!r.ok){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; return; }
     const c=await r.json(); const ts=c.ts||0;
     // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
@@ -510,7 +510,7 @@ async function loadCloud(){
     $("#syncDot").className="dot synced"; $("#syncText").textContent="已同步云端";
   }catch(e){     $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; }
 }
-// 只拉不推：从同站静态文件合并同事修改，不调用 SCF、不写回，避免误覆盖他人数据且不产生费用
+// 只拉不推：从 jsDelivr CDN 实时合并同事修改，不调用 SCF、不写回，避免误覆盖他人数据且不产生费用
 async function cloudPull(){
   if(!edits)return;
   if(document.visibilityState!=="visible")return; // 仅页面可见时拉取，省资源
