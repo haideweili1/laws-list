@@ -440,7 +440,7 @@ function saveEdit(){
     if(id){ // 覆盖
       op="edit"; diff=fieldDiff(oldRec||{},rec,table); logName=(oldRec&&oldRec.name)||name;
       const k=keyOf(table,id);
-      if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&m.id===id);Object.assign(m,rec);m.ts=Date.now();}
+      if(edits.manual.some(m=>m.table===table&&m.id===id)){const m=edits.manual.find(x=>x.table===table&&x.id===id);Object.assign(m,rec);m.ts=Date.now();}
       else edits.overrides[k]=rec;
     }else{ // 新增
       op="add";
