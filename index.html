@@ -60,7 +60,10 @@
   .modal .row>div{flex:1}
   .modal .acts{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
   .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gray);margin-right:6px}
-  .dot.synced{background:var(--ok)} .dot.err{background:var(--bad)}
+  .dot.synced{background:var(--ok)} .dot.err{background:var(--bad)} .dot.dirty{background:var(--warn)}
+  .back-top{position:fixed;right:20px;bottom:24px;width:46px;height:46px;border-radius:50%;background:var(--pri);color:#fff;border:none;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;visibility:hidden;transform:translateY(8px);transition:.25s;z-index:150}
+  .back-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+  .back-top:hover{background:var(--pri-d)}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2733;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.3s;z-index:200}
   .toast.show{opacity:1}
   .manual{background:#faf5ff} .modified{background:#fff7ed}
@@ -258,6 +261,9 @@ const SYNC_PROXY = "https://1460512300-c9zrn53ghd.ap-guangzhou.tencentscf.com";
 const LS_OVR="lawOverrides_v3", LS_DEL="deletedLaws_v3", LS_MAN="manualLaws_v3", LS_LOG="changeLog_v1";
 let DATA={laws:[],standards:[],lastUpdated:""};
 let edits={overrides:{},deleted:[],manual:[],log:[]};
+let syncedSig="";                   // 已同步基线的 edits 签名
+let syncedTs=0;                     // 上次成功同步时间戳
+let cloudOk=true;                   // 云端是否可用
 let selected=new Set();
 const state={top:"laws",lawSub:"全部",
   filters:{laws:{status:new Set(),domains:new Set()},standards:{stdType:new Set(),status:new Set()}},
@@ -290,6 +296,12 @@ async function init(){
   if(edits.log.length!==_rawLog.length) saveLS(LS_LOG,edits.log);
   // 云端合并（best-effort）
   await loadCloud();
+  // 同步基线：以“加载+合并后”的本地 edits 为已同步基准，避免拉取同事修改后被误判为“未同步”
+  syncedSig=editsSig();
+  updateSyncUI();
+  // 返回顶部按钮：滚动超过一屏才显示
+  const bt=document.getElementById("backTop");
+  window.addEventListener("scroll",()=>{ if(bt) bt.classList.toggle("show", window.scrollY>400); },{passive:true});
   renderChangePreview();
   // 子分类Tab
   const subs=["全部","质量","环境与职业健康","信息安全","反恐"];
@@ -483,9 +495,21 @@ function delRec(table,id){
 }
 function persist(){
   saveLS(LS_OVR,edits.overrides); saveLS(LS_DEL,edits.deleted); saveLS(LS_MAN,edits.manual); saveLS(LS_LOG,edits.log);
+  updateSyncUI();   // 任何本地修改后刷新同步状态（→ 未同步(待同步)）
 }
 function trimLog(){ if(edits.log.length>200) edits.log=edits.log.slice(-200); }
 function fmtTime(ts){ if(!ts)return"-"; const d=new Date(ts); const p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; }
+// edits 签名（不含拉取用的 _ts），用于判断是否相对已同步基线有改动
+function editsSig(){ return JSON.stringify({o:edits.overrides,d:edits.deleted,m:edits.manual,l:edits.log}); }
+// 同步状态显示：有未同步改动→橙点"未同步(待同步)"；已同步→绿点"已同步 时间"；否则灰点"本地"
+function updateSyncUI(){
+  const dot=$("#syncDot"), txt=$("#syncText");
+  if(editsSig()!==syncedSig){ dot.className="dot dirty"; txt.textContent="未同步(待同步)"; return; }
+  if(!cloudOk){ dot.className="dot"; txt.textContent="本地（云端不可用）"; return; }
+  if(syncedTs){ dot.className="dot synced"; txt.textContent="已同步 "+fmtTime(syncedTs); }
+  else { dot.className="dot"; txt.textContent="本地"; }
+}
+function scrollTop(){ window.scrollTo({top:0,behavior:"smooth"}); }
 function fieldDiff(oldR,newR,table){
   const fields=table==="laws"
     ?[["name","法规名称"],["docNumber","发文字号"],["dept","发布部门"],["effectiveDate","实施日期"],["abolishDate","废止日期"],["status","状态"],["domains","所属领域"],["link","原文链接"],["remark","备注"]]
@@ -504,13 +528,13 @@ async function loadCloud(){
   // 读取走腾讯云 SCF 函数接口（实时读 GitHub，无 CDN 缓存，国内100%可达）；写才走 SCF 代理(POST)
   try{
     const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; return; }
+    if(!r.ok){ cloudOk=false; updateSyncUI(); return; }
     let c=await r.json();
     // SCF 的 GET 返回 GitHub API 格式(content 为 base64 编码的原 JSON)，需解码
     if(c && c.content){ const bin=atob(c.content.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); c=JSON.parse(new TextDecoder('utf-8').decode(bytes)); }
     const ts=c.ts||0;
     // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
-    if(!c.ts && c.version){ $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端为旧版数据，已跳过）"; return; }
+    if(!c.ts && c.version){ cloudOk=false; updateSyncUI(); return; }
     // 覆盖：取较新
     for(const k in (c.overrides||{})){ if(!edits.overrides[k]||ts> (edits._ts||0)) edits.overrides[k]=c.overrides[k]; }
     edits.deleted=[...new Set([...edits.deleted,...(c.deleted||[])])];
@@ -518,8 +542,8 @@ async function loadCloud(){
     // 云端变更记录同样过滤旧格式残留
     for(const e of (c.log||[])){ if(e&&e.op&&e.name&&e.ts&&!edits.log.some(x=>x.key===e.key)) edits.log.push(e); }
     edits._ts=ts;
-    $("#syncDot").className="dot synced"; $("#syncText").textContent="已同步云端";
-  }catch(e){     $("#syncDot").className="dot"; $("#syncText").textContent="本地（云端不可用）"; }
+    cloudOk=true; updateSyncUI();
+  }catch(e){     cloudOk=false; updateSyncUI(); }
 }
 // 只拉不推：从 SCF 函数接口实时合并同事修改（读 GitHub 无缓存），不调用 SCF 写回，避免误覆盖他人数据且不产生费用
 async function cloudPull(){
@@ -559,7 +583,9 @@ async function manualSync(){
   try{
     const res=await pushCloud();
     await loadCloud();
-    if(res===true){ setBtn(btn,"ok"); toast("已同步云端"); }
+    if(res===true){ setBtn(btn,"ok"); toast("已同步云端");
+      syncedSig=editsSig(); syncedTs=Date.now(); updateSyncUI();
+    }
     else { setBtn(btn,"err"); toast(typeof res==="string"?res:"同步失败"); }
   }catch(e){ setBtn(btn,"err"); toast("同步失败"); }
   finally{ setTimeout(()=>setBtn(btn,"idle"),1500); }
@@ -746,5 +772,6 @@ function exportCanvas(table,asPdf){
 }
 init();
 </script>
+<button id="backTop" class="back-top" onclick="scrollTop()" title="返回顶部">↑</button>
 </body>
 </html>
