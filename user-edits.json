@@ -1,7 +1,1 @@
-{
-  "overrides": {},
-  "deleted": [],
-  "manual": [],
-  "log": [],
-  "ts": 0
-}
+{"overrides":{},"deleted":[],"manual":[{"name":"测试同步","docNumber":"","stdNo":"","dept":"","publisher":"","effectiveDate":"","status":"现行有效","stdType":"","domains":[],"link":"","remark":"","abolishDate":"","region":"","id":"mL1786087724832","table":"laws","category":"质量"}],"log":[{"key":"laws::mL1786087724832_1786087724833","table":"laws","recId":"mL1786087724832","name":"测试同步","ts":1786087724833,"op":"add","diff":null}],"ts":1786091213618}
