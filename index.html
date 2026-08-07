@@ -520,12 +520,16 @@ async function cloudPull(){
   if(sig!==sig2){ renderLaws(); renderStandards(); renderChangePreview(); } // 仅变化时重渲染，避免闪烁
 }
 async function pushCloud(){
-  if(!SYNC_PROXY)return;
+  if(!SYNC_PROXY)return "未配置同步地址";
   try{
     const body={overrides:edits.overrides,deleted:edits.deleted,manual:edits.manual,log:edits.log,ts:Date.now()};
     const r=await fetch(SYNC_PROXY+"/user-edits.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.ok){$("#syncDot").className="dot synced";$("#syncText").textContent="已同步云端";}
-  }catch(e){}
+    if(r.ok){ $("#syncDot").className="dot synced"; $("#syncText").textContent="已同步云端"; return true; }
+    // 非成功：把服务端返回的错误信息带出来，便于前端如实提示（不再假成功）
+    let msg="同步失败(HTTP "+r.status+")";
+    try{ const j=await r.json(); if(j&&j.message)msg=j.message; }catch(e){}
+    return msg;
+  }catch(e){ return "网络错误："+e.message; }
 }
 
 /* ---------- 同步 / 自动检索 动画 ---------- */
@@ -541,8 +545,12 @@ function setBtn(btn,st){
 async function manualSync(){
   const btn=document.getElementById("syncBtn");
   setBtn(btn,"loading");
-  try{ pushCloud(); await loadCloud(); setBtn(btn,"ok"); toast("已同步云端"); }
-  catch(e){ setBtn(btn,"err"); toast("同步失败"); }
+  try{
+    const res=await pushCloud();
+    await loadCloud();
+    if(res===true){ setBtn(btn,"ok"); toast("已同步云端"); }
+    else { setBtn(btn,"err"); toast(typeof res==="string"?res:"同步失败"); }
+  }catch(e){ setBtn(btn,"err"); toast("同步失败"); }
   finally{ setTimeout(()=>setBtn(btn,"idle"),1500); }
 }
 function triggerRetrieve(){

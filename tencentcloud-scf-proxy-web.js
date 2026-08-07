@@ -33,9 +33,25 @@ const GH_HEADERS = (token) => ({
 async function proxyUserEdits(method, bodyStr, token) {
   const target = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
   try {
-    const init = { method, headers: GH_HEADERS(token) };
-    if (method === 'PUT' || method === 'POST') init.body = bodyStr || '{}';
-    const res = await fetch(target, init);
+    if (method === 'GET') {
+      const res = await fetch(target, { headers: GH_HEADERS(token) });
+      const text = await res.text();
+      return { status: res.status, body: text };
+    }
+    // 写：先取现有文件的 sha（更新需要；文件不存在则创建，无需 sha）
+    let sha = null;
+    const getRes = await fetch(target, { headers: GH_HEADERS(token) });
+    if (getRes.ok) {
+      try { const j = await getRes.json(); sha = j.sha || null; } catch (e) {}
+    }
+    // GitHub contents API 要求 content 为 base64、且需 message（更新还需 sha）
+    const content = Buffer.from(bodyStr || '{}', 'utf8').toString('base64');
+    const putBody = JSON.stringify({
+      message: 'sync: update user-edits.json',
+      content: content,
+      ...(sha ? { sha } : {})
+    });
+    const res = await fetch(target, { method: 'PUT', headers: GH_HEADERS(token), body: putBody });
     const text = await res.text();
     return { status: res.status, body: text };
   } catch (e) {
