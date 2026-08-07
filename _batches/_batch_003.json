@@ -1,0 +1,342 @@
+[
+  {
+    "id": "L0107",
+    "name": "中华人民共和国数据安全法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0108",
+    "name": "中华人民共和国电子商务法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0109",
+    "name": "关键信息基础设施安全保护条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0111",
+    "name": "信息安全等级保护管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0112",
+    "name": "网络安全标识管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0115",
+    "name": "《生成式人工智能服务安全管理暂行办法》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0116",
+    "name": "生成式人工智能服务安全管理暂行办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0117",
+    "name": "《小型个人信息处理者个人信息保护简化措施规定》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0118",
+    "name": "《人工智能拟人化互动服务管理暂行办法》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0119",
+    "name": "中华人民共和国宪法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0120",
+    "name": "中华人民共和国反垄断法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0121",
+    "name": "中华人民共和国审计法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0122",
+    "name": "中华人民共和国企业所得税法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0123",
+    "name": "中华人民共和国反不正当竞争法(2025修订)",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0124",
+    "name": "中华人民共和国劳动争议调解仲裁法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0125",
+    "name": "中国强制检定的工作计量器具明细目录",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0126",
+    "name": "中华人民共和国强制检定的工作计量器具检定管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0127",
+    "name": "质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0128",
+    "name": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0129",
+    "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0130",
+    "name": "管理体系审核指南 GB/T 19011-2021",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0131",
+    "name": "中华人民共和国计量法实施细则（2022年修正）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0132",
+    "name": "国家市场监管总局第76号令《工业产品生产单位落实 质量安全主体责任监督管理规定》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0133",
+    "name": "国家市场监管总局第75号令《工业产品生产单位落实 质量安全主体责任监督管理规定》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0134",
+    "name": "标准化工作导则 第一部分：标准化文件的结构和起草规则 （GB/T 1.1-2020）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0135",
+    "name": "中华人民共和国关税法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0136",
+    "name": "中华人民共和国消费者权益保护法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0137",
+    "name": "缺陷消费品召回管理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0138",
+    "name": "强制性产品认证管理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0139",
+    "name": "能源效率标识管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0140",
+    "name": "商品售后服务评价体系（GB/T 27922-2021）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0141",
+    "name": "企业知识产权管理规范（GB/T 29490-2013）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0142",
+    "name": "广东省标准化条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0143",
+    "name": "网络安全技术 信息系统灾难恢复规范（GB/T 20988-2025）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  }
+]

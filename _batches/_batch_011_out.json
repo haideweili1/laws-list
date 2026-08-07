@@ -1,0 +1,290 @@
+[
+  {
+    "id": "L0382",
+    "name": "《工作场所空气有毒物质测定第37 部分：一氧化碳和二氧化碳》GBZ/T 300.37-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2017/12/20171204133942570.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0383",
+    "name": "《工作场所空气有毒物质测定第48 部分：臭氧和过氧化氢》GBZ/T 300.48-2017",
+    "table": "laws",
+    "new_link": "https://niohp.chinacdc.cn/zyysjk/zywsbzml/202204/W020220401344997966763.pdf",
+    "source_desc": "中国疾控职业健康标准目录PDF（国家卫健委下属机构）",
+    "quality": "high"
+  },
+  {
+    "id": "L0384",
+    "name": "《工作场所空气有毒物质测定第60 部分：戊烷、己烷、庚烷、辛烷和壬烷》GBZ/T 300.60-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/pyl/201712/24d7917eb51744928ea3cf68b6b1229e/files/1739780137529_93526.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0385",
+    "name": "《工作场所空气有毒物质测定第65 部分：环己烷和甲基环己烷》GBZ/T 300.65-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/pyl/201712/9880d33abd154fa49b90feb9173e66e4/files/1739779646405_16001.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0386",
+    "name": "《工作场所空气有毒物质测定第66 部分：苯、甲苯、二甲苯和乙苯》GBZ/T 300.66-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/pyl/201712/0c849c68aa9b48549056712aea6f97b9/files/1739779815030_74728.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0387",
+    "name": "《工作场所空气有毒物质测定第68 部分：苯乙烯、甲基苯乙烯和二乙烯基苯》GBZ/T 300.68-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/pyl/201712/03eb50ea292042d1afd953b5f440df31/files/1739779614755_24185.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0388",
+    "name": "《工作场所空气有毒物质测定第84 部分：甲醇、丙醇和辛醇》GBZ/T 300.84-2017",
+    "table": "laws",
+    "new_link": "https://niohp.chinacdc.cn/sndt/202511/W020251128729876757514.pdf",
+    "source_desc": "中国疾控职业健康标准目录PDF（国家卫健委下属机构）",
+    "quality": "high"
+  },
+  {
+    "id": "L0389",
+    "name": "《工作场所物理因素测量第6 部分：紫外辐射》GBZ/T 189.6-2007",
+    "table": "laws",
+    "new_link": "https://niohp.chinacdc.cn/sndt/202511/W020251128701152701550.pdf",
+    "source_desc": "中国疾控职业健康标准目录PDF（国家卫健委下属机构）",
+    "quality": "high"
+  },
+  {
+    "id": "L0390",
+    "name": "《工作场所物理因素测量第8 部分：噪声》GBZ/T 189.8-2007",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2014/10/20141030103830863.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0391",
+    "name": "《工作场所物理因素测量第9 部分：手传振动》GBZ/T189.9-2007",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2014/10/20141030104000876.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0392",
+    "name": "《工作场所职业病危害作业分级第4 部分：噪声》GBZ/T229.4-2012",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/zwgkzt/pyl/201206/55052/files/2b2cfbe1d0104ffbac649e2a038a9c76.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0393",
+    "name": "《职业卫生名词术语》GBZ/T 224-2010",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/zwgkzt/pyl/201102/50670/files/6cd35e6dd2f244db8aae98e3eedc8f31.pdf",
+    "source_desc": "国家卫健委官网标准PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0394",
+    "name": "《护听器的选择指南》GB/T 23466-2009",
+    "table": "laws",
+    "new_link": "https://img.antpedia.com/standard/files/pdfs_ora/CN-GB/996/GB_T%2023466-2009.pdf",
+    "source_desc": "标准网(antpedia)第三方PDF镜像",
+    "quality": "high",
+    "note": "国家卫健委/国标委未提供公开直接PDF，使用第三方标准PDF镜像"
+  },
+  {
+    "id": "L0395",
+    "name": "《个体防护装备配备规范第1 部分:总则》GB 39800.1-2020",
+    "table": "laws",
+    "new_link": "http://www.cocodala.gov.cn/uploadfile/files/2024/05/13/2024051317052204127.pdf",
+    "source_desc": "新疆可可达拉政府网PDF镜像",
+    "quality": "high",
+    "note": "使用地方政府公开PDF镜像"
+  },
+  {
+    "id": "L0396",
+    "name": "《化学品中挥发性有机组分定性分析和峰面积百分比测定顶空气相色谱-质谱法》GDOHTQC 001-2024",
+    "table": "laws",
+    "new_link": "https://www.gdpcc.com/index.php/Index/article?column_id=98&id=4530",
+    "source_desc": "广东省职防院官网标准页（仅标题/落地页）",
+    "quality": "low",
+    "note": "仅找到标准标题落地页，未检索到直接全文/PDF下载链接，质量低"
+  },
+  {
+    "id": "L0397",
+    "name": "《工业炉窖大气污染物排放标准》 GB9078-1996",
+    "table": "laws",
+    "new_link": "https://sthjt.qinghai.gov.cn/xwzx/gsgg/202603/P020260319607545426758.pdf",
+    "source_desc": "青海省生态环境厅官网PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0398",
+    "name": "电器电子产品有害物质限制使用管理办法",
+    "table": "laws",
+    "new_link": "https://www.miit.gov.cn/api-gateway/jpaas-web-server/front/document/file-download?fileUrl=/cms_files/filemanager/1226211233/attach/202112/eb2c5a69d85c449da2d2b0a27836c92a.pdf",
+    "source_desc": "工信部官网PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0399",
+    "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+    "table": "laws",
+    "new_link": "https://yjgl.tj.gov.cn/ZWFW5050/BZ2939/GJBZ6056/202503/W020250328537008987213.pdf",
+    "source_desc": "天津市应急管理局官网PDF",
+    "quality": "high"
+  },
+  {
+    "id": "L0400",
+    "name": "生态环境统计管理办法",
+    "table": "laws",
+    "new_link": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk02/202301/t20230119_1013802.html",
+    "source_desc": "生态环境部官网全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0401",
+    "name": "工贸企业有限空间作业安全规定（应急管理部令（第13号））",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202312/t20231208_471355.shtml",
+    "source_desc": "应急管理部官网全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0402",
+    "name": "突发事件应急预案管理办法（国发办（2024）5号）",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/202402/content_6930816.htm",
+    "source_desc": "中国政府网全文",
+    "quality": "high"
+  },
+  {
+    "id": "S0002",
+    "name": "ＧＢ/Ｔ　4343.2-2020家用电器、电动工具和类似器具的电磁兼容要求 第2部分：抗扰度",
+    "table": "standards",
+    "new_link": "http://file4.foodmate.net/foodvip/biaozhun/2021/GBT%204343.2-2020.pdf",
+    "source_desc": "食品伙伴网第三方PDF",
+    "quality": "high",
+    "note": "国标委未公开直接PDF，使用第三方标准PDF镜像"
+  },
+  {
+    "id": "S0003",
+    "name": "ＧＢ/Ｔ　17625.2-2007电磁兼容 限值 对每相额定电流≤16A且无条件接入的设备在公用低压供电系统中产生的电压变化、电压波动和闪烁的限制。",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/6232024002000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0004",
+    "name": "ＣＶＣ01122-2017《CVC标志认证实施规则 家用电动洗衣机安全与电磁兼容认证》",
+    "table": "standards",
+    "new_link": "https://www.cvc.org.cn/service-0-758-827",
+    "source_desc": "威凯认证(CVC)官网实施规则列表",
+    "quality": "low",
+    "note": "CVC01122-2017为威凯认证内部实施规则，未公开全文PDF，仅能定位到实施规则列表页"
+  },
+  {
+    "id": "S0005",
+    "name": "GB 17625.1-2022电磁兼容 限值 谐波电流发射限值(设备每相输入电流≤16A)",
+    "table": "standards",
+    "new_link": "https://www.yiqifuwu.com/uploadfile/file/20240328/1711582910578091.pdf",
+    "source_desc": "第三方(yiqifuwu)PDF镜像",
+    "quality": "high",
+    "note": "国标委未公开直接PDF，使用第三方标准PDF镜像"
+  },
+  {
+    "id": "S0006",
+    "name": "GB 4343.1-2024家用电器、电动工具和类似器具的电磁兼容要求 第1部分：发射",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/8141135010000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0007",
+    "name": "GB 44246 家用和类似用途电器、体育用品的电器部分及电玩具 安全技术规范",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/7003051012000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0008",
+    "name": "GB/T 4706.1-2024 家用和类似用途电器的安全第1部分：通用要求",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/6031113031000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0009",
+    "name": "GB/T 4706.24-2024家用和类似用途电器的安全洗衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/6003002013000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0010",
+    "name": "GB/T 4706.21-2024家用和类似用途电器的安全 微波炉，包括组合型微波炉的特殊要求",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/8003074011000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0011",
+    "name": "GB/T4706.14-2024家用和类似用途电器的安全 烤架、面包片烘烤器及类似用途便携式烹饪器具的特殊要求",
+    "table": "standards",
+    "new_link": "https://www.hnbzw.com/Standard/StdDetail.aspx?ekdHR4nH7qrdrPSCK/I5O81bawQXQp/i",
+    "source_desc": "标准网(hnbzw)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0012",
+    "name": "GB/T 4706.20-2024 家用和类似用途电器的安全 滚筒式干衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://m.bzchaxun.com/view/6031133031000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "标准全文视图页（第三方），非官方发布平台"
+  },
+  {
+    "id": "S0013",
+    "name": "GB/T 1002-2024 家用和类似用途单相插头插座 型式、基本参数和尺寸",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/6003203013000000.html",
+    "source_desc": "标准查询网(bzchaxun)第三方全文视图",
+    "quality": "high",
+    "note": "现行标准为强制性 GB 1002-2024（代替 GB/T 1002-2021）；标准全文视图页（第三方）"
+  },
+  {
+    "id": "S0014",
+    "name": "GB/T 2099.1-2021家用和类似用途插头插座 第1部分：通用要求",
+    "table": "standards",
+    "new_link": "https://lxy.nwsuaf.edu.cn/docs//2023-02/a0c56da2076848f0869231c414f244b7.pdf",
+    "source_desc": "西北农林科技大学镜像PDF",
+    "quality": "high",
+    "note": "高校站点标准PDF镜像"
+  }
+]

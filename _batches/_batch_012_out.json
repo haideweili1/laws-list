@@ -1,0 +1,308 @@
+[
+  {
+    "id": "S0015",
+    "name": "GB/T 4706.13-2024 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=51D6AD5ED8DB01580EF16E80E272CAD0",
+    "source_desc": "全国标准信息公共服务平台（国家标准全文公开系统）官方阅读页",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0016",
+    "name": "GB/T 4706.22-2024 家用和类似用途电器的安全 驻立式电灶、灶台、烤箱及类似用途器具的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2E041A517E79CEF4CB0F48D0A01D46E5",
+    "source_desc": "全国标准信息公共服务平台（国家标准全文公开系统）官方阅读页",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0017",
+    "name": "GB/T 4706.23-2024 家用和类似用途电器的安全 第2部分:室内加热器的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=CD4221477819E0D489917CFFE6AC24CC",
+    "source_desc": "全国标准信息公共服务平台（国家标准全文公开系统）官方阅读页",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0018",
+    "name": "GB/T 4706.27-2024家用和类似用途电器的安全 第2部分：风扇的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=6178F788ADFC7E535C97D9B634C37614",
+    "source_desc": "全国标准信息公共服务平台（国家标准全文公开系统）官方阅读页",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0019",
+    "name": "GB/T 4706.60-2024 家用和类似用途电器的安全 衣物干燥机和毛巾架的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=FE12AB31CE065F1FA71C8A2B4190129A",
+    "source_desc": "全国标准信息公共服务平台（国家标准全文公开系统）官方阅读页",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0020",
+    "name": "EN 60335-1:2012 + A11:2014 + A13:2017 + A1:2019 + A14:2019 + A2:2019 + A15:2021+A16：2023 General requirements",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/publication/61880",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0021",
+    "name": "EN 60335-2-6: 2003+A13: 2013+2015+A1：2019",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/63267",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0022",
+    "name": "EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/15482",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0023",
+    "name": "EN 60335-2-9:2003 +A13: 2010 +AC: 2012+A11:2023",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/61318",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0024",
+    "name": "EN 60335-2-11:2010+A1:2015+A12019+2020",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/91414",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0025",
+    "name": "EN 60335-2-14:2006+A11:2012/AC:2013+A12-2017+A2：2019",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/publication/105514",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0026",
+    "name": "EN 60335-2-15:2002+ A11: 2012/AC:2013:2016+A11：2018",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/publication/1546",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0027",
+    "name": "EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/106539",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0028",
+    "name": "EN 60335-2-25:2012+A1:2015+A2:2016+:2021",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/publication/96915",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0029",
+    "name": "EN 60335-2-35: 2002+ A1: 2007+A2:2011+2020",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/1596",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0030",
+    "name": "IEC 60335-2-36 家用和类似用途电器.安全.第2-36部分:商用电烹调炉灶、烘箱、炉架及炉架元件的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/105577",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0031",
+    "name": "EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission",
+    "table": "standards",
+    "new_link": "https://www.iteh.ai/catalog/standards/clc/5da378f9-f8a7-4cd1-84b6-e40d63b355b9/en-iec-55014-1-2021",
+    "source_desc": "iTeh Standards 预览/目录页（非官方免费全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为第三方标准预览页，非权威全文阅读页。"
+  },
+  {
+    "id": "S0032",
+    "name": "EN61000-3-3:2013+A1:2019+A2:2021 电压波动和闪烁的限制",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/publication/4150",
+    "source_desc": "IEC Webstore 标准产品页（付费，无免费公开全文）",
+    "quality": "low",
+    "note": "IEC/EN 标准受版权保护，无免费公开全文；链接为官方销售/信息页，非全文阅读页。"
+  },
+  {
+    "id": "S0033",
+    "name": "EC 765/2008指令",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=celex:32008R0765",
+    "source_desc": "EUR-Lex 欧盟官方公报全文（英文）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0035",
+    "name": "FDA CPG 7117.06(2005)(陶瓷制品、玻璃)",
+    "table": "standards",
+    "new_link": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/cpg-sec-545400-pottery-ceramics-import-and-domestic-cadmium-contamination",
+    "source_desc": "FDA 官网合规政策指南全文（镉污染）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0036",
+    "name": "FDA CPG 7117.07(2005)(陶瓷制品、玻璃)",
+    "table": "standards",
+    "new_link": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/cpg-sec-545450-pottery-ceramics-import-and-domestic-lead-contamination",
+    "source_desc": "FDA 官网合规政策指南全文（铅污染）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0037",
+    "name": "F.D.A.C.F.R.21.Part177.1210 （食品容器用密封圈）",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.1210",
+    "source_desc": "eCFR 美国联邦法规全文（§177.1210）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0038",
+    "name": "F.D.A.C.F.R.21.Part177.1520 （烯烃聚合物）",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.1520",
+    "source_desc": "eCFR 美国联邦法规全文（§177.1520）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0039",
+    "name": "U.S.F.D.A.C.F.R.21.Part177.2470 （聚甲醛共聚物/POM）",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.2470",
+    "source_desc": "eCFR 美国联邦法规全文（§177.2470）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0040",
+    "name": "F.D.A.C.F.R.21.Part177.2600 （橡胶制品）",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.2600",
+    "source_desc": "eCFR 美国联邦法规全文（§177.2600）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0041",
+    "name": "F.D.A.C.F.R.21.Part180.22&181.32 （ABS要求）",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-180.22",
+    "source_desc": "eCFR 美国联邦法规全文（§180.22 与 §181.32 丙烯腈共聚物）",
+    "quality": "high",
+    "note": "条目含 180.22 与 181.32 两条，链接指向 §180.22；§181.32 全文：https://www.ecfr.gov/current/title-21/section-181.32"
+  },
+  {
+    "id": "S0042",
+    "name": "F.D.A.C.F.R.21.Part177.1500 （尼龙塑料）",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.1500",
+    "source_desc": "eCFR 美国联邦法规全文（§177.1500）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0043",
+    "name": "U.S. F.D.A. 21 CFR Part 177.1580（聚碳酸酯树脂)",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.1580",
+    "source_desc": "eCFR 美国联邦法规全文（§177.1580）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0044",
+    "name": "U.S. F.D.A. Part 21 CFR 175.300 (树脂和聚合物涂层)",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-175.300",
+    "source_desc": "eCFR 美国联邦法规全文（§175.300）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0045",
+    "name": "F.D.A.C.F.R.21.Part177.1630 (聚邻苯二甲酸酯聚合物)",
+    "table": "standards",
+    "new_link": "https://www.ecfr.gov/current/title-21/section-177.1630",
+    "source_desc": "eCFR 美国联邦法规全文（§177.1630）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0046",
+    "name": "法规1935/2004/EC关于与食品接触的材料或制品",
+    "table": "standards",
+    "new_link": "https://data.europa.eu/eli/reg/2004/1935/oj",
+    "source_desc": "EUR-Lex / ELI 欧盟法规全文（官方公报）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0047",
+    "name": "(EU) 2024/3190 of 19 December 2024 BPA及其盐类 （粘胶剂、橡胶、离子交换树脂、塑料、印刷油墨、有机硅、清漆和涂层）",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02024R3190-20260223",
+    "source_desc": "EUR-Lex 欧盟法规全文（英文合订版）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "S0048",
+    "name": "欧盟与食物接触不粘涂层卫生要求AP2004-1",
+    "table": "standards",
+    "new_link": "http://www.contactalimentaire.fr/en/recommendations-materials-contact-food/resolution-resap20041-december-1-2004",
+    "source_desc": "contactalimentaire.fr 第三方对 Council of Europe ResAP(2004)1 的说明页",
+    "quality": "low",
+    "note": "ResAP(2004)1 为欧洲委员会（非约束性）建议，无官方免费全文；链接为第三方整理说明页。"
+  },
+  {
+    "id": "S0049",
+    "name": "法国法令No.2007-766关于与食品接触的材料或制品",
+    "table": "standards",
+    "new_link": "http://www.contactalimentaire.fr/en/regulations-governing-materials-contact-food/decree-no-2007-766-may-10-2007",
+    "source_desc": "contactalimentaire.fr 第三方对法国法令 No.2007-766 的说明页",
+    "quality": "low",
+    "note": "未能找到 Légifrance 官方 JORFTEXT 直链；链接为第三方整理说明页，非官方法令全文。"
+  }
+]

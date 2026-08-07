@@ -1,0 +1,281 @@
+[
+  {
+    "id": "L0178",
+    "name": "危险货物分类和品名编号",
+    "table": "laws",
+    "new_link": "https://www.miit.gov.cn/newweb/n973401/n974339/n974344/n974346/c3829465/part/3829466.pdf",
+    "source_desc": "工业和信息化部公开的国家标准 GB 6944《危险货物分类和品名编号》PDF 全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0179",
+    "name": "废弃电器电子产品回收处理管理条例",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2524354.html",
+    "source_desc": "广东省人民政府门户网站法规库全文页（国务院令第551号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0180",
+    "name": "电子废物污染环境防治管理办法",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2531123.html",
+    "source_desc": "广东省人民政府门户网站法规库全文页（原国家环境保护总局令第40号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0181",
+    "name": "REACH法规",
+    "table": "laws",
+    "new_link": "https://www.legislation.gov.uk/eur/2006/1907/title/XII/2012-10-09",
+    "source_desc": "英国 legislation.gov.uk 上的欧盟 REACH 法规 (EC) No 1907/2006 全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0182",
+    "name": "RoHS指令2011/65/EU",
+    "table": "laws",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32011L0065",
+    "source_desc": "欧盟 EUR-Lex 官方 PDF 全文（Directive 2011/65/EU）",
+    "quality": "high"
+  },
+  {
+    "id": "L0183",
+    "name": "广东省住房和城乡建设厅 广东省财政厅 广东省发展和改革委员会关于污水处理费征收使用管理的实施细则",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/gongbao/2017/24/content/post_3365566.html",
+    "source_desc": "广东省人民政府公报 2017 年第24期全文页（粤建城〔2017〕号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0184",
+    "name": "《中华人民共和国环境保护税法实施条例》",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2017-12/30/content_5251797.htm",
+    "source_desc": "中国政府网政策全文页（国务院令第693号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0185",
+    "name": "《“十三五”挥发性有机物污染防治工作方案》",
+    "table": "laws",
+    "new_link": "https://www.mee.gov.cn/gkml/hbb/bwj/201709/W020170919373521878296.pdf",
+    "source_desc": "生态环境部官方 PDF 全文（环大气〔2017〕121号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0186",
+    "name": "排污许可管理办法（试行）",
+    "table": "laws",
+    "new_link": "https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/gzk/gz/202112/P020211211608232129807.pdf",
+    "source_desc": "生态环境部官网存档 PDF 全文（“试行”版，环境保护部令第48号；现行已修订为2019年新版）",
+    "quality": "high",
+    "note": "链接为生态环境部存档的“试行”版原文；2019年起已施行新版《排污许可管理办法》，如需现行版可另寻2019版链接"
+  },
+  {
+    "id": "L0187",
+    "name": "国家税务总局广东省地方税务局环境保护税核定征收管理办法",
+    "table": "laws",
+    "new_link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2018-03/26/content_a52895fa1b4145019996600234592a43.shtml",
+    "source_desc": "国家税务总局广东省税务局官网全文页（2018版）",
+    "quality": "high"
+  },
+  {
+    "id": "L0188",
+    "name": "建设项目环境影响评价分类管理名录",
+    "table": "laws",
+    "new_link": "https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/gzk/gz/202112/P020220216426517232474.pdf",
+    "source_desc": "生态环境部官网存档 PDF 全文（2021年版，生态环境部令第16号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0189",
+    "name": "广东省环境保护厅关于印发固体废物污染防治三年行动计划（2018—2020年）的通知",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/gongbao/2018/14/content/post_3365895.html",
+    "source_desc": "广东省人民政府公报 2018 年第14期全文页（粤环〔2018〕11号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0190",
+    "name": "关于印发《广东省挥发性有机物（VOCs）整治与减排工作方案（2018-2020年）》的通知",
+    "table": "laws",
+    "new_link": "https://gdee.gd.gov.cn/attachment/0/369/369269/2858406.pdf",
+    "source_desc": "广东省生态环境厅官网附件 PDF 全文（粤环〔2018〕号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0191",
+    "name": "广东省环境保护条例（2022年修正）",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2524381.html",
+    "source_desc": "广东省人民政府门户网站法规库全文页（2022年修正）",
+    "quality": "high"
+  },
+  {
+    "id": "L0192",
+    "name": "广东省实施〈中华人民共和国环境噪声污染防治法〉办法",
+    "table": "laws",
+    "new_link": "https://zh.wikisource.org/zh-hant/%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%AE%9E%E6%96%BD%E3%80%8A%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%8E%AF%E5%A2%83%E5%99%AA%E5%A3%B0%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB%E6%B3%95%E3%80%8B%E5%8A%9E%E6%B3%95",
+    "source_desc": "维基文库全文页（地方性法规转录）",
+    "quality": "high"
+  },
+  {
+    "id": "L0193",
+    "name": "广东省机动车排气污染防治条例",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2531528.html",
+    "source_desc": "广东省人民政府门户网站法规库全文页",
+    "quality": "high"
+  },
+  {
+    "id": "L0194",
+    "name": "广东省饮用水源水质保护条例",
+    "table": "laws",
+    "new_link": "https://zh.wikisource.org/zh-hant/%E5%B9%BF%E4%B8%9C%E7%9C%81%E9%A5%AE%E7%94%A8%E6%B0%B4%E6%BA%90%E6%B0%B4%E8%B4%A8%E4%BF%9D%E6%8A%A4%E6%9D%A1%E4%BE%8B",
+    "source_desc": "维基文库全文页（地方性法规转录）",
+    "quality": "high"
+  },
+  {
+    "id": "L0195",
+    "name": "广东省大气污染防治条例（2022年修正）",
+    "table": "laws",
+    "new_link": "https://zh.wikisource.org/zh-hant/%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%A4%A7%E6%B0%94%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB%E6%9D%A1%E4%BE%8B",
+    "source_desc": "维基文库全文页（2022年修正版，地方性法规转录）",
+    "quality": "high"
+  },
+  {
+    "id": "L0196",
+    "name": "广东省实施〈中华人民共和国土壤污染防治法〉办法",
+    "table": "laws",
+    "new_link": "https://nr.gd.gov.cn/zwgknew/zcfg/flfggz/tdgg/content/post_4480909.html",
+    "source_desc": "广东省自然资源厅官网全文页",
+    "quality": "high"
+  },
+  {
+    "id": "L0197",
+    "name": "广东省环境保护厅 广东省工业和信息化厅关于加强工业固体废物污染防治工作的指导意见",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/gongbao/2018/30/content/post_3366078.html",
+    "source_desc": "广东省人民政府公报 2018 年第30期全文页（粤环发〔2018〕10号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0198",
+    "name": "关于废止《广东省环境保护厅关于加强固体废物管理信息平台使用管理的通知》的通知",
+    "table": "laws",
+    "new_link": "https://gdee.gd.gov.cn/hbwj/content/post_2335077.html",
+    "source_desc": "广东省生态环境厅官网规范性文件全文页（粤环发〔2018〕9号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0199",
+    "name": "广东省建设项目环境影响评价文件分级审批办法",
+    "table": "laws",
+    "new_link": "https://gdee.gd.gov.cn/hbwj/content/post_4328177.html",
+    "source_desc": "广东省生态环境厅官网全文页（粤府〔2019〕6号，页面标注2024年1月8日废止）",
+    "quality": "high",
+    "note": "该链接为2019年修订版（已标注废止）；如需现行有效版本，可查找粤府〔2023〕106号版本"
+  },
+  {
+    "id": "L0200",
+    "name": "广东省防汛防旱防风条例",
+    "table": "laws",
+    "new_link": "https://faolex.fao.org/docs/pdf/chn226856.pdf",
+    "source_desc": "联合国粮农组织 FAO 法讯数据库转载 PDF 全文（第三方）",
+    "quality": "low",
+    "note": "未检索到广东省政府/人大官网直接全文页，仅找到 FAO（境外机构）转载 PDF 及北大法宝第三方版本，建议后续补充官方链接"
+  },
+  {
+    "id": "L0201",
+    "name": "防雷装置设计审核和竣工验收规定",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2520942.html",
+    "source_desc": "广东省人民政府门户网站法规库全文页（中国气象局令 第21号，2011版）",
+    "quality": "high"
+  },
+  {
+    "id": "L0202",
+    "name": "广东省水污染防治条例",
+    "table": "laws",
+    "new_link": "http://www.meijiang.gov.cn/mzmjswj/gkmlpt/content/2/2284/post_2284480.html",
+    "source_desc": "梅州市梅江区人民政府官网转载全文页（广东省第十三届人大常委会公告第73号，2020年通过）",
+    "quality": "high",
+    "note": "为地方政府网站转载全文；未检索到省级 gov.cn 法规库直接页，建议后续补充广东省人大常委会/省政府官方链接"
+  },
+  {
+    "id": "L0203",
+    "name": "广东省城乡生活垃圾管理条例",
+    "table": "laws",
+    "new_link": "https://www.huiyang.gov.cn/hzhyshwzx/attachment/0/136/136361/4506039.pdf",
+    "source_desc": "惠州市惠阳区人民政府官网附件 PDF 全文（2020年修订版，广东省第十三届人大常委会公告第75号）",
+    "quality": "high",
+    "note": "为市辖区政府网站转载的 PDF 全文；未检索到省级 gov.cn 法规库直接页，建议后续补充官方链接"
+  },
+  {
+    "id": "L0204",
+    "name": "危险废物排除管理清单（2021年版）",
+    "table": "laws",
+    "new_link": "https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/xxgk2018/xxgk/xxgk01/202112/t20211203_962984.html",
+    "source_desc": "生态环境部官网全文页（生态环境部公告，2021年12月）",
+    "quality": "high"
+  },
+  {
+    "id": "L0205",
+    "name": "国务院办公厅关于印发强化危险废物监管和利用处置能力改革实施方案的通知 国办函〔2021〕47号",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2021/content_5616156.htm",
+    "source_desc": "中国政府网国务院公报全文页（国办函〔2021〕47号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0206",
+    "name": "企业环境信息依法披露管理办法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2022/content_5679703.htm",
+    "source_desc": "中国政府网国务院公报全文页（生态环境部令第24号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0207",
+    "name": "“十四五”工业绿色发展规划",
+    "table": "laws",
+    "new_link": "https://wap.miit.gov.cn/cms_files/filemanager/1226211233/attach/20224/99a5c254cd5a45c9896b0cb0b675ed03.pdf",
+    "source_desc": "工业和信息化部官方 PDF 全文（工信部规〔2021〕178号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0208",
+    "name": "中山市污染影响类建设项目竣工环境保护验收工作指南（）",
+    "table": "laws",
+    "new_link": "https://www.eiacloud.com/hpyzs/lawsRegulations/searchDetail?id=2f96ed2e944248918208df2ae8f7aaca",
+    "source_desc": "第三方环评平台 eiacloud 文档详情页（含指南 PDF 预览/下载）",
+    "quality": "low",
+    "note": "指南全文仅在第三方平台（eiacloud、docin 等）可获取；中山市生态环境局官网仅见相关验收监管通告，未找到该指南官方全文链接"
+  },
+  {
+    "id": "L0209",
+    "name": "广东省固定污染源挥发性有机物综合排放标准（DB44/2367-2022）",
+    "table": "laws",
+    "new_link": "https://www.dayawan.gov.cn/hzdywbhj/attachment/0/166/166634/4776384.pdf",
+    "source_desc": "大亚湾经济技术开发区官网附件 PDF 全文（广东省地方标准 DB44/2367-2022）",
+    "quality": "high",
+    "note": "为市辖区政府网站转载的 PDF 全文；亦可从广东省生态环境厅/市场监管局标准平台核对"
+  },
+  {
+    "id": "L0210",
+    "name": "固定污染源排污许可分类管理名录（2019年版）",
+    "table": "laws",
+    "new_link": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk02/202001/W020200103660632857898.pdf",
+    "source_desc": "生态环境部官方 PDF 全文（生态环境部令第11号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0211",
+    "name": "突发环境事件应急管理办法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/gongbao/content/2015/content_2901378.htm",
+    "source_desc": "中国政府网国务院公报全文页（环境保护部令第34号）",
+    "quality": "high"
+  }
+]

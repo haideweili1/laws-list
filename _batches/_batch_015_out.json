@@ -1,0 +1,265 @@
+[
+  {
+    "id": "S0121",
+    "name": "EN 55011:2016+A1:2017  Industrial, scientific and medical equipment- Radio-frequency disturbance characteristics - Limits and methods of measurement",
+    "table": "standards",
+    "new_link": "https://preview.sist.si/sist-preview/60347/191ca7d4383547eebc778ac13df3b479/SIST-EN-55011-2016-A1-2017.pdf",
+    "source_desc": "SIST（斯洛文尼亚标准协会）iTeh 标准预览 PDF",
+    "quality": "high"
+  },
+  {
+    "id": "S0122",
+    "name": "EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)",
+    "table": "standards",
+    "new_link": "https://cdn.standards.iteh.ai/samples/67812/f129a7c2339648bb82e13fe61641c601/SIST-EN-IEC-61000-3-2-2019-A1-2021.pdf",
+    "source_desc": "iTeh SIST 标准预览 PDF",
+    "quality": "high"
+  },
+  {
+    "id": "S0123",
+    "name": "EN 61000-3-3:2013+A1:2019+A2:2021 Electromagnetic compatibility (EMC) - Part 3-3: Limits - Limitation of voltage changes, voltage fluctuations and flicker in public low-voltage supply systems, for equipment with rated current ≤16 A per phase and not subject to conditional connection",
+    "table": "standards",
+    "new_link": "https://cdn.standards.iteh.ai/samples/19367/6df51f99d55a48e689ab761488dfb354/IEC-61000-3-3-2013.pdf",
+    "source_desc": "iTeh IEC 61000-3-3:2013+AMD1:2017+AMD2:2021 合并版标准预览 PDF",
+    "quality": "high",
+    "note": "链接为 IEC 合并版（含 AMD1:2017+AMD2:2021），内容等同对应 EN 61000-3-3:2013+A1:2019+A2:2021。"
+  },
+  {
+    "id": "S0124",
+    "name": "EN IEC 55014-2:2021  Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 2: Immunity - Product family standard",
+    "table": "standards",
+    "new_link": "https://cdn.standards.iteh.ai/samples/66416/3fb7be63b979457c9e64961897cd11d3/SIST-EN-IEC-55014-2-2021.pdf",
+    "source_desc": "iTeh SIST EN IEC 55014-2:2021 标准预览 PDF",
+    "quality": "high"
+  },
+  {
+    "id": "S0125",
+    "name": "EN 50498:2010 Electromagnetic compatibility (EMC) - Product family standard for aftermarket electronic equipment in vehicles",
+    "table": "standards",
+    "new_link": "https://cdn.standards.iteh.ai/samples/20646/a18d08f8f94e4c11a9a6f407ab11f9f4/SIST-EN-50498-2011.pdf",
+    "source_desc": "iTeh SIST EN 50498:2011 标准预览 PDF",
+    "quality": "high",
+    "note": "预览为 SIST EN 50498:2011（等同采用的 EN 50498:2010）。"
+  },
+  {
+    "id": "S0126",
+    "name": "CSA C22.2 No. 120",
+    "table": "standards",
+    "new_link": "https://www.csagroup.org/fr/store/product/2422148/",
+    "source_desc": "CSA Group 官方商店（需购买）",
+    "quality": "low",
+    "note": "CSA 标准版权保护，官网仅提供购买页，未检索到免费全文。"
+  },
+  {
+    "id": "S0127",
+    "name": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/publication/1566",
+    "source_desc": "IEC 官网 webstore 出版物页（IEC 60335-2-24）",
+    "quality": "low",
+    "note": "IEC 标准版权保护，官网仅提供出版物信息与购买，无免费全文。"
+  },
+  {
+    "id": "S0128",
+    "name": "CSA C22.2 No. 60335-2-24",
+    "table": "standards",
+    "new_link": "https://www.csagroup.org/fr/store/product/2424547/",
+    "source_desc": "CSA Group 官方商店（CSA C22.2 No. 60335-2-24:17，需购买）",
+    "quality": "low",
+    "note": "CSA 标准版权保护，官网仅提供购买页。"
+  },
+  {
+    "id": "S0129",
+    "name": "UL 60335-1:2020 Ed.6/ CSA C22.2 No.60335-1:2020 Ed.6，",
+    "table": "standards",
+    "new_link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=29277",
+    "source_desc": "UL 官方标准商店产品页（UL 60335-1）",
+    "quality": "low",
+    "note": "UL/CSA 标准版权保护，官网仅提供产品信息与购买，无免费全文。"
+  },
+  {
+    "id": "S0130",
+    "name": "CSA C22.2 No. 60335-1",
+    "table": "standards",
+    "new_link": "https://www.csagroup.org/store/product/2421468/",
+    "source_desc": "CSA Group 官方商店（CAN/CSA-C22.2 NO. 60335-1，需购买）",
+    "quality": "low",
+    "note": "CSA 标准版权保护，官网仅提供购买页。"
+  },
+  {
+    "id": "S0131",
+    "name": "CAS 150-2007  家用微波炉 蒸功能要求及试验方法",
+    "table": "standards",
+    "new_link": "https://m.antpedia.com/standard/6140541.html",
+    "source_desc": "标准查寻网（antpedia）CAS 150-2007 预览页（仅前3页）",
+    "quality": "low",
+    "note": "协会标准，仅检索到第三方站点前3页预览，无完整免费全文。"
+  },
+  {
+    "id": "S0132",
+    "name": "GB/T 22939.4-2008 家用和类似用途电器包装 微波炉的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=95165761CAD23FFA4FF4634B3909F307",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0133",
+    "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high",
+    "note": "该标准已被 GB 24849-2024 替代（平台显示废止），但全文仍可在线查阅。"
+  },
+  {
+    "id": "S0134",
+    "name": "GB/T 4706.90-2024 家用和类似用途电器的安全 商用微波炉的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=465CF7AEF022F9618CC4D277C10F8E84",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准详情页",
+    "quality": "low",
+    "note": "因采用 IEC 标准涉及版权，平台声明不提供在线阅读，仅提供元数据。"
+  },
+  {
+    "id": "S0135",
+    "name": "GB/T 21551.5-2024家用和类似用途电器的抗菌、除菌、净化功能　洗衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CA98CDC448FB9EF1A3A1FBFF61B16E68",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0136",
+    "name": "GB/T 20292-2019 家用滚筒式干衣机性能测试方法",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=DC56418FB95F04E5E06F96068012A297",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0137",
+    "name": "GB/T 22939.5-2025 家用和类似用途电器包装 电动洗衣机和干衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=7C5776EC046C3EA9A7A3E3C0F60BDAB4",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0138",
+    "name": "GB/T 23118-2024 家用和类似用途滚筒式洗衣干衣机技术要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F149AE512062FA442B45CD6D994FDE4B",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0139",
+    "name": "GB/T 4214.7-2020 家用和类似用途电器噪声测试方法 滚筒式干衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://std.samr.gov.cn/gb/search/gbDetailed?id=AB005698E0DE3F2EE05397BE0A0A6C0B",
+    "source_desc": "全国标准信息公共服务平台（std.samr.gov.cn）标准详情页（元数据）",
+    "quality": "low",
+    "note": "未检索到 openstd 官方在线全文，仅提供元数据详情页。"
+  },
+  {
+    "id": "S0140",
+    "name": "EN62233：2008 家用及类似用途电器电磁场的测量方法",
+    "table": "standards",
+    "new_link": "https://www.standards.iteh.ai/catalog/standards/sist/0f82c87d-24ec-4367-b4dd-1c52e474f50d/sist-en-62233-2008",
+    "source_desc": "iTeh SIST EN 62233:2008 标准预览门户",
+    "quality": "low",
+    "note": "仅检索到 iTeh 标准预览门户（含摘要/范围样本），未找到可直开的完整全文 PDF。"
+  },
+  {
+    "id": "S0141",
+    "name": "家用和类似用途微波炉能源效率计量检测规则",
+    "table": "standards",
+    "new_link": "https://wzisps.org.cn/Bz/Detail/12878E70-ACC0-4F1B-8278-8BEC730990B5",
+    "source_desc": "温州标准馆 JJF 1261.10-2023 标准详情页",
+    "quality": "low",
+    "note": "国家计量技术规范，免费全文未检索到，提供标准馆详情页（现行版本 JJF 1261.10-2023）。"
+  },
+  {
+    "id": "S0142",
+    "name": "QB/T 5366-2019商用微波炉",
+    "table": "standards",
+    "new_link": "https://max.book118.com/html/2023/0811/5230322113010310.shtm",
+    "source_desc": "标准文库（book118）QB/T 5366-2019 PDF 预览",
+    "quality": "low",
+    "note": "轻工行业标准，仅检索到第三方文库 PDF 预览，非官方免费全文。"
+  },
+  {
+    "id": "S0143",
+    "name": "QB/T 2662-2023电动机式家用微波炉定时器",
+    "table": "standards",
+    "new_link": "https://standard.sist.org.cn/StdSearch/stdDetail.aspx?AppID=QB/T%202662-2023",
+    "source_desc": "深圳市标准信息服务平台 QB/T 2662-2023 详情页",
+    "quality": "low",
+    "note": "轻工行业标准，仅检索到标准信息平台详情页（含摘要），无官方免费全文。"
+  },
+  {
+    "id": "S0144",
+    "name": "GB/T 23152-2008家用微波炉用磁控管",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=DFF7EA5462288439A123B04C91C234AE",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0145",
+    "name": "GB/T 18939.1-2003 微波炉电容器 第1部分: 总则",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=5A28A5F80083BBBEFD31C641A85D4DBE",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0146",
+    "name": "GB/T 35597-2017微波炉用玻璃托盘",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E562578E6CDFAFBDCD9EA91854A466E",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0147",
+    "name": "GB/T 17499-2017家用洗衣机电脑程序控制器",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=076AA64BDBE7BE39A335F016922412FB",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0148",
+    "name": "GB/T 22766.4-2009家用和类似用途电器售后服务 第4部分：洗衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=B340EB4BC444E7C72BEE222E5ABBCDE3",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0149",
+    "name": "GB/T 24986.3-2024 家用和类似用途电器可靠性评价方法 第3部分： 洗衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F7AAC97492AC94D588F0F526859453D2",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0150",
+    "name": "GB/T 39384-2020智能家用电器的智能化技术 洗衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4E88E945A36F6BF3B05960F15F1ABCAD",
+    "source_desc": "全国标准信息公共服务平台（openstd）标准全文页",
+    "quality": "high"
+  },
+  {
+    "id": "S0151",
+    "name": "COMMISSION REGULATION (EU) 2023/826 of 17 April 2023 Directive 2009/125/EC of the European Parliament and of the Council and repealingCommission Regulations (EC) No 1275/2008 and (EC) No 107/2009",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0826",
+    "source_desc": "EUR-Lex 欧盟法律数据库（CELEX 32023R0826 全文，英文版）",
+    "quality": "high"
+  }
+]

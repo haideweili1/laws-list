@@ -1,0 +1,342 @@
+[
+  {
+    "id": "L0314",
+    "name": "工作场所职业卫生管理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0315",
+    "name": "职业健康检查管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0316",
+    "name": "应急管理部办公厅关于印发《有限空间作业安全指导手册》和4个专题系列折页的通知（应急厅函〔2020〕299号）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0317",
+    "name": "应急管理部办公厅关于印发 《危险化学品企业生产安全事故应急准备指南》的通知（应急厅〔2019〕62号）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0318",
+    "name": "应急管理部关于印发《生产安全事故统计调查制度》和《安全生产行政执法统计调查制度》的通知应急〔2020〕93号",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0319",
+    "name": "生产安全事故防范和整改措施落实情况评估办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0320",
+    "name": "建设工程消防设计审查验收管理暂行规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0321",
+    "name": "工作场所有害因素职业接触限值 第1部分：化学有害因素（GBZ 2.1—2019）第一号修改单（2022年发布）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0322",
+    "name": "工作场所有害因素职业接触限值 第2部分：物理因素GBZ 2.2—2007",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0323",
+    "name": "用人单位职业健康监护监督管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0324",
+    "name": "用人单位职业病危害因素定期检测管理规范",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0325",
+    "name": "举升式升降工作平台安全使用规程GB/T39747-2021",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0326",
+    "name": "危险源辨识、风险评价和控制措施策划指南",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0327",
+    "name": "电工术语 风险评估GB/T 2900.101-2017",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0328",
+    "name": "眼面部防护 应急喷淋和洗眼设备 GB/T 38144.2-2019",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0329",
+    "name": "眼面部防护 应急喷淋和洗眼设备GB/T 38144.1-2019",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0330",
+    "name": "人群聚集场所手卫生规范　　　　　　　　　　　　　卫生健康委  WS/T 699-2020",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0331",
+    "name": "生产经营单位安全生产事故应急预案编制导则　　　GB/T 29639-2020",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0332",
+    "name": "《职业健康监护技术规范》GBZ 188-2014",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0333",
+    "name": "关于调整职业健康领域安全生产行业标准归口事宜的通知　应急管理部 国家卫生健康委  应急〔2020〕25号",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0334",
+    "name": "企业安全生产标准化基本规范GB/T 33000-2016",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0335",
+    "name": "风险管理 原则与实施指南GB/T 24353-2009",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0336",
+    "name": "静电防护管理通用要求GB/T39587-2020",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0337",
+    "name": "应急管理部关于印发危险化学品企业安全分类整治目录（2020年）的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0338",
+    "name": "国家职业病防治规划（2021-2025年）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0339",
+    "name": "十四五”卫生健康标准化工作规划（2022年发布）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0340",
+    "name": "特种设备安全监督检查办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0341",
+    "name": "特种设备事故报告和调查处理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0342",
+    "name": "《危险化学品目录（2015版）实施指南（试行）》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0343",
+    "name": "应急管理部办公厅关于修改 《危险化学品目录（2015版）实施指南（试行）》涉及柴油部分内容的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0344",
+    "name": "生产经营单位粉尘爆炸风险等级评定（T/CAWS 0006-2022）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0345",
+    "name": "特种设备使用单位落实使用安全主体责任监督管理规定（征求意见稿）（2022年发布）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0346",
+    "name": "安全生产事故隐患排查治理暂行规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0347",
+    "name": "易制毒化学品管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  }
+]

@@ -1,0 +1,308 @@
+[
+  {
+    "id": "S0087",
+    "name": "IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/61880",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60335-1:2020 官方出版物页；该标准需付费购买，页面含标准范围与元数据。"
+  },
+  {
+    "id": "S0088",
+    "name": "IEC 60335-2-6  家用和类似用途电气的安全第2-6部分：固定式电灶、灶台、烤炉及类似用途器具的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/65424",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60335-2-6:2024 官方出版物页；需付费购买。"
+  },
+  {
+    "id": "S0089",
+    "name": "IEC 60335-2-9  家用和类似用途电气的安全家用和类似用途电器的安全第2-9部分：烤架、焙烤装置和类似的便携式烹饪设施的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/15554",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60335-2-9 官方出版物页（页面显示为 2002 基础版，另有 2019 新版 65153）；需付费购买。"
+  },
+  {
+    "id": "S0090",
+    "name": "IEC 60335-2-25  家用和类似用途电器的安全微波炉的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/96915",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60335-2-25 官方出版物页；另有 iteh.ai 免费预览 PDF（cdn.standards.iteh.ai）。"
+  },
+  {
+    "id": "S0091",
+    "name": "IEC 60705  家用微波炉性能测试方法",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/82953",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60705 官方出版物页；需付费购买。"
+  },
+  {
+    "id": "S0092",
+    "name": "UL 923  家用和类似用途安全微波烹调器具",
+    "table": "standards",
+    "new_link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=25863",
+    "source_desc": "UL 官方标准商店 (shopulstandards.com)",
+    "quality": "high",
+    "note": "UL 923 官方产品页；需付费购买。"
+  },
+  {
+    "id": "S0093",
+    "name": "CSA C22.2 NO.  150家用和类似用途安全微波烹调器具",
+    "table": "standards",
+    "new_link": "https://www.csagroup.org/store/product/2424647/",
+    "source_desc": "CSA Group 官方商店 (csagroup.org)",
+    "quality": "high",
+    "note": "CSA C22.2 No.150 微波炉安全标准官方产品页；需付费购买。"
+  },
+  {
+    "id": "S0094",
+    "name": "EK1AG2 Guidance for Implementation of CENELEC Guide 29",
+    "table": "standards",
+    "new_link": "https://www.vde.com/tic-en/marks-and-certificates/ek1-resolutions",
+    "source_desc": "VDE/ZLS 官方 EK1 决议索引页",
+    "quality": "low",
+    "note": "EK1 AG2（Rev.10，2018-05-17）是德国 ZLS 发布的 GS 认证技术决议，非公开销售标准；仅找到 VDE 官方决议索引页（目录式，非全文直链），未找到免费官方全文 PDF。权威来源：德国 ZLS（zls.de）。"
+  },
+  {
+    "id": "S0095",
+    "name": "GB/T 4288      家用和类似用途电动洗衣机",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A6DD817E54CC5A9C5D231F1480876CAD",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4288-2025 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0096",
+    "name": "GB /T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C365EC4C87F48E8618D216AF27DBDE8D",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4706.26-2024 官方全文公开阅读页（输入 docNumber 写 T4706.26，实际为 GB/T 4706.26）。"
+  },
+  {
+    "id": "S0097",
+    "name": "GB/T 5013.1  额定电压450/750V及以下橡皮绝缘电缆 第1部分：一般要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=D1CD44C1487DFA7DCCE86A8DE3630386",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 5013.1-2008 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0098",
+    "name": "GB/T 5023.1  额定电压450/750V及以下聚氯乙烯绝缘电缆 第1部分：一般要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A39DEB97A41AA38BDDD42D343010870D",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 5023.1-2008 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0099",
+    "name": "IEC 60730-1 家用和类似用途的电自动控制器",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/66089",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60730-1:2022 官方出版物页；需付费购买。"
+  },
+  {
+    "id": "S0100",
+    "name": "IEC 60995-11-10 塑料水平垂直燃烧测试",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/2938",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "正确标准号为 IEC 60695-11-10（fire hazard testing）；IEC 60695-11-10:2013 官方出版物页，另有 iteh.ai 免费预览 PDF：https://cdn.standards.iteh.ai/samples/17874/2d399aced7f54606892e9b83c9eb3723/IEC-60695-11-10-2013.pdf"
+  },
+  {
+    "id": "S0101",
+    "name": "IEC 61058-1 电器开关.第1部分：一般要求标准",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/25468",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 61058-1:2016 官方出版物页；需付费购买。"
+  },
+  {
+    "id": "S0102",
+    "name": "IEC 61558-2-6  一般用途安全隔离变压器的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/69008",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 61558-2-6:2021 官方出版物页；需付费购买。"
+  },
+  {
+    "id": "S0103",
+    "name": "IEC 61770   与总水管连接的电气器具 避免软管组件的反虹吸和失效标准",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/23532",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 61770:2008+A1:2015 官方出版物页；需付费购买。"
+  },
+  {
+    "id": "S0104",
+    "name": "IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/80013",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60335-2-4:2023 官方出版物页；另有 iteh.ai 免费预览 PDF。"
+  },
+  {
+    "id": "S0105",
+    "name": "IEC 60335-2-7    家用和类似用途电气的安全 洗衣机的特殊要求",
+    "table": "standards",
+    "new_link": "https://webstore.iec.ch/en/publication/91515",
+    "source_desc": "IEC 官方出版物页 (webstore.iec.ch)",
+    "quality": "high",
+    "note": "IEC 60335-2-7:2024 官方出版物页；另有 iteh.ai 免费预览 PDF。"
+  },
+  {
+    "id": "S0106",
+    "name": "GB/T 1019  家用和类似用途电器包装通则",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E22434C73AF364800DFDA8CCCDC09BA",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 1019-2008 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0107",
+    "name": "GB/T 4857.2  包装运输包装件基本试验 第2部分：温湿度调节处理",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=5CE5FAD9809DF90E43DA26E22A430678",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4857.2-2005 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0108",
+    "name": "GB/T 4857.3  包装运输包装件基本试验静载荷堆码试验方法",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=6D0ADB2629A68C96AD819DFB04A33EAA",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4857.3-2008 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0109",
+    "name": "GB/T 4857.5  包装运输包装件跌落试验方法",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=66377410B6B8E86D7D41BB4CE7D36D5D",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4857.5-1992 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0110",
+    "name": "GB/T 4857.6  包装运输包装件基本试验滚动试验方法",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=EB25E41A026F481BACBCE0CAA401DAE8",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4857.6-1992 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0111",
+    "name": "GB/T 4857.11  包装运输包装件基本试验水平冲击试验方法",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2227FB7363167B56C0AD532850DEBF7B",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4857.11-2005 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0112",
+    "name": "GB/T 4857.20  包装运输包装件基本试验随机振动试验方法",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=93D296A68CC526938E54D23215826762",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4857.20-1992 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0113",
+    "name": "GB/T4214.4  家用和类似用途电器噪声测试方法  洗衣机和离心式脱水机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0B973240C0AAAFA89E4A9B9A496D4A46",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4214.4-2020 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0114",
+    "name": "GB 12021.4  电动洗衣机能效水效限定值及等级",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB 12021.4-2013 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0115",
+    "name": "UL 250      家用冰箱和冷冻柜安全通用要求",
+    "table": "standards",
+    "new_link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=34397",
+    "source_desc": "UL 官方标准商店 (shopulstandards.com)",
+    "quality": "high",
+    "note": "UL 250 已被 UL 撤销并并入 UL 60335-2-24（见 S0118）；此 UL 官方页为撤销/替代公告，明确提及 UL 250。UL 250 无独立在售全文页。"
+  },
+  {
+    "id": "S0116",
+    "name": "UL 563      制冰机",
+    "table": "standards",
+    "new_link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=38373",
+    "source_desc": "UL 官方标准商店 (shopulstandards.com)",
+    "quality": "high",
+    "note": "UL 563 Ice Makers 官方标准页（该标准 2024-09-29 起由 UL 60335-2-89 替代）；需付费购买。"
+  },
+  {
+    "id": "S0117",
+    "name": "UL 621      冰淇淋机",
+    "table": "standards",
+    "new_link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=21376",
+    "source_desc": "UL 官方标准商店 (shopulstandards.com)",
+    "quality": "high",
+    "note": "UL 621 Ice Cream Makers 官方标准页（第 7 版，2024-11-14 修订）；需付费购买。"
+  },
+  {
+    "id": "S0118",
+    "name": "UL 60335-2-24:2022 Ed.3，CSA C22.2#60335-2-24:2022 Ed.3",
+    "table": "standards",
+    "new_link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=43189",
+    "source_desc": "UL 官方标准商店 (shopulstandards.com)",
+    "quality": "high",
+    "note": "UL 60335-2-24 第 3 版（2022）官方页，与 CSA C22.2 No. 60335-2-24:22 协调一致；需付费购买。CSA 官方页：https://www.csagroup.org/store/product/2429762/"
+  },
+  {
+    "id": "S0119",
+    "name": "GB/T 4706.32-2024热泵、空调器和除湿机的特殊要求",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=9A7443F55DBCDA172ED125A068E8009E",
+    "source_desc": "国家标准全文公开系统 (openstd.samr.gov.cn)",
+    "quality": "high",
+    "note": "GB/T 4706.32-2024 官方全文公开阅读页。"
+  },
+  {
+    "id": "S0120",
+    "name": "EN 60335-2-40: 2003 + A11: 2004 + A12: 2005 + A1: 2006 + A2: 2009 + A13: 2012 Particular requirements for electrical heat pumps, air-conditioners and dehumidifiers",
+    "table": "standards",
+    "new_link": "https://isrsm.gov.mk/mk/project/show/isrsm:proj:81641",
+    "source_desc": "北马其顿标准化协会 (ISRSM) 官方标准页",
+    "quality": "high",
+    "note": "EN 60335-2-40:2003 的北马其顿国家采用版（МКС EN 60335-2-40:2003/corrigendum Aug. 2010:2024），官方机构提供免费下载；内容等同于对应的 EN 标准。"
+  }
+]

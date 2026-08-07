@@ -1,0 +1,284 @@
+[
+  {
+    "id": "S0050",
+    "name": "法国食品级法规通告No.2004-64关于与食品接触的材料或制品",
+    "table": "standards",
+    "new_link": "https://www.foodcontactscience.com/uploads/20230519/ff8202d16c22d91a284806b09c08da75.pdf",
+    "source_desc": "法国 DGCCRF 英文译本 NOTE D'INFORMATION 2004-64（PDF 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0051",
+    "name": "德国食品与日用品法案LFGB",
+    "table": "standards",
+    "new_link": "https://www.gesetze-im-internet.de/lfgb/LFGB.pdf",
+    "source_desc": "德国联邦司法部 gesetze-im-internet 官方法律全文（PDF）",
+    "quality": "high"
+  },
+  {
+    "id": "S0054",
+    "name": "关于与食品接触的塑料材料和制品要求（EU）No 10/2011",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02011R0010-20190131&from=EN",
+    "source_desc": "EUR-Lex 官方合并文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0055",
+    "name": "欧盟食品接触陶瓷制品84/500/EEC",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:01984L0500-20050520",
+    "source_desc": "EUR-Lex 官方文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0056",
+    "name": "食品安全国家标准（搪瓷制品）GB4806.3-2016",
+    "table": "standards",
+    "new_link": "https://www.thnet.gov.cn/TH108/021/201706/a5c388d0fa34461d97032140d4a0a658/files/966f850d3243402787d85a9d5dfa859b.pdf",
+    "source_desc": "天河区政府官网 GB 4806.3-2016 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0057",
+    "name": "食品安全国家标准（陶瓷制品）GB4806.4-2016",
+    "table": "standards",
+    "new_link": "https://www.thnet.gov.cn/TH108/021/201706/a5c388d0fa34461d97032140d4a0a658/files/d0ac81d4d7e640f08f937dc72cf567a8.pdf",
+    "source_desc": "天河区政府官网 GB 4806.4-2016 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0058",
+    "name": "食品安全国家标准（玻璃制品）GB4806.5-2016",
+    "table": "standards",
+    "new_link": "https://www.thnet.gov.cn/TH108/021/201706/a5c388d0fa34461d97032140d4a0a658/files/e839e26a6f97454f8e701407798d2220.pdf",
+    "source_desc": "天河区政府官网 GB 4806.5-2016 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0059",
+    "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2016",
+    "table": "standards",
+    "new_link": "https://www.thnet.gov.cn/TH108/021/201706/a5c388d0fa34461d97032140d4a0a658/files/484bca14585b4dd885a9ffa60bc2f11e.pdf",
+    "source_desc": "天河区政府官网 GB 4806.9-2016 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0060",
+    "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2023",
+    "table": "standards",
+    "new_link": "https://www.foodcontactscience.com/uploads/20231107/1da84aab96c8f0e1c995b97368d52ebd.pdf",
+    "source_desc": "FoodContactScience 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0061",
+    "name": "食品安全国家标准（食品接触用涂料及涂层）GB4806.10-2016",
+    "table": "standards",
+    "new_link": "https://www.thnet.gov.cn/TH108/021/201706/a5c388d0fa34461d97032140d4a0a658/files/03efa0a3bedf431da7041c9c3dbba0c6.pdf",
+    "source_desc": "天河区政府官网 GB 4806.10-2016 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0062",
+    "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2015",
+    "table": "standards",
+    "new_link": "https://www.cirs-group.com/uploads/soft/151117/7-15111G24P7.pdf",
+    "source_desc": "CIRS 集团全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0063",
+    "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2023",
+    "table": "standards",
+    "new_link": "https://file.fcm-home.com/GB%2B31604.1-2023%E9%A3%9F%E5%93%81%E5%AE%89%E5%85%A8%E5%9B%BD%E5%AE%B6%E6%A0%87%E5%87%86%2B%E9%A3%9F%E5%93%81%E6%8E%A5%E8%A7%A6%E6%9D%90%E6%96%99%E5%8F%8A%E5%88%B6%E5%93%81%E8%BF%81%E7%A7%BB%E8%AF%95%E9%AA%8C%E9%80%9A%E5%88%99.pdf",
+    "source_desc": "fcm-home 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0064",
+    "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2016",
+    "table": "standards",
+    "new_link": "http://gdzjsc.com/Public/stdPDF/GB%204806.7-2016.pdf",
+    "source_desc": "广东质监标准全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0065",
+    "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2023",
+    "table": "standards",
+    "new_link": "https://www.foodcontactscience.com/uploads/20231120/fc9a30ee729732f9dad05ff233cdc05a.pdf",
+    "source_desc": "FoodContactScience 全文 PDF 镜像",
+    "quality": "high"
+  },
+  {
+    "id": "S0066",
+    "name": "欧盟关于在电子电气设备中限制使用某些有害物质要求（欧盟ROHS指令 2011/65/EU）",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011L0065",
+    "source_desc": "EUR-Lex 官方文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0067",
+    "name": "欧盟ROHS修订指令(EU)2015/863",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32015L0863",
+    "source_desc": "EUR-Lex 官方文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0068",
+    "name": "(EC) No 1907/2006 （REACH）",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/en/TXT/HTML/?uri=CELEX:02006R1907-20231201",
+    "source_desc": "EUR-Lex 官方合并文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0069",
+    "name": "GB 26572-2025《电器电子产品有害物质限制使用要求》",
+    "table": "standards",
+    "new_link": "https://jxt.hubei.gov.cn/bmdt/rdjj/202508/P020250825499774854208.pdf",
+    "source_desc": "湖北省经济和信息化厅官网 GB 26572-2025 全文 PDF",
+    "quality": "high"
+  },
+  {
+    "id": "S0070",
+    "name": "GB/T 26572-2011/XG1-2024 《电子电气产品中限用物质的限量要求》国家标准第1号修改单",
+    "table": "standards",
+    "new_link": "https://www.cesi.cn/rohs/202407/10245.html",
+    "source_desc": "中国电子技术标准化研究院（CESI）发布页，附《第1号修改单》PDF（官方权威来源）",
+    "quality": "high",
+    "note": "该页面为 CESI 官方发布，含修改单 PDF 附件；国家全文公开系统对采标标准仅提供题录。"
+  },
+  {
+    "id": "S0071",
+    "name": "Persistent Organic Pollutants (POPs) No. 2019/1021 and its amendments （持久性有机污染物）",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02019R1021",
+    "source_desc": "EUR-Lex 官方合并文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0073",
+    "name": "Decree No. 2020-105 on the “Fight Against Waste and the Circular Economy” Article 13-II",
+    "table": "standards",
+    "new_link": "https://www.ecolex.org/details/legislation/loi-n-2020-105-du-10-fevrier-2020-relative-a-la-lutte-contre-le-gaspillage-et-a-leconomie-circulaire-lex-faoc204296",
+    "source_desc": "ECOLEX 法规页（含 legifrance 法国原文链接）",
+    "quality": "high"
+  },
+  {
+    "id": "S0074",
+    "name": "California Proposition 65 （加州65）",
+    "table": "standards",
+    "new_link": "https://oag.ca.gov/node/475",
+    "source_desc": "加州总检察长办公室 Prop 65 官方页面（含法规正文与清单）",
+    "quality": "high"
+  },
+  {
+    "id": "S0075",
+    "name": "欧盟包装指令94/62/EC",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:01994L0062-20180704",
+    "source_desc": "EUR-Lex 官方合并文本（HTML 全文）",
+    "quality": "high"
+  },
+  {
+    "id": "S0076",
+    "name": "《包装和包装废物法规(EU) 2025/40 》（PPWR）",
+    "table": "standards",
+    "new_link": "https://eur-lex.europa.eu/eli/reg/2025/40",
+    "source_desc": "EUR-Lex ELI 官方法规全文",
+    "quality": "high"
+  },
+  {
+    "id": "S0077",
+    "name": "巴西497法令",
+    "table": "standards",
+    "new_link": "http://www.inmetro.gov.br/legislacao/rtac/pdf/RTAC001772.pdf",
+    "source_desc": "巴西 INMETRO 第497号法令（微波炉符合性认证要求，2011-12-29 发布）全文 PDF",
+    "quality": "high",
+    "note": "条目“巴西497法令”对应 INMETRO 第497号法令（Portaria No. 497/2011），规范微波炉符合性认证，与同批微波炉标准（S0079/S0080）主题一致。"
+  },
+  {
+    "id": "S0078",
+    "name": "巴西499法令",
+    "table": "standards",
+    "new_link": "http://sistema-sil.inmetro.gov.br/rtac/RTAC002890.pdf",
+    "source_desc": "巴西 INMETRO 第499号法令（金属炊具技术质量法规与符合性评估要求，2021-12-20 发布）全文 PDF",
+    "quality": "high",
+    "note": "条目“巴西499法令”对应 INMETRO 第499号法令（Portaria No. 499/2021）。"
+  },
+  {
+    "id": "S0079",
+    "name": "GB/T 18800-2017 家用微波炉 性能试验方法 国家质量监督检验检疫",
+    "table": "standards",
+    "new_link": "https://www.guifanku.com/737510.html",
+    "source_desc": "第三方标准文档在线浏览页（guifanku，可直接翻阅标准正文前几页）",
+    "quality": "low",
+    "note": "该标准为采标（IDT IEC 60705），官方全文公开系统对采标标准仅提供题录，无免费直接全文；guifanku 为可在线翻阅的第三方镜像，完整全文需下载。"
+  },
+  {
+    "id": "S0080",
+    "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级国家质量监督检验检疫。",
+    "table": "standards",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
+    "source_desc": "国家标准全文公开系统（官方，强制性非采标标准可在线阅读全文）",
+    "quality": "high",
+    "note": "该标准已被 GB 21456-2024 代替（2025-09-01 废止），此处保留条目对应的 GB 24849-2017 全文页。"
+  },
+  {
+    "id": "S0081",
+    "name": "UL 1026  家用厨具电器 安全标准和测试要求",
+    "table": "standards",
+    "new_link": "https://cdn.intertek.com/www-intertek-com/dms-legacy/UL-1026-Rev-2-2-2018-ED-2-2-2022.pdf",
+    "source_desc": "Intertek 标准更新文档（含 UL 1026 标准正文）直接 PDF",
+    "quality": "high"
+  },
+  {
+    "id": "S0082",
+    "name": "CSA C22.2 NO. 1335.1－93，Rev.2008 and CSA C22.2 NO 1335.2.9-93 Rev.2008",
+    "table": "standards",
+    "new_link": "https://cssn.net.cn/cssn/productDetail/176b5ac8c271816f7f5b2770f443e253",
+    "source_desc": "中国标准服务网 CSA C22.2 NO.1335.1-93(R2023) 标准信息/购买页",
+    "quality": "low",
+    "note": "CSA 标准需购买，无免费直接全文；此处为 CSA C22.2 NO.1335.1（通用要求）信息页，配套特殊要求为 CSA C22.2 NO.1335.2.9（便携式电烹饪器具）。"
+  },
+  {
+    "id": "S0083",
+    "name": "UL 746.6th Edition Rev.Max.07.2012",
+    "table": "standards",
+    "new_link": "https://www.shopulstandards.com/ProductDetail.aspx?UniqueKey=24542",
+    "source_desc": "UL 官方商店 UL 746C（Polymeric Materials - Use in Electrical Equipment Evaluations，6th ed. 2012-07）产品页",
+    "quality": "low",
+    "note": "“UL 746”为系列标准，依据“Rev.Max.07.2012”对应 UL 746C 第6版（2012-07 发布）；UL 标准正文需购买，无免费直接全文。"
+  },
+  {
+    "id": "S0084",
+    "name": "GB/T 4214.8-2021 家用和类似用途电器噪声测试方法 电灶、烤箱、烤架、微波炉及其组合器具的特殊要求国家市场监督管理总局",
+    "table": "standards",
+    "new_link": "https://www.bzchaxun.com/view/6230101011000000.html",
+    "source_desc": "第三方标准文档在线浏览页（bzchaxun，可预览标准正文）",
+    "quality": "low",
+    "note": "该标准为采标（IDT IEC 60704-2-10），官方全文公开系统对采标标准仅提供题录；bzchaxun 为可在线预览的第三方镜像，完整全文需下载。"
+  },
+  {
+    "id": "S0085",
+    "name": "GB/T 4214.1-2017 声学、家用电器及类似用途器具噪声测试方法第1部分",
+    "table": "standards",
+    "new_link": "https://www.guifanku.com/737608.html",
+    "source_desc": "第三方标准文档在线浏览页（guifanku，可直接翻阅标准正文前几页）",
+    "quality": "low",
+    "note": "该标准为采标（MOD IEC 60704-1），官方全文公开系统对采标标准仅提供题录；guifanku 为可在线翻阅的第三方镜像，完整全文需下载。"
+  },
+  {
+    "id": "S0086",
+    "name": "GB 19606 家用和类似用途电器噪声限值",
+    "table": "standards",
+    "new_link": "http://gdzjsc.com/Public/stdPDF/GB%2019606-2004.pdf",
+    "source_desc": "广东质监标准全文 PDF 镜像（GB 19606-2004 强制版）",
+    "quality": "high",
+    "note": "条目 docNumber 为 GB19606，对应强制性 GB 19606-2004；其将被 GB/T 19606-2024（2026-09-01 实施）代替。"
+  }
+]

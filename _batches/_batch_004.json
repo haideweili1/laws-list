@@ -1,0 +1,342 @@
+[
+  {
+    "id": "L0144",
+    "name": "GB/T 22080-2025 网络安全技术 信息安全管理体系 要求",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0145",
+    "name": "环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0146",
+    "name": "中华人民共和国消防法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0147",
+    "name": "中华人民共和国水法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0148",
+    "name": "中华人民共和国水土保持法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0149",
+    "name": "CJ94-2005_饮用净水水质标准",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0150",
+    "name": "《中国人民共和国环境影响评价法》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0151",
+    "name": "《中华人民共和国国家标准大气污染物综合排放标准》GB16297-1996",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0152",
+    "name": "建设项目环境保护管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0153",
+    "name": "广东省固体废物污染环境防治条例（2022年修正）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0154",
+    "name": "产业结构调整指导目录（2019年本）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0155",
+    "name": "国家危险废物名录",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0156",
+    "name": "危险废物经营许可证管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0157",
+    "name": "工业企业环境保护考核制度实施办法（试行）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0158",
+    "name": "污水综合排放标准GB8978-1996（1999修订）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0159",
+    "name": "大气污染物综合排放标准GB16297-1996",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0160",
+    "name": "《大气污染物排放限值》DB4427-2001第二时段二级标准",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0161",
+    "name": "广东省地方标准《水污染物排放限值》（DB44/26-2001）第二时段一级标准",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0162",
+    "name": "《饮食业油烟排放标准》GB18483-2001",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0163",
+    "name": "工业企业厂界环境噪声排放标准 GB 12348-2008 3类",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0164",
+    "name": "生活饮用水卫生标准GB5749-2022",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0165",
+    "name": "建筑施工场界环境噪声排放标准GB12523-2011",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0166",
+    "name": "城镇污水处理厂污染物排放标准GB 18918-2002",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0167",
+    "name": "《中山市排水管理办法》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0168",
+    "name": "中山市水环境保护条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0169",
+    "name": "《城镇排水与污水处理条例》国务院令第641号",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0170",
+    "name": "环境空气质量标准GB3095-2012",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0171",
+    "name": "中山市涉挥发性有机物项目环保准入管理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0172",
+    "name": "危险废物鉴别标准-腐蚀性鉴别GB5085.1-2007",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0173",
+    "name": "危险废物鉴别标准-浸出毒性鉴别GB5085.3-2007",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0174",
+    "name": "危险废物贮存污染控制标准       GB18597-2023",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0175",
+    "name": "一般工业固体废物贮存和填埋污染控制标准  GB18599-2020",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0176",
+    "name": "危险化学品仓库储存通则 GB15603-2022",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0177",
+    "name": "GB13690-2009 化学品分类和危险性公示 通则",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  }
+]

@@ -1,0 +1,342 @@
+[
+  {
+    "id": "S0087",
+    "name": "IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求",
+    "table": "standards",
+    "docNumber": "IEC60335-1",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0088",
+    "name": "IEC 60335-2-6  家用和类似用途电气的安全第2-6部分：固定式电灶、灶台、烤炉及类似用途器具的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-6",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0089",
+    "name": "IEC 60335-2-9  家用和类似用途电气的安全家用和类似用途电器的安全第2-9部分：烤架、焙烤装置和类似的便携式烹饪设施的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-9",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0090",
+    "name": "IEC 60335-2-25  家用和类似用途电器的安全微波炉的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-25",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0091",
+    "name": "IEC 60705  家用微波炉性能测试方法",
+    "table": "standards",
+    "docNumber": "IEC60705",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0092",
+    "name": "UL 923  家用和类似用途安全微波烹调器具",
+    "table": "standards",
+    "docNumber": "UL923",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0093",
+    "name": "CSA C22.2 NO.  150家用和类似用途安全微波烹调器具",
+    "table": "standards",
+    "docNumber": "C22.2",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0094",
+    "name": "EK1AG2 Guidance for Implementation of CENELEC Guide 29",
+    "table": "standards",
+    "docNumber": "Guide29",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0095",
+    "name": "GB/T 4288      家用和类似用途电动洗衣机",
+    "table": "standards",
+    "docNumber": "GB/T4288",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0096",
+    "name": "GB /T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
+    "table": "standards",
+    "docNumber": "T4706.26-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0097",
+    "name": "GB/T 5013.1  额定电压450/750V及以下橡皮绝缘电缆 第1部分：一般要求",
+    "table": "standards",
+    "docNumber": "GB/T5013.1",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0098",
+    "name": "GB/T 5023.1  额定电压450/750V及以下聚氯乙烯绝缘电缆 第1部分：一般要求",
+    "table": "standards",
+    "docNumber": "GB/T5023.1",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0099",
+    "name": "IEC 60730-1 家用和类似用途的电自动控制器",
+    "table": "standards",
+    "docNumber": "IEC60730-1",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0100",
+    "name": "IEC 60995-11-10 塑料水平垂直燃烧测试",
+    "table": "standards",
+    "docNumber": "IEC60995-11-10",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0101",
+    "name": "IEC 61058-1 电器开关.第1部分：一般要求标准",
+    "table": "standards",
+    "docNumber": "IEC61058-1",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0102",
+    "name": "IEC 61558-2-6  一般用途安全隔离变压器的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC61558-2-6",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0103",
+    "name": "IEC 61770   与总水管连接的电气器具 避免软管组件的反虹吸和失效标准",
+    "table": "standards",
+    "docNumber": "IEC61770",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0104",
+    "name": "IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-4",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0105",
+    "name": "IEC 60335-2-7    家用和类似用途电气的安全 洗衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-7",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0106",
+    "name": "GB/T 1019  家用和类似用途电器包装通则",
+    "table": "standards",
+    "docNumber": "GB/T1019",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0107",
+    "name": "GB/T 4857.2  包装运输包装件基本试验 第2部分：温湿度调节处理",
+    "table": "standards",
+    "docNumber": "GB/T4857.2",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0108",
+    "name": "GB/T 4857.3  包装运输包装件基本试验静载荷堆码试验方法",
+    "table": "standards",
+    "docNumber": "GB/T4857.3",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0109",
+    "name": "GB/T 4857.5  包装运输包装件跌落试验方法",
+    "table": "standards",
+    "docNumber": "GB/T4857.5",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0110",
+    "name": "GB/T 4857.6  包装运输包装件基本试验滚动试验方法",
+    "table": "standards",
+    "docNumber": "GB/T4857.6",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0111",
+    "name": "GB/T 4857.11  包装运输包装件基本试验水平冲击试验方法",
+    "table": "standards",
+    "docNumber": "GB/T4857.11",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0112",
+    "name": "GB/T 4857.20  包装运输包装件基本试验随机振动试验方法",
+    "table": "standards",
+    "docNumber": "GB/T4857.20",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0113",
+    "name": "GB/T4214.4  家用和类似用途电器噪声测试方法  洗衣机和离心式脱水机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4214.4",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0114",
+    "name": "GB 12021.4  电动洗衣机能效水效限定值及等级",
+    "table": "standards",
+    "docNumber": "GB12021.4",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0115",
+    "name": "UL 250      家用冰箱和冷冻柜安全通用要求",
+    "table": "standards",
+    "docNumber": "UL250",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0116",
+    "name": "UL 563      制冰机",
+    "table": "standards",
+    "docNumber": "UL563",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0117",
+    "name": "UL 621      冰淇淋机",
+    "table": "standards",
+    "docNumber": "UL621",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0118",
+    "name": "UL 60335-2-24:2022 Ed.3，CSA C22.2#60335-2-24:2022 Ed.3",
+    "table": "standards",
+    "docNumber": "UL60335-2-24",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0119",
+    "name": "GB/T 4706.32-2024热泵、空调器和除湿机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.32-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0120",
+    "name": "EN 60335-2-40: 2003 + A11: 2004 + A12: 2005 + A1: 2006 + A2: 2009 + A13: 2012 Particular requirements for electrical heat pumps, air-conditioners and dehumidifiers",
+    "table": "standards",
+    "docNumber": "EN60335-2-40",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  }
+]

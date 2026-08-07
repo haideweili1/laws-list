@@ -1,0 +1,308 @@
+[
+  {
+    "id": "L0348",
+    "name": "安全生产事故应急条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2019-03/01/content_5369591.htm",
+    "source_desc": "中国政府网政策全文页（国务院令第708号）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0349",
+    "name": "关于公开征求《生产设备安全防护设计总则（征求意见稿）》意见的通知",
+    "table": "laws",
+    "new_link": "https://yjt.shaanxi.gov.cn/hd/yjzj/202204/P020250117653444362196.pdf",
+    "source_desc": "陕西省应急管理厅官网公开的征求意见稿PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0350",
+    "name": "GB/T36507-2023 工业车辆 使用、操作与维护安全规范",
+    "table": "laws",
+    "new_link": "https://www.sohu.com/a/740989742_121223759",
+    "source_desc": "搜狐（第三方）转载页面",
+    "quality": "low",
+    "note": "等同采用ISO 21262:2020，涉及版权保护，官方（openstd/samr）不提供免费全文预览；仅找到搜狐等第三方转载，非权威来源。"
+  },
+  {
+    "id": "L0351",
+    "name": "GB/T 5972-2023  起重机 钢丝绳 保养、维护、检验和报废",
+    "table": "laws",
+    "new_link": "https://www.yigou968.com/wurenet/upload/file/File/GBT%205972-2023%C6%F0%D6%D8%BB%FA%B8%D6%CB%BF%C9%FE%B1%A3%D1%F8%A1%A2%CE%AC%BB%A4%A1%A2%BC%EC%D1%E9%BA%CD%B1%A8%B7%CF.pdf",
+    "source_desc": "第三方标准下载站（yigou968.com）PDF",
+    "quality": "low",
+    "note": "等同采用ISO 4309:2017，市场监管总局官方留言明确因版权仅提供查阅不提供免费在线预览；仅第三方PDF可用。"
+  },
+  {
+    "id": "L0352",
+    "name": "起重机械安全技术规程（TSG 51-2023）",
+    "table": "laws",
+    "new_link": "https://www.samr.gov.cn/cms_files/filemanager/1647978232/attach/20235/69f09b58dfae45b0802de3670070938a.pdf",
+    "source_desc": "国家市场监督管理总局官网TSG 51-2023 PDF附件",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0353",
+    "name": "消防安全重大风险隐患专项排查整治2023行动工作方案",
+    "table": "laws",
+    "new_link": "http://www.dongshandao.gov.cn/cms/infopublic/publicInfo.shtml?id=830593046498940005&siteId=60426749984230005",
+    "source_desc": "地方政府门户网站公开的全文页面（转载国家消防救援局方案）",
+    "quality": "low",
+    "note": "国家消防救援局全国版未找到官方独立全文直链，最佳可用为地方政府转载的全文页面（内容为国家方案原文）。"
+  },
+  {
+    "id": "L0354",
+    "name": "《特种设备使用单位落实使用安全主体责任监督管理规定》（2023年4月4日国家市场监督管理总局令第74号公布",
+    "table": "laws",
+    "new_link": "https://www.samr.gov.cn/cms_files/filemanager/1647978232/attach/20234/W020230412490760775919.pdf",
+    "source_desc": "国家市场监督管理总局官网总局令第74号PDF附件",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0355",
+    "name": "安生生产严重失信主体名单管理办法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/2023/issue_10746/202310/content_6907747.html",
+    "source_desc": "中国政府网国务院公报全文页（应急管理部令第11号）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0356",
+    "name": "广东省地方标准《建筑工程消防施工质量验收规范》",
+    "table": "laws",
+    "new_link": "https://zfcxjst.gd.gov.cn/attachment/0/526/526246/4093489.pdf",
+    "source_desc": "广东省住房和城乡建设厅官网DBJ/T15-248-2022标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0357",
+    "name": "灭火器产品维修、更换及售后服务",
+    "table": "laws",
+    "new_link": "http://static2.xunxiang.site/uploads/sites/795/2023/01/cb02cd058b471880c7aaa8451e1fad50.pdf",
+    "source_desc": "第三方站点（xunxiang.site）团体标准PDF",
+    "quality": "low",
+    "note": "团体标准T/CPQS XF003-2023无官方免费全文，且该PDF标注为征求意见稿版本，非最终发布版；来源非权威。"
+  },
+  {
+    "id": "L0358",
+    "name": "GB55036-2022《消防设施通用规范》",
+    "table": "laws",
+    "new_link": "https://sc.119.gov.cn/scxfjyzd/gfbz/2023/8/7/254f02a5fb4f4a2da7936366945149ba/files/%E6%B6%88%E9%98%B2%E8%AE%BE%E6%96%BD%E9%80%9A%E7%94%A8%E8%A7%84%E8%8C%83.pdf",
+    "source_desc": "四川省消防救援总队官网强制性工程建设规范全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0359",
+    "name": "GB∕T43500-2023《安全管理体系 要求》",
+    "table": "laws",
+    "new_link": "http://www.gzhxaq.com/mydata/law/202312/27/17036620569372.htm",
+    "source_desc": "第三方安全法规站点全文页",
+    "quality": "low",
+    "note": "该标准已于2025-10-31作废（被GB/T 33000-2025全部代替）；官方openstd仅提供题录/详情页，未找到免费全文直链，采用第三方全文页。"
+  },
+  {
+    "id": "L0360",
+    "name": "广东省实施<中华人民共和国工会法>办法",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2720106.html",
+    "source_desc": "广东省人民政府门户网站全文页（2023年第二次修订）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0361",
+    "name": "消防应急照明和疏散指示系统  GB 17945-2024",
+    "table": "laws",
+    "new_link": "https://pyso.newswz.cn/upload/202411/202411202110053268.pdf",
+    "source_desc": "第三方新闻站点（newswz.cn）全文PDF",
+    "quality": "low",
+    "note": "强制性国家标准GB 17945-2024，官方openstd仅提供详情/预览页，未找到可用的免费全文直链，采用第三方PDF。"
+  },
+  {
+    "id": "L0362",
+    "name": "手提式灭火器 GB4351-2023",
+    "table": "laws",
+    "new_link": "https://yjj.xiangtan.gov.cn/uploadfiles/202505/2025052010383951096.pdf",
+    "source_desc": "湘潭市应急管理局官网全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0363",
+    "name": "生产安全事故罚款处罚规定",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/tzgg/yjglbgg/202412/P020250507635946524579.pdf",
+    "source_desc": "中华人民共和国应急管理部官网应急管理部令第14号PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0364",
+    "name": "GB/T 30000.31-2023 化学品分类和标签规范 第31部分:化学品作业场所警示性标志",
+    "table": "laws",
+    "new_link": "https://www.zc.gov.cn/attachment/7/7530/7530295/9409625.pdf",
+    "source_desc": "地方政府门户（zc.gov.cn）公开的GBZ类标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0365",
+    "name": "GB 30000.1-2024 化学品分类和标签规范 第1部分：通则",
+    "table": "laws",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C008AEDBFD9A16F3C5BEB671C20618DD",
+    "source_desc": "国家标准全文公开系统（openstd.samr.gov.cn）官方详情/在线预览页",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0366",
+    "name": "GB/T 17622-2008《带电作业用绝缘手套》",
+    "table": "laws",
+    "new_link": "https://www.aqjkfh.com/uploads/file/GBT%2017622-2008%20%E5%B8%A6%E7%94%B5%E4%BD%9C%E4%B8%9A%E7%94%A8%E7%BB%9D%E7%BC%98%E6%89%8B%E5%A5%97.pdf",
+    "source_desc": "第三方安全健康站点（aqjkfh.com）全文PDF",
+    "quality": "low",
+    "note": "推荐性国家标准，官方openstd未找到免费全文直链，采用第三方PDF。"
+  },
+  {
+    "id": "L0367",
+    "name": "DL/T 1476-2023电力安全工器具预防性试验规程",
+    "table": "laws",
+    "new_link": "https://jd-zy.com.cn/down/DL%E2%88%95T%201476-2023%20%E7%94%B5%E5%8A%9B%E5%AE%89%E5%85%A8%E5%B7%A5%E5%99%A8%E5%85%B7%E9%A2%84%E9%98%B2%E6%80%A7%E8%AF%95%E9%AA%8C%E8%A7%84%E7%A8%8B.pdf",
+    "source_desc": "第三方电力标准下载站（jd-zy.com.cn）全文PDF",
+    "quality": "low",
+    "note": "能源行业标准（DL/T），官方通常不提供免费全文，采用第三方PDF。"
+  },
+  {
+    "id": "L0368",
+    "name": "职业病分类和目录",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/2025/issue_11886/202502/content_7007111.html",
+    "source_desc": "中国政府网国务院公报全文页（国家卫生健康委等公告）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0369",
+    "name": "中山市排水管理条例",
+    "table": "laws",
+    "new_link": "https://www.faxin.cn/v2/flfg/dffg/content.html?gid=B2567501",
+    "source_desc": "法宝网（faxin.cn）法规数据库转载的已颁布全文",
+    "quality": "low",
+    "note": "地方性法规，未找到中山市人大/广东人大网官方全文直链，采用法规数据库转载（内容完整、为已批准施行版本）。"
+  },
+  {
+    "id": "L0370",
+    "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
+    "table": "laws",
+    "new_link": "http://www.gzhxaq.com/data/doc/202503/24/17427779092898.pdf",
+    "source_desc": "第三方站点（gzhxaq.com）转载的国家标准全文公开系统文本PDF",
+    "quality": "low",
+    "note": "2025年新发布推荐性国家标准，官方openstd未找到免费全文直链，采用第三方转载PDF（带国家标准全文公开系统水印）。"
+  },
+  {
+    "id": "L0371",
+    "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+    "table": "laws",
+    "new_link": "https://xcoss.henan.gov.cn/typtfile/20250806/ddec43282aba4f1a8a9885edfa14b0b8.pdf",
+    "source_desc": "河南省职业健康平台（xcoss.henan.gov.cn）全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0372",
+    "name": "GB 14866-2023 眼面防护具通用技术规范",
+    "table": "laws",
+    "new_link": "https://xcoss.henan.gov.cn/typtfile/20250317/b2874f5976ab424688f23d78bb222685.pdf",
+    "source_desc": "河南省职业健康平台（xcoss.henan.gov.cn）全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0373",
+    "name": "《工作场所空气有毒物质测定第132 部分：甲苯二异氰酸酯、二苯基甲烷二异氰酸酯和异佛尔酮二异氰酸酯》GBZ/T 300.132-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2017/12/20171206094220932.pdf",
+    "source_desc": "国家卫生健康委员会官网职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0374",
+    "name": "《工作场所空气中粉尘测定第1 部分：总粉尘浓度》GBZ/T192.1-2007",
+    "table": "laws",
+    "new_link": "https://www.gdpcc.com/upload/2009-11/2009110514573946840074423.pdf",
+    "source_desc": "广东省职业病防治院官网（gdpcc.com）职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0375",
+    "name": "《工作场所空气有毒物质测定无机含氮化合物》GBZ/T160.29-2004",
+    "table": "laws",
+    "new_link": "https://www.chinacdc.cn/jkyj/hjwsyzdkz/bzxg/202109/W020210914806704037013.pdf",
+    "source_desc": "中国疾病预防控制中心官网职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0376",
+    "name": "《工作场所空气有毒物质测定脂环酮和芳香族酮类化合物》GBZ/T 160.56-2004",
+    "table": "laws",
+    "new_link": "https://niohp.chinacdc.cn/sndt/202511/W020251128701151655937.pdf",
+    "source_desc": "中国疾控职业卫生所（niohp.chinacdc.cn）官网全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0377",
+    "name": "《工作场所空气有毒物质测定饱和脂肪族酯类化合物》GBZ/T160.63-2007",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/cms-search/downFiles/db27e7f1a1a84b618fee91ef723407a7.pdf",
+    "source_desc": "国家卫生健康委员会官网职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0378",
+    "name": "《工作场所空气有毒物质测定第11 部分：铜及其化合物》GBZ/T 300.11-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2017/12/20171201152458489.pdf",
+    "source_desc": "国家卫生健康委员会官网职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0379",
+    "name": "《工作场所空气有毒物质测定第15 部分：铅及其化合物》GBZ/T 300.15-2017",
+    "table": "laws",
+    "new_link": "http://www.nhc.gov.cn/wjw/pyl/201712/d6e12fc83811441797db772f9ff44378/files/1739780105939_35395.pdf",
+    "source_desc": "国家卫生健康委员会官网职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0380",
+    "name": "《工作场所空气有毒物质测定第22 部分：钠及其化合物》 GBZ/T 300.22-2017",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2017/12/20171204110404583.pdf",
+    "source_desc": "国家卫生健康委员会官网职业卫生标准全文PDF",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0381",
+    "name": "《工作场所空气有毒物质测定第26 部分：锡及其无机化合物》GBZ/T 300.26-2017",
+    "table": "laws",
+    "new_link": "https://niohp.chinacdc.cn/zyws/wefscvn/202109/W020210914806726716619.pdf",
+    "source_desc": "中国疾控职业卫生所（niohp.chinacdc.cn）官网全文PDF",
+    "quality": "high",
+    "note": ""
+  }
+]

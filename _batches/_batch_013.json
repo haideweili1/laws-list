@@ -1,0 +1,342 @@
+[
+  {
+    "id": "S0050",
+    "name": "法国食品级法规通告No.2004-64关于与食品接触的材料或制品",
+    "table": "standards",
+    "docNumber": "No.2004-64",
+    "dept": "法国",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0051",
+    "name": "德国食品与日用品法案LFGB",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "德国",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0054",
+    "name": "关于与食品接触的塑料材料和制品要求（EU）No 10/2011",
+    "table": "standards",
+    "docNumber": "No10",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0055",
+    "name": "欧盟食品接触陶瓷制品84/500/EEC",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0056",
+    "name": "食品安全国家标准（搪瓷制品）GB4806.3-2016",
+    "table": "standards",
+    "docNumber": "GB4806.3-2016",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0057",
+    "name": "食品安全国家标准（陶瓷制品）GB4806.4-2016",
+    "table": "standards",
+    "docNumber": "GB4806.4-2016",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0058",
+    "name": "食品安全国家标准（玻璃制品）GB4806.5-2016",
+    "table": "standards",
+    "docNumber": "GB4806.5-2016",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0059",
+    "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2016",
+    "table": "standards",
+    "docNumber": "GB4806.9-2016",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0060",
+    "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2023",
+    "table": "standards",
+    "docNumber": "GB4806.9-2023",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0061",
+    "name": "食品安全国家标准（食品接触用涂料及涂层）GB4806.10-2016",
+    "table": "standards",
+    "docNumber": "GB4806.10-2016",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0062",
+    "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2015",
+    "table": "standards",
+    "docNumber": "GB31604.1-2015",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0063",
+    "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2023",
+    "table": "standards",
+    "docNumber": "GB31604.1-2023",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0064",
+    "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2016",
+    "table": "standards",
+    "docNumber": "GB4806.7-2016",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0065",
+    "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2023",
+    "table": "standards",
+    "docNumber": "GB4806.7-2023",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0066",
+    "name": "欧盟关于在电子电气设备中限制使用某些有害物质要求（欧盟ROHS指令 2011/65/EU）",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0067",
+    "name": "欧盟ROHS修订指令(EU)2015/863",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0068",
+    "name": "(EC) No 1907/2006 （REACH）",
+    "table": "standards",
+    "docNumber": "No1907",
+    "dept": "欧盟(ECHA)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0069",
+    "name": "GB 26572-2025《电器电子产品有害物质限制使用要求》",
+    "table": "standards",
+    "docNumber": "GB26572-2025",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0070",
+    "name": "GB/T 26572-2011/XG1-2024 《电子电气产品中限用物质的限量要求》国家标准第1号修改单",
+    "table": "standards",
+    "docNumber": "GB/T26572-2011",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0071",
+    "name": "Persistent Organic Pollutants (POPs) No. 2019/1021 and its amendments （持久性有机污染物）",
+    "table": "standards",
+    "docNumber": "No.2019",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0073",
+    "name": "Decree No. 2020-105 on the “Fight Against Waste and the Circular Economy” Article 13-II",
+    "table": "standards",
+    "docNumber": "No.2020-105",
+    "dept": "法国",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0074",
+    "name": "California Proposition 65 （加州65）",
+    "table": "standards",
+    "docNumber": "Proposition65",
+    "dept": "美国加州",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0075",
+    "name": "欧盟包装指令94/62/EC",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0076",
+    "name": "《包装和包装废物法规(EU) 2025/40 》（PPWR）",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0077",
+    "name": "巴西497法令",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "巴西",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0078",
+    "name": "巴西499法令",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "巴西",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0079",
+    "name": "GB/T 18800-2017 家用微波炉 性能试验方法 国家质量监督检验检疫",
+    "table": "standards",
+    "docNumber": "GB/T18800-2017",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0080",
+    "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级国家质量监督检验检疫。",
+    "table": "standards",
+    "docNumber": "GB24849-2017",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0081",
+    "name": "UL 1026  家用厨具电器 安全标准和测试要求",
+    "table": "standards",
+    "docNumber": "UL1026",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0082",
+    "name": "CSA C22.2 NO. 1335.1－93，Rev.2008 and CSA C22.2 NO 1335.2.9-93 Rev.2008",
+    "table": "standards",
+    "docNumber": "C22.2",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0083",
+    "name": "UL 746.6th Edition Rev.Max.07.2012",
+    "table": "standards",
+    "docNumber": "UL746.6",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0084",
+    "name": "GB/T 4214.8-2021 家用和类似用途电器噪声测试方法 电灶、烤箱、烤架、微波炉及其组合器具的特殊要求国家市场监督管理总局",
+    "table": "standards",
+    "docNumber": "GB/T4214.8-2021",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0085",
+    "name": "GB/T 4214.1-2017 声学、家用电器及类似用途器具噪声测试方法第1部分",
+    "table": "standards",
+    "docNumber": "GB/T4214.1-2017",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0086",
+    "name": "GB 19606 家用和类似用途电器噪声限值",
+    "table": "standards",
+    "docNumber": "GB19606",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  }
+]

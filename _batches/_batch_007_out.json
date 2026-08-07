@@ -1,0 +1,308 @@
+[
+  {
+    "id": "L0246",
+    "name": "工作场所安全使用化学品的规定",
+    "table": "laws",
+    "new_link": "https://ce.sysu.edu.cn/sites/default/files/2019-01/%E5%B7%A5%E4%BD%9C%E5%9C%BA%E6%89%80%E5%AE%89%E5%85%A8%E4%BD%BF%E7%94%A8%E5%8C%96%E5%AD%A6%E5%93%81%E8%A7%84%E5%AE%9A.pdf",
+    "source_desc": "中山大学（高校镜像）PDF，劳部发〔1996〕423号全文",
+    "quality": "low",
+    "note": "未找到官方政府源；使用高校镜像PDF（另见 sbc.org.cn、pkulaw 等第三方）。"
+  },
+  {
+    "id": "L0247",
+    "name": "国务院关于职工工作时间的规定",
+    "table": "laws",
+    "new_link": "http://app.shandong.gov.cn/zhengbao/1995/1995-05.pdf",
+    "source_desc": "山东省人民政府公报1995年第5期 PDF（国务院令第174号）",
+    "quality": "high",
+    "note": "政府公报全文。"
+  },
+  {
+    "id": "L0248",
+    "name": "国务院关于职工工作时间的规定的实施办法",
+    "table": "laws",
+    "new_link": "https://www.mohrss.gov.cn/xxgk2020/gzk/gz/202112/t20211228_431565.html",
+    "source_desc": "人力资源社会保障部官网全文（国家机关、事业单位贯彻实施办法）",
+    "quality": "high",
+    "note": "此为机关/事业单位版本（人事部）；企业版本为劳部发〔1995〕143号，可在 pkulaw 等查阅。"
+  },
+  {
+    "id": "L0249",
+    "name": "职业性噪声聋诊断标准",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2014/10/20141029170348304.pdf",
+    "source_desc": "国家卫生健康委员会官方PDF（GBZ 49-2014）",
+    "quality": "high",
+    "note": "GBZ 49-2014 全文。"
+  },
+  {
+    "id": "L0250",
+    "name": "关于印发《职业病危害因素分类目录》的通知",
+    "table": "laws",
+    "new_link": "https://kgxj.haikou.gov.cn/ztzl/aqsc/201703/W020220307648913419619.pdf",
+    "source_desc": "海口市应急管理局（原安监局）转载PDF（国卫疾控发〔2015〕92号）",
+    "quality": "high",
+    "note": "政府站点全文PDF。"
+  },
+  {
+    "id": "L0251",
+    "name": "职业性健康检查管理规定",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/2015-03/26/content_5713802.htm",
+    "source_desc": "中国政府网政策全文",
+    "quality": "high",
+    "note": "政府门户全文。"
+  },
+  {
+    "id": "L0252",
+    "name": "工伤认定办法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/zhengce/2022-08/31/content_5711327.htm",
+    "source_desc": "中国政府网政策全文（2022年修订）",
+    "quality": "high",
+    "note": "政府门户全文。"
+  },
+  {
+    "id": "L0253",
+    "name": "关于贯彻落实《禁止使用童工规定》的通知",
+    "table": "laws",
+    "new_link": "https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/gfxwj/ldgx/201407/t20140717_136239.html",
+    "source_desc": "人力资源社会保障部官网全文",
+    "quality": "high",
+    "note": "政府门户全文。"
+  },
+  {
+    "id": "L0254",
+    "name": "特种作业人员安全技术培训考核管理办法",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/wjk/zcfgk/content/post_2520961.html",
+    "source_desc": "广东省人民政府官网全文（国家安监总局令第30号）",
+    "quality": "high",
+    "note": "地方政府门户全文。"
+  },
+  {
+    "id": "L0255",
+    "name": "用电安全导则GB/T13869",
+    "table": "laws",
+    "new_link": "http://jxganan.com/uploads/UploadFiles/2011-11/admin/201111171401382083.pdf",
+    "source_desc": "第三方（江西赣安安全生产服务中心）PDF，GB/T 13869-2008",
+    "quality": "low",
+    "note": "仅找到标准详情页（std.samr.gov.cn）与第三方PDF；当前有效版为 GB/T 13869-2017，链接为 2008 版。"
+  },
+  {
+    "id": "L0256",
+    "name": "生产过程安全卫生要求总则GB12801-2008",
+    "table": "laws",
+    "new_link": "https://ebook.chinabuilding.com.cn/zbooklib/bookpdf/probation?SiteID=1&bookID=75787",
+    "source_desc": "中国建筑工业出版社在线预览PDF（GB/T 12801-2008）",
+    "quality": "low",
+    "note": "出版社试用预览页（需浏览器打开）；官方标准信息页为详情页。"
+  },
+  {
+    "id": "L0257",
+    "name": "化学品安全标签编写规定",
+    "table": "laws",
+    "new_link": "http://yjt.shandong.gov.cn/uploadfiles/day_150408/201504081642596205.pdf",
+    "source_desc": "山东省应急管理厅PDF（GB 15258-2009）",
+    "quality": "high",
+    "note": "政府站点全文PDF。"
+  },
+  {
+    "id": "L0258",
+    "name": "消防安全标志设置要求GB15630-1995",
+    "table": "laws",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=AF25163EE865E559BEDE95458EA55796",
+    "source_desc": "国家标准化管理委员会官方标准全文平台（openstd.samr.gov.cn）详情页",
+    "quality": "low",
+    "note": "官方平台详情页，需点击“在线预览/下载”方可查看全文；未找到可直接打开的PDF。"
+  },
+  {
+    "id": "L0259",
+    "name": "劳动保护用品配备标准（试行）",
+    "table": "laws",
+    "new_link": "https://hyjzrz.com/UploadFiles/file/20201212/20201212090992379237.pdf",
+    "source_desc": "第三方PDF（国经贸安全〔2000〕189号）",
+    "quality": "low",
+    "note": "未找到官方政府源；使用第三方PDF镜像。"
+  },
+  {
+    "id": "L0260",
+    "name": "建筑设计防火规范",
+    "table": "laws",
+    "new_link": "https://zrzyt.xinjiang.gov.cn/xjgtzy/tzgg/202311/f1bc95ce98e74f90bd91b78d8a354461/files/77-%E3%80%8A%E5%BB%BA%E7%AD%91%E8%AE%BE%E8%AE%A1%E9%98%B2%E7%81%AB%E8%A7%84%E8%8C%83%E3%80%8B%EF%BC%88GB50016-2014%EF%BC%89.pdf",
+    "source_desc": "新疆维吾尔自治区自然资源厅政府站点PDF（GB 50016-2014，2018年版）",
+    "quality": "high",
+    "note": "政府站点全文PDF（2018年版）。"
+  },
+  {
+    "id": "L0261",
+    "name": "企业职工伤亡事故分类标准(GB6441-86)",
+    "table": "laws",
+    "new_link": "https://jyglj.sc.gov.cn/scjyglj/cdnzjyzfgk/2019/6/28/af51b56ac43b4797b3c26d30587ac5fb.shtml",
+    "source_desc": "四川省戒毒管理局政府站点全文（GB 6441-86，1986版）",
+    "quality": "high",
+    "note": "政府站点全文；该标准仍为1986版沿用。"
+  },
+  {
+    "id": "L0262",
+    "name": "广东省安全生产条例",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/gk/flfgbz/fg/content/post_4227234.html",
+    "source_desc": "广东省人民政府官网全文（2023年修订）",
+    "quality": "high",
+    "note": "地方政府门户全文（2023年修订版）。"
+  },
+  {
+    "id": "L0263",
+    "name": "中华人民共和国道路交通安全法",
+    "table": "laws",
+    "new_link": "https://flk.npc.gov.cn/detail?id=ff8081817ab231eb017abd617ef70519",
+    "source_desc": "国家法律法规数据库（全国人大）全文",
+    "quality": "high",
+    "note": "官方法律法规数据库全文。"
+  },
+  {
+    "id": "L0264",
+    "name": "职业病范围和职业病患者处理办法和规定",
+    "table": "laws",
+    "new_link": "https://jpkc.gdcvi.edu.cn/skills/pdf/web/viewer.html?/skills/portal/res?key=10602335",
+    "source_desc": "广东建设职业技术学院（教育镜像）PDF查看器，[87]卫防字第60号",
+    "quality": "low",
+    "note": "该规定已废止/失效（被《职业病目录》及《职业病防治法》取代）；仅找到教育/第三方镜像，无官方政府源。"
+  },
+  {
+    "id": "L0265",
+    "name": "《消防安全标志第1部分：标志》GB 13495.1—2015",
+    "table": "laws",
+    "new_link": "https://wx12345.gzonline.gov.cn/fastuser%2FM00%2FE2%2F78%2FCsL9JGcKHMmAEcaSAL-E24_GSF8914.pdf",
+    "source_desc": "广州市政府“广州12345”政府站点PDF（GB 13495.1-2015）",
+    "quality": "high",
+    "note": "政府站点全文PDF。"
+  },
+  {
+    "id": "L0266",
+    "name": "安全标志及其使用导则GB2894-2008",
+    "table": "laws",
+    "new_link": "http://www.gdzjsc.com/Public/stdPDF/GB%202894-2008.pdf",
+    "source_desc": "第三方标准PDF镜像（GB 2894-2008）",
+    "quality": "low",
+    "note": "第三方PDF镜像；官方标准信息页（std.samr.gov.cn）为详情页。注：已被 GB 2894-2025 替代。"
+  },
+  {
+    "id": "L0267",
+    "name": "手持式电动工具的管理、使用、检查和维修安全技术规程GB3787-2017",
+    "table": "laws",
+    "new_link": "https://airquality.com.cn/uploads/allimg/240222/1-24022213501C58.pdf",
+    "source_desc": "第三方PDF（GB/T 3787-2017）",
+    "quality": "low",
+    "note": "第三方PDF镜像；当前有效版为 GB/T 3787-2017。"
+  },
+  {
+    "id": "L0268",
+    "name": "生产设备安全卫生设计总则GB5083-99",
+    "table": "laws",
+    "new_link": "http://www.hraqpj.com/uploadfiles/2021-02/16125114952610288.pdf",
+    "source_desc": "第三方PDF（GB 5083-1999）",
+    "quality": "low",
+    "note": "第三方PDF镜像；该标准已有 GB 5083-2023/2025 修订版征求意见稿。"
+  },
+  {
+    "id": "L0269",
+    "name": "机械加工设备危险与有害因素分类GB/T2299-90",
+    "table": "laws",
+    "new_link": "http://www.njsafety.net/%E6%B1%9F%E8%8B%8F%E5%AE%89%E5%85%A8%E8%AF%84%E4%BB%B7%E7%BD%91/%E6%94%BF%E7%AD%96%E6%B3%95%E8%A7%84/%E5%9B%BD%E5%AE%B6%E6%B3%95%E5%BE%8B/%E6%9C%BA%E6%A2%B0%E5%8A%A0%E5%B7%A5%E8%AE%BE%E5%A4%87%E5%8D%B1%E9%99%A9%E6%9C%89%E5%AE%B3%E5%9B%A0%E7%B4%A0%E5%88%86%E7%B1%BB%20GB12299-90.pdf",
+    "source_desc": "第三方（江苏安全评价）PDF，标准号应为 GB 12299-90",
+    "quality": "low",
+    "note": "输入标准号 GB/T 2299-90 有误，实际对应《机械加工设备危险与有害因素分类》为 GB 12299-90；仅找到第三方PDF。"
+  },
+  {
+    "id": "L0270",
+    "name": "生产过程危险和有害因素分类与代码GB/T13861",
+    "table": "laws",
+    "new_link": "https://pyso.newswz.cn/upload/202208/202208251743351587.pdf",
+    "source_desc": "第三方PDF（GB/T 13861-2022）",
+    "quality": "low",
+    "note": "第三方PDF镜像；当前有效版为 GB/T 13861-2022（替代 2009 版）。"
+  },
+  {
+    "id": "L0271",
+    "name": "职业性接触毒物危害程序分级GBZ 230-2010",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/zwgkzt/pyl/201007/47969/files/020ecd263ecf4b1c99c3f8ea44fe1a4b.pdf",
+    "source_desc": "国家卫生健康委员会官方PDF（GBZ 230-2010）",
+    "quality": "high",
+    "note": "GBZ 230-2010 全文（输入“程序分级”应为“程度分级”）。"
+  },
+  {
+    "id": "L0272",
+    "name": "危险化学品重大危险源辨识GB18218-2018",
+    "table": "laws",
+    "new_link": "https://www.pudong.gov.cn/zwgk/14557.gkml_ywl_yjgl/2022/273/19597/e9a1b7536a4c42178aecbcaaa34bed89.pdf",
+    "source_desc": "上海市浦东新区政府站点PDF（GB 18218-2018）",
+    "quality": "high",
+    "note": "政府站点全文PDF。"
+  },
+  {
+    "id": "L0273",
+    "name": "工业企业设计卫生标准GBZ1-2010",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2014/11/20141114162610618.pdf",
+    "source_desc": "国家卫生健康委员会官方PDF（GBZ 1-2010）",
+    "quality": "high",
+    "note": "GBZ 1-2010 全文。"
+  },
+  {
+    "id": "L0274",
+    "name": "建筑照明设计标准",
+    "table": "laws",
+    "new_link": "http://www.linzi.gov.cn:9088/gongkai/site_lzqwsjkj/channel_654c78504f0ac470b73523f4/doc_67079ceb0c81719cbf7165ea_7a1fc91bc659dcda5e0ac0c5ad768cf1.pdf",
+    "source_desc": "淄博市临淄区政府站点PDF（GB/T 50034-2024）",
+    "quality": "high",
+    "note": "政府站点全文PDF；当前有效版为 GB/T 50034-2024（替代 2013 版）。"
+  },
+  {
+    "id": "L0275",
+    "name": "工作场所职业病危害警示标识GBZ158-2003",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/zwgkzt/pyl/200902/38989/files/d3d23bc8923e435a9d2a5ac3946a9eae.pdf",
+    "source_desc": "国家卫生健康委员会官方PDF（GBZ 158-2003）",
+    "quality": "high",
+    "note": "GBZ 158-2003 全文。"
+  },
+  {
+    "id": "L0276",
+    "name": "工作场所职业病危害作业分级GBZ/T 229.4-2012",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/pyl/201206/55052/files/1739779705245_59836.pdf",
+    "source_desc": "国家卫生健康委员会官方PDF（GBZ/T 229.4-2012，噪声部分）",
+    "quality": "high",
+    "note": "GBZ/T 229.4-2012 全文。"
+  },
+  {
+    "id": "L0277",
+    "name": "中华人民共和国传染病防治法（2025修订）",
+    "table": "laws",
+    "new_link": "http://www.npc.gov.cn/c2/c30834/202504/t20250430_445085.html",
+    "source_desc": "全国人民代表大会官网全文（2025年第二次修订）",
+    "quality": "high",
+    "note": "官方全文；自2025年9月1日起施行。"
+  },
+  {
+    "id": "L0278",
+    "name": "工作场所空气中有害物质监测的采样规范",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/ewebeditor/uploadfile/2014/12/20141212143329860.pdf",
+    "source_desc": "国家卫生健康委员会官方PDF（GBZ 159-2004）",
+    "quality": "high",
+    "note": "GBZ 159-2004 全文。"
+  },
+  {
+    "id": "L0279",
+    "name": "“十四五”国家安全生产规划（2022年发布）",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202204/t20220412_411518.shtml",
+    "source_desc": "应急管理部官网全文（安委〔2022〕7号）",
+    "quality": "high",
+    "note": "政府门户全文。"
+  }
+]

@@ -1,0 +1,342 @@
+[
+  {
+    "id": "L0058",
+    "name": "商用密码管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0059",
+    "name": "互联网信息服务管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0060",
+    "name": "中华人民共和国技术进出口管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0061",
+    "name": "计算机信息系统国际联网保密管理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0062",
+    "name": "中华人民共和国招标投标法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0063",
+    "name": "中华人民共和国专利法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0064",
+    "name": "中华人民共和国计算机信息系统安全保护条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0065",
+    "name": "中华人民共和国计算机信息网络国际联网管理暂行规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0066",
+    "name": "中华人民共和国电子签名法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0067",
+    "name": "中华人民共和国著作权法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0069",
+    "name": "中华人民共和国刑法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "质量"
+  },
+  {
+    "id": "L0070",
+    "name": "中华人民共和国国家安全法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0071",
+    "name": "中华人民共和国保守国家秘密法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0072",
+    "name": "计算机病毒防治管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0074",
+    "name": "计算机软件保护条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0075",
+    "name": "中华人民共和国反不正当竞争法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0077",
+    "name": "中华人民共和国网络安全法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0078",
+    "name": "世界知识产权组织版权条约（中国加入）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0079",
+    "name": "互联网域名管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0080",
+    "name": "公共互联网网络安全威胁监测与处置办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0081",
+    "name": "国家网络安全事件报告管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0082",
+    "name": "国务院关于印发“宽带中国”战略及实施方案的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0083",
+    "name": "中华人民共和国国民经济和社会发展第十五个五年规划纲要",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0084",
+    "name": "通信网络安全防护管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0085",
+    "name": "人大常委会关于加强网络信息保护决定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0086",
+    "name": "规范互联网信息服务市场秩序若干规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家互联网信息办公室",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0088",
+    "name": "物业管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0094",
+    "name": "中华人民共和国电信条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "全国人大常委会",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0095",
+    "name": "电信服务规范",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0096",
+    "name": "电信和互联网用户个人信息保护规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0097",
+    "name": "外商投资电信企业管理规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国务院",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0098",
+    "name": "电信业务分类目录(2015年版）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0099",
+    "name": "工业和信息化部关于加强呼叫中心业务管理的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "工业和信息化部",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  },
+  {
+    "id": "L0105",
+    "name": "《网络安全技术信息系统灾难恢复规范》GB/T 20988-2025",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "国家市场监督管理总局",
+    "region": "",
+    "status": "现行有效",
+    "category": "信息安全"
+  }
+]

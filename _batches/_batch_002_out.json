@@ -1,0 +1,308 @@
+[
+  {
+    "id": "L0058",
+    "name": "商用密码管理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/202305/content_6875927.htm",
+    "source_desc": "中国政府网（国务院令760号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0059",
+    "name": "互联网信息服务管理办法",
+    "table": "laws",
+    "new_link": "http://data.pkulaw.net/chl/7fb5ceffe06db00abdfb.html?way=textSlc",
+    "source_desc": "北大法宝（2024年修订版）全文",
+    "quality": "low",
+    "note": "未找到中国政府网（gov.cn）官方直接全文链接，仅有北大法宝等第三方来源可用"
+  },
+  {
+    "id": "L0060",
+    "name": "中华人民共和国技术进出口管理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2019/content_5468926.htm",
+    "source_desc": "中国政府网（国务院公报）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0061",
+    "name": "计算机信息系统国际联网保密管理规定",
+    "table": "laws",
+    "new_link": "https://zh.wikisource.org/zh-hant/《计算机信息系统国际联网保密管理规定》",
+    "source_desc": "维基文库（国家保密局规定）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0062",
+    "name": "中华人民共和国招标投标法",
+    "table": "laws",
+    "new_link": "https://ggzyfw.beijing.gov.cn/cmsbj/u/cms/cn.gov.bjggzyfw.www/202208/31151520qlxw.pdf",
+    "source_desc": "北京市公共资源交易服务平台（.gov.cn）PDF 全文（2017年修订）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0063",
+    "name": "中华人民共和国专利法",
+    "table": "laws",
+    "new_link": "https://www.cnipa.gov.cn/art/2020/11/23/art_97_155167.html",
+    "source_desc": "国家知识产权局（2020年修正）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0064",
+    "name": "中华人民共和国计算机信息系统安全保护条例",
+    "table": "laws",
+    "new_link": "https://zh.wikisource.org/zh-hant/中华人民共和国计算机信息系统安全保护条例_(1994年)",
+    "source_desc": "维基文库（国务院令147号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0065",
+    "name": "中华人民共和国计算机信息网络国际联网管理暂行规定",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/1996-02/02/c_126468621.htm",
+    "source_desc": "中央网信办官网全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0066",
+    "name": "中华人民共和国电子签名法",
+    "table": "laws",
+    "new_link": "https://www.beijing.gov.cn/gate/big5/www.beijing.gov.cn/zhengce/zhengcefagui/202202/t20220208_2606143.html",
+    "source_desc": "北京市政府（2019年修正）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0067",
+    "name": "中华人民共和国著作权法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/3d00c03d87cf4863878081a3e1b54638.pdf",
+    "source_desc": "国家法律法规数据库 PDF 全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0069",
+    "name": "中华人民共和国刑法",
+    "table": "laws",
+    "new_link": "https://flk.npc.gov.cn/detail?title=中华人民共和国刑法&id=ff808181796a636a0179822a19640c92",
+    "source_desc": "国家法律法规数据库全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0070",
+    "name": "中华人民共和国国家安全法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/2015-07/01/content_2893902.htm",
+    "source_desc": "中国政府网全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0071",
+    "name": "中华人民共和国保守国家秘密法",
+    "table": "laws",
+    "new_link": "https://www.gjbmj.gov.cn/n1/2024/0227/c409088-40184579.html",
+    "source_desc": "国家保密局官网（2024年修订）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0072",
+    "name": "计算机病毒防治管理办法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/zhengce/2021-12/25/content_5712874.htm",
+    "source_desc": "中国政府网（公安部令51号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0074",
+    "name": "计算机软件保护条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/zhengceku/2013-02/08/content_5425.htm",
+    "source_desc": "中国政府网（国务院令632号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0075",
+    "name": "中华人民共和国反不正当竞争法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/0ff65fe62c4b4b8ab193a17fb4f42479.pdf",
+    "source_desc": "国家法律法规数据库 PDF 全文（2017年修订版；注：2025年有新修订）",
+    "quality": "high",
+    "note": "链接为2017年修订版全文；该法2025年已有新修订，如需最新版需另行核对"
+  },
+  {
+    "id": "L0077",
+    "name": "中华人民共和国网络安全法",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2016-11/07/c_1119867116.htm",
+    "source_desc": "中央网信办官网全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0078",
+    "name": "世界知识产权组织版权条约（中国加入）",
+    "table": "laws",
+    "new_link": "https://treaty.mfa.gov.cn/tykfiles/20190801/1564640247787.pdf",
+    "source_desc": "外交部条约库 WCT PDF 全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0079",
+    "name": "互联网域名管理办法",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2017-09/28/c_1121737753.htm",
+    "source_desc": "中央网信办转载工信部令43号全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0080",
+    "name": "公共互联网网络安全威胁监测与处置办法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/gongbao/content/2018/content_5254324.htm",
+    "source_desc": "国务院公报（工信部网安〔2017〕202号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0081",
+    "name": "国家网络安全事件报告管理办法",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2025-09/15/c_1759583017717009.htm",
+    "source_desc": "中央网信办官网（2025年）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0082",
+    "name": "国务院关于印发“宽带中国”战略及实施方案的通知",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zwgk/2013-08/17/content_2468348.htm",
+    "source_desc": "中国政府网（国发〔2013〕31号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0083",
+    "name": "中华人民共和国国民经济和社会发展第十五个五年规划纲要",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/yaowen/liebiao/202603/content_7062633.htm?id=15182",
+    "source_desc": "中国政府网（2026年）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0084",
+    "name": "通信网络安全防护管理办法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/zhengce/2022-08/23/content_5722730.htm",
+    "source_desc": "中国政府网（工信部令11号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0085",
+    "name": "人大常委会关于加强网络信息保护决定",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2012-12/29/c_133353262.htm",
+    "source_desc": "中央网信办官网全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0086",
+    "name": "规范互联网信息服务市场秩序若干规定",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2011-12/30/c_1111550424.htm",
+    "source_desc": "中央网信办转载工信部令20号全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0088",
+    "name": "物业管理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2019/content_5468878.htm",
+    "source_desc": "国务院公报（国务院令379号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0094",
+    "name": "中华人民共和国电信条例",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/gongbao/content/2016/content_5139478.htm",
+    "source_desc": "国务院公报（国务院令291号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0095",
+    "name": "电信服务规范",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/zhengce/2022-08/23/content_5722729.htm",
+    "source_desc": "中国政府网（工信部令36号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0096",
+    "name": "电信和互联网用户个人信息保护规定",
+    "table": "laws",
+    "new_link": "https://www.miit.gov.cn/api-gateway/jpaas-web-server/front/document/file-download?fileUrl=/cms_files/filemanager/1226211233/attach/202112/0507917890734d3bb989848a2f757e0b.pdf&fileName=0507917890734d3bb989848a2f757e0b.pdf",
+    "source_desc": "工信部（工信部令24号）PDF 全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0097",
+    "name": "外商投资电信企业管理规定",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2008-09/16/content_3407.htm?trs=1",
+    "source_desc": "中国政府网（国务院令333号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0098",
+    "name": "电信业务分类目录(2015年版）",
+    "table": "laws",
+    "new_link": "https://zh.wikisource.org/zh-hant/工业和信息化部关于发布《电信业务分类目录（2015年版）》的通告",
+    "source_desc": "维基文库（工信部通告）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0099",
+    "name": "工业和信息化部关于加强呼叫中心业务管理的通知",
+    "table": "laws",
+    "new_link": "https://hca.miit.gov.cn/api-gateway/jpaas-web-server/front/document/file-download?fileUrl=/cms_files/filemanager/1075216164/attach/20212/1953146d146943a4a5d8f37c214887dd.pdf&fileName=工业和信息化部关于加强呼叫中心业务管理的通知.pdf",
+    "source_desc": "工信部（信管〔2020〕81号）PDF 全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0105",
+    "name": "《网络安全技术信息系统灾难恢复规范》GB/T 20988-2025",
+    "table": "laws",
+    "new_link": "https://std.sacinfo.org.cn/gnoc/queryItemInfoPlat?projectId=1016386",
+    "source_desc": "全国标准信息公共服务平台（官方）标准信息页",
+    "quality": "high",
+    "note": "平台为官方权威来源，提供标准信息页；标准全文PDF通常需通过标准出版物/官方授权渠道获取"
+  }
+]

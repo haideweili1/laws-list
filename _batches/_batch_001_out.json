@@ -1,0 +1,308 @@
+[
+  {
+    "id": "L0016",
+    "name": "排污许可管理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2021-01/29/content_5583525.htm",
+    "source_desc": "中国政府网（国务院令 第736号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0018",
+    "name": "中华人民共和国节约能源法",
+    "table": "laws",
+    "new_link": "https://sjfg.samr.gov.cn/law/file//origin/3235243/1663325198074.pdf",
+    "source_desc": "市场监管总局法规库 PDF（2018年修正本）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0019",
+    "name": "中华人民共和国循环经济促进法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/5bfc0303f6b34d739e0737acbb89c878.pdf",
+    "source_desc": "国家法律法规数据库（全国人大）PDF 全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0020",
+    "name": "中华人民共和国环境保护税法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/8fa7b0ba3b2a4a88af4a36b372248d05.pdf",
+    "source_desc": "国家法律法规数据库（全国人大）PDF 全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0021",
+    "name": "中华人民共和国安全生产法",
+    "table": "laws",
+    "new_link": "https://policy.mofcom.gov.cn/claw/clawContent.shtml?id=90353",
+    "source_desc": "商务部政策库转载中国人大网（2021年修正）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0023",
+    "name": "中华人民共和国劳动法",
+    "table": "laws",
+    "new_link": "https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/fl/202011/t20201102_394625.html",
+    "source_desc": "人力资源社会保障部全文（2018年修正）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0024",
+    "name": "中华人民共和国劳动合同法",
+    "table": "laws",
+    "new_link": "https://www.jiangmen.gov.cn/attachment/0/287/287575/2982353.pdf",
+    "source_desc": "地方政府网站发布的 PDF（2012年修正本）全文",
+    "quality": "high",
+    "note": "权威转发页为 PDF 形式，内容系 2012 年修正全文"
+  },
+  {
+    "id": "L0025",
+    "name": "工伤保险条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2011/content_1778064.htm",
+    "source_desc": "中国政府网国务院公报（国务院令 第586号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0026",
+    "name": "生产安全事故应急条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2019-03/01/content_5369591.htm",
+    "source_desc": "中国政府网（国务院令 第708号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0027",
+    "name": "生产安全事故报告和调查处理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/flfg/2007-04/19/content_589264.htm",
+    "source_desc": "中国政府网（国务院令 第493号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0028",
+    "name": "危险化学品安全管理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2011-03/11/content_3114.htm",
+    "source_desc": "中国政府网（国务院令 第591号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0029",
+    "name": "中华人民共和国特种设备安全法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/flfg/2013-06/30/content_2437160.htm",
+    "source_desc": "中国政府网（主席令 第四号）全文（繁体网关页）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0030",
+    "name": "女职工劳动保护特别规定",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zwgk/2012-05/07/content_2131567.htm",
+    "source_desc": "中国政府网（国务院令 第619号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0031",
+    "name": "安全生产许可证条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/2008-03/28/content_4430.htm?trs=1",
+    "source_desc": "中国政府网（国务院令 第397号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0032",
+    "name": "重大事故隐患判定标准",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202304/P020230417664815475116.pdf",
+    "source_desc": "应急管理部 PDF（工贸企业重大事故隐患判定标准，部令 第10号）",
+    "quality": "low",
+    "note": "“重大事故隐患判定标准”为统称，存在多个分行业版本（工贸、煤矿、化工和危险化学品、房屋市政工程等），无单一权威全文。此处提供最常见、最通用的《工贸企业重大事故隐患判定标准》作为代表，未能覆盖全部行业版本。"
+  },
+  {
+    "id": "L0034",
+    "name": "碳排放权交易管理暂行条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/content/202402/content_6930137.htm",
+    "source_desc": "中国政府网（国务院令 第775号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0035",
+    "name": "中华人民共和国社会保险法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/guoqing/2021-10/29/content_5647616.htm",
+    "source_desc": "中国政府网（主席令 第35号，含2018年修正）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0036",
+    "name": "中华人民共和国妇女权益保障法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/xinwen/2022-10/30/content_5722636.htm",
+    "source_desc": "中国政府网（2022年修订，主席令 第122号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0037",
+    "name": "中华人民共和国未成年人保护法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/ae5d635e5e004e988f9d506243d12c80.pdf",
+    "source_desc": "国家法律法规数据库（全国人大）PDF（2020年修订）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0039",
+    "name": "中华人民共和国工会法",
+    "table": "laws",
+    "new_link": "https://www.mohrss.gov.cn/wap/zc/fgwj/202011/t20201102_394624.html",
+    "source_desc": "人力资源社会保障部（2021年修正）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0040",
+    "name": "中华人民共和国残疾人保障法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/govweb/test/2008-12/11/content_1174760.htm",
+    "source_desc": "中国政府网（主席令 第3号，2008年修订）全文（繁体网关页）",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0041",
+    "name": "最低工资规定",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2004/content_62936.htm",
+    "source_desc": "中国政府网国务院公报（劳动保障部令 第21号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0042",
+    "name": "企业民主管理规定",
+    "table": "laws",
+    "new_link": "https://www.fj12351.cn/detailInfo.jsp?xh=10968",
+    "source_desc": "福建省总工会网站转载全文（总工发〔2012〕12号）",
+    "quality": "low",
+    "note": "由中央纪委、中组部、国资委、监察部、全国总工会、全国工商联联合发布，未检索到中央政府门户网站的单一权威全文页，此处为省级工会网站的规范全文转载。"
+  },
+  {
+    "id": "L0044",
+    "name": "超龄劳动者基本权益保障暂行规定",
+    "table": "laws",
+    "new_link": "https://www.mohrss.gov.cn/wap/zc/fgwj/202605/t20260525_576849.html",
+    "source_desc": "人力资源社会保障部（2026年公布，2026年7月1日起施行）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0045",
+    "name": "中华人民共和国反恐怖主义法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/2015-12/28/content_5029899.htm",
+    "source_desc": "中国政府网（主席令 第36号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0046",
+    "name": "中华人民共和国海关法",
+    "table": "laws",
+    "new_link": "https://www.fmprc.gov.cn/wjb_673085/zzjg_673183/bjhysws_674671/bhflfg/ldbjglxgfl/202303/P020230313589081879122.pdf",
+    "source_desc": "外交部网站 PDF（2021年第六次修正本）全文",
+    "quality": "high",
+    "note": "海关法最新修正本 PDF，由政府部门网站发布"
+  },
+  {
+    "id": "L0047",
+    "name": "中华人民共和国出境入境管理法",
+    "table": "laws",
+    "new_link": "https://www.nia.gov.cn/n741440/n741547/c1013311/content.html",
+    "source_desc": "国家移民管理局（主席令 第57号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0048",
+    "name": "中华人民共和国反洗钱法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/yaowen/liebiao/202411/content_6985765.htm",
+    "source_desc": "中国政府网（2024年修订，主席令 第38号）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0050",
+    "name": "中华人民共和国货物进出口管理条例",
+    "table": "laws",
+    "new_link": "https://xzfg.moj.gov.cn/law/download?LawID=1719",
+    "source_desc": "司法部国家行政法规库（国务院令 第332号，2024年修订）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0051",
+    "name": "中华人民共和国对外贸易法",
+    "table": "laws",
+    "new_link": "http://www.npc.gov.cn/c2/c30834/202512/t20251227_450709.html",
+    "source_desc": "中国人大网（2025年第二次修订）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0052",
+    "name": "出口管制法实施条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/zhengceku/202410/content_6981400.htm",
+    "source_desc": "中国政府网（国务院令 第792号《两用物项出口管制条例》）全文",
+    "quality": "high",
+    "note": "《出口管制法》的配套实施条例即《中华人民共和国两用物项出口管制条例》"
+  },
+  {
+    "id": "L0055",
+    "name": "中华人民共和国商标法",
+    "table": "laws",
+    "new_link": "https://www.cnipa.gov.cn/art/2021/6/9/art_524_171344.html",
+    "source_desc": "国家知识产权局（2019年修正）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0056",
+    "name": "中华人民共和国档案法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/d36a613ca9994c2bb049b57fb200e071.pdf",
+    "source_desc": "国家法律法规数据库（全国人大）PDF（2020年修订）全文",
+    "quality": "high",
+    "note": ""
+  },
+  {
+    "id": "L0057",
+    "name": "中华人民共和国民法典",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/xinwen/2020-06/01/content_5516649.htm",
+    "source_desc": "中国政府网（新华社受权发布，主席令 第45号）全文",
+    "quality": "high",
+    "note": ""
+  }
+]

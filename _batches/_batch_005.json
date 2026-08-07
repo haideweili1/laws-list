@@ -1,0 +1,342 @@
+[
+  {
+    "id": "L0178",
+    "name": "危险货物分类和品名编号",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0179",
+    "name": "废弃电器电子产品回收处理管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0180",
+    "name": "电子废物污染环境防治管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0181",
+    "name": "REACH法规",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0182",
+    "name": "RoHS指令2011/65/EU",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0183",
+    "name": "广东省住房和城乡建设厅 广东省财政厅 广东省发展和改革委员会关于污水处理费征收使用管理的实施细则",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0184",
+    "name": "《中华人民共和国环境保护税法实施条例》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0185",
+    "name": "《“十三五”挥发性有机物污染防治工作方案》",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0186",
+    "name": "排污许可管理办法（试行）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0187",
+    "name": "国家税务总局广东省地方税务局环境保护税核定征收管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0188",
+    "name": "建设项目环境影响评价分类管理名录",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0189",
+    "name": "广东省环境保护厅关于印发固体废物污染防治三年行动计划（2018—2020年）的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0190",
+    "name": "关于印发《广东省挥发性有机物（VOCs）整治与减排工作方案（2018-2020年）》的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0191",
+    "name": "广东省环境保护条例（2022年修正）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0192",
+    "name": "广东省实施〈中华人民共和国环境噪声污染防治法〉办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0193",
+    "name": "广东省机动车排气污染防治条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0194",
+    "name": "广东省饮用水源水质保护条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0195",
+    "name": "广东省大气污染防治条例（2022年修正）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0196",
+    "name": "广东省实施〈中华人民共和国土壤污染防治法〉办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0197",
+    "name": "广东省环境保护厅 广东省工业和信息化厅关于加强工业固体废物污染防治工作的指导意见",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0198",
+    "name": "关于废止《广东省环境保护厅关于加强固体废物管理信息平台使用管理的通知》的通知",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0199",
+    "name": "广东省建设项目环境影响评价文件分级审批办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0200",
+    "name": "广东省防汛防旱防风条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0201",
+    "name": "防雷装置设计审核和竣工验收规定",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0202",
+    "name": "广东省水污染防治条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0203",
+    "name": "广东省城乡生活垃圾管理条例",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0204",
+    "name": "危险废物排除管理清单（2021年版）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0205",
+    "name": "国务院办公厅关于印发强化危险废物监管和利用处置能力改革实施方案的通知 国办函〔2021〕47号",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0206",
+    "name": "企业环境信息依法披露管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0207",
+    "name": "“十四五”工业绿色发展规划",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0208",
+    "name": "中山市污染影响类建设项目竣工环境保护验收工作指南（）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0209",
+    "name": "广东省固定污染源挥发性有机物综合排放标准（DB44/2367-2022）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "广东",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0210",
+    "name": "固定污染源排污许可分类管理名录（2019年版）",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  },
+  {
+    "id": "L0211",
+    "name": "突发环境事件应急管理办法",
+    "table": "laws",
+    "docNumber": "",
+    "dept": "",
+    "region": "",
+    "status": "现行有效",
+    "category": "环境与职业健康"
+  }
+]

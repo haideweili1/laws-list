@@ -1,0 +1,312 @@
+[
+  {
+    "id": "S0121",
+    "name": "EN 55011:2016+A1:2017  Industrial, scientific and medical equipment- Radio-frequency disturbance characteristics - Limits and methods of measurement",
+    "table": "standards",
+    "docNumber": "EN55011",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0122",
+    "name": "EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)",
+    "table": "standards",
+    "docNumber": "IEC61000-3-2",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0123",
+    "name": "EN 61000-3-3:2013+A1:2019+A2:2021 Electromagnetic compatibility (EMC) - Part 3-3: Limits - Limitation of voltage changes, voltage fluctuations and flicker in public low-voltage supply systems, for equipment with rated current ≤16 A per phase and not subject to conditional connection",
+    "table": "standards",
+    "docNumber": "EN61000-3-3",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0124",
+    "name": "EN IEC 55014-2:2021  Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 2: Immunity - Product family standard",
+    "table": "standards",
+    "docNumber": "IEC55014-2",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0125",
+    "name": "EN 50498:2010 Electromagnetic compatibility (EMC) - Product family standard for aftermarket electronic equipment in vehicles",
+    "table": "standards",
+    "docNumber": "EN50498",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0126",
+    "name": "CSA C22.2 No. 120",
+    "table": "standards",
+    "docNumber": "C22.2",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0127",
+    "name": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-24",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0128",
+    "name": "CSA C22.2 No. 60335-2-24",
+    "table": "standards",
+    "docNumber": "C22.2",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0129",
+    "name": "UL 60335-1:2020 Ed.6/ CSA C22.2 No.60335-1:2020 Ed.6，",
+    "table": "standards",
+    "docNumber": "UL60335-1",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0130",
+    "name": "CSA C22.2 No. 60335-1",
+    "table": "standards",
+    "docNumber": "C22.2",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0131",
+    "name": "CAS 150-2007  家用微波炉 蒸功能要求及试验方法",
+    "table": "standards",
+    "docNumber": "CAS150-2007",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0132",
+    "name": "GB/T 22939.4-2008 家用和类似用途电器包装 微波炉的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T22939.4-2008",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0133",
+    "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
+    "table": "standards",
+    "docNumber": "GB24849-2017",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0134",
+    "name": "GB/T 4706.90-2024 家用和类似用途电器的安全 商用微波炉的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.90-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0135",
+    "name": "GB/T 21551.5-2024家用和类似用途电器的抗菌、除菌、净化功能　洗衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T21551.5-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0136",
+    "name": "GB/T 20292-2019 家用滚筒式干衣机性能测试方法",
+    "table": "standards",
+    "docNumber": "GB/T20292-2019",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0137",
+    "name": "GB/T 22939.5-2025 家用和类似用途电器包装 电动洗衣机和干衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T22939.5-2025",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0138",
+    "name": "GB/T 23118-2024 家用和类似用途滚筒式洗衣干衣机技术要求",
+    "table": "standards",
+    "docNumber": "GB/T23118-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0139",
+    "name": "GB/T 4214.7-2020 家用和类似用途电器噪声测试方法 滚筒式干衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4214.7-2020",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0140",
+    "name": "EN62233：2008 家用及类似用途电器电磁场的测量方法",
+    "table": "standards",
+    "docNumber": "EN62233",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0141",
+    "name": "家用和类似用途微波炉能源效率计量检测规则",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0142",
+    "name": "QB/T 5366-2019商用微波炉",
+    "table": "standards",
+    "docNumber": "QB/T5366-2019",
+    "dept": "相关行业主管部门",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0143",
+    "name": "QB/T 2662-2023电动机式家用微波炉定时器",
+    "table": "standards",
+    "docNumber": "QB/T2662-2023",
+    "dept": "相关行业主管部门",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0144",
+    "name": "GB/T 23152-2008家用微波炉用磁控管",
+    "table": "standards",
+    "docNumber": "GB/T23152-2008",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0145",
+    "name": "GB/T 18939.1-2003 微波炉电容器 第1部分: 总则",
+    "table": "standards",
+    "docNumber": "GB/T18939.1-2003",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0146",
+    "name": "GB/T 35597-2017微波炉用玻璃托盘",
+    "table": "standards",
+    "docNumber": "GB/T35597-2017",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0147",
+    "name": "GB/T 17499-2017家用洗衣机电脑程序控制器",
+    "table": "standards",
+    "docNumber": "GB/T17499-2017",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0148",
+    "name": "GB/T 22766.4-2009家用和类似用途电器售后服务 第4部分：洗衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T22766.4-2009",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0149",
+    "name": "GB/T 24986.3-2024 家用和类似用途电器可靠性评价方法 第3部分： 洗衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T24986.3-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0150",
+    "name": "GB/T 39384-2020智能家用电器的智能化技术 洗衣机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T39384-2020",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0151",
+    "name": "COMMISSION REGULATION (EU) 2023/826 of 17 April 2023 Directive 2009/125/EC of the European Parliament and of the Council and repealingCommission Regulations (EC) No 1275/2008 and (EC) No 107/2009",
+    "table": "standards",
+    "docNumber": "of17",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  }
+]

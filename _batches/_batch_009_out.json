@@ -1,0 +1,275 @@
+[
+  {
+    "id": "L0314",
+    "name": "工作场所职业卫生管理规定",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/c100221/202201/edc9ae24435d4d93ace796f33c29b029/files/69d20f9de2384312bf8cb4aaddf44343.pdf",
+    "source_desc": "国家卫生健康委官网 PDF（原安监总局令第47号，2012／2016修订）",
+    "quality": "high"
+  },
+  {
+    "id": "L0315",
+    "name": "职业健康检查管理办法",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/c100221/202201/b0468a0fd2394c4197549b82fa2c03b1/files/20fbf580aa834befae27681b6c0b54fe.pdf",
+    "source_desc": "国家卫生健康委官网 PDF（国家卫健委令第2号，2019修订）",
+    "quality": "high"
+  },
+  {
+    "id": "L0316",
+    "name": "应急管理部办公厅关于印发《有限空间作业安全指导手册》和4个专题系列折页的通知（应急厅函〔2020〕299号）",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/tzgg/tz/202010/t20201030_371153.shtml",
+    "source_desc": "应急管理部官网 通知全文页（含手册、折页）",
+    "quality": "high"
+  },
+  {
+    "id": "L0317",
+    "name": "应急管理部办公厅关于印发 《危险化学品企业生产安全事故应急准备指南》的通知（应急厅〔2019〕62号）",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/tzgg/tz/201912/W020191231570594247209.docx",
+    "source_desc": "应急管理部官网 DOCX 全文（应急厅〔2019〕62号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0318",
+    "name": "应急管理部关于印发《生产安全事故统计调查制度》和《安全生产行政执法统计调查制度》的通知应急〔2020〕93号",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/zhengceku/2020-12/03/content_5566618.htm",
+    "source_desc": "中国政府网政策库 全文页",
+    "quality": "high"
+  },
+  {
+    "id": "L0319",
+    "name": "生产安全事故防范和整改措施落实情况评估办法",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202103/P020210323365405247710.pdf",
+    "source_desc": "应急管理部官网 PDF（安委办〔2021〕4号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0320",
+    "name": "建设工程消防设计审查验收管理暂行规定",
+    "table": "laws",
+    "new_link": "https://www.mohurd.gov.cn/gongkai/zhengce/gzk/art/2022/art_17337_763780.html",
+    "source_desc": "住房和城乡建设部官网 规章全文页（住建部令第58号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0321",
+    "name": "工作场所有害因素职业接触限值 第1部分：化学有害因素（GBZ 2.1—2019）第一号修改单（2022年发布）",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/cms-search/downFiles/d54287ee790a4ec99793653cdf348553.pdf",
+    "source_desc": "国家卫生健康委官网 PDF（GBZ 2.1—2019 第1号修改单）",
+    "quality": "high"
+  },
+  {
+    "id": "L0322",
+    "name": "工作场所有害因素职业接触限值 第2部分：物理因素GBZ 2.2—2007",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/zwgkzt/pyl/200705/39019/files/3b1411c25a594044b767df5cfbdf91cc.pdf",
+    "source_desc": "国家卫生健康委官网 PDF（GBZ 2.2—2007）",
+    "quality": "high"
+  },
+  {
+    "id": "L0323",
+    "name": "用人单位职业健康监护监督管理办法",
+    "table": "laws",
+    "new_link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/gongbao/content/2012/content_2210106.htm",
+    "source_desc": "国务院公报全文页（安监总局令第49号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0324",
+    "name": "用人单位职业病危害因素定期检测管理规范",
+    "table": "laws",
+    "new_link": "https://www.pkulaw.com/chl/599a902a0352636cbdfb.html?way=textSlc",
+    "source_desc": "北大法宝法规库 全文页（安监总厅安健〔2015〕16号，第三方法规库）",
+    "quality": "high"
+  },
+  {
+    "id": "L0325",
+    "name": "举升式升降工作平台安全使用规程GB/T39747-2021",
+    "table": "laws",
+    "new_link": "http://www.bofety.com/uploadfiles/2024/07/20240720094042957.pdf",
+    "source_desc": "标准PDF（GB/T 39747-2021 全文，第三方标准托管站）",
+    "quality": "high"
+  },
+  {
+    "id": "L0326",
+    "name": "危险源辨识、风险评价和控制措施策划指南",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/fw/flfgbz/bz/bzwb/201703/P020190327398888688460.pdf",
+    "source_desc": "应急管理部官网 标准文本PDF（AQ/T 危险源辨识、风险评价和控制措施策划指南）",
+    "quality": "high"
+  },
+  {
+    "id": "L0327",
+    "name": "电工术语 风险评估GB/T 2900.101-2017",
+    "table": "laws",
+    "new_link": "https://std.samr.gov.cn/gb/search/gbDetailed?id=vdfMje51zB4%3D&mode=p",
+    "source_desc": "全国标准信息公共服务平台 标准详情页（GB/T 2900.101-2017）",
+    "quality": "high"
+  },
+  {
+    "id": "L0328",
+    "name": "眼面部防护 应急喷淋和洗眼设备 GB/T 38144.2-2019",
+    "table": "laws",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F2F580791E3F1F1D985B09B1133A74AF&refer=outter",
+    "source_desc": "国家标准全文公开系统 标准全文页（GB/T 38144.2-2019）",
+    "quality": "high"
+  },
+  {
+    "id": "L0329",
+    "name": "眼面部防护 应急喷淋和洗眼设备GB/T 38144.1-2019",
+    "table": "laws",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/std/showGb?hcno=E0D0A051E9C2D7445EF348AC14155856&type=online",
+    "source_desc": "国家标准全文公开系统 标准全文页（GB/T 38144.1-2019）",
+    "quality": "high"
+  },
+  {
+    "id": "L0330",
+    "name": "人群聚集场所手卫生规范 卫生健康委 WS/T 699-2020",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/zhengceku/2020-07/22/5528831/files/4ae7aeed63014e398f6e07b037d13559.pdf",
+    "source_desc": "中国政府网政策库 PDF（WS/T 699-2020）",
+    "quality": "high"
+  },
+  {
+    "id": "L0331",
+    "name": "生产经营单位安全生产事故应急预案编制导则 GB/T 29639-2020",
+    "table": "laws",
+    "new_link": "http://www.rizhao.gov.cn/module/download/downfile.jsp?classid=0&filename=99afdd9aa5de44f4a6d00e044396ac04.pdf",
+    "source_desc": "标准PDF（GB/T 29639-2020 全文，地方政府站托管）",
+    "quality": "high"
+  },
+  {
+    "id": "L0332",
+    "name": "《职业健康监护技术规范》GBZ 188-2014",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/wjw/pyl/201111/53328/files/1739780183356_71807.pdf",
+    "source_desc": "国家卫生健康委官网 PDF（GBZ 188-2014）",
+    "quality": "high"
+  },
+  {
+    "id": "L0333",
+    "name": "关于调整职业健康领域安全生产行业标准归口事宜的通知 应急管理部 国家卫生健康委 应急〔2020〕25号",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202012/t20201207_374230.shtml",
+    "source_desc": "应急管理部官网 通知全文页（应急〔2020〕25号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0334",
+    "name": "企业安全生产标准化基本规范GB/T 33000-2016",
+    "table": "laws",
+    "new_link": "https://www.cqspb.gov.cn/bm/qyjglj/zwgk_64273/fdzdgknr_64275/qtfdxx/202311/W020231129430246981245.pdf",
+    "source_desc": "标准PDF（GB/T 33000-2016 全文，地方应急局站托管）",
+    "quality": "high"
+  },
+  {
+    "id": "L0335",
+    "name": "风险管理 原则与实施指南GB/T 24353-2009",
+    "table": "laws",
+    "new_link": "https://www.expcenter.chemeng.tsinghua.edu.cn/Standards/%E5%9B%BD%E5%86%85%E5%8C%96%E5%AD%A6%E5%93%81%E5%AE%89%E5%85%A8%E7%AE%A1%E7%90%86%E7%9B%B8%E5%85%B3%E6%B3%95%E8%A7%84%E6%A0%87%E5%87%86/%E6%A0%87%E5%87%86/GB%E6%A0%87%E5%87%86/GBT%2024353-2009%20%20%E9%A3%8E%E9%99%A9%E7%AE%A1%E7%90%86%20%E5%8E%9F%E5%88%99%E4%B8%8E%E5%AE%9E%E6%96%BD%E6%8C%87%E5%8D%97.pdf",
+    "source_desc": "清华大学化工系标准镜像 PDF（GB/T 24353-2009 全文，注：该标准已于2022年被GB/T 24353-2022替代废止）",
+    "quality": "high"
+  },
+  {
+    "id": "L0336",
+    "name": "静电防护管理通用要求GB/T39587-2020",
+    "table": "laws",
+    "new_link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2E4E1DA0A29904E6173C41013A677B89",
+    "source_desc": "国家标准全文公开系统 标准全文页（GB/T 39587-2020）",
+    "quality": "high"
+  },
+  {
+    "id": "L0337",
+    "name": "应急管理部关于印发危险化学品企业安全分类整治目录（2020年）的通知",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/tzgg/tz/202011/t20201103_371291.shtml",
+    "source_desc": "应急管理部官网 通知全文页（应急〔2020〕84号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0338",
+    "name": "国家职业病防治规划（2021-2025年）",
+    "table": "laws",
+    "new_link": "https://nirp.chinacdc.cn/fgbz/bmgz/202403/W020240307517480340064.pdf",
+    "source_desc": "中国疾控中心官网 PDF（国卫职健发〔2021〕39号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0339",
+    "name": "十四五”卫生健康标准化工作规划（2022年发布）",
+    "table": "laws",
+    "new_link": "https://www.nhc.gov.cn/bgt/c100244/202206/2eb5fa9b8869453e98c1183bf65938e8/files/1733795761985_78363.pdf",
+    "source_desc": "国家卫生健康委官网 PDF（国卫法规发〔2022〕2号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0340",
+    "name": "特种设备安全监督检查办法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2022/content_5699927.htm",
+    "source_desc": "国务院公报全文页（市场监管总局令第57号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0341",
+    "name": "特种设备事故报告和调查处理规定",
+    "table": "laws",
+    "new_link": "http://www.samr.gov.cn/cms_files/filemanager/samr/www/samrnew/samrgkml/nsjg/fgs/202201/W020220128543362061895.pdf",
+    "source_desc": "市场监管总局官网 PDF（市场监管总局令第50号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0342",
+    "name": "《危险化学品目录（2015版）实施指南（试行）》",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/gwgg/201509/t20150902_241417.shtml",
+    "source_desc": "应急管理部官网 通知全文页（安监总厅管三〔2015〕80号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0343",
+    "name": "应急管理部办公厅关于修改 《危险化学品目录（2015版）实施指南（试行）》涉及柴油部分内容的通知",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/tzgg/yjglbgg/202301/P020230131620131047016.pdf",
+    "source_desc": "应急管理部官网 PDF（应急厅函〔2022〕300号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0344",
+    "name": "生产经营单位粉尘爆炸风险等级评定（T/CAWS 0006-2022）",
+    "table": "laws",
+    "new_link": "https://www.ttbz.org.cn/upload/file/20221118/6380438471966909914414088.pdf",
+    "source_desc": "团体标准PDF（T/CAWS 0006-2022 全文，第三方标准平台托管）",
+    "quality": "high"
+  },
+  {
+    "id": "L0345",
+    "name": "特种设备使用单位落实使用安全主体责任监督管理规定（征求意见稿）（2022年发布）",
+    "table": "laws",
+    "new_link": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2023/art_df3582cb24ae497ba18d9667ecbb63b7.html",
+    "source_desc": "市场监管总局官网 正式发布版全文页（总局令第74号，2023年施行）",
+    "quality": "low",
+    "note": "条目为2022年征求意见稿；正式发布版本为市场监管总局令第74号（2023年5月施行），此处链接为其正式发布版全文，非原始征求意见稿文本。未检索到官方原始征求意见稿全文征集页。"
+  },
+  {
+    "id": "L0346",
+    "name": "安全生产事故隐患排查治理暂行规定",
+    "table": "laws",
+    "new_link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/gz11/200712/t20071228_405675.shtml",
+    "source_desc": "应急管理部官网 全文页（安监总局令第16号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0347",
+    "name": "易制毒化学品管理条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2005/content_91170.htm",
+    "source_desc": "国务院公报全文页（国务院令第445号）",
+    "quality": "high"
+  }
+]

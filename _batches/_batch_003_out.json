@@ -1,0 +1,284 @@
+[
+  {
+    "id": "L0107",
+    "name": "中华人民共和国数据安全法",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2021-06/11/c_1624994566919140.htm",
+    "source_desc": "国家网信办官网公布全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0108",
+    "name": "中华人民共和国电子商务法",
+    "table": "laws",
+    "new_link": "https://flk.npc.gov.cn/detail?fileId=&id=2c909fdd678bf17901678bf8af050b81&title=中华人民共和国电子商务法&type=",
+    "source_desc": "国家法律法规数据库全文页",
+    "quality": "high"
+  },
+  {
+    "id": "L0109",
+    "name": "关键信息基础设施安全保护条例",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/zhengceku/2021-08/17/content_5631671.htm",
+    "source_desc": "中国政府网（国令第745号）全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0111",
+    "name": "信息安全等级保护管理办法",
+    "table": "laws",
+    "new_link": "http://www.yiyang.gov.cn/czj/uploadfiles/201710/20171012150250868.pdf",
+    "source_desc": "公通字〔2007〕43号全文PDF（地方政府网站转载）",
+    "quality": "high",
+    "note": "官方未提供独立全文页，采用地方政府网站转载的PDF全文。"
+  },
+  {
+    "id": "L0112",
+    "name": "网络安全标识管理办法",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2026-04/10/c_1777558393316312.htm",
+    "source_desc": "国家网信办官网公布全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0115",
+    "name": "《生成式人工智能服务安全管理暂行办法》",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm",
+    "source_desc": "国家网信办官网公布全文（生成式人工智能服务管理暂行办法）",
+    "quality": "high",
+    "note": "源数据标题含“安全”二字，实际法规名为《生成式人工智能服务管理暂行办法》（网信办等七部门令 第15号），链接指向实际法规全文。"
+  },
+  {
+    "id": "L0116",
+    "name": "生成式人工智能服务安全管理暂行办法",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm",
+    "source_desc": "国家网信办官网公布全文",
+    "quality": "high",
+    "note": "实际法规名为《生成式人工智能服务管理暂行办法》（源标题多了“安全”二字）。"
+  },
+  {
+    "id": "L0117",
+    "name": "《小型个人信息处理者个人信息保护简化措施规定》",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2026-07/24/c_1786638889704872.htm",
+    "source_desc": "国家网信办官网公布全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0118",
+    "name": "《人工智能拟人化互动服务管理暂行办法》",
+    "table": "laws",
+    "new_link": "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm",
+    "source_desc": "国家网信办官网公布全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0119",
+    "name": "中华人民共和国宪法",
+    "table": "laws",
+    "new_link": "https://www.hunan.gov.cn/topic/weixingfufendou/lainghuidongtai/201803/t20180322_4977515.html",
+    "source_desc": "湖南省政府门户（新华社受权发布）2018修正版全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0120",
+    "name": "中华人民共和国反垄断法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/5098a04f5a264b2cbe3084ac3157a3a4.pdf",
+    "source_desc": "国家法律法规数据库PDF全文（2022修正）",
+    "quality": "high"
+  },
+  {
+    "id": "L0121",
+    "name": "中华人民共和国审计法",
+    "table": "laws",
+    "new_link": "https://www.audit.gov.cn/n6/n36/n10083637/c10191187/content.html",
+    "source_desc": "审计署官网全文（2021修正）",
+    "quality": "high"
+  },
+  {
+    "id": "L0122",
+    "name": "中华人民共和国企业所得税法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/2a4852c0632c4575af73e37f122a4cb9.pdf",
+    "source_desc": "国家法律法规数据库PDF全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0123",
+    "name": "中华人民共和国反不正当竞争法(2025修订)",
+    "table": "laws",
+    "new_link": "http://www.npc.gov.cn/c2/c30834/202506/t20250627_446247.html",
+    "source_desc": "全国人大网全文（2025修订）",
+    "quality": "high"
+  },
+  {
+    "id": "L0124",
+    "name": "中华人民共和国劳动争议调解仲裁法",
+    "table": "laws",
+    "new_link": "https://wb.flk.npc.gov.cn/flfg/PDF/5755a3c6fcd3491098cdee96ccdd1975.pdf",
+    "source_desc": "国家法律法规数据库PDF全文",
+    "quality": "high"
+  },
+  {
+    "id": "L0125",
+    "name": "中国强制检定的工作计量器具明细目录",
+    "table": "laws",
+    "new_link": "https://www.gd.gov.cn/zwgk/gongbao/1987/6/content/post_3354868.html",
+    "source_desc": "广东省政府公报（含办法及明细目录）全文",
+    "quality": "high",
+    "note": "该明细目录作为《强制检定的工作计量器具检定管理办法》附件发布，省政府公报页含办法及目录全文。"
+  },
+  {
+    "id": "L0126",
+    "name": "中华人民共和国强制检定的工作计量器具检定管理办法",
+    "table": "laws",
+    "new_link": "https://scjgj.cq.gov.cn/zz/ycq/zwgk/fdzdgknr_146781/lzyj_146821/fg_201647/xzfg/202012/t20201227_8702637.html",
+    "source_desc": "重庆市市场监管局官网全文（国发〔1987〕31号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0127",
+    "name": "质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015",
+    "table": "laws",
+    "new_link": "http://gd.cma.gov.cn/zqsqxj/zwgk_3106/202310/P020231007567825277825.pdf",
+    "source_desc": "广东省气象局门户全文PDF镜像（GB/T 19000-2016）",
+    "quality": "high"
+  },
+  {
+    "id": "L0128",
+    "name": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
+    "table": "laws",
+    "new_link": "http://ex2000.com.cn/product/standardmain-s-04-0.asp",
+    "source_desc": "第三方标准全文页（拆分HTML）",
+    "quality": "low",
+    "note": "国家标准官方渠道（全国标准信息公共服务平台/国家标准全文公开系统）未提供免费全文，仅第三方供应商提供拆分HTML全文；建议通过该平台查询购买正版。"
+  },
+  {
+    "id": "L0129",
+    "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+    "table": "laws",
+    "new_link": "http://www.gdzjsc.com/Public/stdPDF/GB!T%2019001-2016.pdf",
+    "source_desc": "湛江标准化信息服务网全文PDF镜像（GB/T 19001-2016）",
+    "quality": "high"
+  },
+  {
+    "id": "L0130",
+    "name": "管理体系审核指南 GB/T 19011-2021",
+    "table": "laws",
+    "new_link": "https://dghb.dg.gov.cn/attachment/0/146/146324/3929803.pdf",
+    "source_desc": "东莞市政府门户全文PDF镜像（GB/T 19011-2021）",
+    "quality": "high"
+  },
+  {
+    "id": "L0131",
+    "name": "中华人民共和国计量法实施细则（2022年修正）",
+    "table": "laws",
+    "new_link": "https://scjgj.cq.gov.cn/zfxxgk_225/fdzdgknr/lzyj/fgnew/xzfg/202012/W020220808532744947895.pdf",
+    "source_desc": "重庆市市场监管局官网PDF（2022年修订版）",
+    "quality": "high"
+  },
+  {
+    "id": "L0132",
+    "name": "国家市场监管总局第76号令《工业产品生产单位落实质量安全主体责任监督管理规定》",
+    "table": "laws",
+    "new_link": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2023/art_882e887d8ef24f67b9b039c16d8beb21.html",
+    "source_desc": "市场监管总局官网全文（工业产品销售单位落实质量安全主体责任监督管理规定，总局令第76号）",
+    "quality": "high",
+    "note": "源数据标“第76号令”且标题写“生产单位”，但第76号令实为《工业产品销售单位落实质量安全主体责任监督管理规定》；按令号对应，链接指向销售单位规定全文（生产单位版本为第75号令）。"
+  },
+  {
+    "id": "L0133",
+    "name": "国家市场监管总局第75号令《工业产品生产单位落实质量安全主体责任监督管理规定》",
+    "table": "laws",
+    "new_link": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2023/art_9ac02d43e5534005bc3d6532b3731429.html",
+    "source_desc": "市场监管总局官网全文（工业产品生产单位落实质量安全主体责任监督管理规定，总局令第75号）",
+    "quality": "high",
+    "note": "源数据标“第75号令”且标题写“生产单位”，第75号令即《工业产品生产单位落实质量安全主体责任监督管理规定》，与标题一致；链接指向其全文。"
+  },
+  {
+    "id": "L0134",
+    "name": "标准化工作导则 第一部分：标准化文件的结构和起草规则 （GB/T 1.1-2020）",
+    "table": "laws",
+    "new_link": "https://www.cmes.org/cmes/upload/2025/04-08/12-52-4301901324678582.pdf",
+    "source_desc": "中国机械工程学会门户全文PDF镜像（GB/T 1.1-2020）",
+    "quality": "high"
+  },
+  {
+    "id": "L0135",
+    "name": "中华人民共和国关税法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/yaowen/liebiao/202404/content_6947843.htm",
+    "source_desc": "中国政府网全文（2024年通过，主席令第23号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0136",
+    "name": "中华人民共和国消费者权益保护法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/ldhd/2013-10/25/content_2515324.htm",
+    "source_desc": "中国政府网全文（2013年修正版）",
+    "quality": "high"
+  },
+  {
+    "id": "L0137",
+    "name": "缺陷消费品召回管理规定",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/gongbao/content/2020/content_5480492.htm",
+    "source_desc": "中国政府网公报全文（消费品召回管理暂行规定，总局令第19号）",
+    "quality": "high",
+    "note": "正式法规名为《消费品召回管理暂行规定》（市场监管总局令第19号），源数据“缺陷消费品召回管理规定”为其俗称；链接指向正式规定全文。"
+  },
+  {
+    "id": "L0138",
+    "name": "强制性产品认证管理规定",
+    "table": "laws",
+    "new_link": "https://www.samr.gov.cn:3030/cms_files/filemanager/1647978232/attach/20233/9d4904b4e88c4dc1add282c485aae896.pdf",
+    "source_desc": "市场监管总局官网PDF全文（2022年修订版，总局令第61号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0139",
+    "name": "能源效率标识管理办法",
+    "table": "laws",
+    "new_link": "https://www.gov.cn/zhengce/2021-06/25/content_5723612.htm",
+    "source_desc": "中国政府网全文（2016年发改委、质检总局令第35号）",
+    "quality": "high"
+  },
+  {
+    "id": "L0140",
+    "name": "商品售后服务评价体系（GB/T 27922-2021）",
+    "table": "laws",
+    "new_link": "https://www.shatc.group/service/info?id=40",
+    "source_desc": "第三方标准/认证介绍页",
+    "quality": "low",
+    "note": "国家标准官方渠道未提供免费全文，仅获第三方介绍/认证说明页；建议通过全国标准信息公共服务平台查询购买正版。"
+  },
+  {
+    "id": "L0141",
+    "name": "企业知识产权管理规范（GB/T 29490-2013）",
+    "table": "laws",
+    "new_link": "https://www.cnipa.gov.cn/20180202160013559321.doc",
+    "source_desc": "国家知识产权局官网全文（DOC）",
+    "quality": "high"
+  },
+  {
+    "id": "L0142",
+    "name": "广东省标准化条例",
+    "table": "laws",
+    "new_link": "https://amr.gd.gov.cn/gkmlpt/content/3/3063/post_3063162.html",
+    "source_desc": "广东省市场监管局官网全文（2020年通过）",
+    "quality": "high"
+  },
+  {
+    "id": "L0143",
+    "name": "网络安全技术 信息系统灾难恢复规范（GB/T 20988-2025）",
+    "table": "laws",
+    "new_link": "https://www.mayiwenku.com/p-65338819.html",
+    "source_desc": "第三方标准全文转载页",
+    "quality": "low",
+    "note": "2025年新发布标准，官方免费全文暂不可得，提供第三方转载全文；建议通过全国标准信息公共服务平台查询购买正版。"
+  }
+]

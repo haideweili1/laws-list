@@ -1,0 +1,342 @@
+[
+  {
+    "id": "S0015",
+    "name": "GB/T 4706.13-2024 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.13-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0016",
+    "name": "GB/T 4706.22-2024 家用和类似用途电器的安全 驻立式电灶、灶台、烤箱及类似用途器具的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.22-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0017",
+    "name": "GB/T 4706.23-2024 家用和类似用途电器的安全 第2部分:室内加热器的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.23-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0018",
+    "name": "GB/T 4706.27-2024家用和类似用途电器的安全 第2部分：风扇的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.27-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0019",
+    "name": "GB/T 4706.60-2024 家用和类似用途电器的安全 衣物干燥机和毛巾架的特殊要求",
+    "table": "standards",
+    "docNumber": "GB/T4706.60-2024",
+    "dept": "国家标准化管理委员会",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0020",
+    "name": "EN 60335-1:2012 + A11:2014 + A13:2017 + A1:2019 + A14:2019 + A2:2019 + A15:2021+A16：2023 General requirements",
+    "table": "standards",
+    "docNumber": "EN60335-1",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0021",
+    "name": "EN 60335-2-6: 2003+A13: 2013+2015+A1：2019",
+    "table": "standards",
+    "docNumber": "EN60335-2-6",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0022",
+    "name": "EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019",
+    "table": "standards",
+    "docNumber": "EN60335-2-7",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0023",
+    "name": "EN 60335-2-9:2003 +A13: 2010 +AC: 2012+A11:2023",
+    "table": "standards",
+    "docNumber": "EN60335-2-9",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0024",
+    "name": "EN 60335-2-11:2010+A1:2015+A12019+2020",
+    "table": "standards",
+    "docNumber": "EN60335-2-11",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0025",
+    "name": "EN 60335-2-14:2006+A11:2012/AC:2013+A12-2017+A2：2019",
+    "table": "standards",
+    "docNumber": "EN60335-2-14",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0026",
+    "name": "EN 60335-2-15:2002+ A11: 2012/AC:2013:2016+A11：2018",
+    "table": "standards",
+    "docNumber": "EN60335-2-15",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0027",
+    "name": "EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers",
+    "table": "standards",
+    "docNumber": "EN60335-2-24",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0028",
+    "name": "EN 60335-2-25:2012+A1:2015+A2:2016+:2021",
+    "table": "standards",
+    "docNumber": "EN60335-2-25",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0029",
+    "name": "EN 60335-2-35: 2002+ A1: 2007+A2:2011+2020",
+    "table": "standards",
+    "docNumber": "EN60335-2-35",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0030",
+    "name": "IEC 60335-2-36 家用和类似用途电器.安全.第2-36部分:商用电烹调炉灶、烘箱、炉架及炉架元件的特殊要求",
+    "table": "standards",
+    "docNumber": "IEC60335-2-36",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0031",
+    "name": "EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission",
+    "table": "standards",
+    "docNumber": "IEC55014-1",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0032",
+    "name": "EN61000-3-3:2013+A1:2019+A2:2021 电压波动和闪烁的限制",
+    "table": "standards",
+    "docNumber": "EN61000-3-3",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0033",
+    "name": "EC 765/2008指令",
+    "table": "standards",
+    "docNumber": "EC765",
+    "dept": "国际标准化组织(ISO)",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0035",
+    "name": "FDA CPG 7117.06(2005)(陶瓷制品、玻璃)",
+    "table": "standards",
+    "docNumber": "CPG7117.06",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0036",
+    "name": "FDA CPG 7117.07(2005)(陶瓷制品、玻璃)",
+    "table": "standards",
+    "docNumber": "CPG7117.07",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0037",
+    "name": "F.D.A.C.F.R.21.Part177.1210 （食品容器用密封圈）",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0038",
+    "name": "F.D.A.C.F.R.21.Part177.1520 （烯烃聚合物）",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0039",
+    "name": "U.S.F.D.A.C.F.R.21.Part177.2470 （聚甲醛共聚物/POM）",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0040",
+    "name": "F.D.A.C.F.R.21.Part177.2600 （橡胶制品）",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0041",
+    "name": "F.D.A.C.F.R.21.Part180.22&181.32 （ABS要求）",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0042",
+    "name": "F.D.A.C.F.R.21.Part177.1500 （尼龙塑料）",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0043",
+    "name": "U.S. F.D.A. 21 CFR Part 177.1580（聚碳酸酯树脂)",
+    "table": "standards",
+    "docNumber": "A.21",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0044",
+    "name": "U.S. F.D.A. Part 21 CFR 175.300 (树脂和聚合物涂层)",
+    "table": "standards",
+    "docNumber": "Part21",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0045",
+    "name": "F.D.A.C.F.R.21.Part177.1630 (聚邻苯二甲酸酯聚合物)",
+    "table": "standards",
+    "docNumber": "R.21.",
+    "dept": "美国食品药品监督管理局",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0046",
+    "name": "法规1935/2004/EC关于与食品接触的材料或制品",
+    "table": "standards",
+    "docNumber": "",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0047",
+    "name": "(EU) 2024/3190 of 19 December 2024 BPA及其盐类 （粘胶剂、橡胶、离子交换树脂、塑料、印刷油墨、有机硅、清漆和涂层）",
+    "table": "standards",
+    "docNumber": "of19",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0048",
+    "name": "欧盟与食物接触不粘涂层卫生要求AP2004-1",
+    "table": "standards",
+    "docNumber": "AP2004-1",
+    "dept": "欧盟",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  },
+  {
+    "id": "S0049",
+    "name": "法国法令No.2007-766关于与食品接触的材料或制品",
+    "table": "standards",
+    "docNumber": "No.2007-766",
+    "dept": "法国",
+    "region": "",
+    "status": "现行有效",
+    "category": ""
+  }
+]
