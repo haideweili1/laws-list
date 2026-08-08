@@ -7133,12 +7133,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2017-04-19",
-      "status": "现行有效",
+      "status": "废止",
       "link": "https://sppt.cfsa.net.cn:8086/staticPages/1409187C-E004-46F7-9A54-9495424C57F7.html",
       "region": "",
       "id": "S0059",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2024-09-06"
     },
     {
       "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2023",
@@ -7172,12 +7172,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2016-09-22",
-      "status": "现行有效",
+      "status": "废止",
       "link": "https://sppt.cfsa.net.cn:8086/staticPages/5B8A32BF-89D1-4B02-971D-B92F43735443.html",
       "region": "",
       "id": "S0062",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2024-09-06"
     },
     {
       "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2023",
@@ -7198,12 +7198,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2017-04-19",
-      "status": "现行有效",
+      "status": "废止",
       "link": "https://sppt.cfsa.net.cn:8086/staticPages/C1754715-C967-469A-A2C4-384256810876.html",
       "region": "",
       "id": "S0064",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2024-09-06"
     },
     {
       "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2023",
@@ -7263,7 +7263,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2027-08-01",
-      "status": "现行有效",
+      "status": "即将实施",
       "link": "https://std.samr.gov.cn/gb/search/gbDetailed?id=3B49408EC36C0811E06397BE0A0A2D54",
       "region": "",
       "id": "S0069",
