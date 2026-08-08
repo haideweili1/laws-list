@@ -7466,16 +7466,16 @@
       "abolishDate": ""
     },
     {
-      "name": "GB 19606 家用和类似用途电器噪声限值",
-      "stdNo": "GB19606",
+      "name": "GB 19606-2004 家用和类似用途电器噪声限值",
+      "stdNo": "GB 19606-2004",
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
-      "effectiveDate": "2026-09-01",
+      "effectiveDate": "2005-08-01",
       "status": "现行有效",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7F4223722F84EFC3421AE7E2B6E074C",
       "region": "",
       "id": "S0086",
-      "remark": "",
+      "remark": "即将被 GB/T 19606-2024 替代（新标准实施日期 2026-09-01）",
       "abolishDate": ""
     },
     {
@@ -7583,17 +7583,17 @@
       "abolishDate": ""
     },
     {
-      "name": "GB/T 4288      家用和类似用途电动洗衣机",
-      "stdNo": "GB/T4288",
+      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
+      "stdNo": "GB/T 4288-2018",
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2018-10-01",
-      "status": "现行有效",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A6DD817E54CC5A9C5D231F1480876CAD",
+      "status": "废止",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
       "region": "",
       "id": "S0095",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2026-05-01"
     },
     {
       "name": "GB /T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
@@ -7830,8 +7830,8 @@
       "abolishDate": ""
     },
     {
-      "name": "GB 12021.4  电动洗衣机能效水效限定值及等级",
-      "stdNo": "GB12021.4",
+      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
+      "stdNo": "GB 12021.4-2013",
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2013-10-01",
@@ -7839,7 +7839,7 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
       "region": "",
       "id": "S0114",
-      "remark": "",
+      "remark": "即将被 GB 12021.4-2026 替代（新标准实施日期 2027-04-01）",
       "abolishDate": ""
     },
     {
@@ -8320,6 +8320,71 @@
       "link": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0826",
       "region": "",
       "id": "S0151",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
+      "name": "GB/T 22939.1-2025 家用和类似用途电器包装 第1部分：通用要求",
+      "stdNo": "GB/T 22939.1-2025",
+      "stdType": "国家标准",
+      "publisher": "国家标准化管理委员会",
+      "effectiveDate": "2025-11-01",
+      "status": "现行有效",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1A9CB0EB86F26BB6BDA2B7B57275CFE9",
+      "region": "",
+      "id": "S0152",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
+      "name": "GB 21456-2024 家用和类似用途厨房电器能效限定值及能效等级",
+      "stdNo": "GB 21456-2024",
+      "stdType": "国家标准",
+      "publisher": "国家标准化管理委员会",
+      "effectiveDate": "2025-09-01",
+      "status": "现行有效",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F966E2FC4C7AB718356847B0DB1045E4",
+      "region": "",
+      "id": "S0153",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
+      "name": "GB/T 19606-2024 家用和类似用途电器噪声限值",
+      "stdNo": "GB/T 19606-2024",
+      "stdType": "国家标准",
+      "publisher": "国家标准化管理委员会",
+      "effectiveDate": "2026-09-01",
+      "status": "即将实施",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=9E694A86CF9AB7D112069910B37DD217",
+      "region": "",
+      "id": "S0154",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
+      "name": "GB/T 4288-2025 家用和类似用途电动洗衣机",
+      "stdNo": "GB/T 4288-2025",
+      "stdType": "国家标准",
+      "publisher": "国家标准化管理委员会",
+      "effectiveDate": "2026-05-01",
+      "status": "现行有效",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A6DD817E54CC5A9C5D231F1480876CAD",
+      "region": "",
+      "id": "S0155",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
+      "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
+      "stdNo": "GB 12021.4-2026",
+      "stdType": "国家标准",
+      "publisher": "国家标准化管理委员会",
+      "effectiveDate": "2027-04-01",
+      "status": "即将实施",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4804719D7D206D7538788BE44F54DC64",
+      "region": "",
+      "id": "S0156",
       "remark": "",
       "abolishDate": ""
     }
