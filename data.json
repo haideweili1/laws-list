@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-05",
+  "lastUpdated": "2026-08-08",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -37,7 +37,7 @@
       "name": "中华人民共和国标准化法",
       "docNumber": "",
       "dept": "国家市场监督管理总局",
-      "effectiveDate": "2024-01-20",
+      "effectiveDate": "2018-01-01",
       "status": "现行有效",
       "domains": [
         "质量"
@@ -69,7 +69,7 @@
       "name": "中华人民共和国认证认可条例",
       "docNumber": "",
       "dept": "国务院",
-      "effectiveDate": "2023-08-21",
+      "effectiveDate": "2023-07-20",
       "status": "现行有效",
       "domains": [
         "质量"
@@ -133,7 +133,7 @@
       "name": "中华人民共和国环境保护法",
       "docNumber": "",
       "dept": "生态环境部",
-      "effectiveDate": "2024-01-01",
+      "effectiveDate": "2015-01-01",
       "status": "现行有效",
       "domains": [
         "环境"
@@ -296,7 +296,7 @@
       "name": "中华人民共和国循环经济促进法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2009-01-01",
+      "effectiveDate": "2018-10-26",
       "status": "现行有效",
       "domains": [
         "质量"
@@ -393,7 +393,7 @@
       "name": "工伤保险条例",
       "docNumber": "",
       "dept": "国务院",
-      "effectiveDate": "2011-01-01",
+      "effectiveDate": "2019-03-02",
       "status": "现行有效",
       "domains": [
         "职业健康安全"
@@ -458,7 +458,7 @@
       "name": "中华人民共和国特种设备安全法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2024-01-01",
+      "effectiveDate": "2014-01-01",
       "status": "现行有效",
       "domains": [
         "质量"
@@ -622,7 +622,7 @@
       "name": "中华人民共和国工会法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2021-12-24",
+      "effectiveDate": "2022-01-01",
       "status": "现行有效",
       "domains": [
         "社会责任",
@@ -1603,22 +1603,6 @@
       "abolishDate": ""
     },
     {
-      "name": "《信息安全技术-信息安全管理体系要求》GB/T 22080-2025",
-      "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "2025-03-01",
-      "status": "现行有效",
-      "domains": [
-        "信息安全"
-      ],
-      "category": "信息安全",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB6A3B6F5E8D4E3B6A3B6F5E8D4E3B6",
-      "region": "",
-      "id": "L0100",
-      "remark": "",
-      "abolishDate": ""
-    },
-    {
       "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
       "docNumber": "",
       "dept": "国家市场监督管理总局",
@@ -1679,22 +1663,6 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3F4",
       "region": "",
       "id": "L0104",
-      "remark": "",
-      "abolishDate": ""
-    },
-    {
-      "name": "《网络安全技术信息系统灾难恢复规范》GB/T 20988-2025",
-      "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "2025-01-01",
-      "status": "现行有效",
-      "domains": [
-        "信息安全"
-      ],
-      "category": "信息安全",
-      "link": "https://std.sacinfo.org.cn/gnoc/queryItemInfoPlat?projectId=1016386",
-      "region": "",
-      "id": "L0105",
       "remark": "",
       "abolishDate": ""
     },
@@ -2855,7 +2823,7 @@
       "name": "REACH法规",
       "docNumber": "",
       "dept": "英国",
-      "effectiveDate": "2025-06-25",
+      "effectiveDate": "2007-06-01",
       "status": "现行有效",
       "domains": [
         "环境"
@@ -2871,7 +2839,7 @@
       "name": "RoHS指令2011/65/EU",
       "docNumber": "",
       "dept": "欧盟",
-      "effectiveDate": "2017-07-22",
+      "effectiveDate": "2011-07-21",
       "status": "现行有效",
       "domains": [
         "环境"
@@ -4839,7 +4807,7 @@
       "name": "中华人民共和国食品安全法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2021-04-29",
+      "effectiveDate": "2025-12-01",
       "status": "现行有效",
       "domains": [
         "职业健康安全"
@@ -5415,7 +5383,7 @@
       "name": "《危险化学品目录（2015版）实施指南（试行）》",
       "docNumber": "",
       "dept": "应急管理部",
-      "effectiveDate": "2015-05-01",
+      "effectiveDate": "2015-08-19",
       "status": "现行有效",
       "domains": [
         "环境"
@@ -6272,22 +6240,6 @@
       "link": "https://www.gdpcc.com/index.php/Index/article?column_id=98&id=4530",
       "region": "",
       "id": "L0396",
-      "remark": "",
-      "abolishDate": ""
-    },
-    {
-      "name": "《工业炉窖大气污染物排放标准》 GB9078-1996",
-      "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "1997-01-01",
-      "status": "现行有效",
-      "domains": [
-        "环境"
-      ],
-      "category": "环境与职业健康",
-      "link": "https://sthjt.qinghai.gov.cn/xwzx/gsgg/202603/P020260319607545426758.pdf",
-      "region": "",
-      "id": "L0397",
       "remark": "",
       "abolishDate": ""
     },
@@ -8029,7 +7981,7 @@
       "stdNo": "UL60335-1",
       "stdType": "国际标准",
       "publisher": "国际标准化组织(ISO)",
-      "effectiveDate": "2022-06-10",
+      "effectiveDate": "2020-09-02",
       "status": "现行有效",
       "link": "https://shopulstandards.com/ProductDetail.aspx?UniqueKey=29277",
       "region": "",
