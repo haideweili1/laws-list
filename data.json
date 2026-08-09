@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-08",
+  "lastUpdated": "2026-08-09",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -1396,8 +1396,8 @@
     {
       "name": "《信息安全技术个人信息安全规范》GB/T 35273-2020",
       "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "2020-03-06",
+      "dept": "国家标准化管理委员会",
+      "effectiveDate": "2020-10-01",
       "status": "现行有效",
       "domains": [
         "信息安全"
@@ -1407,7 +1407,8 @@
       "region": "",
       "id": "L0087",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "adopted": false
     },
     {
       "name": "物业管理条例",
@@ -1605,7 +1606,7 @@
     {
       "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
       "docNumber": "",
-      "dept": "国家市场监督管理总局",
+      "dept": "国家标准化管理委员会",
       "effectiveDate": "2022-11-01",
       "status": "现行有效",
       "domains": [
@@ -1616,14 +1617,15 @@
       "region": "",
       "id": "L0101",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "adopted": false
     },
     {
       "name": "《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024",
       "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "2025-04-01",
-      "status": "现行有效",
+      "dept": "国家标准化管理委员会",
+      "effectiveDate": "2024-06-01",
+      "status": "即将实施",
       "domains": [
         "信息安全"
       ],
@@ -1631,14 +1633,16 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1D2",
       "region": "",
       "id": "L0102",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统仅提供在线阅读服务。",
+      "abolishDate": "",
+      "copyrightNote": "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统仅提供在线阅读服务。",
+      "adopted": true
     },
     {
       "name": "《信息技术安全技术信息安全事件管理 第1部分：事件管理原理》GB/T 20985-2017",
       "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "2018-07-01",
+      "dept": "国家标准化管理委员会",
+      "effectiveDate": "2017-11-01",
       "status": "现行有效",
       "domains": [
         "信息安全"
@@ -1648,13 +1652,14 @@
       "region": "",
       "id": "L0103",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "adopted": false
     },
     {
       "name": "《信息安全技术网络安全事件分类分级指南》GB/T 20986-2023",
       "docNumber": "",
-      "dept": "国家市场监督管理总局",
-      "effectiveDate": "2023-12-01",
+      "dept": "国家标准化管理委员会",
+      "effectiveDate": "2023-11-01",
       "status": "现行有效",
       "domains": [
         "信息安全"
@@ -1664,7 +1669,8 @@
       "region": "",
       "id": "L0104",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "adopted": false
     },
     {
       "name": "《中华人民共和国密码法》",
@@ -1729,14 +1735,15 @@
       "region": "",
       "id": "L0109",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "adopted": false
     },
     {
       "name": "网络数据安全管理条例",
       "docNumber": "",
       "dept": "国务院",
-      "effectiveDate": "2025-01-01",
-      "status": "现行有效",
+      "effectiveDate": "2024-09-01",
+      "status": "即将实施",
       "domains": [
         "信息安全"
       ],
@@ -1745,7 +1752,8 @@
       "region": "",
       "id": "L0110",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "adopted": false
     },
     {
       "name": "信息安全等级保护管理办法",
@@ -6322,6 +6330,60 @@
       "id": "L0402",
       "remark": "",
       "abolishDate": ""
+    },
+    {
+      "name": "粉尘爆炸泄压规范",
+      "docNumber": "",
+      "dept": "国家标准化管理委员会",
+      "effectiveDate": "2024-07-01",
+      "status": "现行有效",
+      "domains": [
+        "产品安全"
+      ],
+      "category": "环境与职业健康",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/GB15605-2024",
+      "region": "全国",
+      "id": "1",
+      "remark": "2024年发布的新标准，针对粉尘爆炸泄压的技术规范。",
+      "abolishDate": "",
+      "adopted": false,
+      "copyrightNote": ""
+    },
+    {
+      "name": "工贸企业有限空间作业安全规定",
+      "docNumber": "应急管理部令第13号",
+      "dept": "应急管理部",
+      "effectiveDate": "2024-03-01",
+      "status": "现行有效",
+      "domains": [
+        "职业健康"
+      ],
+      "category": "环境与职业健康",
+      "link": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240118_459542.shtml",
+      "region": "全国",
+      "id": "2",
+      "remark": "规范工贸企业有限空间作业的安全管理规定。",
+      "abolishDate": "",
+      "adopted": false,
+      "copyrightNote": ""
+    },
+    {
+      "name": "突发事件应急预案管理办法",
+      "docNumber": "国办发〔2024〕5号",
+      "dept": "国务院办公厅",
+      "effectiveDate": "2024-03-01",
+      "status": "现行有效",
+      "domains": [
+        "社会责任"
+      ],
+      "category": "环境与职业健康",
+      "link": "http://www.gov.cn/zhengce/content/2024-01/18/content_6944374.htm",
+      "region": "全国",
+      "id": "3",
+      "remark": "规范突发事件应急预案管理的办法。",
+      "abolishDate": "",
+      "adopted": false,
+      "copyrightNote": ""
     }
   ],
   "standards": [
@@ -7085,7 +7147,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2017-04-19",
-      "status": "废止",
+      "status": "已废止",
       "link": "https://sppt.cfsa.net.cn:8086/staticPages/1409187C-E004-46F7-9A54-9495424C57F7.html",
       "region": "",
       "id": "S0059",
@@ -7124,7 +7186,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2016-09-22",
-      "status": "废止",
+      "status": "已废止",
       "link": "https://sppt.cfsa.net.cn:8086/staticPages/5B8A32BF-89D1-4B02-971D-B92F43735443.html",
       "region": "",
       "id": "S0062",
@@ -7150,7 +7212,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2017-04-19",
-      "status": "废止",
+      "status": "已废止",
       "link": "https://sppt.cfsa.net.cn:8086/staticPages/C1754715-C967-469A-A2C4-384256810876.html",
       "region": "",
       "id": "S0064",
@@ -7540,7 +7602,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2018-10-01",
-      "status": "废止",
+      "status": "已废止",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
       "region": "",
       "id": "S0095",
@@ -7683,7 +7745,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2009-05-01",
-      "status": "废止",
+      "status": "已废止",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E22434C73AF364800DFDA8CCCDC09BA",
       "region": "",
       "id": "S0106",
@@ -8034,7 +8096,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2018-06-01",
-      "status": "废止",
+      "status": "已废止",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
       "region": "",
       "id": "S0133",

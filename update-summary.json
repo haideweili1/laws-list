@@ -1,29 +1,108 @@
 {
-  "updatedAt": "2026-08-03",
+  "updatedAt": "2026-08-09",
   "hasUpdates": true,
   "counts": {
-    "added": 0,
+    "added": 3,
     "abolished": 0,
-    "updated": 3
+    "updated": 7,
+    "statusSwitched": 6
   },
   "changes": [
     {
-      "type": "update",
-      "name": "中华人民共和国特种设备安全法",
-      "category": "三体系 (ISO 9001/14001/45001)",
-      "detail": "更新：实施时间、来源链接、来源网站"
+      "type": "add",
+      "name": "粉尘爆炸泄压规范",
+      "category": "环境与职业健康/产品安全/社会责任/地方法规",
+      "detail": "新增标准，属于产品安全领域"
+    },
+    {
+      "type": "add",
+      "name": "工贸企业有限空间作业安全规定",
+      "category": "环境与职业健康/产品安全/社会责任/地方法规",
+      "detail": "新增法规，属于职业健康领域"
+    },
+    {
+      "type": "add",
+      "name": "突发事件应急预案管理办法",
+      "category": "环境与职业健康/产品安全/社会责任/地方法规",
+      "detail": "新增法规，属于社会责任领域"
     },
     {
       "type": "update",
-      "name": "中华人民共和国安全生产法",
-      "category": "三体系 (ISO 9001/14001/45001)",
-      "detail": "更新：实施时间、来源链接、来源网站"
+      "name": "关键信息基础设施安全保护条例",
+      "category": "信息安全",
+      "detail": "更新：采标标记"
     },
     {
       "type": "update",
-      "name": "中华人民共和国妇女权益保障法",
-      "category": "社会责任",
-      "detail": "更新：实施时间、来源链接、来源网站"
+      "name": "网络数据安全管理条例",
+      "category": "信息安全",
+      "detail": "更新：实施时间、状态、采标标记"
+    },
+    {
+      "type": "update",
+      "name": "《信息安全技术个人信息安全规范》GB/T 35273-2020",
+      "category": "信息安全",
+      "detail": "更新：实施时间、发布部门、采标标记"
+    },
+    {
+      "type": "update",
+      "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "category": "信息安全",
+      "detail": "更新：发布部门、采标标记"
+    },
+    {
+      "type": "update",
+      "name": "《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024",
+      "category": "信息安全",
+      "detail": "更新：实施时间、状态、发布部门、采标备注"
+    },
+    {
+      "type": "update",
+      "name": "《信息技术安全技术信息安全事件管理 第1部分：事件管理原理》GB/T 20985-2017",
+      "category": "信息安全",
+      "detail": "更新：实施时间、发布部门、采标标记"
+    },
+    {
+      "type": "update",
+      "name": "《信息安全技术网络安全事件分类分级指南》GB/T 20986-2023",
+      "category": "信息安全",
+      "detail": "更新：实施时间、发布部门、采标标记"
+    },
+    {
+      "type": "status_switch",
+      "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2016",
+      "category": "标准",
+      "detail": "状态：废止 → 已废止"
+    },
+    {
+      "type": "status_switch",
+      "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2015",
+      "category": "标准",
+      "detail": "状态：废止 → 已废止"
+    },
+    {
+      "type": "status_switch",
+      "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2016",
+      "category": "标准",
+      "detail": "状态：废止 → 已废止"
+    },
+    {
+      "type": "status_switch",
+      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
+      "category": "标准",
+      "detail": "状态：废止 → 已废止"
+    },
+    {
+      "type": "status_switch",
+      "name": "GB/T 1019  家用和类似用途电器包装通则",
+      "category": "标准",
+      "detail": "状态：废止 → 已废止"
+    },
+    {
+      "type": "status_switch",
+      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
+      "category": "标准",
+      "detail": "状态：废止 → 已废止"
     }
   ]
 }
