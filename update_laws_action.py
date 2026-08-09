@@ -4,27 +4,24 @@
 法律法规 / 产品标准 清单自动更新脚本（在 GitHub Actions 环境中运行）
 ============================================================
 - 使用 智谱 GLM（国内可访问、有免费额度）自带的 web_search 联网检索能力
-- 检索最近两周中国新发布 / 修订 / 废止的法律法规与产品标准（GB/T、行业标准、ISO 等）
-- 更新同目录下的 data.json（laws + standards 双表）并交回 GitHub Actions 提交
-- 内置【通用状态自动切换机制】（长期主义核心）：
-    * 状态为「即将实施」且实施日期已到  -> 自动转为「现行有效」
-    * 设有「废止日期」且已到              -> 自动转为「已废止」
-  因此如《生态环境法典》2026-08-15 施行、相关 8 部环境法同日废止，
-  无需单独定时任务，每周/手动检索到该日期后自动切换。
-- 写出 update-summary.json（本次更新说明）与 retrieval-status.json（前端状态轮询用）
+- 检索最近中国新发布 / 修订 / 废止的法律法规与产品标准（GB/T、行业标准、ISO 等）
+- 默认 DRAFT_MODE=True：只产出「提案」(proposed-changes.json + proposed-data.json)，
+  **绝不改动 data.json**；需用户在网页端逐条确认后，由 SCF /apply-proposed 写入。
+  待提示词质量稳定可靠后，将 DRAFT_MODE 改为 False（或环境变量 DRAFT_MODE=false）
+  即可恢复全自动直写 data.json。
+- 写出 retrieval-status.json（前端状态轮询用）：draft_ready（草稿待确认）/ success（直更成功）。
 
-依赖的环境变量：
+依赖环境变量：
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
   MODEL            (可选)  模型名，默认 glm-4-air（支持 web_search 的模型）
-
-设计说明：
-  - 任何异常都不会中断工作流，确保 GitHub Pages 始终可用。
-  - 链接保护：仅当现有链接缺失/是首页时才用 AI 给的链接，且新链需探活；否则信任现有深链。
+  DRAFT_MODE       (可选)  true(默认)=只出提案不动数据；false=直写 data.json
 """
+
 import os
 import json
 import re
 import sys
+import copy
 import subprocess
 import traceback
 import urllib.request
@@ -43,6 +40,11 @@ DATA_PATH = os.path.join(ROOT, "data.json")
 USER_EDITS_PATH = os.path.join(ROOT, "user-edits.json")
 SUMMARY_PATH = os.path.join(ROOT, "update-summary.json")
 RETRIEVAL_STATUS_PATH = os.path.join(ROOT, "retrieval-status.json")
+PROPOSED_CHANGES_PATH = os.path.join(ROOT, "proposed-changes.json")
+PROPOSED_DATA_PATH = os.path.join(ROOT, "proposed-data.json")
+
+# ===== 闸门：默认草稿模式（只出提案，不动数据）=====
+DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
 
 # ===== 链接校验与回退（仅对新增/变更的少量链接触发，低资源） =====
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -60,8 +62,7 @@ def is_homepage(url):
 
 
 def link_alive(url, timeout=8):
-    """跟随重定向探测链接是否可访问且未跳回首页。404 视为死；
-    其他 HTTP 错误（如 403 反爬）保守视为活着，避免误删好链接。"""
+    """跟随重定向探测链接是否可访问且未跳回首页。"""
     url = (url or "").strip()
     if not url:
         return False
@@ -119,7 +120,6 @@ def build_fallback_url(source, name):
     return "https://www.baidu.com/s?wd=" + urllib.parse.quote(name + " 正文")
 
 
-# ===== 通用状态自动切换机制（长期主义核心）=====
 def _ymd(s):
     """把各种写法转成 YYYY-MM-DD，无法解析返回 None。"""
     s = (s or "").strip()
@@ -139,28 +139,6 @@ def _ymd(s):
     return None
 
 
-def apply_status_rules(laws, standards, today):
-    """对全部记录执行通用状态切换，返回切换清单（供更新说明展示）。"""
-    switched = []
-    for table, items in (("法规", laws), ("标准", standards)):
-        for it in items:
-            old = it.get("status", "")
-            new = old
-            # 即将实施 -> 现行有效（实施日期已到）
-            eff = _ymd(it.get("effectiveDate"))
-            if old == "即将实施" and eff and eff <= today:
-                new = "现行有效"
-            # 有废止日期且已到 -> 已废止
-            ad = _ymd(it.get("abolishDate"))
-            if ad and ad <= today and old != "已废止":
-                new = "已废止"
-            if new != old:
-                it["status"] = new
-                switched.append({"table": table, "name": it.get("name", ""),
-                                 "from": old, "to": new})
-    return switched
-
-
 def norm_status(s):
     s = (s or "").strip()
     return {"在用": "现行有效", "废止": "已废止",
@@ -169,7 +147,6 @@ def norm_status(s):
 
 
 # ===== 检索领域（喂给模型做定向检索）=====
-# 注意：key 必须与 data.json 中 laws 的 category 实际取值一致，否则范围过滤会失效。
 DOMAINS = {
     "环境与职业健康": (
         "环境 / 职业健康安全 / 产品安全 / 社会责任 / 地方法规相关："
@@ -207,60 +184,65 @@ STANDARDS_TEXT = (
 )
 
 CATEGORY_NAMES = {
-    "环境与职业健康": "环境与职业健康/产品安全/社会责任/地方法规",
-    "质量": "质量/标准化/认证认可",
+    "环境与职业健康": "环境与职业健康",
+    "质量": "质量",
     "信息安全": "信息安全",
-    "反恐": "反恐/供应链安全/进出口",
+    "反恐": "反恐",
     "standards": "产品标准",
 }
 
-# ===== 通用硬性要求（所有检索共享，必须对 GLM 写死）=====
-COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格遵守）
+# ===== 通用硬性要求（高要求写死进 GLM 提示词）=====
+COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格遵守，违反任一条都算不合格）
 
-【状态与废止维护】
-- 绝不臆断"旧版都被新版代替"。是否废止/被代替，必须查官方公告或复审结论；老标准（2003/2008/2009 版等）≠废止。
-- 废止日期以官方文件实际写明的内容为准，不自行推断。
-- 判定为废止必须三处齐改：status="废止" + abolishDate（按官方文件）+ remark「废止标准不提供标准文本阅读服务。」—— 三者缺一不可。
-- status 只能取：现行有效 / 即将实施 / 已废止。不许新造状态值。"即将被替代"的旧版仍标"现行有效"，在 remark 写"即将被 XX 替代（新标准实施日期 YYYY-MM-DD）"。
-- 遇反爬站（如 cfsa.net.cn 食安国标）无法直接抓取时，用 web_search 搜索引擎代替核实状态与替代关系。
+【一、去重：严禁新增已有条目】
+- 你拿到的"当前清单已有条目"列表是权威去重基准。任何候选新增项，若其名称与列表中某条相同，或高度相似（互为包含/被包含、仅差"管理""办法""条例""规定"等少量字），一律不得新增，视为已存在。
+- 若你判断某已有条目需要更新（修订/废止/新版替代/日期变更），请用 action="update" 或 "abolish"，不要另起一条 add。
 
-【采标标准备注（仅事件触发）】
-- 采用国际标准（ISO/IEC 等）的标准，remark 的版权说明必须原样照抄官网那句话，绝不改写、绝不概括。
-- 两种官方口径须逐条核对官网，不猜：
-   · "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统暂不提供在线阅读服务。"
-   · "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统仅提供在线阅读服务。"
-- 仅当本轮新增或变更的标准是采标标准时，才做此核对与备注；不做全量扫描。
+【二、链接：必须是能直接看全文的官方文档页】
+- 只接受直接展示"标题 + 完整条文/全文"的官方页面。优先级：人大网(npc.gov.cn)、中国政府网(gov.cn)、各部委官网、标准官方平台(openstd.samr.gov.cn / std.samr.gov.cn)。
+- 严禁：搜索引擎结果页、列表页、栏目首页、新闻稿/媒体报道页（除非该新闻稿本身就是官方发布的全文页）。
+- 链接必须以官方域名开头，且打开后能直接看到正文；给不出合格链接就填 ""（空字符串），并在 remark 注明"官方链接待补"，绝不用非正文链接充数。
 
-【链接要求】
-- 国家级法规 link 必须用国家级官网（npc.gov.cn / gov.cn / 各部委官网），不用第三方网站。
-- 地区性法规（广东/中山）保留地方站链接。
-- 国内国标/推标用 openstd.samr.gov.cn 官方 hcno 直链；行业标准用 std.samr.gov.cn。
-- 食安国标（GB 4806.x / GB 31604.x）官方在 cfsa.net.cn，但反爬无法自动抓 UUID。处理：link 填官方站点首页或已知信息，并在 remark 标注「【官方链接待替换】cfsa.net.cn官方直链待用户手动补充」，不要填第三方全文 PDF 冒充官方。
-- 严禁返回搜索结果页/列表页/栏目首页/新闻稿页（除非该新闻稿即正文发布页）。打开后应能直接看到「标题 + 完整条文/全文」。
+【三、日期：必须来自官方文件原文，禁止编造】
+- effectiveDate（实施日期）与 abolishDate（废止日期）必须取自官方文件明确写明的日期。
+- 查不到确切日期就填 ""（空字符串），绝对不要凭记忆猜测或填错日期。
 
-【检索与更新动作】
-- action 取值：
-   · add：清单里没有、且命中范围 → 新增（遵循上述状态/采标/链接规则）
-   · update：清单里已有条目有修订/废止/新版替代/日期变更 → 更新对应字段
-   · abolish：清单里已有条目被废止 → 按"三处齐改"处理
-- 每次检索对清单已有条目做差异检测（=既有数据质量复查）：将官方最新状态/日期/替代关系与现有值比对，有差异才更新，无差异不改。每轮都跑，防质量退化。
-- 不要编造不存在的法规/标准；无确凿依据不返回。
+【四、备注 remark：只允许三类，其余一律不写】
+- 类型A（采标）：该标准采用国际标准时，remark 必须原样照抄官网版权原话（"暂不提供在线阅读服务"或"仅提供在线阅读服务"）。无官网原话不得写。
+- 类型B（食安待补）：食安国标(GB 4806.x / GB 31604.x)因官方反爬无法自动取链接时，remark 写「【官方链接待替换】cfsa.net.cn官方直链待用户手动补充」。
+- 类型C（即将被替代）：旧版仍现行有效、但有新版即将实施时，remark 写"即将被 XX 替代（新标准实施日期 YYYY-MM-DD）"。
+- 除上述三类外，remark 一律留空。禁止写"新增法规，属于XX领域""由XX发布"等废话。
 
-【铁律】
-- 全自动直接更新线上 data.json，不询问、不阻塞。
-- 低消耗：检索聚焦最近变更，不无限展开；不要为单条做几十次搜索。
+【五、状态与废止：以官方为准，状态与日期必须自洽】
+- status 只能取：现行有效 / 即将实施 / 已废止。
+- 状态自洽铁律：实施日期 ≤ 今天 ⇒ status 必为"现行有效"；仅当实施日期 > 今天 ⇒ 才可"即将实施"。绝不把已实施/已生效的法规标成"即将实施"。
+- 判定废止必须有官方公告/复审结论支撑；老标准（2003/2008/2009 版等）≠ 废止。
+- 判定为废止须三处齐改：status="已废止" + abolishDate（官方写明）+ remark「废止标准不提供标准文本阅读服务。」—— 缺一不可。
+- "即将被替代"的旧版仍标"现行有效"，不要改成废止。
+
+【六、采标标记 adopted：必须有官网原话佐证】
+- 仅当能在官网查到并原样引用版权原话时，才设 adopted=true 并填写 copyrightNote；否则保持原样（adopted 不要随意翻转）。
+- 不要仅凭"这是 GB/T 标准"就假设它是采标；是否采标看官网有无"采用 ISO/IEC"字样。
+
+【七、无实质变更不记录】
+- 每条 change 必须能清楚说明"哪个字段 旧值→新值"以及"依据来源(source_url)"。若你无法说明变更内容与依据，就不要返回该条。
+- 禁止返回"看起来更新了但说不清改了什么"的条目（如只改采标标记却给不出版权原话）。
+
+【八、铁律】
 - 一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
+- 低消耗：聚焦最近变更，不无限展开；不为单条做几十次搜索。
+- 每条 change 必须附 source_url（你核实所依据的官方页面链接）。
 """
 
 
 def build_prompt(target_label, domain_text, existing_names):
     names_block = "\n".join(f"- {n}" for n in existing_names) or "（暂无）"
-    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将全自动运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更，并直接更新清单。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
+    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 
 ═══ 本次检索范围（{target_label}）═══
 {domain_text}
 
-当前清单中已有的条目（仅供你判断哪些是新增/修订/废止，不要重复添加已有条目）：
+当前清单中已有的条目（权威去重基准，不要重复添加，名称相同或高度相似即视为已存在）：
 {names_block}
 
 {COMMON_RULES}
@@ -269,19 +251,21 @@ def build_prompt(target_label, domain_text, existing_names):
 {{
   "action": "add | update | abolish",
   "name": "全称",
+  "table": "laws 或 standards（法规填 laws，标准填 standards）",
   "stdNo": "标准号（标准类填）",
-  "docNumber": "发文字号（法规类填）",
+  "docNumber": "发文字号（法规类填，查不到留空）",
   "domains": ["环境"],
-  "category": "环境与职业健康",
+  "category": "环境与职业健康 / 质量 / 信息安全 / 反恐（法规类填其一）",
   "source": "发布机关，如 中国政府网/中国人大网/国家网信办/工信部/国家标准化管理委员会/ISO",
-  "link": "官方链接",
-  "effectiveDate": "YYYY-MM-DD 或空字符串",
-  "status": "现行有效 | 即将实施 | 已废止",
+  "link": "官方文档页链接（能直接看全文；给不出填空字符串）",
+  "effectiveDate": "YYYY-MM-DD 或空字符串（必须来自官方文件）",
+  "status": "现行有效 | 即将实施 | 已废止（须与实施日期自洽）",
   "abolishDate": "YYYY-MM-DD 或空字符串",
   "adopted": true | false,
-  "copyrightNote": "采标时原样照抄的官网版权原话，否则空",
-  "remark": "一句话说明 / 采标备注 / 食安待补备注",
-  "note": "变更说明"
+  "copyrightNote": "采标时原样照抄的官网版权原话，否则空字符串",
+  "remark": "仅限三类：采标官网原话 / 食安待补说明 / 即将被XX替代说明；其余留空",
+  "source_url": "你核实本条所依据的官方页面链接（必填）",
+  "note": "变更说明（人类可读，不写入数据）"
 }}
 
 只输出 JSON，不要额外说明文字。"""
@@ -306,7 +290,7 @@ def search_target(client, model, label, text, existing_names):
             model=model,
             messages=[{"role": "user", "content": prompt}],
             tools=[{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
-            temperature=0.2,
+            temperature=0,
         )
         return json.loads(extract_json(resp.choices[0].message.content))
     except Exception as e:
@@ -327,12 +311,30 @@ def _name_match(name, items):
     return None
 
 
-def make_new_record(table, name, ch, domain_id, today, new_id):
+def clean_remark(ch, is_food=False, is_abolish=False):
+    """备注只允许三类：采标官网原话 / 食安待补 / 即将被替代；其余一律清空，杜绝废话。"""
+    copyright = (ch.get("copyrightNote") or "").strip()
+    if copyright:
+        return copyright
+    if is_abolish:
+        return "废止标准不提供标准文本阅读服务。"
+    r = (ch.get("remark") or "").strip()
+    if not r:
+        return ""
+    if is_food and "官方链接待替换" in r:
+        return r
+    if "即将被" in r and "替代" in r:
+        return r
+    if "废止标准不提供标准文本阅读服务" in r:
+        return r
+    # 其余（含"新增法规，属于XX领域"等废话）一律丢弃
+    return ""
+
+
+def make_new_record(table, name, ch, domain_id, today, new_id, is_food=False):
     status = norm_status(ch.get("status")) or "现行有效"
     src = (ch.get("source") or "").strip() or ("中国政府网" if table == "laws" else "国家标准化管理委员会")
-    copyright = (ch.get("copyrightNote") or "").strip()
-    # 采标备注优先用官网版权原话；否则用 GLM 给的 remark/note
-    remark = copyright or (ch.get("remark") or ch.get("note") or "")
+    remark = clean_remark(ch, is_food=is_food)
     adopted = bool(ch.get("adopted"))
     if table == "laws":
         return {
@@ -343,7 +345,7 @@ def make_new_record(table, name, ch, domain_id, today, new_id):
             "region": ch.get("region", "全国") or "全国",
             "id": str(new_id), "remark": remark,
             "abolishDate": ch.get("abolishDate", "") or "",
-            "adopted": adopted, "copyrightNote": copyright,
+            "adopted": adopted, "copyrightNote": (ch.get("copyrightNote") or "").strip(),
         }
     else:
         return {
@@ -354,58 +356,88 @@ def make_new_record(table, name, ch, domain_id, today, new_id):
             "region": ch.get("region", "全国") or "全国",
             "id": str(new_id), "remark": remark,
             "abolishDate": ch.get("abolishDate", "") or "",
-            "adopted": adopted, "copyrightNote": copyright,
+            "adopted": adopted, "copyrightNote": (ch.get("copyrightNote") or "").strip(),
         }
 
 
 def apply_change(table, all_items, change, domain_id, today):
-    """把一条 AI 变更应用到 all_items（原地修改/追加）。返回 (kind, name, detail)。"""
+    """把一条 AI 变更应用到 all_items（原地修改/追加），并返回用于提案记录的 dict。
+    返回 dict 含 kind/name/category/table/targetId/newRecord/setFields/display；kind=skip 表示跳过。"""
     action = (change.get("action") or "").strip().lower()
     name = (change.get("name") or "").strip()
     if not name or action not in ("add", "update", "abolish"):
-        return None
+        return {"kind": "skip", "name": name, "reason": "无效 action 或空名称"}
     src_field = "dept" if table == "laws" else "publisher"
+    label = CATEGORY_NAMES.get(domain_id, domain_id)
+    is_food = bool(re.search(r"GB\s*4806|GB\s*31604", (change.get("stdNo") or "") + (name or "")))
 
     if action == "add":
-        if any(name == it["name"] for it in all_items):
-            return ("skip", name, "已存在")
+        # 去重（精确 + 近义包含）安全网：命中已有则跳过
+        if _name_match(name, all_items):
+            return {"kind": "skip", "name": name, "reason": "已存在（近义去重）"}
         new_id = max((int(it["id"]) for it in all_items if str(it["id"]).isdigit()), default=0) + 1
-        all_items.append(make_new_record(table, name, change, domain_id, today, new_id))
-        return ("add", name, change.get("note", ""))
+        rec = make_new_record(table, name, change, domain_id, today, new_id, is_food=is_food)
+        all_items.append(rec)
+        disp = {
+            "diffs": [{"field": f, "from": "", "to": str(rec.get(f, ""))}
+                      for f in (("name", "docNumber", "dept", "effectiveDate", "status", "link", "remark")
+                                if table == "laws" else ("name", "stdNo", "publisher", "effectiveDate", "status", "link", "remark"))
+                      if rec.get(f)],
+            "link": rec.get("link", ""), "source": rec.get("dept" if table == "laws" else "publisher", ""),
+            "sourceUrl": (change.get("source_url") or "").strip(),
+            "reason": change.get("note", "") or "新增",
+        }
+        return {"kind": "add", "name": name, "category": label, "table": table,
+                "targetId": str(new_id), "newRecord": rec, "setFields": None, "display": disp}
 
     target = _name_match(name, all_items)
     if not target:
-        return ("skip", name, "未匹配到现有条目")
+        return {"kind": "skip", "name": name, "reason": "未匹配到现有条目"}
+    tid = target.get("id")
+
     if action == "abolish":
-        # 三处齐改：status + abolishDate + remark（缺一不可）
+        old_status = target.get("status", "")
+        abolish_date = change.get("abolishDate", "") or target.get("abolishDate", "")
+        remark = clean_remark(change, is_abolish=True)
+        set_fields = {"status": "已废止", "abolishDate": abolish_date, "remark": remark}
+        # 应用
         target["status"] = "已废止"
-        if change.get("abolishDate"):
-            target["abolishDate"] = change["abolishDate"]
-        target["remark"] = (change.get("remark") or "").strip() or "废止标准不提供标准文本阅读服务。"
-        return ("abolish", name, "状态→已废止（含废止日期/备注）")
+        if abolish_date:
+            target["abolishDate"] = abolish_date
+        target["remark"] = remark
+        return {"kind": "abolish", "name": name, "category": label, "table": table,
+                "targetId": tid, "newRecord": None, "setFields": set_fields,
+                "display": {"diffs": [{"field": "状态", "from": old_status, "to": "已废止"}],
+                            "link": target.get("link", ""), "source": target.get(src_field, ""),
+                            "sourceUrl": (change.get("source_url") or "").strip(),
+                            "reason": change.get("note", "") or "废止"}}
+
     # update
-    updated = []
+    set_fields = {}
+    diffs = []
     if change.get("effectiveDate") and change["effectiveDate"] != target.get("effectiveDate"):
-        target["effectiveDate"] = change["effectiveDate"]
-        updated.append("实施时间")
+        set_fields["effectiveDate"] = change["effectiveDate"]
+        diffs.append({"field": "实施时间", "from": target.get("effectiveDate", ""), "to": change["effectiveDate"]})
     new_status = norm_status(change.get("status"))
     if new_status and new_status != target.get("status"):
-        target["status"] = new_status
-        updated.append("状态")
+        set_fields["status"] = new_status
+        diffs.append({"field": "状态", "from": target.get("status", ""), "to": new_status})
     src = (change.get("source") or "").strip()
     if src and src != target.get(src_field):
-        target[src_field] = src
-        updated.append("发布部门" if table == "laws" else "发布单位")
-    # 采标备注（仅当本次提供了版权原话时才覆盖备注/写入采标字段，避免无故清空现有备注）
+        set_fields[src_field] = src
+        diffs.append({"field": "发布部门" if table == "laws" else "发布单位",
+                      "from": target.get(src_field, ""), "to": src})
+    # 采标备注（仅当本次提供了版权原话时才覆盖）
     copyright = (change.get("copyrightNote") or "").strip()
     if copyright:
-        target["remark"] = copyright
-        target["copyrightNote"] = copyright
-        target["adopted"] = True
-        updated.append("采标备注")
-    elif change.get("adopted") is not None:
-        target["adopted"] = bool(change.get("adopted"))
-        updated.append("采标标记")
+        set_fields["remark"] = copyright
+        set_fields["copyrightNote"] = copyright
+        set_fields["adopted"] = True
+        diffs.append({"field": "采标备注", "from": target.get("remark", ""), "to": copyright})
+    elif change.get("adopted") is not None and bool(change.get("adopted")) != bool(target.get("adopted")):
+        set_fields["adopted"] = bool(change.get("adopted"))
+        diffs.append({"field": "采标标记", "from": str(target.get("adopted", "")),
+                      "to": str(bool(change.get("adopted")))})
     # 链接保护：仅当现有缺失/是首页时才用新链，且新链需探活
     new_url = (change.get("link") or "").strip()
     existing_url = (target.get("link") or "").strip()
@@ -414,31 +446,58 @@ def apply_change(table, all_items, change, domain_id, today):
             pass
         elif not existing_url:
             if link_alive(new_url):
-                target["link"] = new_url
-                updated.append("来源链接")
+                set_fields["link"] = new_url
+                diffs.append({"field": "来源链接", "from": "", "to": new_url})
             else:
                 fb = build_fallback_url(src or target.get(src_field, ""), name)
                 if fb:
-                    target["link"] = fb
-                    updated.append("来源链接(回退)")
+                    set_fields["link"] = fb
+                    diffs.append({"field": "来源链接(回退)", "from": "", "to": fb})
         elif is_homepage(existing_url):
             if link_alive(new_url):
-                target["link"] = new_url
-                updated.append("来源链接")
+                set_fields["link"] = new_url
+                diffs.append({"field": "来源链接", "from": "(首页)", "to": new_url})
             else:
                 fb = build_fallback_url(src or target.get(src_field, ""), name)
                 if fb:
-                    target["link"] = fb
-                    updated.append("来源链接(回退)")
+                    set_fields["link"] = fb
+                    diffs.append({"field": "来源链接(回退)", "from": "", "to": fb})
         else:
             pass  # 信任现有深链
-    if updated:
-        return ("update", name, "更新：" + "、".join(updated))
-    return ("skip", name, "无实质变更")
+    # 应用
+    for k, v in set_fields.items():
+        target[k] = v
+    if not diffs:
+        return {"kind": "skip", "name": name, "reason": "无实质变更"}
+    return {"kind": "update", "name": name, "category": label, "table": table,
+            "targetId": tid, "newRecord": None, "setFields": set_fields,
+            "display": {"diffs": diffs, "link": target.get("link", ""),
+                        "source": target.get(src_field, ""),
+                        "sourceUrl": (change.get("source_url") or "").strip(),
+                        "reason": change.get("note", "") or "更新"}}
+
+
+def apply_status_rules(proposed, today):
+    """对 proposed 执行通用状态切换（日期到期自动转状态），返回切换清单供提案展示。直接修改 proposed。"""
+    switched = []
+    for table, key in (("laws", "laws"), ("standards", "standards")):
+        for it in proposed[key]:
+            old = it.get("status", "")
+            new = old
+            eff = _ymd(it.get("effectiveDate"))
+            if old == "即将实施" and eff and eff <= today:
+                new = "现行有效"
+            ad = _ymd(it.get("abolishDate"))
+            if ad and ad <= today and old != "已废止":
+                new = "已废止"
+            if new != old:
+                it["status"] = new
+                switched.append({"table": table, "name": it.get("name", ""), "id": it.get("id"),
+                                 "from": old, "to": new})
+    return switched
 
 
 def get_prev_data_from_git():
-    """读取上一次提交的 data.json（作为政府更新前的基线用于比对覆盖手动修改）。"""
     try:
         out = subprocess.run(
             ["git", "show", "HEAD:data.json"],
@@ -452,7 +511,6 @@ def get_prev_data_from_git():
 
 
 def reconcile_user_overrides(prev_data, new_data):
-    """政府更新了某条目字段时，清除用户对该字段的"已修改"标记（若存在 user-edits.json）。"""
     if not prev_data or not os.path.exists(USER_EDITS_PATH):
         return
     try:
@@ -525,22 +583,6 @@ def write_running_status():
         print("  写入 running 状态失败（可忽略）:", e)
 
 
-def write_final_status(status, last_updated=None, error=None):
-    try:
-        data = {"status": status, "updatedAt": now_iso()}
-        if last_updated:
-            data["lastUpdated"] = last_updated
-        if error:
-            data["error"] = error
-        with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        git_commit_push([RETRIEVAL_STATUS_PATH, "update-summary.json", "data.json"],
-                        f"chore: 检索{status}")
-        print(f"  已写入检索状态：{status}")
-    except Exception as e:
-        print("  写入 final 状态失败（可忽略）:", e)
-
-
 def main():
     api_key = os.environ.get("ZHIPU_API_KEY")
     if not api_key:
@@ -562,8 +604,13 @@ def main():
     standards = data.setdefault("standards", [])
     today = date.today().isoformat()
 
-    # —— 通用状态自动切换（先于/独立于 GLM 检索，确保到期法规如生态环境法典按时切换）——
-    switched = apply_status_rules(laws, standards, today)
+    # proposed 为工作副本；草稿模式下它不会被写回 data.json
+    proposed = copy.deepcopy(data)
+    proposed_laws = proposed.setdefault("laws", [])
+    proposed_standards = proposed.setdefault("standards", [])
+
+    # —— 通用状态自动切换（先跑，确保到期法规按时切换；草稿模式也只进提案）——
+    switched = apply_status_rules(proposed, today)
     for s in switched:
         print(f"  [状态切换] {s['table']}《{s['name']}》{s['from']} → {s['to']}")
 
@@ -575,15 +622,16 @@ def main():
         ("laws", "反恐"),
         ("standards", "standards"),
     ]
-    n_added = n_abolished = n_updated = 0
     summary_changes = []
     for table, cid in targets:
         if table == "laws":
-            items = [l for l in laws if l.get("category") == cid]
+            items = [l for l in proposed_laws if l.get("category") == cid]
             text = DOMAINS[cid]
+            all_items = proposed_laws
         else:
-            items = standards
+            items = proposed_standards
             text = STANDARDS_TEXT
+            all_items = proposed_standards
         existing_names = [it["name"] for it in items]
         label = CATEGORY_NAMES.get(cid, cid)
         print(f"检索：{label} ...")
@@ -591,41 +639,92 @@ def main():
         changes = result.get("changes", []) or []
         print(f"  发现 {len(changes)} 条变更：{result.get('summary', '')}")
         for ch in changes:
-            res = apply_change(table, items if table == "standards" else laws, ch, cid, today)
-            if not res or res[0] == "skip":
+            res = apply_change(table, all_items, ch, cid, today)
+            if not res or res.get("kind") == "skip":
                 if res:
-                    print(f"    跳过（{res[2]}）：{res[1]}")
+                    print(f"    跳过（{res.get('reason')}）：{res.get('name')}")
                 continue
-            kind, name, detail = res
-            if kind == "add":
-                n_added += 1
-            elif kind == "abolish":
-                n_abolished += 1
-            else:
-                n_updated += 1
-            summary_changes.append({
-                "type": kind, "name": name,
-                "category": label, "detail": detail,
-            })
-            print(f"    [{kind}] {name}（{detail}）")
+            summary_changes.append(res)
+            print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
 
-    # 无论内容是否变更，刷新"最近更新时间"
+    # —— 组装提案 / 摘要 ——
+    if DRAFT_MODE:
+        # 提案：逐条可审阅，含 targetId / setFields / newRecord / display
+        proposed_changes = {
+            "generatedAt": today,
+            "draftMode": True,
+            "counts": {
+                "added": sum(1 for c in summary_changes if c["kind"] == "add"),
+                "updated": sum(1 for c in summary_changes if c["kind"] == "update"),
+                "abolished": sum(1 for c in summary_changes if c["kind"] == "abolish"),
+                "statusSwitched": len(switched),
+            },
+            "changes": [],
+        }
+        for c in summary_changes:
+            proposed_changes["changes"].append({
+                "id": f"c{len(proposed_changes['changes']) + 1}",
+                "type": c["kind"],
+                "table": c["table"],
+                "name": c["name"],
+                "category": c["category"],
+                "targetId": c.get("targetId"),
+                "newRecord": c.get("newRecord"),
+                "setFields": c.get("setFields"),
+                "display": c["display"],
+            })
+        # 状态切换也进提案
+        for s in switched:
+            proposed_changes["changes"].append({
+                "id": f"c{len(proposed_changes['changes']) + 1}",
+                "type": "status_switch",
+                "table": s["table"],
+                "name": s["name"],
+                "category": s["table"],
+                "targetId": s["id"],
+                "newRecord": None,
+                "setFields": {"status": s["to"]},
+                "display": {"diffs": [{"field": "状态", "from": s["from"], "to": s["to"]}],
+                            "link": "", "source": "", "sourceUrl": "", "reason": "到期自动状态切换"},
+            })
+        try:
+            with open(PROPOSED_DATA_PATH, "w", encoding="utf-8") as f:
+                json.dump(proposed, f, ensure_ascii=False, indent=2)
+            with open(PROPOSED_CHANGES_PATH, "w", encoding="utf-8") as f:
+                json.dump(proposed_changes, f, ensure_ascii=False, indent=2)
+            print(f"  已写出 proposed-data.json / proposed-changes.json（draft 模式，未改动 data.json）")
+        except Exception as e:
+            print(f"  写出提案文件失败：{e}")
+        # 状态：草稿待确认
+        try:
+            with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
+                json.dump({"status": "draft_ready", "updatedAt": now_iso(),
+                           "counts": proposed_changes["counts"]}, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print("  写入 draft_ready 状态失败（可忽略）:", e)
+        git_commit_push([PROPOSED_DATA_PATH, PROPOSED_CHANGES_PATH, RETRIEVAL_STATUS_PATH],
+                        f"draft: 自动检索提案 {today}（待人工确认）")
+        total = len(proposed_changes["changes"])
+        print(f"\n[draft 模式] 本次产出 {total} 条提案（新增/更新/废止/状态切换），未改动 data.json。请到网页端逐条确认后应用。")
+        return
+
+    # —— 非草稿模式：直写 data.json（未来放开用）——
+    data = proposed
     data["lastUpdated"] = today
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    # 更新说明
-    for s in switched:
-        summary_changes.append({
-            "type": "status_switch", "name": s["name"],
-            "category": s["table"], "detail": f"状态：{s['from']} → {s['to']}",
-        })
     summary = {
         "updatedAt": today,
-        "hasUpdates": (n_added + n_abolished + n_updated + len(switched)) > 0,
-        "counts": {"added": n_added, "abolished": n_abolished,
-                   "updated": n_updated, "statusSwitched": len(switched)},
-        "changes": summary_changes,
+        "hasUpdates": (len(summary_changes) + len(switched)) > 0,
+        "counts": {"added": sum(1 for c in summary_changes if c["kind"] == "add"),
+                   "abolished": sum(1 for c in summary_changes if c["kind"] == "abolish"),
+                   "updated": sum(1 for c in summary_changes if c["kind"] == "update"),
+                   "statusSwitched": len(switched)},
+        "changes": [{"type": c["kind"], "name": c["name"], "category": c["category"],
+                     "detail": c["display"].get("reason", "")} for c in summary_changes]
+                    + [{"type": "status_switch", "name": s["name"], "category": s["table"],
+                        "detail": f"状态：{s['from']} → {s['to']}"} for s in switched],
     }
     try:
         with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
@@ -637,12 +736,14 @@ def main():
     prev_data = get_prev_data_from_git()
     reconcile_user_overrides(prev_data, data)
 
-    total = n_added + n_abolished + n_updated + len(switched)
-    if total > 0:
-        print(f"\n本次共处理 {total} 条（新增 {n_added} / 修改 {n_updated} / 废止 {n_abolished} / 状态切换 {len(switched)}），lastUpdated -> {today}")
-    else:
-        print(f"\n本次无内容变更，仅刷新更新时间 -> {today}")
-    write_final_status("success", last_updated=today)
+    total = len(summary_changes) + len(switched)
+    print(f"\n本次共处理 {total} 条，lastUpdated -> {today}")
+    try:
+        with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
+            json.dump({"status": "success", "updatedAt": now_iso(), "lastUpdated": today}, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("  写入 success 状态失败（可忽略）:", e)
+    git_commit_push([DATA_PATH, SUMMARY_PATH, RETRIEVAL_STATUS_PATH], f"chore: 检索success {today}")
 
 
 if __name__ == "__main__":
@@ -652,5 +753,10 @@ if __name__ == "__main__":
         raise
     except Exception as e:
         traceback.print_exc()
-        write_final_status("failed", error=repr(e))
+        try:
+            with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
+                json.dump({"status": "failed", "updatedAt": now_iso(), "error": repr(e)}, f, ensure_ascii=False, indent=2)
+            git_commit_push([RETRIEVAL_STATUS_PATH], "chore: 检索failed")
+        except Exception:
+            pass
         sys.exit(1)
