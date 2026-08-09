@@ -1,39 +1,13 @@
 {
-  "generatedAt": "2026-08-09",
+  "generatedAt": "2026-08-10",
   "draftMode": true,
   "counts": {
     "added": 0,
     "updated": 0,
     "abolished": 0,
-    "statusSwitched": 1,
+    "statusSwitched": 0,
     "rejected": 0
   },
-  "changes": [
-    {
-      "id": "c1",
-      "type": "status_switch",
-      "table": "standards",
-      "name": "GB/T 4706.1-2024 家用和类似用途电器的安全第1部分：通用要求",
-      "category": "standards",
-      "targetId": "S0008",
-      "newRecord": null,
-      "setFields": {
-        "status": "现行有效"
-      },
-      "display": {
-        "diffs": [
-          {
-            "field": "状态",
-            "from": "即将实施",
-            "to": "现行有效"
-          }
-        ],
-        "link": "",
-        "source": "",
-        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=599CF7EBF5F1D87E8C40C84FFDFE8D98",
-        "reason": "实施日期 2026-07-01 已至，依据标准官方页自动转为现行有效"
-      }
-    }
-  ],
+  "changes": [],
   "rejected": []
 }
