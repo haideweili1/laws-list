@@ -142,11 +142,62 @@ def url_shape_ok(url):
 
 
 def url_trusted(url):
-    """三重校验：官方域名 + 正文形态 + 真实可访问。任一不过即不采信该链接。"""
+    """四重校验：官方域名 + 正文形态 + 真实可访问 + 正文非死页。任一不过即不采信。"""
     u = (url or "").strip()
     if not u:
         return False
-    return domain_ok(u) and url_shape_ok(u) and link_alive(u)
+    if not (domain_ok(u) and url_shape_ok(u)):
+        return False
+    st = probe_link(u)
+    if st is False:
+        return False
+    # 确认可访问时再查正文是否为死页；超时(None)保守放行，避免误杀好链接
+    if st is True and is_dead_page(fetch_text(u)):
+        return False
+    return True
+
+
+# 正文内容探测：openstd 等平台对拼错的 hcno 也返回 HTTP 200，但正文显示
+# 「搜索不到 / 未找到」，这种死链必须识别，否则会被当成有效链接采信。
+DEAD_PAGE_MARKERS = ("搜索不到", "未找到", "页面不存在", "没有检索到",
+                     "无相关结果", "内容不存在", "不存在的页面", "没有找到")
+
+
+def fetch_text(url, timeout=10, max_bytes=150000):
+    """下载页面正文（限制大小，低消耗）并返回解码文本；失败返回 None。"""
+    url = (url or "").strip()
+    if not url:
+        return None
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    try:
+        req = urllib.request.Request(
+            url, method="GET",
+            headers={"User-Agent": _UA, "Accept": "text/html,application/xhtml+xml,*/*"})
+        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+            raw = r.read(max_bytes)
+        for enc in ("utf-8", "gbk", "gb18030", "latin-1"):
+            try:
+                return raw.decode(enc)
+            except Exception:
+                pass
+        return raw.decode("utf-8", "replace")
+    except Exception:
+        return None
+
+
+def is_dead_page(text):
+    """正文是否是没有内容的死页（搜索不到 / 未找到等）。"""
+    if not text:
+        return False
+    return any(m in text for m in DEAD_PAGE_MARKERS)
+
+
+def has_valid_official_link(url):
+    """轻量判定：是否为官方域名下的正文页（不联网，仅看域名与形态）。"""
+    u = (url or "").strip()
+    return bool(u) and domain_ok(u) and url_shape_ok(u)
 
 
 def _ymd(s):
@@ -231,6 +282,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 只接受直接展示"标题 + 完整条文/全文"的官方页面。优先级：人大网(npc.gov.cn)、中国政府网(gov.cn)、各部委官网、标准官方平台(openstd.samr.gov.cn / std.samr.gov.cn)。
 - 严禁：搜索引擎结果页、列表页、栏目首页、新闻稿/媒体报道页（除非该新闻稿本身就是官方发布的全文页）。
 - 链接必须以官方域名开头，且打开后能直接看到正文；给不出合格链接就填 ""（空字符串），并在 remark 注明"官方链接待补"，绝不用非正文链接充数。
+- 你提供的 source_url（依据来源）必须亲自确认能显示正文、且不是「搜索不到 / 未找到」的死链（部分平台对拼错的编号也返回 200，但正文无内容）；若只是搜索页或死链，source_url 填空字符串并在 remark 注明待补。为某条标准(standards 表)提出的日期/状态变更，其 source_url 指向页面的标准号必须与本条 stdNo 完全一致（如本条是 GB/T 4288-2018 就引用 2018 版页面，绝不用 2025 版页面去改 2018 版）。
 
 【三、日期：必须来自官方文件原文，禁止编造】
 - effectiveDate（实施日期）与 abolishDate（废止日期）必须取自官方文件明确写明的日期。
@@ -388,6 +440,36 @@ def _std_key(s):
     return (fam, m.group(2))
 
 
+_STD_FULL_RE = re.compile(
+    r"\b(GB\s*/?\s*T?|GBZ\s*/?\s*T?|QB|JB|YY|SN|HG|HJ|IEC|ISO|EN)\s*"
+    r"([0-9]+(?:\.[0-9]+)*)\s*-\s*(\d{4})", re.I)
+
+
+def _norm_fam(s):
+    return re.sub(r"[\s/]", "", s or "").upper().replace("GBT", "GB").replace("GBZT", "GBZ")
+
+
+def _parse_std_full(s):
+    """从文本里抽出第一个完整标准号 (family, base, year)。"""
+    m = _STD_FULL_RE.search(s or "")
+    if not m:
+        return None
+    return (_norm_fam(m.group(1)), m.group(2), m.group(3))
+
+
+def _source_version_mismatch(text, target_stdno):
+    """依据来源页面是否用『其它版本』的标准号改动本条（张冠李戴）。
+    例：本条 GB/T 4288-2018，来源页却标注 GB/T 4288-2025 → 返回 True。"""
+    t = _parse_std_full(target_stdno)
+    if not t:
+        return False
+    for m in _STD_FULL_RE.finditer(text or ""):
+        fam = _norm_fam(m.group(1))
+        if fam == t[0] and m.group(2) == t[1] and m.group(3) != t[2]:
+            return True
+    return False
+
+
 def _name_match(name, items):
     """四层匹配：①精确 ②同一标准号 ③互相包含 ④高相似度。
 
@@ -513,30 +595,48 @@ def _norm_txt(v):
 
 
 def check_change(table, change, target, today):
-    """7 道质检关卡。返回 (是否通过, 未通过原因列表)。
-    未通过的不再静默丢弃，而是带着原因进网页『待核实线索』栏，供人工判断与迭代提示词。"""
+    """7 道质检关卡。返回 (是否通过, 未通过原因列表, 是否直接丢弃)。
+    - 通过：进「可直接应用」。
+    - 未通过但 '丢弃'=False：进「待核实线索」栏（人工复核，真候选）。
+    - '丢弃'=True：确属垃圾（无依据/死链/非官方/理由缺失），直接丢弃，不污染任何面板。"""
     reasons = []
     name = (change.get("name") or "").strip()
     action = (change.get("action") or "").strip().lower()
+    discard = False
 
-    # ① 表归属：带标准号的条目不许进法规表
-    if table == "laws" and (STD_NO_RE.search(name) or (change.get("stdNo") or "").strip()):
+    # ① 表归属：带标准号的条目不许进法规表（信息安全类豁免，用户允许其标准放法规表）
+    cat = (change.get("category") or (target or {}).get("category") or "")
+    if table == "laws" and cat != "信息安全" and (STD_NO_RE.search(name) or (change.get("stdNo") or "").strip()):
         reasons.append("这是标准，却被放进了法规表")
 
-    # ② 依据来源：必须是官方域名下、真实能打开的正文页
+    # ② 依据来源：硬门槛（无链接/死链/非官方 → 直接丢弃；超时无法验证 → 人工复核）
     su = (change.get("source_url") or "").strip()
     if not su:
-        reasons.append("没有提供依据来源网址")
+        reasons.append("没有提供依据来源网址（source_url）")
+        discard = True
     elif not domain_ok(su):
         reasons.append("依据来源不是官方域名：" + su)
+        discard = True
     elif not url_shape_ok(su):
         reasons.append("依据来源不是正文页（搜索页/列表页/伪造格式）：" + su)
+        discard = True
     else:
         st = probe_link(su)
         if st is False:
             reasons.append("依据来源确认失效（404 / 跳回首页），多半是编造的链接：" + su)
+            discard = True
         elif st is None:
-            reasons.append("依据来源无法自动验证（超时或被拦），请人工点开确认：" + su)
+            reasons.append("依据来源无法自动验证（超时 / 被拦截），请人工点开确认：" + su)
+        elif st is True:
+            text = fetch_text(su)
+            if text is None:
+                reasons.append("依据来源能打开但无法读取正文，请人工点开确认：" + su)
+            elif is_dead_page(text):
+                reasons.append("依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su)
+                discard = True
+            elif table != "laws" and target and target.get("stdNo"):
+                if _source_version_mismatch(text, target.get("stdNo")):
+                    reasons.append("依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su)
 
     # ③ 旧值核对：声称的旧值必须与清单一字不差（证明它真的看过清单）
     if action in ("update", "abolish") and target:
@@ -565,14 +665,16 @@ def check_change(table, change, target, today):
     if st == "已废止" and not (_ymd(change.get("abolishDate")) or (target or {}).get("abolishDate")):
         reasons.append("判定为废止，却给不出官方写明的废止日期")
 
-    # ⑤ 理由必须与实际改动自洽
+    # ⑤ 理由必须与实际改动自洽，且不能为空
     note = str(change.get("note") or "").strip()
     if not note:
         reasons.append("没有说明改了什么、依据是什么")
+        discard = True
     elif ("实施日期" in note or "实施时间" in note) and not change.get("effectiveDate"):
         reasons.append("理由里说改实施日期，实际却没给出日期")
+        discard = True
 
-    return (len(reasons) == 0), reasons
+    return (len(reasons) == 0), reasons, discard
 
 
 def apply_change(table, all_items, change, domain_id, today):
@@ -586,9 +688,12 @@ def apply_change(table, all_items, change, domain_id, today):
     label = CATEGORY_NAMES.get(domain_id, domain_id)
     is_food = bool(re.search(r"GB\s*4806|GB\s*31604", (change.get("stdNo") or "") + (name or "")))
 
-    # —— 质检：不通过则整条拦下，进「待核实线索」栏，绝不改动数据 ——
+    # —— 质检：不通过则整条拦下，带原因进「待核实线索」栏，绝不改动数据 ——
     pre_target = None if action == "add" else _name_match(name, all_items)
-    ok, reasons = check_change(table, change, pre_target, today)
+    ok, reasons, discard = check_change(table, change, pre_target, today)
+    if discard:
+        # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
+        return {"kind": "discard", "name": name, "reason": "；".join(reasons)}
     if not ok:
         return {"kind": "reject", "name": name, "category": label, "table": table,
                 "action": action, "reasons": reasons,
@@ -697,7 +802,8 @@ def apply_change(table, all_items, change, domain_id, today):
 
 
 def apply_status_rules(proposed, today):
-    """对 proposed 执行通用状态切换（日期到期自动转状态），返回切换清单供提案展示。直接修改 proposed。"""
+    """通用状态切换（日期到期自动转状态）。仅当该条目自身有有效官方链接时才切换，
+    并以该链接作为依据；无有效官方链接则不盲目切换（避免『无来源的状态切换』）。"""
     switched = []
     for table, key in (("laws", "laws"), ("standards", "standards")):
         for it in proposed[key]:
@@ -712,9 +818,16 @@ def apply_status_rules(proposed, today):
             if ad and ad <= today and old != "已废止":
                 new = "已废止"
             if new != old:
-                it["status"] = new
-                switched.append({"table": table, "name": it.get("name", ""), "id": it.get("id"),
-                                 "from": old, "to": new})
+                link = (it.get("link") or "").strip()
+                if has_valid_official_link(link):
+                    it["status"] = new
+                    switched.append({"table": table, "name": it.get("name", ""), "id": it.get("id"),
+                                     "from": old, "to": new,
+                                     "sourceUrl": link,
+                                     "reason": f"实施日期 {eff or ad} 已至，依据标准官方页自动转为{new}"})
+                else:
+                    # 无有效官方链接：不盲目切换，保持原状态，留待有链接时再处理
+                    print(f"  [状态切换跳过] {it.get('name','')}：无有效官方链接，不自动切换")
     return switched
 
 
@@ -871,6 +984,9 @@ def main():
                 if res:
                     print(f"    跳过（{res.get('reason')}）：{res.get('name')}")
                 continue
+            if res.get("kind") == "discard":
+                print(f"    丢弃（{res.get('reason')}）：{res.get('name')}")
+                continue
             if res.get("kind") == "reject":
                 rejected.append(res)
                 print(f"    [未过质检] {res['name']} → {'；'.join(res['reasons'])}")
@@ -931,7 +1047,8 @@ def main():
                 "newRecord": None,
                 "setFields": {"status": s["to"]},
                 "display": {"diffs": [{"field": "状态", "from": s["from"], "to": s["to"]}],
-                            "link": "", "source": "", "sourceUrl": "", "reason": "到期自动状态切换"},
+                            "link": "", "source": "", "sourceUrl": s.get("sourceUrl", ""),
+                            "reason": s.get("reason", "")},
             })
         # 本轮零结果（既无可应用变更，也无待核实线索）时不产出提案文件，
         # 避免网页弹出一个空的「待确认更新」面板。
