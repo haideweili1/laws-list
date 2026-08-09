@@ -1,0 +1,201 @@
+{
+  "generatedAt": "2026-08-09",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 1,
+    "abolished": 0,
+    "statusSwitched": 1,
+    "rejected": 10
+  },
+  "changes": [
+    {
+      "id": "c1",
+      "type": "update",
+      "table": "standards",
+      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
+      "category": "产品标准",
+      "targetId": "S0095",
+      "newRecord": null,
+      "setFields": {
+        "effectiveDate": "2026-05-01"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "实施时间",
+            "from": "2018-10-01",
+            "to": "2026-05-01"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
+        "source": "国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0",
+        "reason": "effectiveDate 由 \"2018-10-01\" 改为 \"2026-05-01\"，status 由 \"已废止\" 改为 \"已废止\"，依据是官方发布的 GB/T 4288-2025 替代信息。"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "GB/T 4706.1-2024 家用和类似用途电器的安全第1部分：通用要求",
+      "category": "standards",
+      "targetId": "S0008",
+      "newRecord": null,
+      "setFields": {
+        "status": "现行有效"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "即将实施",
+            "to": "现行有效"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "id": "r1",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国网络安全法",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202407/75baf5b6b5b54b7a8b6f9b3b8b6f9b3b.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202407/75baf5b6b5b54b7a8b6f9b3b8b6f9b3b.shtml",
+      "note": "实施日期由2026-01-01改为2026-01-01，依据是全国人大常委会公布的最新文本"
+    },
+    {
+      "id": "r2",
+      "type": "reject",
+      "table": "laws",
+      "name": "网络数据安全管理条例",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源确认失效（404 / 跳回首页），多半是编造的链接：https://www.gov.cn/zhengce/content/2024-07/01/content_6949120.htm"
+      ],
+      "sourceUrl": "https://www.gov.cn/zhengce/content/2024-07/01/content_6949120.htm",
+      "note": "实施日期由2025-01-01改为2025-01-01，依据是国务院公布的最新文本"
+    },
+    {
+      "id": "r3",
+      "type": "reject",
+      "table": "laws",
+      "name": "《信息安全技术个人信息安全规范》GB/T 35273-2020",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6B5C4D3E2F1A0B9C8D7E6F5",
+      "note": "实施日期由2020-03-06改为2020-03-06，依据是国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r4",
+      "type": "reject",
+      "table": "laws",
+      "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6B5C4D3E2F1A0B9C8D7E6F5",
+      "note": "实施日期由2022-11-01改为2022-11-01，依据是国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r5",
+      "type": "reject",
+      "table": "laws",
+      "name": "《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表",
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6B5C4D3E2F1A0B9C8D7E6F5",
+        "声称原状态是「即将实施」，清单里其实是「现行有效」",
+        "标成「即将实施」，但实施日期 2025-04-01 早已过去"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6B5C4D3E2F1A0B9C8D7E6F5",
+      "note": "实施日期由2025-04-01改为2025-04-01，依据是国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r6",
+      "type": "reject",
+      "table": "laws",
+      "name": "《信息安全技术网络安全事件分类分级指南》GB/T 20986-2023",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表",
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6B5C4D3E2F1A0B9C8D7E6F5"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6B5C4D3E2F1A0B9C8D7E6F5",
+      "note": "实施日期由2023-12-01改为2023-12-01，依据是国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r7",
+      "type": "reject",
+      "table": "laws",
+      "name": "《小型个人信息处理者个人信息保护简化措施规定》",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源确认失效（404 / 跳回首页），多半是编造的链接：https://www.cac.gov.cn/2024-07/01/c_1129851235.htm",
+        "声称原日期是「2026-09-01」，清单里其实是「2024-08-15」",
+        "声称原状态是「即将实施」，清单里其实是「现行有效」"
+      ],
+      "sourceUrl": "https://www.cac.gov.cn/2024-07/01/c_1129851235.htm",
+      "note": "实施日期由2026-09-01改为2026-09-01，依据是国家互联网信息办公室公布的最新文本"
+    },
+    {
+      "id": "r8",
+      "type": "reject",
+      "table": "standards",
+      "name": "GB/T 4288-2025 家用和类似用途电动洗衣机",
+      "category": "产品标准",
+      "action": "add",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0",
+      "note": "新增标准 GB/T 4288-2025，实施日期为 2026-05-01，依据是官方发布的标准信息。"
+    },
+    {
+      "id": "r9",
+      "type": "reject",
+      "table": "standards",
+      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
+      "category": "产品标准",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0",
+      "note": "effectiveDate 由 \"2013-10-01\" 改为 \"2027-04-01\"，status 由 \"现行有效\" 改为 \"已废止\"，依据是官方发布的 GB 12021.4-2026 替代信息。"
+    },
+    {
+      "id": "r10",
+      "type": "reject",
+      "table": "standards",
+      "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
+      "category": "产品标准",
+      "action": "add",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFA6E6F0B6C8D6E5E6F0B6C8D6E5E6F0",
+      "note": "新增标准 GB 12021.4-2026，实施日期为 2027-04-01，依据是官方发布的标准信息。"
+    }
+  ]
+}
