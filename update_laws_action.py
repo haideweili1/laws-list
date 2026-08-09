@@ -169,74 +169,121 @@ def norm_status(s):
 
 
 # ===== 检索领域（喂给模型做定向检索）=====
+# 注意：key 必须与 data.json 中 laws 的 category 实际取值一致，否则范围过滤会失效。
 DOMAINS = {
-    "trisystem": (
-        "三体系（质量管理体系 ISO9001、环境管理体系 ISO14001、职业健康安全管理体系 ISO45001）相关："
-        "产品质量法、计量法、标准化法、认证认可条例、强制性产品认证、环境保护法、水/大气/土壤污染防治法、"
-        "固体废物污染环境防治法、噪声污染防治法、碳排放与节能相关法规、安全生产法、职业病防治法、劳动法、"
-        "特种设备安全、危险化学品安全等"
+    "环境与职业健康": (
+        "环境 / 职业健康安全 / 产品安全 / 社会责任 / 地方法规相关："
+        "环境保护法、水/大气/土壤/噪声污染防治、固废污染环境防治、碳排放与节能、生态环境法典、"
+        "安全生产法、职业病防治法、劳动法、女职工劳动保护、未成年人/劳工权益（童工、强迫劳动）、"
+        "工会法、社会保险、工伤保险、特种设备、危险化学品安全、"
+        "消费品安全、产品召回、电器安全、产品质量、"
+        "广东/中山等地方法规（保留地方站链接，不换成国家级）"
     ),
-    "social": (
-        "社会责任相关：劳动合同法、社会保险法、工伤保险条例、妇女权益保障法、未成年人保护法、残疾人保障法、"
-        "工会法、就业促进法、女职工劳动保护特别规定、带薪年休假条例、保障农民工工资支付条例等"
+    "质量": (
+        "质量 / 标准化 / 认证认可相关：产品质量法、计量法、标准化法、认证认可条例、"
+        "强制性产品认证(CCC)、标准化发展、质量强国建设"
     ),
-    "antiterror": (
-        "反恐与供应链安全相关：反恐怖主义法、海关法、进出口商品检验法、出境入境管理法、对外贸易法、"
-        "海关 AEO 认证与信用管理办法、易制毒化学品管理条例、出口管制相关法规等"
+    "信息安全": (
+        "信息安全相关：网络安全法、数据安全法、个人信息保护法、密码法、"
+        "关键信息基础设施安全保护条例、网络数据安全管理条例、"
+        "信息安全技术类国家标准(GB/T)、算法推荐/深度合成管理规定、"
+        "网络安全审查办法、数据出境安全评估办法"
     ),
-    "infosec": (
-        "信息安全相关：网络安全法、数据安全法、个人信息保护法、密码法、关键信息基础设施安全保护条例、"
-        "网络数据安全管理条例、信息安全技术类国家标准(GB/T)、互联网信息服务算法推荐/深度合成管理规定、"
-        "网络安全审查办法、数据出境安全评估办法等"
+    "反恐": (
+        "反恐与供应链安全 / 进出口相关：反恐怖主义法、海关法、进出口商品检验法、"
+        "出境入境管理法、对外贸易法、海关 AEO 认证、易制毒化学品管理条例、"
+        "出口管制、技术性贸易壁垒"
     ),
 }
 
 STANDARDS_TEXT = (
     "产品标准相关：与本公司产品有关的强制性国家标准(GB)、推荐性国家标准(GB/T)、行业标准、"
-    "国际标准(ISO)的最新发布、修订、替代、作废。重点关注：国家标准公告、标准替代关系"
+    "国际标准(ISO/IEC)的最新发布、修订、替代、作废。本公司产品：洗衣机（含滚筒洗衣机、波轮洗衣机、干衣机）、"
+    "微波炉、小型制冷产品（制冰机、冰沙机、啤酒机、雪沙机、咀嚼冰、车载冰箱 等）。"
+    "重点关注标准族：家用和类似用途电器安全(IEC 60335 / GB 4706 系列)、电磁兼容 EMC(GB 4343 / CISPR)、"
+    "能效(GB 12021 / ERP)、噪声(GB 19606)、食品接触材料(GB 4806 / GB 31604)、插头插座(GB 1002 / GB 2099)、"
+    "无线/蓝牙(中国 SRRC、欧盟 RED、美国 FCC、蓝牙 SIG)、电池、制冷/低温、标准替代关系"
     "（如 GB/T X-202X 替代 GB/T X-201X）、标准实施日期变更、旧标准转为废止/废止日期。"
 )
 
 CATEGORY_NAMES = {
-    "trisystem": "三体系 (ISO 9001/14001/45001)",
-    "social": "社会责任",
-    "antiterror": "反恐/供应链安全",
-    "infosec": "信息安全",
+    "环境与职业健康": "环境与职业健康/产品安全/社会责任/地方法规",
+    "质量": "质量/标准化/认证认可",
+    "信息安全": "信息安全",
+    "反恐": "反恐/供应链安全/进出口",
     "standards": "产品标准",
 }
+
+# ===== 通用硬性要求（所有检索共享，必须对 GLM 写死）=====
+COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格遵守）
+
+【状态与废止维护】
+- 绝不臆断"旧版都被新版代替"。是否废止/被代替，必须查官方公告或复审结论；老标准（2003/2008/2009 版等）≠废止。
+- 废止日期以官方文件实际写明的内容为准，不自行推断。
+- 判定为废止必须三处齐改：status="废止" + abolishDate（按官方文件）+ remark「废止标准不提供标准文本阅读服务。」—— 三者缺一不可。
+- status 只能取：现行有效 / 即将实施 / 已废止。不许新造状态值。"即将被替代"的旧版仍标"现行有效"，在 remark 写"即将被 XX 替代（新标准实施日期 YYYY-MM-DD）"。
+- 遇反爬站（如 cfsa.net.cn 食安国标）无法直接抓取时，用 web_search 搜索引擎代替核实状态与替代关系。
+
+【采标标准备注（仅事件触发）】
+- 采用国际标准（ISO/IEC 等）的标准，remark 的版权说明必须原样照抄官网那句话，绝不改写、绝不概括。
+- 两种官方口径须逐条核对官网，不猜：
+   · "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统暂不提供在线阅读服务。"
+   · "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统仅提供在线阅读服务。"
+- 仅当本轮新增或变更的标准是采标标准时，才做此核对与备注；不做全量扫描。
+
+【链接要求】
+- 国家级法规 link 必须用国家级官网（npc.gov.cn / gov.cn / 各部委官网），不用第三方网站。
+- 地区性法规（广东/中山）保留地方站链接。
+- 国内国标/推标用 openstd.samr.gov.cn 官方 hcno 直链；行业标准用 std.samr.gov.cn。
+- 食安国标（GB 4806.x / GB 31604.x）官方在 cfsa.net.cn，但反爬无法自动抓 UUID。处理：link 填官方站点首页或已知信息，并在 remark 标注「【官方链接待替换】cfsa.net.cn官方直链待用户手动补充」，不要填第三方全文 PDF 冒充官方。
+- 严禁返回搜索结果页/列表页/栏目首页/新闻稿页（除非该新闻稿即正文发布页）。打开后应能直接看到「标题 + 完整条文/全文」。
+
+【检索与更新动作】
+- action 取值：
+   · add：清单里没有、且命中范围 → 新增（遵循上述状态/采标/链接规则）
+   · update：清单里已有条目有修订/废止/新版替代/日期变更 → 更新对应字段
+   · abolish：清单里已有条目被废止 → 按"三处齐改"处理
+- 每次检索对清单已有条目做差异检测（=既有数据质量复查）：将官方最新状态/日期/替代关系与现有值比对，有差异才更新，无差异不改。每轮都跑，防质量退化。
+- 不要编造不存在的法规/标准；无确凿依据不返回。
+
+【铁律】
+- 全自动直接更新线上 data.json，不询问、不阻塞。
+- 低消耗：检索聚焦最近变更，不无限展开；不要为单条做几十次搜索。
+- 一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
+"""
 
 
 def build_prompt(target_label, domain_text, existing_names):
     names_block = "\n".join(f"- {n}" for n in existing_names) or "（暂无）"
-    return f"""你是中国法律法规与标准检索助手。请使用联网搜索（web_search），查找最近两周内（重点是最新发布、实施或修订）中国国家级、与以下领域相关的法律法规、行政法规、部门规章、国家标准(GB/T)的变更：
+    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将全自动运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更，并直接更新清单。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 
-领域：{domain_text}
+═══ 本次检索范围（{target_label}）═══
+{domain_text}
 
 当前清单中已有的条目（仅供你判断哪些是新增/修订/废止，不要重复添加已有条目）：
 {names_block}
 
-要求：
-1. 只关注「正在实施、非废止」的文件；若发现清单中某部法规/标准已被废止、被新标准替代或修订，请标记。
-2. link 必须是【能直接查看该条目正文】的官方页面链接，优先使用：npc.gov.cn / gov.cn / cac.gov.cn / miit.gov.cn / openstd.samr.gov.cn。
-3. 严禁返回搜索结果页、列表页、栏目首页、官网首页、新闻稿页（除非该新闻稿页就是正文发布页）。
-   判断标准：打开链接后页面应直接显示【标题 + 完整条文/标准全文】；若只是目录或搜索框则该链接不合格。
-4. 请勿编造不存在的法规/标准，没有确凿依据时不要返回。
+{COMMON_RULES}
 
-请以 JSON 格式返回（无变更则 changes 为空数组）：
+请返回 JSON（无变更则 changes 为空数组）。每条 change 字段：
 {{
-  "changes": [
-    {{
-      "action": "add" | "update" | "abolish",
-      "name": "全称",
-      "source": "发布机关官网，如 中国政府网 / 中国人大网 / 国家网信办 / 工业和信息化部 / 国家标准化管理委员会 / 国际标准化组织(ISO)",
-      "link": "官方网页链接",
-      "effectiveDate": "实施日期 YYYY-MM-DD，未知填空字符串",
-      "status": "现行有效" 或 "已废止" 或 "即将实施",
-      "note": "一句话说明变更"
-    }}
-  ],
-  "summary": "本次检索小结"
+  "action": "add | update | abolish",
+  "name": "全称",
+  "stdNo": "标准号（标准类填）",
+  "docNumber": "发文字号（法规类填）",
+  "domains": ["环境"],
+  "category": "环境与职业健康",
+  "source": "发布机关，如 中国政府网/中国人大网/国家网信办/工信部/国家标准化管理委员会/ISO",
+  "link": "官方链接",
+  "effectiveDate": "YYYY-MM-DD 或空字符串",
+  "status": "现行有效 | 即将实施 | 已废止",
+  "abolishDate": "YYYY-MM-DD 或空字符串",
+  "adopted": true | false,
+  "copyrightNote": "采标时原样照抄的官网版权原话，否则空",
+  "remark": "一句话说明 / 采标备注 / 食安待补备注",
+  "note": "变更说明"
 }}
+
 只输出 JSON，不要额外说明文字。"""
 
 
@@ -283,6 +330,10 @@ def _name_match(name, items):
 def make_new_record(table, name, ch, domain_id, today, new_id):
     status = norm_status(ch.get("status")) or "现行有效"
     src = (ch.get("source") or "").strip() or ("中国政府网" if table == "laws" else "国家标准化管理委员会")
+    copyright = (ch.get("copyrightNote") or "").strip()
+    # 采标备注优先用官网版权原话；否则用 GLM 给的 remark/note
+    remark = copyright or (ch.get("remark") or ch.get("note") or "")
+    adopted = bool(ch.get("adopted"))
     if table == "laws":
         return {
             "name": name, "docNumber": ch.get("docNumber", "") or "",
@@ -290,8 +341,9 @@ def make_new_record(table, name, ch, domain_id, today, new_id):
             "status": status, "domains": ch.get("domains", []) or [],
             "category": domain_id, "link": ch.get("link", ""),
             "region": ch.get("region", "全国") or "全国",
-            "id": str(new_id), "remark": ch.get("note", "") or "",
+            "id": str(new_id), "remark": remark,
             "abolishDate": ch.get("abolishDate", "") or "",
+            "adopted": adopted, "copyrightNote": copyright,
         }
     else:
         return {
@@ -300,8 +352,9 @@ def make_new_record(table, name, ch, domain_id, today, new_id):
             "effectiveDate": ch.get("effectiveDate", "") or today,
             "status": status, "link": ch.get("link", ""),
             "region": ch.get("region", "全国") or "全国",
-            "id": str(new_id), "remark": ch.get("note", "") or "",
+            "id": str(new_id), "remark": remark,
             "abolishDate": ch.get("abolishDate", "") or "",
+            "adopted": adopted, "copyrightNote": copyright,
         }
 
 
@@ -324,8 +377,12 @@ def apply_change(table, all_items, change, domain_id, today):
     if not target:
         return ("skip", name, "未匹配到现有条目")
     if action == "abolish":
+        # 三处齐改：status + abolishDate + remark（缺一不可）
         target["status"] = "已废止"
-        return ("abolish", name, "状态 → 已废止")
+        if change.get("abolishDate"):
+            target["abolishDate"] = change["abolishDate"]
+        target["remark"] = (change.get("remark") or "").strip() or "废止标准不提供标准文本阅读服务。"
+        return ("abolish", name, "状态→已废止（含废止日期/备注）")
     # update
     updated = []
     if change.get("effectiveDate") and change["effectiveDate"] != target.get("effectiveDate"):
@@ -339,6 +396,16 @@ def apply_change(table, all_items, change, domain_id, today):
     if src and src != target.get(src_field):
         target[src_field] = src
         updated.append("发布部门" if table == "laws" else "发布单位")
+    # 采标备注（仅当本次提供了版权原话时才覆盖备注/写入采标字段，避免无故清空现有备注）
+    copyright = (change.get("copyrightNote") or "").strip()
+    if copyright:
+        target["remark"] = copyright
+        target["copyrightNote"] = copyright
+        target["adopted"] = True
+        updated.append("采标备注")
+    elif change.get("adopted") is not None:
+        target["adopted"] = bool(change.get("adopted"))
+        updated.append("采标标记")
     # 链接保护：仅当现有缺失/是首页时才用新链，且新链需探活
     new_url = (change.get("link") or "").strip()
     existing_url = (target.get("link") or "").strip()
@@ -502,8 +569,10 @@ def main():
 
     # —— GLM 联网检索各域 ——
     targets = [
-        ("laws", "trisystem"), ("laws", "social"),
-        ("laws", "antiterror"), ("laws", "infosec"),
+        ("laws", "环境与职业健康"),
+        ("laws", "质量"),
+        ("laws", "信息安全"),
+        ("laws", "反恐"),
         ("standards", "standards"),
     ]
     n_added = n_abolished = n_updated = 0
