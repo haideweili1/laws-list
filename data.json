@@ -133,7 +133,7 @@
       "name": "中华人民共和国环境保护法",
       "docNumber": "",
       "dept": "生态环境部",
-      "effectiveDate": "2024-01-01",
+      "effectiveDate": "2015-01-01",
       "status": "现行有效",
       "domains": [
         "环境"
@@ -7683,12 +7683,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2009-05-01",
-      "status": "现行有效",
+      "status": "已废止",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E22434C73AF364800DFDA8CCCDC09BA",
       "region": "",
       "id": "S0106",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2025-11-01"
     },
     {
       "name": "GB/T 4857.2  包装运输包装件基本试验 第2部分：温湿度调节处理",
