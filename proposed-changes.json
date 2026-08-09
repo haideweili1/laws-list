@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-08-09",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 0,
+    "abolished": 0,
+    "statusSwitched": 0,
+    "rejected": 9
+  },
+  "changes": [],
+  "rejected": [
+    {
+      "id": "r1",
+      "type": "reject",
+      "table": "laws",
+      "name": "中山市排水管理条例",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：http://www.zsrd.gov.cn/zscq/gzbg/202403/t20240315_1234567.htm"
+      ],
+      "sourceUrl": "http://www.zsrd.gov.cn/zscq/gzbg/202403/t20240315_1234567.htm",
+      "note": "实施日期由空字符串改为2025-04-11，依据中山市人大常委会官网公布的条例文本"
+    },
+    {
+      "id": "r2",
+      "type": "reject",
+      "table": "laws",
+      "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表",
+        "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/GB23723.5-2025"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB23723.5-2025",
+      "note": "实施日期由空字符串改为2025-08-01，依据国家标准化管理委员会官网公布的标准文本"
+    },
+    {
+      "id": "r3",
+      "type": "reject",
+      "table": "laws",
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表",
+        "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/GB31420-2025"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB31420-2025",
+      "note": "实施日期由空字符串改为2026-07-01，依据国家标准化管理委员会官网公布的标准文本"
+    },
+    {
+      "id": "r4",
+      "type": "reject",
+      "table": "laws",
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表",
+        "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/GB14866-2023"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB14866-2023",
+      "note": "实施日期由空字符串改为2025-01-01，依据国家标准化管理委员会官网公布的标准文本"
+    },
+    {
+      "id": "r5",
+      "type": "reject",
+      "table": "laws",
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表",
+        "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/GB15605-2024"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB15605-2024",
+      "note": "实施日期由空字符串改为2026-01-01，依据国家标准化管理委员会官网公布的标准文本"
+    },
+    {
+      "id": "r6",
+      "type": "reject",
+      "table": "laws",
+      "name": "工贸企业有限空间作业安全规定（应急管理部令（第13号））",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源确认失效（404 / 跳回首页），多半是编造的链接：https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_1234567.htm"
+      ],
+      "sourceUrl": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202401/t20240115_1234567.htm",
+      "note": "实施日期由空字符串改为2024-01-01，依据应急管理部官网公布的令文"
+    },
+    {
+      "id": "r7",
+      "type": "reject",
+      "table": "laws",
+      "name": "突发事件应急预案管理办法（国发办（2024）5号）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源确认失效（404 / 跳回首页），多半是编造的链接：http://www.gov.cn/zhengce/zhengceku/202402/content_1234567.htm"
+      ],
+      "sourceUrl": "http://www.gov.cn/zhengce/zhengceku/202402/content_1234567.htm",
+      "note": "实施日期由空字符串改为2024-02-07，依据中国政府网公布的办法文本"
+    },
+    {
+      "id": "r8",
+      "type": "reject",
+      "table": "standards",
+      "name": "GB/T 19606-2024 家用和类似用途电器噪声限值",
+      "category": "产品标准",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/gbList?hcno=FFD6B6F6A3F6A8E5"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/gbList?hcno=FFD6B6F6A3F6A8E5",
+      "note": "effectiveDate 由 \"\" 改为 \"2026-09-01\"，依据是官方标准公告页面"
+    },
+    {
+      "id": "r9",
+      "type": "reject",
+      "table": "standards",
+      "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
+      "category": "产品标准",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时或被拦），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/gbList?hcno=FFD6B6F6A3F6A8E5"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/gbList?hcno=FFD6B6F6A3F6A8E5",
+      "note": "effectiveDate 由 \"\" 改为 \"2027-04-01\"，依据是官方标准公告页面"
+    }
+  ]
+}
