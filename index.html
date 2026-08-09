@@ -80,6 +80,9 @@
 @keyframes spin{to{transform:rotate(360deg)}}
 .btn.ok{color:var(--ok);border-color:var(--ok)}
 .btn.err{color:var(--bad);border-color:var(--bad)}
+.btn.running{opacity:.65}
+.btn.running .ico::after{content:"";display:inline-block;width:10px;height:10px;border:2px solid #cbd5e1;border-top-color:var(--pri);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-1px}
+.btn-label{margin-left:2px}
 .btn.sm{padding:4px 10px;font-size:12px}
 .btn:disabled{opacity:.7;cursor:default}
 .change-card{margin:10px 22px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
@@ -90,6 +93,10 @@
 .ct.manual{background:#ede9fe;color:#6d28d9}
 .ct.auto{background:#dcfce7;color:#15803d}
 .ct-time{color:var(--muted);font-size:12px}
+.cc-status{font-size:12px;color:var(--muted);padding:6px 2px 0;min-height:16px;line-height:1.5}
+.cc-status.running{color:#b8860b}
+.cc-status.ok{color:var(--ok)}
+.cc-status.err{color:var(--bad)}
 .muted{color:var(--muted)}
 .cl-entry{border-bottom:1px solid var(--line);padding:8px 0}
 .cl-entry:last-child{border-bottom:none}
@@ -107,7 +114,7 @@
   <div class="meta">数据更新时间：<span id="lastUpdated">-</span> ｜ <span class="dot" id="syncDot"></span><span id="syncText">本地</span></div>
   <div class="head-actions">
     <button class="btn" id="syncBtn" onclick="manualSync()"><span class="ico"></span>同步</button>
-    <button class="btn" id="retrieveBtn" onclick="triggerRetrieve()"><span class="ico"></span>自动检索</button>
+    <button class="btn" id="retrieveBtn" onclick="triggerRetrieve()"><span class="ico"></span><span class="btn-label">自动检索</span></button>
   </div>
 </header>
 
@@ -120,6 +127,7 @@
 <div class="change-card">
   <div class="cc-head"><span>最近变更</span><button class="btn sm" onclick="openChangelog()">查看详细记录</button></div>
   <div id="changePreview" class="cc-body"><span class="muted">暂无变更记录</span></div>
+  <div id="retrieveStatus" class="cc-status"></div>
 </div>
 
 <!-- 法律法规视图 -->
@@ -597,18 +605,25 @@ async function manualSync(){
 }
 async function triggerRetrieve(){
   const btn=document.getElementById('retrieveBtn');
-  setBtn(btn,'loading');
+  const lbl=btn.querySelector('.btn-label');
+  const st=$("#retrieveStatus");
+  const setSt=(cls,txt)=>{ st.className='cc-status'+(cls?' '+cls:''); st.textContent=txt||''; };
+  const startedAt=Date.now();
+  const fmtElapsed=()=>{ const s=Math.floor((Date.now()-startedAt)/1000); return s<60?`${s} 秒`:`${Math.floor(s/60)} 分 ${s%60} 秒`; };
+  setBtn(btn,'loading'); if(lbl)lbl.textContent='检索中…';
   try{
     const r=await fetch(SYNC_PROXY+'/trigger-update',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){
+      btn.classList.remove('running'); btn.disabled=false; if(lbl)lbl.textContent='自动检索';
       setBtn(btn,'err');
-      toast('启动失败：'+(j.message||'请稍后再试'));
+      setSt('err','启动失败：'+(j.message||'请稍后再试'));
       setTimeout(()=>setBtn(btn,'idle'),1500);
       return;
     }
-    setBtn(btn,'idle');
-    toast(j.message||'已启动自动检索，请稍后在『最近变更』查看');
+    // 启动成功：进入"检索中"常驻状态（按钮转圈+状态行实时提示）
+    btn.classList.remove('loading'); btn.classList.add('running'); btn.disabled=true; if(lbl)lbl.textContent='检索中…';
+    setSt('running',(j.message||'检索任务已启动，正在后台运行…'));
     const runId=j.run_id||'';
     let n=0; const MAX=12; const IV=25000;
     const timer=setInterval(async()=>{
@@ -618,23 +633,33 @@ async function triggerRetrieve(){
         const sj=await s.json().catch(()=>({}));
         if(sj.runStatus==='completed'){
           clearInterval(timer);
+          btn.classList.remove('running','loading'); btn.disabled=false; if(lbl)lbl.textContent='自动检索';
+          let sum=null;
+          try{ const rr=await fetch("update-summary.json?t="+Date.now()); if(rr.ok)sum=await rr.json(); }catch(e){}
           if(sj.runConclusion==='success'){
-            toast('自动检索完成，已更新，请在『最近变更』查看');
-            if(typeof renderChangePreview==='function') renderChangePreview();
+            if(sum&&sum.hasUpdates){ const c=sum.counts||{}; const ab=(c.abolished||0)+(c.statusSwitched||0);
+              setSt('ok','✅ 检索完成：新增 '+(c.added||0)+' / 更新 '+(c.updated||0)+' / 标记废止 '+(ab)+'，详见『最近变更』');
+            } else { setSt('ok','✅ 检索完成：本次无变更'); }
+            renderChangePreview();
+            setTimeout(renderChangePreview,8000);
           }else{
-            toast('本次检索未成功（'+(sj.runConclusion||'未知')+'），请查看 Actions 日志');
+            setSt('err','⚠️ 本次检索未成功（'+(sj.runConclusion||'未知')+'），请查看 Actions 日志');
           }
           return;
         }
       }catch(e){}
       if(n>=MAX){
         clearInterval(timer);
-        toast('任务仍在后台运行，请稍后刷新页面查看结果');
+        btn.classList.remove('running','loading'); btn.disabled=false; if(lbl)lbl.textContent='自动检索';
+        setSt('running','⏳ 任务仍在后台运行（已等待约 '+fmtElapsed()+'），完成后『最近变更』会自动更新，您也可稍后刷新页面查看');
+      }else{
+        setSt('running','🔄 检索进行中…（已等待约 '+fmtElapsed()+'）');
       }
     },IV);
   }catch(e){
+    btn.classList.remove('running'); btn.disabled=false; if(lbl)lbl.textContent='自动检索';
     setBtn(btn,'err');
-    toast('启动失败：'+e.message);
+    setSt('err','启动失败：'+e.message);
     setTimeout(()=>setBtn(btn,'idle'),1500);
   }
 }
@@ -647,18 +672,25 @@ async function renderChangePreview(){
   try{ auto=await fetch("update-summary.json?t="+Date.now()).then(r=>r.ok?r.json():null); }catch(e){}
   const entries=[];
   manual.forEach(e=>entries.push({kind:"手动",ts:e.ts,e}));
-  if(auto&&(auto.runAt||(auto.added||[]).length||(auto.modified||[]).length||(auto.abolished||[]).length))
-    entries.push({kind:"自动",ts:new Date(auto.runAt||0).getTime()||0,e:auto});
+  if(auto&&(auto.hasUpdates||(auto.changes&&auto.changes.length)||auto.updatedAt))
+    entries.push({kind:"自动",ts:auto.updatedAt?new Date(auto.updatedAt).getTime():0,e:auto});
   entries.sort((a,b)=>b.ts-a.ts);
   if(!entries.length){ box.innerHTML='<span class="muted">暂无变更记录</span>'; return; }
   box.innerHTML=entries.slice(0,5).map(en=>{
     const tag=en.kind==="手动"?'<span class="ct manual">手动</span>':'<span class="ct auto">自动</span>';
-    const t=fmtTime(en.ts); let sum="";
+    const t=en.kind==="手动"?fmtTime(en.ts):(en.e.updatedAt||"-"); let sum="";
     if(en.kind==="手动"){ const e=en.e;
       if(e.op==="add")sum="新增《"+esc(e.name)+"》";
       else if(e.op==="delete")sum="删除《"+esc(e.name)+"》";
       else sum="修改《"+esc(e.name)+"》"+(e.diff&&e.diff.length?("："+e.diff.slice(0,2).map(d=>d.f+" "+d.old+"→"+d.new).join("，")):"");
-    } else { const a=en.e; sum="更新：新增"+(a.added||[]).length+" 修改"+(a.modified||[]).length+" 废止"+(a.abolished||[]).length; }
+    } else {
+      const a=en.e; const cs=(a.changes||[]).slice(0,5);
+      if(!cs.length){ const c=a.counts||{}; sum="更新：新增"+(c.added||0)+" 修改"+(c.updated||0)+" 废止"+(c.abolished||0); }
+      else sum=cs.map(ch=>{
+        const ic=ch.type==="add"?"➕":ch.type==="abolish"?"🗑":ch.type==="status_switch"?"🔄":"✏";
+        return ic+"《"+esc(ch.name)+"》"+(ch.detail?("："+esc(ch.detail)):"");
+      }).join("；");
+    }
     return '<div class="cri">'+tag+'<span class="ct-time">'+t+'</span><span>'+sum+'</span></div>';
   }).join("");
 }
@@ -678,18 +710,15 @@ async function openChangelog(){
     return '<div class="cl-entry"><div class="cl-meta">'+fmtTime(e.ts)+'</div>'+body+'</div>';
   }).join("");
   h+='<h4>自动更新</h4>';
-  if(!auto) h+='<p class="muted">暂无自动更新记录（后端接入后显示）</p>';
+  if(!auto) h+='<p class="muted">暂无自动更新记录</p>';
   else{
-    h+='<p>运行时间：'+esc(auto.runAt||"-")+'</p>';
-    if(auto.added&&auto.added.length) h+='<p>➕ 新增：'+auto.added.map(x=>typeof x==="string"?esc(x):esc(x.name)).join("、")+'</p>';
-    if(auto.modified&&auto.modified.length){
-      h+='<p>✏ 修改：</p><ul>'+auto.modified.map(x=>{
-        if(typeof x==="string") return '<li>'+esc(x)+'</li>';
-        const diff=(x.diff||[]).map(d=>d.f+'：'+(esc(d.old)||'（空）')+' → '+(esc(d.new)||'（空）')).join("；");
-        return '<li>'+esc(x.name)+(diff?'（'+diff+'）':'')+'</li>';
-      }).join("")+'</ul>';
-    }
-    if(auto.abolished&&auto.abolished.length) h+='<p>🗑 废止：'+auto.abolished.map(x=>typeof x==="string"?esc(x):esc(x.name)).join("、")+'</p>';
+    h+='<p>运行时间：'+esc(auto.updatedAt||"-")+(auto.hasUpdates?"（有更新）":"（无变更）")+'</p>';
+    const ch=(auto.changes||[]);
+    if(!ch.length) h+='<p class="muted">本次无具体变更项</p>';
+    else h+=ch.map(x=>{
+      const ic=x.type==="add"?"➕":x.type==="abolish"?"🗑":x.type==="status_switch"?"🔄":"✏";
+      return '<div class="cl-entry"><div class="cl-meta">'+(esc(x.category||"")||"")+'</div><p>'+ic+' 《'+esc(x.name)+'》'+(x.detail?(' — '+esc(x.detail)):"")+'</p></div>';
+    }).join("");
   }
   box.innerHTML=h;
 }
