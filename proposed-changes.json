@@ -6,7 +6,7 @@
     "updated": 0,
     "abolished": 0,
     "statusSwitched": 1,
-    "rejected": 0
+    "rejected": 10
   },
   "changes": [
     {
@@ -28,12 +28,144 @@
             "to": "现行有效"
           }
         ],
-        "link": "",
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=599CF7EBF5F1D87E8C40C84FFDFE8D98",
         "source": "",
         "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=599CF7EBF5F1D87E8C40C84FFDFE8D98",
-        "reason": "实施日期 2026-07-01 已至，依据标准官方页自动转为现行有效"
+        "reason": "实施日期已至，依据标准官方页自动转为现行有效"
       }
     }
   ],
-  "rejected": []
+  "rejected": [
+    {
+      "id": "r1",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国突发事件应对法",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml",
+      "note": "实施日期由空字符串改为2024-11-01，依据全国人大常委会官网公布的正式文本。"
+    },
+    {
+      "id": "r2",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国传染病防治法（2025修订）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml",
+      "note": "实施日期由空字符串改为2025-09-01，依据全国人大常委会官网公布的修订文本。"
+    },
+    {
+      "id": "r3",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国食品安全法",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml",
+      "note": "实施日期由空字符串改为2025-12-01，依据全国人大常委会官网公布的修订文本。"
+    },
+    {
+      "id": "r4",
+      "type": "reject",
+      "table": "laws",
+      "name": "中山市排水管理条例",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.zsrd.gov.cn/zsgov/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml"
+      ],
+      "sourceUrl": "https://www.zsrd.gov.cn/zsgov/202403/75baf2b6b5f84e7a9a1f8c3b4b8b8b8b.shtml",
+      "note": "实施日期由空字符串改为2025-04-11，依据中山市人大常委会官网公布的正式文本。"
+    },
+    {
+      "id": "r5",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国网络安全法",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5b54e7a9b6b5.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5b54e7a9b6b5.shtml",
+      "note": "实施日期由2026-01-01改为2026-01-01，依据全国人大常委会公布的最新文本"
+    },
+    {
+      "id": "r6",
+      "type": "reject",
+      "table": "laws",
+      "name": "《信息安全技术 大数据服务安全能力要求》GB/T 35274-2023",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源能打开但无法读取正文，请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A",
+      "note": "实施日期由2024-03-01改为2024-03-01，依据国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r7",
+      "type": "reject",
+      "table": "laws",
+      "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A",
+      "note": "实施日期由2022-11-01改为2022-11-01，依据国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r8",
+      "type": "reject",
+      "table": "laws",
+      "name": "《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "声称原状态是「即将实施」，清单里其实是「现行有效」",
+        "标成「即将实施」，但实施日期 2025-04-01 早已过去"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A",
+      "note": "实施日期由2025-04-01改为2025-04-01，依据国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r9",
+      "type": "reject",
+      "table": "laws",
+      "name": "《信息技术安全技术信息安全事件管理 第1部分：事件管理原理》GB/T 20985-2017",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源能打开但无法读取正文，请人工点开确认：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FF3A6F4E6C8F4B4A9B8F4B4A9B8F4B4A",
+      "note": "实施日期由2018-07-01改为2018-07-01，依据国家标准化管理委员会公布的最新文本"
+    },
+    {
+      "id": "r10",
+      "type": "reject",
+      "table": "laws",
+      "name": "《中华人民共和国密码法》",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5b54e7a9b6b5.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5b54e7a9b6b5.shtml",
+      "note": "实施日期由2020-01-01改为2020-01-01，依据全国人大常委会公布的最新文本"
+    }
+  ]
 }
