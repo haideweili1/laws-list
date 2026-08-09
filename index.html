@@ -119,9 +119,19 @@
 .pt.update{background:#dbeafe;color:#1d4ed8}
 .pt.abolish{background:#fee2e2;color:#b91c1c}
 .pt.status_switch{background:#ede9fe;color:#6d28d9}
+.pt.reject{background:#fee2e2;color:#b91c1c}
 .prop-diff{margin:3px 0 0;padding-left:18px}
 .prop-diff li{font-size:12px}
 .prop-sub{font-size:12px;color:var(--muted);word-break:break-all}
+/* 两栏：左＝通过质检可直接应用；右＝未通过质检的待核实线索（只看不写） */
+.prop-cols{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+.prop-col{flex:1 1 380px;min-width:0}
+.prop-col-h{font-weight:600;font-size:13px;padding-bottom:6px;border-bottom:2px solid #fcd34d;margin-bottom:4px}
+.prop-col-h.rj{border-bottom-color:#fca5a5}
+.prop-col-h .prop-tip{display:inline;margin:0}
+.prop-empty{font-size:12px;color:var(--muted);padding:10px 0}
+.rj-reason{margin:3px 0 0;padding-left:18px}
+.rj-reason li{font-size:12px;color:#b91c1c}
 .batchbar{display:flex;gap:10px;align-items:center;padding:8px 22px;background:#eff6ff;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .batchbar.hidden{display:none}
 .batchbar .btn[disabled]{opacity:.5;cursor:not-allowed}
@@ -160,8 +170,17 @@
       <button class="btn sm" id="propDiscardBtn" onclick="discardProposals()">全部忽略</button>
     </span>
   </div>
-  <div class="prop-tip">自动检索结果<b>不会自动改数据</b>。请逐条核对（尤其是链接是否为正文、日期与状态是否属实）后再勾选应用；有疑问的直接不勾。</div>
-  <div class="prop-list" id="propList"></div>
+  <div class="prop-tip">自动检索结果<b>不会自动改数据</b>。左栏是已通过 7 道自动质检的条目，仍请核对后勾选；右栏是质检没通过的线索，<b>只作参考、不会写入清单</b>，可据此判断检索质量。</div>
+  <div class="prop-cols">
+    <div class="prop-col">
+      <div class="prop-col-h">✅ 可直接应用 <span id="propCountL" class="prop-tip"></span></div>
+      <div class="prop-list" id="propList"></div>
+    </div>
+    <div class="prop-col">
+      <div class="prop-col-h rj">⚠️ 待核实线索（未通过质检） <span id="propCountR" class="prop-tip"></span></div>
+      <div class="prop-list" id="propRejectList"></div>
+    </div>
+  </div>
   <div class="cc-status" id="propStatus"></div>
 </div>
 
@@ -713,11 +732,16 @@ async function loadProposals(){
   const card=document.getElementById("proposalCard"); if(!card)return 0;
   let p=null;
   try{ const r=await fetch("proposed-changes.json?t="+Date.now(),{cache:"no-store"}); if(r.ok)p=await r.json(); }catch(e){}
-  PROPOSALS=(p&&Array.isArray(p.changes)&&p.changes.length)?p:null;
+  const nOk=(p&&Array.isArray(p.changes))?p.changes.length:0;
+  const nRj=(p&&Array.isArray(p.rejected))?p.rejected.length:0;
+  // 只要「可应用」或「待核实」任一非空就展示面板
+  PROPOSALS=(nOk||nRj)?p:null;
   if(!PROPOSALS){ card.style.display="none"; return 0; }
+  if(!Array.isArray(PROPOSALS.changes))PROPOSALS.changes=[];
+  if(!Array.isArray(PROPOSALS.rejected))PROPOSALS.rejected=[];
   card.style.display="";
   renderProposals();
-  return PROPOSALS.changes.length;
+  return nOk;
 }
 function propSummaryLine(c){
   // 新增条目没有 diffs，改为展示新记录的关键字段，便于核对
@@ -745,14 +769,36 @@ function renderProposals(){
     return '<div class="prop-item"><input type="checkbox" data-i="'+i+'" onchange="updatePropCount()"><div class="prop-main">'
       +'<div class="prop-title"><span class="pt '+esc(c.type)+'">'+(PROP_TYPE[c.type]||esc(c.type))+"</span>["+tbl+"] 《"+esc(c.name)+"》 <span class=\"muted\">"+esc(c.category||"")+"</span></div>"
       +body+reason+link+src+"</div></div>";
-  }).join("");
+  }).join("")||'<div class="prop-empty">本次没有通过质检的可应用条目。</div>';
+  renderRejected();
   updatePropCount();
+}
+// 未通过质检的线索：只展示不勾选，用来看清 GLM 到底错在哪，便于迭代提示词
+function renderRejected(){
+  const box=document.getElementById("propRejectList"); if(!box)return;
+  const list=(PROPOSALS&&Array.isArray(PROPOSALS.rejected))?PROPOSALS.rejected:[];
+  if(!list.length){ box.innerHTML='<div class="prop-empty">本次没有被拦下的线索。</div>'; return; }
+  box.innerHTML=list.map(r=>{
+    const tbl=r.table==="standards"?"标准":"法规";
+    const act={add:"想新增",update:"想更新",abolish:"想废止"}[r.action]||esc(r.action||"");
+    const reasons=(r.reasons||[]).map(x=>"<li>"+esc(x)+"</li>").join("");
+    const su=r.sourceUrl?'<div class="prop-sub">它给的依据：<a href="'+esc(r.sourceUrl)+'" target="_blank" rel="noopener">'+esc(r.sourceUrl)+"</a></div>":'<div class="prop-sub">它给的依据：<span class="old">未提供</span></div>';
+    const note=r.note?'<div class="prop-sub">它的说法：'+esc(r.note)+"</div>":"";
+    return '<div class="prop-item"><div class="prop-main">'
+      +'<div class="prop-title"><span class="pt reject">未通过</span>['+tbl+'] 《'+esc(r.name||"")+'》 <span class="muted">'+esc(r.category||"")+"　"+act+"</span></div>"
+      +'<ul class="rj-reason">'+reasons+"</ul>"+note+su+"</div></div>";
+  }).join("");
 }
 function updatePropCount(){
   const boxes=[...document.querySelectorAll("#propList input[type=checkbox]")];
   const n=boxes.filter(x=>x.checked).length;
+  const nRj=(PROPOSALS&&Array.isArray(PROPOSALS.rejected))?PROPOSALS.rejected.length:0;
   const el=document.getElementById("propCount");
-  if(el)el.textContent="（共 "+boxes.length+" 条，已选 "+n+" 条"+(PROPOSALS&&PROPOSALS.generatedAt?("，检索于 "+PROPOSALS.generatedAt):"")+"）";
+  if(el)el.textContent="（可应用 "+boxes.length+" 条／待核实 "+nRj+" 条"+(PROPOSALS&&PROPOSALS.generatedAt?("，检索于 "+PROPOSALS.generatedAt):"")+"）";
+  const l=document.getElementById("propCountL");
+  if(l)l.textContent="共 "+boxes.length+" 条，已选 "+n+" 条";
+  const rr=document.getElementById("propCountR");
+  if(rr)rr.textContent="共 "+nRj+" 条（不会写入清单）";
 }
 function toggleAllProposals(checked){
   document.querySelectorAll("#propList input[type=checkbox]").forEach(x=>{x.checked=!!checked;});
@@ -798,24 +844,39 @@ async function applyProposals(){
     })};
   try{
     const r=await fetch(SYNC_PROXY+"/apply-proposed",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({data:nd,summary:summary,remaining:remaining,generatedAt:PROPOSALS.generatedAt||today})});
+      body:JSON.stringify({data:nd,summary:summary,remaining:remaining,
+        rejected:(PROPOSALS.rejected||[]),generatedAt:PROPOSALS.generatedAt||today})});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){ if(btn)btn.disabled=false; setPropSt("err","写入失败："+(j.message||"请稍后再试")); return; }
     DATA=nd;
     $("#lastUpdated").textContent=DATA.lastUpdated||"-";
     buildFilterOptions(); renderLaws(); renderStandards();
-    PROPOSALS=remaining.length?Object.assign({},PROPOSALS,{changes:remaining}):null;
+    const keepRj=PROPOSALS.rejected||[];
+    PROPOSALS=(remaining.length||keepRj.length)?Object.assign({},PROPOSALS,{changes:remaining,rejected:keepRj}):null;
     if(PROPOSALS){ renderProposals(); }
     else { const card=document.getElementById("proposalCard"); if(card)card.style.display="none"; }
     setPropSt("ok","✅ 已应用 "+applied.length+" 条"+(skipped.length?("，跳过 "+skipped.length+" 条："+skipped.join("；")):"")+"。约 1 分钟后线上同步生效。");
     toast("已应用 "+applied.length+" 条更新");
     renderChangePreview();
-  }catch(e){ setPropSt("err","写入失败："+e.message); }
+  }catch(e){ setPropSt("err","写入失败："+e.message+"。请勿重复点击，先刷新页面确认是否已生效。"); }
   finally{ if(btn)btn.disabled=false; }
+}
+// 直连 GitHub 公共接口核对文件是否真的已被删除（不需要令牌，且不受 Pages 缓存延迟影响）
+async function proposalFileGone(){
+  try{
+    const r=await fetch("https://api.github.com/repos/haideweili1/laws-list/contents/proposed-changes.json?t="+Date.now(),{cache:"no-store"});
+    return r.status===404;
+  }catch(e){ return false; }
+}
+function closeProposalCard(msg){
+  PROPOSALS=null;
+  const card=document.getElementById("proposalCard"); if(card)card.style.display="none";
+  if(msg)toast(msg);
 }
 async function discardProposals(){
   if(!PROPOSALS)return;
-  if(!confirm("确认丢弃本次全部 "+PROPOSALS.changes.length+" 条提案？清单数据不会有任何改动。")) return;
+  const total=(PROPOSALS.changes||[]).length+(PROPOSALS.rejected||[]).length;
+  if(!confirm("确认丢弃本次全部 "+total+" 条提案（含待核实线索）？清单数据不会有任何改动。")) return;
   const btn=document.getElementById("propDiscardBtn"); if(btn)btn.disabled=true;
   setPropSt("running","正在清理提案…");
   try{
@@ -823,10 +884,19 @@ async function discardProposals(){
       body:JSON.stringify({discardOnly:true})});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){ setPropSt("err","清理失败："+(j.message||"请稍后再试")); return; }
-    PROPOSALS=null;
-    const card=document.getElementById("proposalCard"); if(card)card.style.display="none";
-    toast("已丢弃本次提案");
-  }catch(e){ setPropSt("err","清理失败："+e.message); }
+    closeProposalCard("已丢弃本次提案");
+    setPropSt("ok","✅ 已丢弃本次提案，清单数据未改动。");
+  }catch(e){
+    // 自愈：云函数可能已执行完但响应超时（旧版就是这样报 Failed to fetch 的）。
+    // 直接问 GitHub 文件还在不在，在就是真失败，不在就是已经成功了。
+    setPropSt("running","响应超时，正在核对后台是否已清理…");
+    if(await proposalFileGone()){
+      closeProposalCard("已丢弃本次提案");
+      setPropSt("ok","✅ 后台已清理完成（前端响应超时，已自动核对）。清单数据未改动。");
+    }else{
+      setPropSt("err","清理失败："+e.message+"。请稍等 10 秒后再点一次『全部忽略』。");
+    }
+  }
   finally{ if(btn)btn.disabled=false; }
 }
 

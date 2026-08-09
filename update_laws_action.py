@@ -13,7 +13,7 @@
 
 依赖环境变量：
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
-  MODEL            (可选)  模型名，默认 glm-4-air（支持 web_search 的模型）
+  MODEL            (可选)  模型名，默认 glm-4-plus（智谱最强模型，事实准确性明显优于 air）
   DRAFT_MODE       (可选)  true(默认)=只出提案不动数据；false=直写 data.json
 """
 
@@ -61,8 +61,9 @@ def is_homepage(url):
         return False
 
 
-def link_alive(url, timeout=8):
-    """跟随重定向探测链接是否可访问且未跳回首页。"""
+def probe_link(url, timeout=10):
+    """三态探活。返回 True=确认可访问 / False=确认失效(404等) / None=无法判定(超时、连不上)。
+    做成三态是为了避免 GitHub 服务器在境外访问国内官网超时，把本来正确的条目一律误杀。"""
     url = (url or "").strip()
     if not url:
         return False
@@ -79,45 +80,73 @@ def link_alive(url, timeout=8):
             if code >= 400:
                 return False
             if is_homepage(final) and not is_homepage(url):
-                return False
+                return False   # 跳回首页 = 原链接已失效
             return True
     except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return False
-        return True
+        if e.code in (403, 405, 406, 429):
+            return True        # 官网反爬拦截，页面本身通常存在
+        if e.code in (404, 410, 451):
+            return False       # 确认失效（编造链接最典型的表现）
+        return None            # 5xx 等服务端临时故障，判不了
+    except Exception:
+        return None            # 超时 / DNS / 连接失败，判不了
+
+
+def link_alive(url, timeout=10):
+    """布尔版：仅在「确认可访问」时为真（写入链接用，从严）。"""
+    return probe_link(url, timeout) is True
+
+
+# ===== 质检关卡：官方域名白名单（不在名单内的链接一律不采信）=====
+OFFICIAL_DOMAIN_SUFFIXES = (
+    # 国内：政府与部委（gov.cn 已覆盖 npc/samr/miit/mee/mem/cac/customs/mofcom/mps/mohrss/nhc/moj 等全部子域）
+    "gov.cn",
+    # 国内：非 gov.cn 的官方机构
+    "cfsa.net.cn", "cnis.ac.cn", "chinacdc.cn", "sacinfo.org.cn",
+    "ttbz.org.cn", "spc.org.cn", "cnca.org.cn", "cqc.com.cn", "srrc.org.cn",
+    # 国际/境外官方（产品标准与出口合规会用到）
+    "iso.org", "iec.ch", "cenelec.eu", "cen.eu", "etsi.org",
+    "europa.eu", "eur-lex.europa.eu", "gesetze-im-internet.de",
+    "fcc.gov", "govinfo.gov", "ecfr.gov", "cpsc.gov", "bluetooth.com",
+)
+
+# 明显不是正文的链接特征（搜索引擎 / 站内搜索 / 列表页 / 栏目首页）
+BAD_URL_PATTERNS = re.compile(
+    r"(baidu\.com|google\.|bing\.com|sogou\.com|so\.com|zhihu\.|toutiao\.|sohu\.|163\.com|sina\."
+    r"|/search|search\?|/so\?|keyword=|advanced_search|/list|/index\.html?$)", re.I)
+
+
+def domain_ok(url):
+    """质检关卡③：链接域名必须落在官方白名单内。"""
+    try:
+        host = (urllib.parse.urlparse((url or "").strip()).hostname or "").lower()
     except Exception:
         return False
+    if not host:
+        return False
+    return any(host == d or host.endswith("." + d) for d in OFFICIAL_DOMAIN_SUFFIXES)
 
 
-_SITE_SEARCH = [
-    ("人大", "https://www.npc.gov.cn/npc/c2/huiyi/search?keyword="),
-    ("国务院", "https://www.gov.cn/zhengce/advanced_search?q="),
-    ("政府", "https://www.gov.cn/zhengce/advanced_search?q="),
-    ("网信", "https://www.cac.gov.cn/search.htm?keyword="),
-    ("互联网信息", "https://www.cac.gov.cn/search.htm?keyword="),
-    ("市场监督", "https://www.samr.gov.cn/search?q="),
-    ("标准化", "https://std.samr.gov.cn/search?q="),
-    ("工业和信息化", "https://www.miit.gov.cn/search?q="),
-    ("工信部", "https://www.miit.gov.cn/search?q="),
-    ("生态环境", "https://www.mee.gov.cn/search?q="),
-    ("海关", "https://www.customs.gov.cn/search?q="),
-    ("商务", "https://www.mofcom.gov.cn/search?q="),
-    ("应急", "https://www.mem.gov.cn/search?q="),
-    ("公安", "https://www.mps.gov.cn/search?q="),
-    ("ISO", "https://www.iso.org/search.html?q="),
-    ("欧盟", "https://europa.eu/!search?q="),
-]
+def url_shape_ok(url):
+    """质检关卡③（形态）：拒收搜索页/列表页/栏目首页；国标全文页必须带 hcno= 参数。"""
+    u = (url or "").strip()
+    if not u or is_homepage(u):
+        return False
+    if BAD_URL_PATTERNS.search(u):
+        return False
+    host = (urllib.parse.urlparse(u).hostname or "").lower()
+    if "openstd.samr.gov.cn" in host and "hcno=" not in u:
+        # 国标平台全文页真实格式必为 ...detail.html?hcno=XXXX，拼出来的一律判为伪造
+        return False
+    return True
 
 
-def build_fallback_url(source, name):
-    """链接失效时的回退：优先该官网站内搜索，其次通用搜索。"""
-    name = (name or "").strip()
-    if not name:
-        return ""
-    for key, base in _SITE_SEARCH:
-        if key in (source or ""):
-            return base + urllib.parse.quote(name)
-    return "https://www.baidu.com/s?wd=" + urllib.parse.quote(name + " 正文")
+def url_trusted(url):
+    """三重校验：官方域名 + 正文形态 + 真实可访问。任一不过即不采信该链接。"""
+    u = (url or "").strip()
+    if not u:
+        return False
+    return domain_ok(u) and url_shape_ok(u) and link_alive(u)
 
 
 def _ymd(s):
@@ -228,21 +257,52 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 每条 change 必须能清楚说明"哪个字段 旧值→新值"以及"依据来源(source_url)"。若你无法说明变更内容与依据，就不要返回该条。
 - 禁止返回"看起来更新了但说不清改了什么"的条目（如只改采标标记却给不出版权原话）。
 
-【八、铁律】
+【八、绝对禁止修改的字段】
+- 名称(name) 与 发布部门/发布单位(dept/publisher) **一律不许修改**。把"国家互联网信息办公室"改写成"国家网信办"这类同义简称**不算变更**，禁止提交。
+- 你只被允许提出以下字段的变更：effectiveDate（实施日期）、status（状态）、abolishDate（废止日期）、link（正文链接）、remark（备注）、adopted / copyrightNote（采标）。
+- 提交了禁改字段的条目会被系统整条拒收。
+
+【九、旧值必须与清单完全一致（最重要）】
+- 我在下面会把清单里每条的【实施日期 / 状态 / 部门 / 是否已有链接】全部给你，你**必须先看清楚再说话**。
+- 每条 change 必须填写 fromValues 对象：{"字段名": "清单里当前的值"}，且必须与我给你的清单值**一字不差**。
+- 系统会拿 fromValues 和真实清单逐字比对，对不上就判定"你没看清单"，整条拒收。
+- 禁止出现"原清单未标注实施日期""清单里没有这条"之类的说法——清单内容就在下面，看清楚再写。
+
+【十、铁律】
 - 一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 - 低消耗：聚焦最近变更，不无限展开；不为单条做几十次搜索。
-- 每条 change 必须附 source_url（你核实所依据的官方页面链接）。
+- 每条 change 必须附 source_url（你核实所依据的官方页面链接），且该链接必须是官方域名下能打开的正文页；系统会真实访问校验，打不开或是搜索页/列表页的一律整条拒收。
+- 宁可少报，不可错报。没有把握就不要提交该条——漏报只是没更新，错报会污染整份清单。
 """
 
 
+def build_existing_block(items, table):
+    """把清单已有条目的关键字段全部摊开给模型看（名称/实施日期/状态/部门/是否已有链接）。
+    这是「旧值核对」这道质检关卡的基准，模型再也不能说『原清单未标注』。"""
+    lines = []
+    for it in items:
+        src = it.get("dept") if table == "laws" else it.get("publisher")
+        no = ("｜标准号=" + (it.get("stdNo") or "")) if table != "laws" else ""
+        lines.append(
+            f"- {it.get('name','')}{no}"
+            f"｜id={it.get('id','')}"
+            f"｜实施日期={it.get('effectiveDate') or '(空)'}"
+            f"｜状态={it.get('status') or '(空)'}"
+            f"｜部门={src or '(空)'}"
+            f"｜正文链接={'已有' if (it.get('link') or '').strip() else '缺失'}"
+        )
+    return "\n".join(lines) or "（暂无）"
+
+
 def build_prompt(target_label, domain_text, existing_names):
-    names_block = "\n".join(f"- {n}" for n in existing_names) or "（暂无）"
+    names_block = existing_names if isinstance(existing_names, str) else (
+        "\n".join(f"- {n}" for n in existing_names) or "（暂无）")
     return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 
 ═══ 本次检索范围（{target_label}）═══
 {domain_text}
 
-当前清单中已有的条目（权威去重基准，不要重复添加，名称相同或高度相似即视为已存在）：
+═══ 当前清单已有条目（既是去重基准，也是旧值核对基准，务必逐条看清再作答）═══
 {names_block}
 
 {COMMON_RULES}
@@ -264,10 +324,12 @@ def build_prompt(target_label, domain_text, existing_names):
   "adopted": true | false,
   "copyrightNote": "采标时原样照抄的官网版权原话，否则空字符串",
   "remark": "仅限三类：采标官网原话 / 食安待补说明 / 即将被XX替代说明；其余留空",
-  "source_url": "你核实本条所依据的官方页面链接（必填）",
-  "note": "变更说明（人类可读，不写入数据）"
+  "fromValues": {{"effectiveDate": "清单里当前的实施日期", "status": "清单里当前的状态"}},
+  "source_url": "你核实本条所依据的官方页面链接（必填，须官方域名正文页，系统会真实访问校验）",
+  "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
 
+注意：action=update / abolish 时 fromValues 必填且必须与上面清单一字不差，否则整条拒收。
 只输出 JSON，不要额外说明文字。"""
 
 
@@ -298,17 +360,80 @@ def search_target(client, model, label, text, existing_names):
         return {"changes": [], "summary": f"检索出错: {e}"}
 
 
-def _name_match(name, items):
-    for it in items:
-        if it["name"] == name:
-            return it
-    shorter = min(name, key=len)
-    if len(shorter) < 4:
+def _contains_ok(short, long_):
+    """short 被 long_ 包含，且不是「数字前缀」式的假包含。
+    例：GB4706.1 出现在 GB4706.14 里，但后面紧跟数字，属两份不同标准，不算匹配。"""
+    i = long_.find(short)
+    if i < 0:
+        return False
+    nxt = long_[i + len(short): i + len(short) + 1]
+    return not (nxt.isdigit() or nxt == ".")
+
+
+_STD_KEY_RE = re.compile(
+    r"\b(GB\s*/?\s*T|GBZ\s*/?\s*T|GB|GBZ|QB\s*/?\s*T|JB\s*/?\s*T|YY\s*/?\s*T|SN\s*/?\s*T|"
+    r"HG\s*/?\s*T|HJ|IEC|ISO|EN)\s*([0-9]+(?:\.[0-9]+)*)", re.I)
+
+
+def _std_key(s):
+    """抽出标准号主键，如 (GB, 4706.1)。GB 与 GB/T 归为同族（清单里两种写法混用）。"""
+    m = _STD_KEY_RE.search(s or "")
+    if not m:
         return None
+    fam = re.sub(r"[\s/]", "", m.group(1)).upper()
+    if fam == "GBT":
+        fam = "GB"
+    if fam == "GBZT":
+        fam = "GBZ"
+    return (fam, m.group(2))
+
+
+def _name_match(name, items):
+    """四层匹配：①精确 ②同一标准号 ③互相包含 ④高相似度。
+
+    ⚠️ 旧版这里写的是 `shorter = min(name, key=len)`——那是在遍历字符串里的单个字符，
+    结果恒为长度 1，于是 `len(shorter) < 4` 永远成立、直接 return None，近义匹配整段失效。
+    这正是重复条目被当成新条目加进来的根因。
+
+    误配风险由质检关卡③（fromValues 必须与清单一字不差）兜底：万一匹配到了错误条目，
+    旧值必然对不上，整条会被拒收，不会把改动写到别的条目上。"""
+    import difflib
+    n = _norm_txt(name)
+    if not n:
+        return None
+    kn = _std_key(n)
+    # ① 精确（去空格后）
     for it in items:
-        if name in it["name"] or it["name"] in name:
+        if _norm_txt(it.get("name")) == n:
             return it
-    return None
+    # ② 标准号相同即同一标准（对标准表最可靠）
+    if kn:
+        for it in items:
+            if _std_key(_norm_txt(it.get("name"))) == kn:
+                return it
+    # ③ 互相包含（较短一方≥4 字，且排除 4706.1 / 4706.14 这类数字前缀假包含）
+    for it in items:
+        m = _norm_txt(it.get("name"))
+        if not m or min(len(n), len(m)) < 4:
+            continue
+        km = _std_key(m)
+        if kn and km and kn != km:
+            continue          # 明确是两份不同标准
+        if (len(n) <= len(m) and _contains_ok(n, m)) or (len(m) < len(n) and _contains_ok(m, n)):
+            return it
+    # ④ 高相似度（覆盖「服务管理办法」vs「服务安全管理办法」这类多/少几个字的情况）
+    best, best_r = None, 0.0
+    for it in items:
+        m = _norm_txt(it.get("name"))
+        if not m or min(len(n), len(m)) < 6:
+            continue
+        km = _std_key(m)
+        if (kn and km and kn != km) or (bool(kn) != bool(km)):
+            continue          # 一方有标准号一方没有，或标准号不同，都不比
+        r = difflib.SequenceMatcher(None, n, m).ratio()
+        if r > best_r:
+            best, best_r = it, r
+    return best if best_r >= 0.88 else None
 
 
 def clean_remark(ch, is_food=False, is_abolish=False):
@@ -339,9 +464,10 @@ def make_new_record(table, name, ch, domain_id, today, new_id, is_food=False):
     if table == "laws":
         return {
             "name": name, "docNumber": ch.get("docNumber", "") or "",
-            "dept": src, "effectiveDate": ch.get("effectiveDate", "") or today,
+            "dept": src, "effectiveDate": _ymd(ch.get("effectiveDate")) or "",
             "status": status, "domains": ch.get("domains", []) or [],
-            "category": domain_id, "link": ch.get("link", ""),
+            "category": domain_id,
+            "link": (ch.get("link") or "").strip() if url_trusted(ch.get("link")) else "",
             "region": ch.get("region", "全国") or "全国",
             "id": str(new_id), "remark": remark,
             "abolishDate": ch.get("abolishDate", "") or "",
@@ -351,8 +477,9 @@ def make_new_record(table, name, ch, domain_id, today, new_id, is_food=False):
         return {
             "name": name, "stdNo": ch.get("stdNo", "") or "",
             "stdType": ch.get("stdType", "") or "", "publisher": src,
-            "effectiveDate": ch.get("effectiveDate", "") or today,
-            "status": status, "link": ch.get("link", ""),
+            "effectiveDate": _ymd(ch.get("effectiveDate")) or "",
+            "status": status,
+            "link": (ch.get("link") or "").strip() if url_trusted(ch.get("link")) else "",
             "region": ch.get("region", "全国") or "全国",
             "id": str(new_id), "remark": remark,
             "abolishDate": ch.get("abolishDate", "") or "",
@@ -360,9 +487,97 @@ def make_new_record(table, name, ch, domain_id, today, new_id, is_food=False):
         }
 
 
+def next_id(table, all_items):
+    """生成正确的下一个 id：法规 L0403 / 标准 S0156。
+    修复旧 bug：旧逻辑用 str(id).isdigit() 判断，对 'L0116' 恒为假，导致新条目从 1 重新编号。"""
+    prefix = "L" if table == "laws" else "S"
+    mx = 0
+    for it in all_items:
+        m = re.match(r"^[A-Za-z]*0*(\d+)$", str(it.get("id") or "").strip())
+        if m:
+            try:
+                mx = max(mx, int(m.group(1)))
+            except Exception:
+                pass
+    return f"{prefix}{mx + 1:04d}"
+
+
+# 标准号特征：带这些编号的条目属于「标准」，不许混进法规表
+STD_NO_RE = re.compile(
+    r"(GB\s*/?\s*T?\s*\d|QB\s*/?\s*T|JB\s*/?\s*T|YY\s*/?\s*T|SN\s*/?\s*T|HG\s*/?\s*T|"
+    r"\bIEC\s*\d|\bISO\s*\d|\bEN\s*\d)", re.I)
+
+
+def _norm_txt(v):
+    return re.sub(r"\s+", "", str(v or "")).strip()
+
+
+def check_change(table, change, target, today):
+    """7 道质检关卡。返回 (是否通过, 未通过原因列表)。
+    未通过的不再静默丢弃，而是带着原因进网页『待核实线索』栏，供人工判断与迭代提示词。"""
+    reasons = []
+    name = (change.get("name") or "").strip()
+    action = (change.get("action") or "").strip().lower()
+
+    # ① 表归属：带标准号的条目不许进法规表
+    if table == "laws" and (STD_NO_RE.search(name) or (change.get("stdNo") or "").strip()):
+        reasons.append("这是标准，却被放进了法规表")
+
+    # ② 依据来源：必须是官方域名下、真实能打开的正文页
+    su = (change.get("source_url") or "").strip()
+    if not su:
+        reasons.append("没有提供依据来源网址")
+    elif not domain_ok(su):
+        reasons.append("依据来源不是官方域名：" + su)
+    elif not url_shape_ok(su):
+        reasons.append("依据来源不是正文页（搜索页/列表页/伪造格式）：" + su)
+    else:
+        st = probe_link(su)
+        if st is False:
+            reasons.append("依据来源确认失效（404 / 跳回首页），多半是编造的链接：" + su)
+        elif st is None:
+            reasons.append("依据来源无法自动验证（超时或被拦），请人工点开确认：" + su)
+
+    # ③ 旧值核对：声称的旧值必须与清单一字不差（证明它真的看过清单）
+    if action in ("update", "abolish") and target:
+        fv = change.get("fromValues")
+        src_field = "dept" if table == "laws" else "publisher"
+        if not isinstance(fv, dict) or not fv:
+            reasons.append("未填写 fromValues，无法证明它核对过清单现值")
+        else:
+            for k, v in fv.items():
+                key = src_field if k in ("dept", "publisher") else k
+                cur = target.get(key, "")
+                if key == "status":
+                    if norm_status(_norm_txt(v)) != norm_status(_norm_txt(cur)):
+                        reasons.append(f"声称原状态是「{v}」，清单里其实是「{cur or '空'}」")
+                elif key in ("effectiveDate", "abolishDate"):
+                    if _ymd(v) != _ymd(cur):
+                        reasons.append(f"声称原日期是「{v}」，清单里其实是「{cur or '空'}」")
+                elif _norm_txt(v) and _norm_txt(v) != _norm_txt(cur):
+                    reasons.append(f"声称原{key}是「{v}」，清单里其实是「{cur or '空'}」")
+
+    # ④ 状态与日期必须自洽
+    st = norm_status(change.get("status"))
+    eff = _ymd(change.get("effectiveDate")) or (_ymd((target or {}).get("effectiveDate")))
+    if st == "即将实施" and eff and eff <= today:
+        reasons.append(f"标成「即将实施」，但实施日期 {eff} 早已过去")
+    if st == "已废止" and not (_ymd(change.get("abolishDate")) or (target or {}).get("abolishDate")):
+        reasons.append("判定为废止，却给不出官方写明的废止日期")
+
+    # ⑤ 理由必须与实际改动自洽
+    note = str(change.get("note") or "").strip()
+    if not note:
+        reasons.append("没有说明改了什么、依据是什么")
+    elif ("实施日期" in note or "实施时间" in note) and not change.get("effectiveDate"):
+        reasons.append("理由里说改实施日期，实际却没给出日期")
+
+    return (len(reasons) == 0), reasons
+
+
 def apply_change(table, all_items, change, domain_id, today):
     """把一条 AI 变更应用到 all_items（原地修改/追加），并返回用于提案记录的 dict。
-    返回 dict 含 kind/name/category/table/targetId/newRecord/setFields/display；kind=skip 表示跳过。"""
+    kind=skip 表示跳过；kind=reject 表示未过质检（带 reasons，进待核实栏，不改数据）。"""
     action = (change.get("action") or "").strip().lower()
     name = (change.get("name") or "").strip()
     if not name or action not in ("add", "update", "abolish"):
@@ -371,11 +586,20 @@ def apply_change(table, all_items, change, domain_id, today):
     label = CATEGORY_NAMES.get(domain_id, domain_id)
     is_food = bool(re.search(r"GB\s*4806|GB\s*31604", (change.get("stdNo") or "") + (name or "")))
 
+    # —— 质检：不通过则整条拦下，进「待核实线索」栏，绝不改动数据 ——
+    pre_target = None if action == "add" else _name_match(name, all_items)
+    ok, reasons = check_change(table, change, pre_target, today)
+    if not ok:
+        return {"kind": "reject", "name": name, "category": label, "table": table,
+                "action": action, "reasons": reasons,
+                "sourceUrl": (change.get("source_url") or "").strip(),
+                "note": str(change.get("note") or "")}
+
     if action == "add":
         # 去重（精确 + 近义包含）安全网：命中已有则跳过
         if _name_match(name, all_items):
             return {"kind": "skip", "name": name, "reason": "已存在（近义去重）"}
-        new_id = max((int(it["id"]) for it in all_items if str(it["id"]).isdigit()), default=0) + 1
+        new_id = next_id(table, all_items)
         rec = make_new_record(table, name, change, domain_id, today, new_id, is_food=is_food)
         all_items.append(rec)
         disp = {
@@ -422,11 +646,9 @@ def apply_change(table, all_items, change, domain_id, today):
     if new_status and new_status != target.get("status"):
         set_fields["status"] = new_status
         diffs.append({"field": "状态", "from": target.get("status", ""), "to": new_status})
+    # 【禁改字段】名称与发布部门/发布单位一律不许改动。
+    # "国家互联网信息办公室"→"国家网信办" 这类同义简称改写不是变更，直接忽略。
     src = (change.get("source") or "").strip()
-    if src and src != target.get(src_field):
-        set_fields[src_field] = src
-        diffs.append({"field": "发布部门" if table == "laws" else "发布单位",
-                      "from": target.get(src_field, ""), "to": src})
     # 采标备注（仅当本次提供了版权原话时才覆盖）
     copyright = (change.get("copyrightNote") or "").strip()
     if copyright:
@@ -439,35 +661,32 @@ def apply_change(table, all_items, change, domain_id, today):
         diffs.append({"field": "采标标记", "from": str(target.get("adopted", "")),
                       "to": str(bool(change.get("adopted")))})
     # 链接保护：仅当现有缺失/是首页时才用新链，且新链需探活
+    # 【链接】只有通过三重校验(官方域名+正文形态+真实可访问)的新链接才允许写入；
+    # 校验不过就宁可留空，绝不再用百度/站内搜索页顶替（那正是"链接不是正文"的老毛病）。
     new_url = (change.get("link") or "").strip()
     existing_url = (target.get("link") or "").strip()
-    if new_url and new_url != existing_url:
-        if is_homepage(new_url):
-            pass
-        elif not existing_url:
-            if link_alive(new_url):
-                set_fields["link"] = new_url
-                diffs.append({"field": "来源链接", "from": "", "to": new_url})
-            else:
-                fb = build_fallback_url(src or target.get(src_field, ""), name)
-                if fb:
-                    set_fields["link"] = fb
-                    diffs.append({"field": "来源链接(回退)", "from": "", "to": fb})
+    if new_url and new_url != existing_url and url_trusted(new_url):
+        if not existing_url:
+            set_fields["link"] = new_url
+            diffs.append({"field": "来源链接", "from": "", "to": new_url})
         elif is_homepage(existing_url):
-            if link_alive(new_url):
-                set_fields["link"] = new_url
-                diffs.append({"field": "来源链接", "from": "(首页)", "to": new_url})
-            else:
-                fb = build_fallback_url(src or target.get(src_field, ""), name)
-                if fb:
-                    set_fields["link"] = fb
-                    diffs.append({"field": "来源链接(回退)", "from": "", "to": fb})
-        else:
-            pass  # 信任现有深链
+            set_fields["link"] = new_url
+            diffs.append({"field": "来源链接", "from": "(原为首页)", "to": new_url})
+        # 现有已是有效深链时不动，避免把人工校对好的链接冲掉
     # 应用
     for k, v in set_fields.items():
         target[k] = v
     if not diffs:
+        # 若它其实是想改「部门/名称」这类禁改字段，不要静默跳过——
+        # 摆到「待核实线索」栏里，让人看得见 GLM 到底错在哪，才能迭代提示词。
+        tried_dept = bool(src) and _norm_txt(src) != _norm_txt(target.get(src_field, ""))
+        if tried_dept:
+            return {"kind": "reject", "name": name, "category": label, "table": table,
+                    "action": action,
+                    "reasons": [f"只提出了禁改字段的改动：想把部门「{target.get(src_field,'') or '空'}」"
+                                f"改成「{src}」，属同义改写，已拦截"],
+                    "sourceUrl": (change.get("source_url") or "").strip(),
+                    "note": str(change.get("note") or "")}
         return {"kind": "skip", "name": name, "reason": "无实质变更"}
     return {"kind": "update", "name": name, "category": label, "table": table,
             "targetId": tid, "newRecord": None, "setFields": set_fields,
@@ -482,7 +701,9 @@ def apply_status_rules(proposed, today):
     switched = []
     for table, key in (("laws", "laws"), ("standards", "standards")):
         for it in proposed[key]:
-            old = it.get("status", "")
+            # 先做同义归一（废止 ≡ 已废止、在用 ≡ 现行有效），归一后相同就不算变更，
+            # 杜绝每跑一次就报一遍「废止 → 已废止」这种纯噪音。
+            old = norm_status(it.get("status", ""))
             new = old
             eff = _ymd(it.get("effectiveDate"))
             if old == "即将实施" and eff and eff <= today:
@@ -563,7 +784,10 @@ def _git_config():
 def git_commit_push(files, message):
     try:
         _git_config()
-        subprocess.run(["git", "add", "--"] + files, cwd=ROOT, check=False)
+        # 逐个 add：某个文件不存在（如本轮删掉了提案文件）时不会连累其它文件入库
+        for fp in files:
+            subprocess.run(["git", "add", "--", fp], cwd=ROOT, check=False,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         r = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT)
         if r.returncode == 0:
             return
@@ -589,7 +813,7 @@ def main():
         print("缺少环境变量 ZHIPU_API_KEY，跳过更新（保持原数据）。")
         sys.exit(0)
 
-    model = os.environ.get("MODEL") or "glm-4-air"
+    model = os.environ.get("MODEL") or "glm-4-plus"
     client = ZhipuAI(api_key=api_key)
     write_running_status()
 
@@ -623,6 +847,7 @@ def main():
         ("standards", "standards"),
     ]
     summary_changes = []
+    rejected = []   # 未过质检的候选：不改数据，带着原因进网页「待核实线索」栏
     for table, cid in targets:
         if table == "laws":
             items = [l for l in proposed_laws if l.get("category") == cid]
@@ -632,17 +857,23 @@ def main():
             items = proposed_standards
             text = STANDARDS_TEXT
             all_items = proposed_standards
-        existing_names = [it["name"] for it in items]
+        # 把已有条目的全字段摊给模型（名称/实施日期/状态/部门/是否已有链接），
+        # 它才有据可依，也才能被「旧值核对」这道关卡验证。
+        existing_block = build_existing_block(items, table)
         label = CATEGORY_NAMES.get(cid, cid)
         print(f"检索：{label} ...")
-        result = search_target(client, model, label, text, existing_names)
+        result = search_target(client, model, label, text, existing_block)
         changes = result.get("changes", []) or []
-        print(f"  发现 {len(changes)} 条变更：{result.get('summary', '')}")
+        print(f"  发现 {len(changes)} 条候选：{result.get('summary', '')}")
         for ch in changes:
             res = apply_change(table, all_items, ch, cid, today)
             if not res or res.get("kind") == "skip":
                 if res:
                     print(f"    跳过（{res.get('reason')}）：{res.get('name')}")
+                continue
+            if res.get("kind") == "reject":
+                rejected.append(res)
+                print(f"    [未过质检] {res['name']} → {'；'.join(res['reasons'])}")
                 continue
             summary_changes.append(res)
             print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
@@ -658,8 +889,23 @@ def main():
                 "updated": sum(1 for c in summary_changes if c["kind"] == "update"),
                 "abolished": sum(1 for c in summary_changes if c["kind"] == "abolish"),
                 "statusSwitched": len(switched),
+                "rejected": len(rejected),
             },
             "changes": [],
+            "rejected": [
+                {
+                    "id": f"r{i + 1}",
+                    "type": "reject",
+                    "table": r.get("table"),
+                    "name": r.get("name"),
+                    "category": r.get("category"),
+                    "action": r.get("action"),
+                    "reasons": r.get("reasons", []),
+                    "sourceUrl": r.get("sourceUrl", ""),
+                    "note": r.get("note", ""),
+                }
+                for i, r in enumerate(rejected)
+            ],
         }
         for c in summary_changes:
             proposed_changes["changes"].append({
@@ -687,6 +933,24 @@ def main():
                 "display": {"diffs": [{"field": "状态", "from": s["from"], "to": s["to"]}],
                             "link": "", "source": "", "sourceUrl": "", "reason": "到期自动状态切换"},
             })
+        # 本轮零结果（既无可应用变更，也无待核实线索）时不产出提案文件，
+        # 避免网页弹出一个空的「待确认更新」面板。
+        if not proposed_changes["changes"] and not proposed_changes["rejected"]:
+            for p in (PROPOSED_DATA_PATH, PROPOSED_CHANGES_PATH):
+                try:
+                    os.remove(p)
+                except Exception:
+                    pass
+            try:
+                with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
+                    json.dump({"status": "no_change", "updatedAt": now_iso(),
+                               "counts": proposed_changes["counts"]}, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                print("  写入 no_change 状态失败（可忽略）:", e)
+            git_commit_push([PROPOSED_DATA_PATH, PROPOSED_CHANGES_PATH, RETRIEVAL_STATUS_PATH],
+                            f"draft: 自动检索完成 {today}（本次无合格变更）")
+            print("\n[draft 模式] 本次未发现合格变更，未产出提案。")
+            return
         try:
             with open(PROPOSED_DATA_PATH, "w", encoding="utf-8") as f:
                 json.dump(proposed, f, ensure_ascii=False, indent=2)

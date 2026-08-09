@@ -66,6 +66,24 @@ async function proxyUserEdits(method, bodyStr, token) {
 }
 
 // ===== 通用 GitHub 文件读写工具（供「确认应用提案」使用）=====
+// ⚠️ 性能陷阱：GET /contents/<文件> 会把整个文件内容一并返回。
+//    data.json / proposed-data.json 都接近 300KB，逐个取 sha 会把云函数拖到超时
+//    （现象：网页报「Failed to fetch」，但后端其实已经改了一半）。
+//    因此改为：一次列举仓库根目录拿到全部文件的 sha（响应很小、不含内容），
+//    后续所有写/删都复用它，不再重复下载大文件。
+async function ghListRootShas(token) {
+  const url = `https://api.github.com/repos/${REPO}/contents`;
+  try {
+    const res = await fetch(url, { headers: GH_HEADERS(token) });
+    if (!res.ok) return null;              // 列举失败 → 退回逐个取 sha 的老路
+    const arr = await res.json();
+    if (!Array.isArray(arr)) return null;
+    const map = {};
+    arr.forEach(f => { if (f && f.name) map[f.name] = f.sha; });
+    return map;
+  } catch (e) { return null; }
+}
+
 async function ghGetSha(token, path) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
   try {
@@ -76,25 +94,45 @@ async function ghGetSha(token, path) {
   } catch (e) { return null; }
 }
 
-async function ghPutFile(token, path, contentStr, message) {
+// knownSha：传 undefined = 自己去查；传字符串/null = 直接用（null 表示文件不存在）
+async function ghPutFile(token, path, contentStr, message, knownSha) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
-  const sha = await ghGetSha(token, path);
-  const body = JSON.stringify({
-    message: message,
-    content: Buffer.from(contentStr, 'utf8').toString('base64'),
-    ...(sha ? { sha } : {})
+  let sha = (knownSha === undefined) ? await ghGetSha(token, path) : knownSha;
+  const send = (s) => fetch(url, {
+    method: 'PUT', headers: GH_HEADERS(token),
+    body: JSON.stringify({
+      message: message,
+      content: Buffer.from(contentStr, 'utf8').toString('base64'),
+      ...(s ? { sha: s } : {})
+    })
   });
-  const res = await fetch(url, { method: 'PUT', headers: GH_HEADERS(token), body });
+  let res = await send(sha);
+  // 409/422 = sha 过期（多为 Actions 刚好也在写同一文件），重取一次 sha 再试
+  if (res.status === 409 || res.status === 422) {
+    const fresh = await ghGetSha(token, path);
+    if (fresh && fresh !== sha) res = await send(fresh);
+  }
   const text = await res.text();
   return { ok: res.status >= 200 && res.status < 300, status: res.status, body: text };
 }
 
-async function ghDeleteFile(token, path, message) {
-  const sha = await ghGetSha(token, path);
+async function ghDeleteFile(token, path, message, knownSha) {
+  const sha = (knownSha === undefined) ? await ghGetSha(token, path) : knownSha;
   if (!sha) return { ok: true, skipped: true }; // 文件不存在，视为已清理
   const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
   const body = JSON.stringify({ message: message, sha: sha });
   const res = await fetch(url, { method: 'DELETE', headers: GH_HEADERS(token), body });
+  if (res.status === 404 || res.status === 409 || res.status === 422) {
+    const fresh = await ghGetSha(token, path);
+    if (!fresh) return { ok: true, skipped: true };
+    if (fresh !== sha) {
+      const r2 = await fetch(url, {
+        method: 'DELETE', headers: GH_HEADERS(token),
+        body: JSON.stringify({ message: message, sha: fresh })
+      });
+      return { ok: r2.status >= 200 && r2.status < 300, status: r2.status };
+    }
+  }
   return { ok: res.status >= 200 && res.status < 300, status: res.status };
 }
 
@@ -109,10 +147,19 @@ async function applyProposed(bodyStr, token) {
   // 「全部忽略」：只清理提案文件，绝不碰 data.json
   if (payload.discardOnly === true) {
     try {
-      await ghDeleteFile(token, 'proposed-changes.json', 'chore: 丢弃本次检索提案（人工判定不采纳）');
-      await ghDeleteFile(token, 'proposed-data.json', 'chore: 清理提案数据快照');
+      const shaMap = await ghListRootShas(token);
+      const pick = (n) => (shaMap ? (shaMap[n] || null) : undefined);
+      const dc = await ghDeleteFile(token, 'proposed-changes.json', 'chore: 丢弃本次检索提案（人工判定不采纳）', pick('proposed-changes.json'));
+      const dd = await ghDeleteFile(token, 'proposed-data.json', 'chore: 清理提案数据快照', pick('proposed-data.json'));
       const st0 = JSON.stringify({ status: 'idle', updatedAt: new Date().toISOString(), note: '提案已丢弃' }, null, 2) + '\n';
-      await ghPutFile(token, 'retrieval-status.json', st0, 'chore: 检索状态复位 idle');
+      const sr = await ghPutFile(token, 'retrieval-status.json', st0, 'chore: 检索状态复位 idle', pick('retrieval-status.json'));
+      const failed = [];
+      if (!dc.ok) failed.push('proposed-changes.json');
+      if (!dd.ok) failed.push('proposed-data.json');
+      if (!sr.ok) failed.push('retrieval-status.json');
+      if (failed.length) {
+        return { status: 502, body: JSON.stringify({ message: '部分文件未清理成功：' + failed.join('、') + '，请重试一次' }) };
+      }
       return { status: 200, body: JSON.stringify({ message: '已丢弃本次提案，清单数据未改动', discarded: true }) };
     } catch (e) {
       return { status: 502, body: JSON.stringify({ message: '清理失败: ' + e.message }) };
@@ -128,9 +175,12 @@ async function applyProposed(bodyStr, token) {
     return { status: 400, body: JSON.stringify({ message: '拒绝写入空数据，已中止' }) };
   }
   try {
+    // 一次列举拿到所有 sha，避免逐个 GET 时把 data.json / proposed-data.json 整份下载下来导致超时
+    const shaMap = await ghListRootShas(token);
+    const pick = (n) => (shaMap ? (shaMap[n] || null) : undefined);
     // 1) 写回 data.json
     const dataStr = JSON.stringify(data, null, 2) + '\n';
-    const r1 = await ghPutFile(token, 'data.json', dataStr, 'chore: 应用已确认的检索提案（人工逐条确认）');
+    const r1 = await ghPutFile(token, 'data.json', dataStr, 'chore: 应用已确认的检索提案（人工逐条确认）', pick('data.json'));
     if (!r1.ok) {
       let msg = '写入 data.json 失败';
       try { const j = JSON.parse(r1.body); if (j && j.message) msg += '：' + j.message; } catch (e) {}
@@ -139,27 +189,29 @@ async function applyProposed(bodyStr, token) {
     // 2) 写变更记录（网页「最近更新」面板读取）
     if (summary && typeof summary === 'object') {
       const sumStr = JSON.stringify(summary, null, 2) + '\n';
-      await ghPutFile(token, 'update-summary.json', sumStr, 'chore: 更新变更记录（已确认提案）');
+      await ghPutFile(token, 'update-summary.json', sumStr, 'chore: 更新变更记录（已确认提案）', pick('update-summary.json'));
     }
-    // 3) 处理提案文件：还有保留项就改写，否则删除
-    if (Array.isArray(remaining) && remaining.length > 0) {
+    // 3) 处理提案文件：还有保留项（未采纳的提案 或 待核实线索）就改写，否则删除
+    const keepRejected = Array.isArray(payload.rejected) ? payload.rejected : [];
+    if ((Array.isArray(remaining) && remaining.length > 0) || keepRejected.length > 0) {
       const keepStr = JSON.stringify({
         generatedAt: (payload.generatedAt || new Date().toISOString().slice(0, 10)),
-        pending: remaining.length,
-        changes: remaining
+        pending: (Array.isArray(remaining) ? remaining.length : 0),
+        changes: (Array.isArray(remaining) ? remaining : []),
+        rejected: keepRejected
       }, null, 2) + '\n';
-      await ghPutFile(token, 'proposed-changes.json', keepStr, 'chore: 保留未确认的检索提案');
+      await ghPutFile(token, 'proposed-changes.json', keepStr, 'chore: 保留未确认的检索提案', pick('proposed-changes.json'));
     } else {
-      await ghDeleteFile(token, 'proposed-changes.json', 'chore: 清理已处理的检索提案');
+      await ghDeleteFile(token, 'proposed-changes.json', 'chore: 清理已处理的检索提案', pick('proposed-changes.json'));
     }
-    await ghDeleteFile(token, 'proposed-data.json', 'chore: 清理提案数据快照');
+    await ghDeleteFile(token, 'proposed-data.json', 'chore: 清理提案数据快照', pick('proposed-data.json'));
     // 4) 复位检索状态
     const st = JSON.stringify({
       status: 'idle',
       appliedAt: new Date().toISOString(),
       note: '提案已人工确认并应用'
     }, null, 2) + '\n';
-    await ghPutFile(token, 'retrieval-status.json', st, 'chore: 检索状态复位 idle');
+    await ghPutFile(token, 'retrieval-status.json', st, 'chore: 检索状态复位 idle', pick('retrieval-status.json'));
 
     return { status: 200, body: JSON.stringify({ message: '已应用并推送，约 1 分钟后线上生效', applied: true }) };
   } catch (e) {
