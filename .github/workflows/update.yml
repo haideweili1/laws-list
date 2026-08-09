@@ -1,9 +1,11 @@
 name: 法律法规清单自动更新
 
 on:
-  schedule:
-    # 每周一 01:00 UTC = 北京时间 09:00
-    - cron: '0 1 * * 1'
+  # 【已暂停每周自动跑】改为仅手动触发：网页点「自动检索」按钮，或在 Actions 页面点「Run workflow」。
+  # 待提示词质量稳定、可放心自动直更后，再恢复下面这段 schedule。
+  # schedule:
+  #   # 每周一 01:00 UTC = 北京时间 09:00
+  #   - cron: '0 1 * * 1'
   workflow_dispatch: {}   # 允许在 Actions 页面手动点「Run workflow」立即执行
 
 permissions:
@@ -40,7 +42,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json update-summary.json retrieval-status.json user-edits.json
+          # 草稿模式下产出的是 proposed-changes.json / proposed-data.json；用 -A 一并兜底提交
+          git add -A
           if git diff --cached --quiet; then
             echo "无变更，跳过提交"
           else

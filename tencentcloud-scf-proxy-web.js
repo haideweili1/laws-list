@@ -6,6 +6,12 @@
 //         - Actions: read and write（触发自动检索 + 读取运行状态用）
 //         - Pages: read and write  （读取 GitHub Pages 部署状态用）
 //       函数 URL 已开启公网访问
+//
+// 提供的接口：
+//   GET/PUT  /                 团队协同同步 user-edits.json
+//   POST     /trigger-update   触发 GitHub Actions 自动检索（草稿模式，只出提案不动数据）
+//   GET      /check-status     查询本次检索运行状态
+//   POST     /apply-proposed   把网页上「待确认更新」里你勾选的提案写回 data.json（唯一写数据入口）
 
 const http = require('http');
 const REPO = 'haideweili1/laws-list';
@@ -56,6 +62,108 @@ async function proxyUserEdits(method, bodyStr, token) {
     return { status: res.status, body: text };
   } catch (e) {
     return { status: 502, body: JSON.stringify({ message: '代理请求失败: ' + e.message }) };
+  }
+}
+
+// ===== 通用 GitHub 文件读写工具（供「确认应用提案」使用）=====
+async function ghGetSha(token, path) {
+  const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  try {
+    const res = await fetch(url, { headers: GH_HEADERS(token) });
+    if (!res.ok) return null;
+    const j = await res.json();
+    return j.sha || null;
+  } catch (e) { return null; }
+}
+
+async function ghPutFile(token, path, contentStr, message) {
+  const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const sha = await ghGetSha(token, path);
+  const body = JSON.stringify({
+    message: message,
+    content: Buffer.from(contentStr, 'utf8').toString('base64'),
+    ...(sha ? { sha } : {})
+  });
+  const res = await fetch(url, { method: 'PUT', headers: GH_HEADERS(token), body });
+  const text = await res.text();
+  return { ok: res.status >= 200 && res.status < 300, status: res.status, body: text };
+}
+
+async function ghDeleteFile(token, path, message) {
+  const sha = await ghGetSha(token, path);
+  if (!sha) return { ok: true, skipped: true }; // 文件不存在，视为已清理
+  const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const body = JSON.stringify({ message: message, sha: sha });
+  const res = await fetch(url, { method: 'DELETE', headers: GH_HEADERS(token), body });
+  return { ok: res.status >= 200 && res.status < 300, status: res.status };
+}
+
+// 应用「待确认更新」中被勾选的提案：写回 data.json + 变更记录，并清理提案文件
+async function applyProposed(bodyStr, token) {
+  let payload;
+  try {
+    payload = JSON.parse(bodyStr || '{}');
+  } catch (e) {
+    return { status: 400, body: JSON.stringify({ message: '请求体不是合法 JSON' }) };
+  }
+  // 「全部忽略」：只清理提案文件，绝不碰 data.json
+  if (payload.discardOnly === true) {
+    try {
+      await ghDeleteFile(token, 'proposed-changes.json', 'chore: 丢弃本次检索提案（人工判定不采纳）');
+      await ghDeleteFile(token, 'proposed-data.json', 'chore: 清理提案数据快照');
+      const st0 = JSON.stringify({ status: 'idle', updatedAt: new Date().toISOString(), note: '提案已丢弃' }, null, 2) + '\n';
+      await ghPutFile(token, 'retrieval-status.json', st0, 'chore: 检索状态复位 idle');
+      return { status: 200, body: JSON.stringify({ message: '已丢弃本次提案，清单数据未改动', discarded: true }) };
+    } catch (e) {
+      return { status: 502, body: JSON.stringify({ message: '清理失败: ' + e.message }) };
+    }
+  }
+  const data = payload.data;
+  const summary = payload.summary;
+  const remaining = payload.remaining; // 未被采纳、需保留待下次再看的提案（可为空数组=全部清空）
+  if (!data || typeof data !== 'object' || !Array.isArray(data.laws) || !Array.isArray(data.standards)) {
+    return { status: 400, body: JSON.stringify({ message: '缺少合法的 data（需含 laws/standards 数组）' }) };
+  }
+  if (data.laws.length === 0 && data.standards.length === 0) {
+    return { status: 400, body: JSON.stringify({ message: '拒绝写入空数据，已中止' }) };
+  }
+  try {
+    // 1) 写回 data.json
+    const dataStr = JSON.stringify(data, null, 2) + '\n';
+    const r1 = await ghPutFile(token, 'data.json', dataStr, 'chore: 应用已确认的检索提案（人工逐条确认）');
+    if (!r1.ok) {
+      let msg = '写入 data.json 失败';
+      try { const j = JSON.parse(r1.body); if (j && j.message) msg += '：' + j.message; } catch (e) {}
+      return { status: 502, body: JSON.stringify({ message: msg }) };
+    }
+    // 2) 写变更记录（网页「最近更新」面板读取）
+    if (summary && typeof summary === 'object') {
+      const sumStr = JSON.stringify(summary, null, 2) + '\n';
+      await ghPutFile(token, 'update-summary.json', sumStr, 'chore: 更新变更记录（已确认提案）');
+    }
+    // 3) 处理提案文件：还有保留项就改写，否则删除
+    if (Array.isArray(remaining) && remaining.length > 0) {
+      const keepStr = JSON.stringify({
+        generatedAt: (payload.generatedAt || new Date().toISOString().slice(0, 10)),
+        pending: remaining.length,
+        changes: remaining
+      }, null, 2) + '\n';
+      await ghPutFile(token, 'proposed-changes.json', keepStr, 'chore: 保留未确认的检索提案');
+    } else {
+      await ghDeleteFile(token, 'proposed-changes.json', 'chore: 清理已处理的检索提案');
+    }
+    await ghDeleteFile(token, 'proposed-data.json', 'chore: 清理提案数据快照');
+    // 4) 复位检索状态
+    const st = JSON.stringify({
+      status: 'idle',
+      appliedAt: new Date().toISOString(),
+      note: '提案已人工确认并应用'
+    }, null, 2) + '\n';
+    await ghPutFile(token, 'retrieval-status.json', st, 'chore: 检索状态复位 idle');
+
+    return { status: 200, body: JSON.stringify({ message: '已应用并推送，约 1 分钟后线上生效', applied: true }) };
+  } catch (e) {
+    return { status: 502, body: JSON.stringify({ message: '应用失败: ' + e.message }) };
   }
 }
 
@@ -139,6 +247,10 @@ async function handleRequest(method, pathname, params, bodyStr) {
     if (method !== 'GET') return { status: 405, body: JSON.stringify({ message: '仅支持 GET' }) };
     const runId = params.get('run_id');
     return await checkStatus(token, runId);
+  }
+  if (pathname === '/apply-proposed') {
+    if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
+    return await applyProposed(bodyStr, token);
   }
   // 默认：处理 user-edits.json 的 GET/PUT（团队协同同步）
   return await proxyUserEdits(method, bodyStr, token);
