@@ -595,10 +595,48 @@ async function manualSync(){
   }catch(e){ setBtn(btn,"err"); toast("同步失败"); }
   finally{ setTimeout(()=>setBtn(btn,"idle"),1500); }
 }
-function triggerRetrieve(){
-  const btn=document.getElementById("retrieveBtn");
-  setBtn(btn,"loading");
-  setTimeout(()=>{ setBtn(btn,"idle"); toast("自动检索功能后端正在接入中，敬请期待"); },1000);
+async function triggerRetrieve(){
+  const btn=document.getElementById('retrieveBtn');
+  setBtn(btn,'loading');
+  try{
+    const r=await fetch(SYNC_PROXY+'/trigger-update',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){
+      setBtn(btn,'err');
+      toast('启动失败：'+(j.message||'请稍后再试'));
+      setTimeout(()=>setBtn(btn,'idle'),1500);
+      return;
+    }
+    setBtn(btn,'idle');
+    toast(j.message||'已启动自动检索，请稍后在『最近变更』查看');
+    const runId=j.run_id||'';
+    let n=0; const MAX=12; const IV=25000;
+    const timer=setInterval(async()=>{
+      n++;
+      try{
+        const s=await fetch(SYNC_PROXY+'/check-status?run_id='+encodeURIComponent(runId)+'&t='+Date.now(),{cache:'no-store'});
+        const sj=await s.json().catch(()=>({}));
+        if(sj.runStatus==='completed'){
+          clearInterval(timer);
+          if(sj.runConclusion==='success'){
+            toast('自动检索完成，已更新，请在『最近变更』查看');
+            if(typeof renderChangePreview==='function') renderChangePreview();
+          }else{
+            toast('本次检索未成功（'+(sj.runConclusion||'未知')+'），请查看 Actions 日志');
+          }
+          return;
+        }
+      }catch(e){}
+      if(n>=MAX){
+        clearInterval(timer);
+        toast('任务仍在后台运行，请稍后刷新页面查看结果');
+      }
+    },IV);
+  }catch(e){
+    setBtn(btn,'err');
+    toast('启动失败：'+e.message);
+    setTimeout(()=>setBtn(btn,'idle'),1500);
+  }
 }
 
 /* ---------- 变更记录（手动+自动合并） ---------- */
