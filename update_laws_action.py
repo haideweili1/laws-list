@@ -200,6 +200,33 @@ def has_valid_official_link(url):
     return bool(u) and domain_ok(u) and url_shape_ok(u)
 
 
+def _extract_effective_date(text):
+    """从标准官方页正文里提取『实施日期』，返回 YYYY-MM-DD；取不到返回 None。"""
+    if not text:
+        return None
+    m = re.search(r"实施日期[：:\s]*(\d{4})-(\d{2})-(\d{2})", text)
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    m = re.search(r"实施日期[：:\s]*(\d{4})年(\d{1,2})月(\d{1,2})日", text)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    return None
+
+
+def _source_name(url):
+    """依据官方链接推断来源机构名，用于提案展示。"""
+    u = (url or "").strip()
+    if "openstd.samr.gov.cn" in u:
+        return "国家标准全文公开系统"
+    if "std.samr.gov.cn" in u:
+        return "行业标准备案公告"
+    if "cfsa.net.cn" in u:
+        return "国家食品安全风险评估中心"
+    if "gov.cn" in u or "gov" in u.split("/")[2].split(".")[-2:][0] if "/" in u else False:
+        return "政府部门网站"
+    return "官方来源"
+
+
 def _ymd(s):
     """把各种写法转成 YYYY-MM-DD，无法解析返回 None。"""
     s = (s or "").strip()
@@ -820,11 +847,26 @@ def apply_status_rules(proposed, today):
             if new != old:
                 link = (it.get("link") or "").strip()
                 if has_valid_official_link(link):
+                    # 顺便从官方页抓正确实施日期，和状态一起建议（境外访问偶发超时则只改状态）
+                    eff_date = None
+                    try:
+                        txt = fetch_text(link, timeout=8)
+                        if txt and not is_dead_page(txt):
+                            eff_date = _extract_effective_date(txt)
+                    except Exception:
+                        eff_date = None
+                    set_fields = {"status": new}
+                    reason = f"实施日期已至，依据标准官方页自动转为{new}"
+                    if eff_date and eff_date != eff:
+                        set_fields["effectiveDate"] = eff_date
+                        reason += f"；官方页实施日期为 {eff_date}，已据实修正"
+                    elif eff_date:
+                        reason += f"（官方页实施日期 {eff_date}）"
                     it["status"] = new
                     switched.append({"table": table, "name": it.get("name", ""), "id": it.get("id"),
-                                     "from": old, "to": new,
-                                     "sourceUrl": link,
-                                     "reason": f"实施日期 {eff or ad} 已至，依据标准官方页自动转为{new}"})
+                                     "from": old, "to": new, "eff_old": eff,
+                                     "sourceUrl": link, "setFields": set_fields,
+                                     "reason": reason})
                 else:
                     # 无有效官方链接：不盲目切换，保持原状态，留待有链接时再处理
                     print(f"  [状态切换跳过] {it.get('name','')}：无有效官方链接，不自动切换")
@@ -1037,6 +1079,12 @@ def main():
             })
         # 状态切换也进提案
         for s in switched:
+            sf = s.get("setFields") or {"status": s["to"]}
+            diffs = []
+            if "status" in sf:
+                diffs.append({"field": "状态", "from": s["from"], "to": s["to"]})
+            if "effectiveDate" in sf:
+                diffs.append({"field": "实施日期", "from": s.get("eff_old") or "", "to": sf["effectiveDate"]})
             proposed_changes["changes"].append({
                 "id": f"c{len(proposed_changes['changes']) + 1}",
                 "type": "status_switch",
@@ -1045,9 +1093,9 @@ def main():
                 "category": s["table"],
                 "targetId": s["id"],
                 "newRecord": None,
-                "setFields": {"status": s["to"]},
-                "display": {"diffs": [{"field": "状态", "from": s["from"], "to": s["to"]}],
-                            "link": "", "source": "", "sourceUrl": s.get("sourceUrl", ""),
+                "setFields": sf,
+                "display": {"diffs": diffs,
+                            "link": s.get("sourceUrl", ""), "source": "", "sourceUrl": s.get("sourceUrl", ""),
                             "reason": s.get("reason", "")},
             })
         # 本轮零结果（既无可应用变更，也无待核实线索）时不产出提案文件，
