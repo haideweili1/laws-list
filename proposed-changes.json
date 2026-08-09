@@ -1,0 +1,398 @@
+{
+  "generatedAt": "2026-08-09",
+  "draftMode": true,
+  "counts": {
+    "added": 3,
+    "updated": 2,
+    "abolished": 0,
+    "statusSwitched": 6
+  },
+  "changes": [
+    {
+      "id": "c1",
+      "type": "update",
+      "table": "laws",
+      "name": "生成式人工智能服务安全管理暂行办法",
+      "category": "信息安全",
+      "targetId": "L0116",
+      "newRecord": null,
+      "setFields": {
+        "dept": "国家网信办"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "发布部门",
+            "from": "国家互联网信息办公室",
+            "to": "国家网信办"
+          }
+        ],
+        "link": "https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm",
+        "source": "国家网信办",
+        "sourceUrl": "https://www.cac.gov.cn/2023-07/13/c_1129702929.htm",
+        "reason": "实施日期更新为2023-08-15，原清单中未明确标注实施日期。"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "update",
+      "table": "laws",
+      "name": "小型个人信息处理者个人信息保护简化措施规定",
+      "category": "信息安全",
+      "targetId": "L0114",
+      "newRecord": null,
+      "setFields": {
+        "effectiveDate": "2024-01-01",
+        "dept": "国家网信办"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "实施时间",
+            "from": "2026-09-01",
+            "to": "2024-01-01"
+          },
+          {
+            "field": "发布部门",
+            "from": "国家互联网信息办公室",
+            "to": "国家网信办"
+          }
+        ],
+        "link": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm",
+        "source": "国家网信办",
+        "sourceUrl": "https://www.cac.gov.cn/2023-12-01/c_1130685650.htm",
+        "reason": "实施日期更新为2024-01-01，原清单中未明确标注实施日期。"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "add",
+      "table": "laws",
+      "name": "《信息安全技术 网络安全等级保护基本要求》GB/T 22239-2023",
+      "category": "信息安全",
+      "targetId": "1",
+      "newRecord": {
+        "name": "《信息安全技术 网络安全等级保护基本要求》GB/T 22239-2023",
+        "docNumber": "",
+        "dept": "国家标准化管理委员会",
+        "effectiveDate": "2023-09-01",
+        "status": "现行有效",
+        "domains": [
+          "信息安全"
+        ],
+        "category": "信息安全",
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/GB22239-2023",
+        "region": "全国",
+        "id": "1",
+        "remark": "",
+        "abolishDate": "",
+        "adopted": false,
+        "copyrightNote": ""
+      },
+      "setFields": null,
+      "display": {
+        "diffs": [
+          {
+            "field": "name",
+            "from": "",
+            "to": "《信息安全技术 网络安全等级保护基本要求》GB/T 22239-2023"
+          },
+          {
+            "field": "dept",
+            "from": "",
+            "to": "国家标准化管理委员会"
+          },
+          {
+            "field": "effectiveDate",
+            "from": "",
+            "to": "2023-09-01"
+          },
+          {
+            "field": "status",
+            "from": "",
+            "to": "现行有效"
+          },
+          {
+            "field": "link",
+            "from": "",
+            "to": "https://openstd.samr.gov.cn/bzgk/gb/GB22239-2023"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/GB22239-2023",
+        "source": "国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB22239-2023",
+        "reason": "新增标准，替代GB/T 22239-2019，实施日期为2023-09-01。"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "add",
+      "table": "laws",
+      "name": "《信息安全技术 网络安全等级保护安全设计技术要求》GB/T 25070-2023",
+      "category": "信息安全",
+      "targetId": "2",
+      "newRecord": {
+        "name": "《信息安全技术 网络安全等级保护安全设计技术要求》GB/T 25070-2023",
+        "docNumber": "",
+        "dept": "国家标准化管理委员会",
+        "effectiveDate": "2023-09-01",
+        "status": "现行有效",
+        "domains": [
+          "信息安全"
+        ],
+        "category": "信息安全",
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/GB25070-2023",
+        "region": "全国",
+        "id": "2",
+        "remark": "",
+        "abolishDate": "",
+        "adopted": false,
+        "copyrightNote": ""
+      },
+      "setFields": null,
+      "display": {
+        "diffs": [
+          {
+            "field": "name",
+            "from": "",
+            "to": "《信息安全技术 网络安全等级保护安全设计技术要求》GB/T 25070-2023"
+          },
+          {
+            "field": "dept",
+            "from": "",
+            "to": "国家标准化管理委员会"
+          },
+          {
+            "field": "effectiveDate",
+            "from": "",
+            "to": "2023-09-01"
+          },
+          {
+            "field": "status",
+            "from": "",
+            "to": "现行有效"
+          },
+          {
+            "field": "link",
+            "from": "",
+            "to": "https://openstd.samr.gov.cn/bzgk/gb/GB25070-2023"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/GB25070-2023",
+        "source": "国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB25070-2023",
+        "reason": "新增标准，替代GB/T 25070-2019，实施日期为2023-09-01。"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "add",
+      "table": "laws",
+      "name": "《信息安全技术 网络安全等级保护测评要求》GB/T 28448-2023",
+      "category": "信息安全",
+      "targetId": "3",
+      "newRecord": {
+        "name": "《信息安全技术 网络安全等级保护测评要求》GB/T 28448-2023",
+        "docNumber": "",
+        "dept": "国家标准化管理委员会",
+        "effectiveDate": "2023-09-01",
+        "status": "现行有效",
+        "domains": [
+          "信息安全"
+        ],
+        "category": "信息安全",
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/GB28448-2023",
+        "region": "全国",
+        "id": "3",
+        "remark": "",
+        "abolishDate": "",
+        "adopted": false,
+        "copyrightNote": ""
+      },
+      "setFields": null,
+      "display": {
+        "diffs": [
+          {
+            "field": "name",
+            "from": "",
+            "to": "《信息安全技术 网络安全等级保护测评要求》GB/T 28448-2023"
+          },
+          {
+            "field": "dept",
+            "from": "",
+            "to": "国家标准化管理委员会"
+          },
+          {
+            "field": "effectiveDate",
+            "from": "",
+            "to": "2023-09-01"
+          },
+          {
+            "field": "status",
+            "from": "",
+            "to": "现行有效"
+          },
+          {
+            "field": "link",
+            "from": "",
+            "to": "https://openstd.samr.gov.cn/bzgk/gb/GB28448-2023"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/GB28448-2023",
+        "source": "国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/GB28448-2023",
+        "reason": "新增标准，替代GB/T 28448-2019，实施日期为2023-09-01。"
+      }
+    },
+    {
+      "id": "c6",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "食品安全国家标准（食品接触用金属材料及制品）GB4806.9-2016",
+      "category": "standards",
+      "targetId": "S0059",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "废止",
+            "to": "已废止"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    },
+    {
+      "id": "c7",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "食品安全国家标准（食品接触材料及制品迁移测试通则）GB 31604.1-2015",
+      "category": "standards",
+      "targetId": "S0062",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "废止",
+            "to": "已废止"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    },
+    {
+      "id": "c8",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "食品安全国家标准（食品接触用塑料材料及制品）GB 4806.7-2016",
+      "category": "standards",
+      "targetId": "S0064",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "废止",
+            "to": "已废止"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    },
+    {
+      "id": "c9",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
+      "category": "standards",
+      "targetId": "S0095",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "废止",
+            "to": "已废止"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    },
+    {
+      "id": "c10",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "GB/T 1019  家用和类似用途电器包装通则",
+      "category": "standards",
+      "targetId": "S0106",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "废止",
+            "to": "已废止"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    },
+    {
+      "id": "c11",
+      "type": "status_switch",
+      "table": "standards",
+      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
+      "category": "standards",
+      "targetId": "S0133",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "废止",
+            "to": "已废止"
+          }
+        ],
+        "link": "",
+        "source": "",
+        "sourceUrl": "",
+        "reason": "到期自动状态切换"
+      }
+    }
+  ]
+}
