@@ -133,8 +133,16 @@
 .rj-reason{margin:3px 0 0;padding-left:18px}
 .rj-reason li{font-size:12px;color:#b91c1c}
 .batchbar{display:flex;gap:10px;align-items:center;padding:8px 22px;background:#eff6ff;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.batchbar.hidden{display:none}
-.batchbar .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .batchbar.hidden{display:none}
+  .batchbar .btn[disabled]{opacity:.5;cursor:not-allowed}
+  /* 筛选常驻提示条：筛选后常显“在哪一列筛了什么”，并可一键清除 */
+  .filterbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 22px;background:#fff7ed;border-bottom:1px solid var(--line)}
+  .filterbar.hidden{display:none}
+  .filterbar .fbar-tip{font-size:13px;color:var(--muted);font-weight:600}
+  .filterbar .fchip{display:inline-flex;align-items:center;gap:5px;background:#ffe8cc;color:#9a3412;padding:3px 10px;border-radius:14px;font-size:12px;border:1px solid #fed7aa}
+  .filterbar .fchip .fx{color:#9a3412;cursor:pointer;font-weight:700;font-size:12px;line-height:1}
+  .filterbar .fchip .fx:hover{color:#7c2d12}
+  .filterbar .btn.sm{padding:4px 10px;font-size:12px}
 </style>
 </head>
 <body>
@@ -201,6 +209,7 @@
     <button class="btn sm" onclick="openBatchStatus('laws')">批量改状态</button>
     <button class="btn sm" onclick="openBatchDomain('laws')">批量设领域</button>
   </div>
+  <div class="filterbar hidden" id="filterBar-laws"></div>
   <div class="wrap">
     <table id="lawTable">
       <thead><tr>
@@ -229,6 +238,7 @@
     <button class="btn pri sm" onclick="batchDelete('standards')">批量删除</button>
     <button class="btn sm" onclick="openBatchStatus('standards')">批量改状态</button>
   </div>
+  <div class="filterbar hidden" id="filterBar-standards"></div>
   <div class="wrap">
     <table id="stdTable">
       <thead><tr>
@@ -345,6 +355,7 @@ function keyOf(table,id){return table+"::"+id}
 function statusBadge(s){const m={"现行有效":"ok","即将实施":"warn","已废止":"bad"};const c=m[s]||"gray";return `<span class="badge ${c}">${s||"-"}</span>`}
 function domainsTags(arr){return (arr||[]).map(d=>`<span class="tag">${d}</span>`).join("")}
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function jsStr(s){return (s==null?"":String(s)).replace(/[\\']/g,c=>({"\\":"\\\\","'":"\\'"}[c]))}
 
 /* ---------- 数据加载与合并 ---------- */
 async function init(){
@@ -416,6 +427,7 @@ function renderLaws(){
   }).join("");
   $("#lawCnt").textContent=`共 ${arr.length} 条`;
   renderBatchBar("laws");
+  renderFilterBar("laws");
 }
 const STD_COLS=["stdNo","name","stdType","publisher","effectiveDate","status","link","remark"];
 function renderStandards(){
@@ -437,6 +449,7 @@ function renderStandards(){
   }).join("");
   $("#stdCnt").textContent=`共 ${arr.length} 条`;
   renderBatchBar("standards");
+  renderFilterBar("standards");
 }
 
 /* ---------- 筛选下拉 ---------- */
@@ -467,6 +480,25 @@ function openFilter(btn){
   pop.querySelectorAll("input").forEach(cb=>cb.onchange=()=>{cb.checked?sel.add(cb.value):sel.delete(cb.value); if(table==="laws")renderLaws();else renderStandards();});
 }
 function clearFilter(table,fkey){state.filters[table][fkey].clear(); if(table==="laws")renderLaws();else renderStandards(); $("#filterLayer").innerHTML="";}
+/* 筛选常驻提示条：显示“在哪一列筛了什么值”，并支持单条移除 / 一键清除全部 */
+const FILTER_LABELS={laws:{status:"状态",domains:"所属领域"},standards:{stdType:"标准类型",status:"状态"}};
+function renderFilterBar(table){
+  const bar=$("#filterBar-"+table); if(!bar) return;
+  const f=state.filters[table]; const chips=[];
+  for(const fkey in f){
+    const set=f[fkey];
+    if(set && set.size){
+      const label=FILTER_LABELS[table][fkey]||fkey;
+      set.forEach(v=>{ chips.push(`<span class="fchip">${esc(label)}：${esc(v)} <span class="fx" onclick="clearOneFilter('${table}','${fkey}','${jsStr(v)}')" title="移除该筛选">✕</span></span>`); });
+    }
+  }
+  if(chips.length){
+    bar.innerHTML=`<span class="fbar-tip">当前筛选：</span>${chips.join("")}<button class="btn sm" onclick="clearAllFilters('${table}')">清除全部筛选</button>`;
+    bar.classList.remove("hidden");
+  }else{ bar.innerHTML=""; bar.classList.add("hidden"); }
+}
+function clearOneFilter(table,fkey,val){ state.filters[table][fkey].delete(val); if(table==="laws")renderLaws();else renderStandards(); }
+function clearAllFilters(table){ for(const k in state.filters[table]) state.filters[table][k].clear(); if(table==="laws")renderLaws();else renderStandards(); }
 
 /* ---------- 搜索/切换 ---------- */
 function onSearch(table,v){state.search[table]=v; if(table==="laws")renderLaws();else renderStandards();}

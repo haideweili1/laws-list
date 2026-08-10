@@ -1,11 +1,9 @@
 name: 法律法规清单自动更新
 
 on:
-  # 【已暂停每周自动跑】改为仅手动触发：网页点「自动检索」按钮，或在 Actions 页面点「Run workflow」。
-  # 待提示词质量稳定、可放心自动直更后，再恢复下面这段 schedule。
-  # schedule:
-  #   # 每周一 01:00 UTC = 北京时间 09:00
-  #   - cron: '0 1 * * 1'
+  # 每周一 01:00 UTC = 北京时间 09:00 自动跑（草稿模式：只出提案，不自动改清单）
+  schedule:
+    - cron: '0 1 * * 1'
   workflow_dispatch: {}   # 允许在 Actions 页面手动点「Run workflow」立即执行
 
 permissions:
