@@ -352,6 +352,13 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 低消耗：聚焦最近变更，不无限展开；不为单条做几十次搜索。
 - 每条 change 必须附 source_url（你核实所依据的官方页面链接），且该链接必须是官方域名下能打开的正文页；系统会真实访问校验，打不开或是搜索页/列表页的一律整条拒收。
 - 宁可少报，不可错报。没有把握就不要提交该条——漏报只是没更新，错报会污染整份清单。
+
+【十一、废止—替代关系（通用规则，覆盖法规与所有标准）】
+- 当官方文件写明某法规/标准被另一法规/标准替代时，必须同时做两件事：
+  1) 被替代的旧条目：用 action="abolish"，status="已废止"，填 abolishDate（官方写明），并在 replacedBy 字段填"替代它的法规/标准名称或编号"；系统会自动把 remark 写成「由 XX 替代。废止标准不提供标准文本阅读服务。」，你无需手填 remark。
+  2) 若替代它的新法规/标准【不在】当前清单里，必须再用一条 action="add" 把它加进清单（按正常 add 规则提供官方链接、实施日期、发布部门等），不得遗漏。
+- 此规则为通用规则，适用于 laws 表（法规）与 standards 表（所有产品标准），不止食安标准。
+- 若官方只宣布废止、未写明被谁替代（极少见），replacedBy 留空，remark 仍为「废止标准不提供标准文本阅读服务。」，不得编造替代项。
 """
 
 
@@ -405,6 +412,7 @@ def build_prompt(target_label, domain_text, existing_names):
   "remark": "仅限三类：采标官网原话 / 食安待补说明 / 即将被XX替代说明；其余留空",
   "fromValues": {{"effectiveDate": "清单里当前的实施日期", "status": "清单里当前的状态"}},
   "source_url": "你核实本条所依据的官方页面链接（必填，须官方域名正文页，系统会真实访问校验）",
+  "replacedBy": "替代本标准的法规/标准名称或编号（仅当官方写明被XX替代时填；否则空字符串）",
   "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
 
@@ -754,7 +762,12 @@ def apply_change(table, all_items, change, domain_id, today):
     if action == "abolish":
         old_status = target.get("status", "")
         abolish_date = change.get("abolishDate", "") or target.get("abolishDate", "")
-        remark = clean_remark(change, is_abolish=True)
+        replaced_by = (change.get("replacedBy") or "").strip()
+        if replaced_by:
+            # 通用废止—替代规则：官方写明被XX替代时，备注须写明"由XX替代"
+            remark = f"由 {replaced_by} 替代。废止标准不提供标准文本阅读服务。"
+        else:
+            remark = clean_remark(change, is_abolish=True)
         set_fields = {"status": "已废止", "abolishDate": abolish_date, "remark": remark}
         # 应用
         target["status"] = "已废止"
@@ -766,7 +779,7 @@ def apply_change(table, all_items, change, domain_id, today):
                 "display": {"diffs": [{"field": "状态", "from": old_status, "to": "已废止"}],
                             "link": target.get("link", ""), "source": target.get(src_field, ""),
                             "sourceUrl": (change.get("source_url") or "").strip(),
-                            "reason": change.get("note", "") or "废止"}}
+                            "reason": ((f"由 {replaced_by} 替代：" if replaced_by else "") + (change.get("note", "") or "废止"))}}
 
     # update
     set_fields = {}
