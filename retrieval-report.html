@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自动检索质检报告</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#fff; --line:#e3e8ef; --text:#1f2733; --muted:#6b7785;
+    --pri:#2563eb; --ok:#16a34a; --warn:#ea580c; --bad:#dc2626; --gray:#94a3b8;
+    --tag:#eef2ff; --tag-t:#4338ca;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Microsoft YaHei",Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+  header{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  header h1{margin:0;font-size:18px;font-weight:600}
+  header .meta{font-size:12px;opacity:.9}
+  .wrap{max-width:1040px;margin:0 auto;padding:18px 22px 50px}
+  .back{display:inline-block;margin:14px 0 0 22px;color:var(--pri);text-decoration:none;font-size:13px}
+  .back:hover{text-decoration:underline}
+  .topbar{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  .topbar h2{margin:0;font-size:20px}
+  .topbar .date{color:var(--muted);font-size:13px}
+  .note{background:#eff6ff;border:1px solid #cfe0f5;color:#1e3a8a;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6;margin:12px 0 18px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden}
+  .stat .num{font-size:38px;font-weight:700;line-height:1}
+  .stat .lab{margin-top:6px;font-size:14px;color:var(--text)}
+  .stat .desc{margin-top:4px;font-size:12px;color:var(--muted);line-height:1.5}
+  .stat .bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+  .stat.ok .num{color:var(--ok)} .stat.ok .bar{background:var(--ok)}
+  .stat.warn .num{color:var(--warn)} .stat.warn .bar{background:var(--warn)}
+  .stat.bad .num{color:var(--bad)} .stat.bad .bar{background:var(--bad)}
+  .stat.gray .num{color:var(--gray)} .stat.gray .bar{background:var(--gray)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:20px}
+  .panel h3{margin:0 0 12px;font-size:16px}
+  .panel h3 .sub{font-weight:400;font-size:12px;color:var(--muted);margin-left:8px}
+  .brow{display:flex;align-items:center;gap:10px;margin:8px 0}
+  .brow .bl{width:230px;flex:none;font-size:13px;color:var(--text);text-align:right}
+  .brow .bt{flex:1;background:#f1f5f9;border-radius:6px;height:22px;overflow:hidden}
+  .brow .bf{height:100%;background:var(--bad);border-radius:6px;min-width:2px}
+  .brow .bv{width:34px;flex:none;text-align:left;font-size:13px;font-weight:600;color:var(--bad)}
+  .empty{color:var(--muted);font-size:13px;padding:6px 0}
+  .item{border-bottom:1px solid var(--line);padding:12px 0}
+  .item:last-child{border-bottom:none}
+  .item .ih{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .item .nm{font-weight:600;font-size:14px}
+  .item .rs{font-size:12px;color:var(--muted);line-height:1.7;word-break:break-all;margin-top:4px}
+  .badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:12px;font-weight:600}
+  .badge.laws{background:#e0f2fe;color:#0369a1}
+  .badge.standards{background:#ede9fe;color:#6d28d9}
+  .badge.add{background:#dcfce7;color:#15803d}
+  .badge.update{background:#dbeafe;color:#1d4ed8}
+  .badge.abolish{background:#fee2e2;color:#b91c1c}
+  .badge.status_switch{background:#fef3c7;color:#92400e}
+  a{color:var(--pri)}
+  .loading,.errbox{padding:40px;text-align:center;color:var(--muted)}
+  .errbox{color:var(--bad)}
+  .errbox code{background:#fef2f2;padding:2px 6px;border-radius:4px}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 30px}
+</style>
+</head>
+<body>
+<header>
+  <h1>自动检索质检报告</h1>
+  <div class="meta">测量 GLM 检索质量的仪表盘</div>
+</header>
+<a class="back" href="index.html">← 返回清单</a>
+<div class="wrap">
+  <div class="topbar">
+    <h2>本轮检索结果</h2>
+    <span class="date" id="genDate">加载中…</span>
+  </div>
+  <div class="note">
+    本页每次自动检索后自动更新。<b>「丢弃」项都是没通过质检的条目</b>（绝大多数是 GLM 编的假链接），已被整条拦下，<b>不代表清单有真实更新被漏掉</b>。
+    你的目标：让「人工复核」和「丢弃」里的「编造 URL」数字逐轮下降 —— 那就是训练见效。
+  </div>
+
+  <div class="cards" id="cards"><div class="loading">正在读取报告…</div></div>
+
+  <div class="panel">
+    <h3>丢弃原因分类 <span class="sub">数字越小越好</span></h3>
+    <div id="discardChart"><div class="loading">…</div></div>
+  </div>
+
+  <div class="panel" id="rejectPanel" style="display:none">
+    <h3>人工复核原因分类 <span class="sub">逐类压降，目标是归零</span></h3>
+    <div id="rejectChart"></div>
+  </div>
+
+  <div class="panel">
+    <h3>丢弃条目明细 <span class="sub">点开链接可看 GLM 给了什么假地址</span></h3>
+    <div id="discardList"><div class="loading">…</div></div>
+  </div>
+
+  <footer>数据来源：retrieval-report.json ｜ 由自动检索流程生成</footer>
+</div>
+
+<script>
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function linkify(s){return esc(s).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>')}
+const TABLE_LABEL={laws:"法律法规",standards:"产品标准"};
+const ACTION_LABEL={add:"新增",update:"更新",abolish:"废止",status_switch:"状态切换"};
+const COUNT_DEFS=[
+  {key:"ok_可直接应用",    label:"可直接应用", color:"ok",   desc:"通过7道自动质检，可在『待确认更新』勾选应用"},
+  {key:"reject_人工复核",  label:"人工复核",   color:"warn", desc:"未通过质检的线索，只作参考、不写入清单"},
+  {key:"discard_丢弃",     label:"丢弃",       color:"bad",  desc:"被质检判为垃圾、整条拦下（多为编造链接）"},
+  {key:"status_switch_状态切换", label:"状态切换", color:"gray", desc:"仅状态自动翻转（如即将实施→现行有效）"}
+];
+
+async function load(){
+  let data=null;
+  try{
+    const r=await fetch("retrieval-report.json?t="+Date.now(),{cache:"no-store"});
+    if(r.ok) data=await r.json();
+  }catch(e){}
+  if(!data){ renderError(); return; }
+  render(data);
+}
+function renderError(){
+  document.getElementById("cards").innerHTML='<div class="errbox">报告读取失败。<br>请通过网站地址打开本页：<br><code>https://haideweili1.github.io/laws-list/retrieval-report.html</code><br>（直接双击本地文件会因浏览器安全限制无法读取数据）</div>';
+  document.getElementById("discardChart").innerHTML='';
+  document.getElementById("discardList").innerHTML='';
+}
+function render(d){
+  document.getElementById("genDate").textContent = d.generatedAt ? ("检索于 "+d.generatedAt) : "";
+  const counts=d.counts||{};
+  // 大数字卡片
+  document.getElementById("cards").innerHTML = COUNT_DEFS.map(c=>{
+    const v=counts[c.key]||0;
+    return `<div class="stat ${c.color}"><span class="bar"></span>
+      <div class="num">${v}</div>
+      <div class="lab">${c.label}</div>
+      <div class="desc">${c.desc}</div></div>`;
+  }).join("");
+
+  // 丢弃原因分类条形图
+  const db=d.discard_breakdown||{};
+  const dkeys=Object.keys(db);
+  const dmax=Math.max(1,...dkeys.map(k=>db[k]||0));
+  document.getElementById("discardChart").innerHTML = dkeys.length
+    ? dkeys.map(k=>`<div class="brow"><div class="bl">${esc(k)}</div><div class="bt"><div class="bf" style="width:${(db[k]/dmax*100).toFixed(1)}%"></div></div><div class="bv">${db[k]}</div></div>`).join("")
+    : '<div class="empty">本轮无丢弃 ✅</div>';
+
+  // 人工复核原因分类
+  const rb=d.reject_breakdown||{};
+  const rkeys=Object.keys(rb);
+  const rmax=Math.max(1,...rkeys.map(k=>rb[k]||0));
+  const rpanel=document.getElementById("rejectPanel");
+  if(rkeys.length){
+    rpanel.style.display="";
+    document.getElementById("rejectChart").innerHTML = rkeys.map(k=>`<div class="brow"><div class="bl">${esc(k)}</div><div class="bt"><div class="bf" style="width:${(rb[k]/rmax*100).toFixed(1)}%;background:var(--warn)"></div></div><div class="bv" style="color:var(--warn)">${rb[k]}</div></div>`).join("");
+  }else{
+    rpanel.style.display="none";
+  }
+
+  // 丢弃明细
+  const items=d.discarded_items||[];
+  document.getElementById("discardList").innerHTML = items.length
+    ? items.map(it=>{
+        const tbl=TABLE_LABEL[it.table]||it.table||"";
+        const act=ACTION_LABEL[it.action]||it.action||"";
+        return `<div class="item">
+          <div class="ih">
+            <span class="nm">《${esc(it.name)}》</span>
+            ${tbl?`<span class="badge ${esc(it.table)}">${tbl}</span>`:""}
+            ${act?`<span class="badge ${esc(it.action)}">${act}</span>`:""}
+          </div>
+          <div class="rs">${linkify(it.reason)}</div>
+        </div>`;
+      }).join("")
+    : '<div class="empty">本轮没有丢弃任何条目 ✅</div>';
+}
+load();
+</script>
+</body>
+</html>
