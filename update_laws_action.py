@@ -15,6 +15,9 @@
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
   MODEL            (可选)  模型名，默认 glm-4-plus（智谱最强模型，事实准确性明显优于 air）
   DRAFT_MODE       (可选)  true(默认)=只出提案不动数据；false=直写 data.json
+  SYNC_PROXY       (可选)  国内腾讯云 SCF 代理地址（含 https://）。配置后，链接核验改由
+                      广州境内 SCF 执行，消除 GitHub 境外 runner 访问国内官网超时造成的误杀；
+                      不配置则沿用旧逻辑（本地逐项探测）。
 """
 
 import os
@@ -98,6 +101,62 @@ def probe_link(url, timeout=10):
 def link_alive(url, timeout=10):
     """布尔版：仅在「确认可访问」时为真（写入链接用，从严）。"""
     return probe_link(url, timeout) is True
+
+
+# ===== 0-c：链接核验挪到国内 SCF（广州），消除境外 runner 超时误杀 =====
+# 思路：GitHub Actions 的 runner 在境外，访问 gov.cn / openstd / cfsa 等国内官网经常超时，
+# 导致本应「可直接应用」的真条目被误判为「无法自动验证」塞进右栏（人工复核）。
+# 改为把链接交给部署在广州的腾讯云 SCF（/probe-links）真实打开核验；
+# 国内网络稳定，超时类误杀基本消失。SCF 不可用时自动回退本地逐项探测，行为不变。
+PROBE_CACHE = {}  # url -> {state, dead_page_checked, dead_page, reason, via}
+
+
+def scf_batch_probe(urls, timeout=90, chunk=10):
+    """把一批 source_url 交给国内 SCF 探测，结果写入 PROBE_CACHE。
+    按 chunk 分批调用，避免单次 SCF 调用耗时过长。仅当 SYNC_PROXY 已配置才生效；
+    SCF 调用失败则不动缓存，后续自动回退本地逐项探测（不阻断流程）。"""
+    proxy = (os.environ.get("SYNC_PROXY") or "").strip()
+    if not proxy or not urls:
+        return
+    try:
+        for i in range(0, len(urls), chunk):
+            batch = urls[i:i + chunk]
+            req = urllib.request.Request(
+                proxy.rstrip("/") + "/probe-links",
+                data=json.dumps({"urls": batch}).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                j = json.loads(r.read().decode("utf-8"))
+            for it in (j.get("results") or []):
+                u = (it.get("url") or "").strip()
+                st = it.get("status")
+                if u and st in ("alive", "dead", "uncertain"):
+                    PROBE_CACHE[u] = {
+                        "state": {"alive": True, "dead": False, "uncertain": None}.get(st),
+                        "dead_page_checked": True,
+                        "dead_page": (st == "dead"),
+                        "reason": it.get("reason", ""),
+                        "via": "scf",
+                    }
+        print(f"  [0-c] 国内 SCF 探测完成，共缓存 {len(PROBE_CACHE)} 条链接结果")
+    except Exception as e:
+        # SCF 调用失败：不动缓存，后续自动回退本地逐项探测（不阻断流程）
+        print(f"  [0-c] 国内 SCF 探测不可用，回退本地探测：{e}")
+
+
+def scf_probe_link(url):
+    """三态探活，优先取 PROBE_CACHE（来自国内 SCF），未命中则本地回退。
+    返回 dict: {state: True/False/None, dead_page_checked, dead_page, reason, via}"""
+    url = (url or "").strip()
+    cached = PROBE_CACHE.get(url)
+    if cached is not None:
+        return cached
+    local = probe_link(url)
+    res = {"state": local, "dead_page_checked": False, "dead_page": None,
+           "reason": "", "via": "local"}
+    PROBE_CACHE[url] = res
+    return res
 
 
 # ===== 质检关卡：官方域名白名单（不在名单内的链接一律不采信）=====
@@ -659,22 +718,33 @@ def check_change(table, change, target, today):
         reasons.append("依据来源不是正文页（搜索页/列表页/伪造格式）：" + su)
         discard = True
     else:
-        st = probe_link(su)
-        if st is False:
-            reasons.append("依据来源确认失效（404 / 跳回首页），多半是编造的链接：" + su)
+        pr = scf_probe_link(su)
+        if pr["state"] is False:
+            reasons.append("依据来源确认失效（" + (pr.get("reason") or "404 / 跳回首页") + "），多半是编造的链接：" + su)
             discard = True
-        elif st is None:
+        elif pr["state"] is None:
             reasons.append("依据来源无法自动验证（超时 / 被拦截），请人工点开确认：" + su)
-        elif st is True:
-            text = fetch_text(su)
-            if text is None:
-                reasons.append("依据来源能打开但无法读取正文，请人工点开确认：" + su)
-            elif is_dead_page(text):
+        elif pr["state"] is True:
+            if pr.get("dead_page_checked") and pr.get("dead_page"):
                 reasons.append("依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su)
                 discard = True
-            elif table != "laws" and target and target.get("stdNo"):
-                if _source_version_mismatch(text, target.get("stdNo")):
-                    reasons.append("依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su)
+            elif pr.get("dead_page_checked"):
+                # 国内 SCF 已确认是真实正文页：只做版本号核对，取不到正文也放行（绝不因境外超时误杀真条目）
+                text = fetch_text(su)
+                if text is not None and table != "laws" and target and target.get("stdNo"):
+                    if _source_version_mismatch(text, target.get("stdNo")):
+                        reasons.append("依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su)
+            else:
+                # 本地回退路径（SCF 未配置/不可用）：保留原逐条探活逻辑
+                text = fetch_text(su)
+                if text is None:
+                    reasons.append("依据来源能打开但无法读取正文，请人工点开确认：" + su)
+                elif is_dead_page(text):
+                    reasons.append("依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su)
+                    discard = True
+                elif table != "laws" and target and target.get("stdNo"):
+                    if _source_version_mismatch(text, target.get("stdNo")):
+                        reasons.append("依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su)
 
     # ③ 旧值核对：声称的旧值必须与清单一字不差（证明它真的看过清单）
     if action in ("update", "abolish") and target:
@@ -1144,6 +1214,11 @@ def main():
         print(f"检索：{label} ...")
         result = search_target(client, model, label, text, existing_block)
         changes = result.get("changes", []) or []
+        # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
+        _su = [(ch.get("source_url") or "").strip() for ch in changes]
+        _su = [u for u in _su if u and domain_ok(u) and url_shape_ok(u)]
+        if _su:
+            scf_batch_probe(_su)
         print(f"  发现 {len(changes)} 条候选：{result.get('summary', '')}")
         for ch in changes:
             res = apply_change(table, all_items, ch, cid, today)

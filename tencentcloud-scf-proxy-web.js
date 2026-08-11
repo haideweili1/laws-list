@@ -12,6 +12,8 @@
 //   POST     /trigger-update   触发 GitHub Actions 自动检索（草稿模式，只出提案不动数据）
 //   GET      /check-status     查询本次检索运行状态
 //   POST     /apply-proposed   把网页上「待确认更新」里你勾选的提案写回 data.json（唯一写数据入口）
+//   POST     /probe-links      批量链接核验（0-c：部署在广州，稳定访问 gov.cn/openstd/cfsa，
+//                                真实打开页面判断 alive/dead/uncertain + 死页，消除境外 runner 超时误杀）
 
 const http = require('http');
 const REPO = 'haideweili1/laws-list';
@@ -286,6 +288,92 @@ async function checkStatus(token, runId) {
   }
 }
 
+// ===== 0-c：批量链接核验（部署在广州，稳定访问 gov.cn / openstd / cfsa）=====
+// GitHub Actions 的 runner 在境外，访问国内官网常超时 → 真条目被误判「无法验证」塞进人工复核栏。
+// 这里把链接核验挪到广州 SCF：从国内网络真实打开页面，判断 alive/dead/uncertain + 死页，
+// 再由检索脚本据此分类，从而消除境外超时造成的误杀。
+const PROBE_DEAD_MARKERS = ["搜索不到", "未找到", "页面不存在", "没有检索到",
+  "无相关结果", "内容不存在", "不存在的页面", "没有找到"];
+
+function probeIsHomepage(u) {
+  try {
+    const p = new URL(u);
+    const path = (p.pathname || "").replace(/\/+$/, "");
+    return path === "" && !p.search;
+  } catch (e) { return false; }
+}
+
+async function probeFetchText(url, maxBytes) {
+  maxBytes = maxBytes || 150000;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const r = await fetch(url, {
+      method: "GET", redirect: "follow",
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; laws-probe/1.0)", "Accept": "text/html,application/xhtml+xml,*/*" },
+      signal: ctrl.signal
+    });
+    const buf = Buffer.from(await r.arrayBuffer()).slice(0, maxBytes);
+    clearTimeout(timer);
+    for (const enc of ["utf-8", "gbk", "gb18030", "latin-1"]) {
+      try { return buf.toString(enc); } catch (e) {}
+    }
+    return buf.toString("utf-8");
+  } catch (e) {
+    clearTimeout(timer);
+    return null;
+  }
+}
+
+function probeIsDeadPage(text) {
+  if (!text) return false;
+  return PROBE_DEAD_MARKERS.some(m => text.includes(m));
+}
+
+async function probeOne(url) {
+  url = (url || "").trim();
+  if (!url) return { url, status: "dead", httpStatus: 0, reason: "空链接" };
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const r = await fetch(url, {
+      method: "GET", redirect: "follow",
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; laws-probe/1.0)", "Accept": "*/*", "Range": "bytes=0-0" },
+      signal: ctrl.signal
+    });
+    clearTimeout(timer);
+    const finalUrl = r.url || url;
+    const code = r.status;
+    if (code >= 400) return { url, status: "dead", httpStatus: code, reason: "HTTP " + code };
+    if (probeIsHomepage(finalUrl) && !probeIsHomepage(url)) {
+      return { url, status: "dead", httpStatus: code, reason: "跳回首页，原链接已失效" };
+    }
+    // 确认可访问，再取正文判断是否死页（openstd 等拼错 hcno 也返 200 但显示「未找到」）
+    const text = await probeFetchText(url);
+    if (text && probeIsDeadPage(text)) {
+      return { url, status: "dead", httpStatus: code, reason: "页面显示「未找到/搜索不到」死页" };
+    }
+    return { url, status: "alive", httpStatus: code, reason: "" };
+  } catch (e) {
+    const msg = (e && e.name === "AbortError") ? "超时" : (e && e.message ? e.message : "网络错误");
+    return { url, status: "uncertain", httpStatus: 0, reason: msg };
+  }
+}
+
+async function handleProbeLinks(bodyStr) {
+  let payload;
+  try { payload = JSON.parse(bodyStr || "{}"); }
+  catch (e) { return { status: 400, body: JSON.stringify({ message: "请求体不是合法 JSON" }) }; }
+  const urls = Array.isArray(payload.urls) ? payload.urls.map(u => (u || "").trim()).filter(Boolean) : [];
+  if (!urls.length) return { status: 400, body: JSON.stringify({ message: "缺少 urls 数组" }) };
+  // 串行探测（链接数不多，避免并发打爆目标站，也控制 SCF 内存/耗时）
+  const results = [];
+  for (const u of urls) {
+    results.push(await probeOne(u));
+  }
+  return { status: 200, body: JSON.stringify({ results }) };
+}
+
 async function handleRequest(method, pathname, params, bodyStr) {
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
@@ -303,6 +391,10 @@ async function handleRequest(method, pathname, params, bodyStr) {
   if (pathname === '/apply-proposed') {
     if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
     return await applyProposed(bodyStr, token);
+  }
+  if (pathname === '/probe-links') {
+    if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
+    return await handleProbeLinks(bodyStr);
   }
   // 默认：处理 user-edits.json 的 GET/PUT（团队协同同步）
   return await proxyUserEdits(method, bodyStr, token);

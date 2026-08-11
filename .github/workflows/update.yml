@@ -33,6 +33,7 @@ jobs:
       - name: 联网检索并更新法规/标准
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          SYNC_PROXY: ${{ secrets.SYNC_PROXY }}
           # 【不再从仓库变量传 MODEL】以前 vars.MODEL 若残留 glm-4-air，
           # 会悄悄把脚本里升级好的 glm-4-plus 顶掉。模型统一在 update_laws_action.py 内指定。
         run: python update_laws_action.py
