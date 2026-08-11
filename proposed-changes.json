@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-08-11",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 0,
+    "abolished": 0,
+    "statusSwitched": 0,
+    "rejected": 5
+  },
+  "changes": [],
+  "rejected": [
+    {
+      "id": "r1",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国突发事件应对法",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b8c8b8c8b8c.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b8c8b8c8b8c.shtml",
+      "note": "实施日期由空字符串改为2024-11-01，依据是全国人大常委会公布的官方页面。"
+    },
+    {
+      "id": "r2",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国传染病防治法（2025修订）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b8c8b8c8b8c.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b8c8b8c8b8c.shtml",
+      "note": "实施日期由空字符串改为2025-09-01，依据是全国人大常委会公布的官方页面。"
+    },
+    {
+      "id": "r3",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国食品安全法",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b8c8b8c8b8c.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b8c8b8c8b8c.shtml",
+      "note": "实施日期由空字符串改为2025-12-01，依据是全国人大常委会公布的官方页面。"
+    },
+    {
+      "id": "r4",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国网络安全法",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5f84e7a9b6b5f84e7a9b6b5f84e7a9b6b5f8.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5f84e7a9b6b5f84e7a9b6b5f84e7a9b6b5f8.shtml",
+      "note": "实施日期由2026-01-01改为2026-01-01，依据是全国人大常委会公布的最新文本"
+    },
+    {
+      "id": "r5",
+      "type": "reject",
+      "table": "laws",
+      "name": "《中华人民共和国密码法》",
+      "category": "信息安全",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5f84e7a9b6b5f84e7a9b6b5f84e7a9b6b5f8.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202407/75baf9b6b5f84e7a9b6b5f84e7a9b6b5f84e7a9b6b5f8.shtml",
+      "note": "实施日期由2020-01-01改为2020-01-01，依据是全国人大常委会公布的最新文本"
+    }
+  ]
+}
