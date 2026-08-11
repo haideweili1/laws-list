@@ -1,5 +1,11 @@
 {
-  "status": "idle",
-  "updatedAt": "2026-08-11T02:55:47.488Z",
-  "note": "提案已丢弃"
+  "status": "no_change",
+  "updatedAt": "2026-08-11T03:13:37",
+  "counts": {
+    "added": 0,
+    "updated": 0,
+    "abolished": 0,
+    "statusSwitched": 0,
+    "rejected": 0
+  }
 }
