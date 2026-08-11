@@ -190,16 +190,25 @@ def domain_ok(url):
 
 
 def url_shape_ok(url):
-    """质检关卡③（形态）：拒收搜索页/列表页/栏目首页；国标全文页必须带 hcno= 参数。"""
+    """质检关卡③（形态）：拒收搜索页/列表页/栏目首页；国标全文页必须带 hcno= 参数；
+    且 hcno 不能是编造的（同一 8 位块重复 ≥3 次，如 FFB7A8B3×4）。"""
     u = (url or "").strip()
     if not u or is_homepage(u):
         return False
     if BAD_URL_PATTERNS.search(u):
         return False
     host = (urllib.parse.urlparse(u).hostname or "").lower()
-    if "openstd.samr.gov.cn" in host and "hcno=" not in u:
-        # 国标平台全文页真实格式必为 ...detail.html?hcno=XXXX，拼出来的一律判为伪造
-        return False
+    if "openstd.samr.gov.cn" in host:
+        if "hcno=" not in u:
+            # 国标平台全文页真实格式必为 ...detail.html?hcno=XXXX，拼出来的一律判为伪造
+            return False
+        # hcno 必须是 32 位十六进制，否则（长度不符/含非十六进制字符）判伪造
+        m = re.search(r"hcno=([0-9A-Fa-f]+)", u, re.I)
+        if not m or len(m.group(1)) != 32:
+            return False
+        # hcno 编造识别：规律重复块/字母数字交替（FFB7A8B3+A8B3A8B3×3、A1B2C3...）一律判伪造
+        if _hcno_looks_fabricated(m.group(1)):
+            return False
     return True
 
 
@@ -222,7 +231,8 @@ def url_trusted(url):
 # 正文内容探测：openstd 等平台对拼错的 hcno 也返回 HTTP 200，但正文显示
 # 「搜索不到 / 未找到」，这种死链必须识别，否则会被当成有效链接采信。
 DEAD_PAGE_MARKERS = ("搜索不到", "未找到", "页面不存在", "没有检索到",
-                     "无相关结果", "内容不存在", "不存在的页面", "没有找到")
+                     "无相关结果", "内容不存在", "不存在的页面", "没有找到",
+                     "尚未收录", "未收录", "不提供")
 
 
 def fetch_text(url, timeout=10, max_bytes=150000):
@@ -368,10 +378,11 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 若你判断某已有条目需要更新（修订/废止/新版替代/日期变更），请用 action="update" 或 "abolish"，不要另起一条 add。
 
 【二、链接：必须是能直接看全文的官方文档页】
-- 只接受直接展示"标题 + 完整条文/全文"的官方页面。优先级：人大网(npc.gov.cn)、中国政府网(gov.cn)、各部委官网、标准官方平台(openstd.samr.gov.cn / std.samr.gov.cn)。
+- 只接受直接展示"标题 + 完整条文/全文"的官方页面（人大网 npc.gov.cn、中国政府网 gov.cn、各部委官网、以及本清单已在用的各类官方源如 gzhxaq.com、xcoss.henan.gov.cn、yjgl.tj.gov.cn 等地方/行业站）。
+- **优先复用清单里该条目已有的链接**：清单现有链接都是能打开的官方源，除非你确认它确实失效、并在官方站找到验证可打开的正确替代链接，否则保留原链接、不要擅自更换。
+- **严禁为任何标准编造 openstd 的 hcno 链接**（形如 `...?hcno=32位十六进制`）。如果你拿不到真实且能打开的 hcno，就不要在 link / source_url 里填 openstd 链接；给不出合格链接就填 ""（空字符串），并在 remark 注明"官方链接待补"，绝不用非正文链接或编造链接充数。
 - 严禁：搜索引擎结果页、列表页、栏目首页、新闻稿/媒体报道页（除非该新闻稿本身就是官方发布的全文页）。
-- 链接必须以官方域名开头，且打开后能直接看到正文；给不出合格链接就填 ""（空字符串），并在 remark 注明"官方链接待补"，绝不用非正文链接充数。
-- 你提供的 source_url（依据来源）必须亲自确认能显示正文、且不是「搜索不到 / 未找到」的死链（部分平台对拼错的编号也返回 200，但正文无内容）；若只是搜索页或死链，source_url 填空字符串并在 remark 注明待补。为某条标准(standards 表)提出的日期/状态变更，其 source_url 指向页面的标准号必须与本条 stdNo 完全一致（如本条是 GB/T 4288-2018 就引用 2018 版页面，绝不用 2025 版页面去改 2018 版）。
+- 你提供的 source_url（依据来源）必须亲自确认能显示正文、且不是「搜索不到 / 未找到 / 尚未收录」的死链（部分平台对拼错的编号也返回 200，但正文无内容）；若只是搜索页或死链，source_url 填空字符串并在 remark 注明待补。为某条标准(standards 表)提出的日期/状态变更，其 source_url 指向页面的标准号必须与本条 stdNo 完全一致（如本条是 GB/T 4288-2018 就引用 2018 版页面，绝不用 2025 版页面去改 2018 版）。
 
 【三、日期：必须来自官方文件原文，禁止编造】
 - effectiveDate（实施日期）与 abolishDate（废止日期）必须取自官方文件明确写明的日期。
@@ -405,8 +416,10 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 
 【九、旧值必须与清单完全一致（最重要）】
 - 我在下面会把清单里每条的【实施日期 / 状态 / 部门 / 是否已有链接】全部给你，你**必须先看清楚再说话**。
+- 清单里某个字段**已经有值**（例如实施日期=2025-08-01），你就**绝不能把它说成空字符串或没标注**；fromValues 必须填清单里的真实值，与下面清单一字不差。
 - 每条 change 必须填写 fromValues 对象：{"字段名": "清单里当前的值"}，且必须与我给你的清单值**一字不差**。
 - 系统会拿 fromValues 和真实清单逐字比对，对不上就判定"你没看清单"，整条拒收。
+- **禁止"无变化却返回 change"**：若你的 web 检索结果与该条目在清单里的现有值一致（即官方并未给出"变了"的白纸黑字依据），就不要返回这条 change——没有变化就别动，尤其不要把"清单已有的实施日期"先说成空、再填回原值。
 - 禁止出现"原清单未标注实施日期""清单里没有这条"之类的说法——清单内容就在下面，看清楚再写。
 
 【十、铁律】
@@ -459,7 +472,7 @@ def build_prompt(target_label, domain_text, existing_names):
 {{
   "action": "add | update | abolish",
   "name": "全称",
-  "table": "laws 或 standards（法规填 laws，标准填 standards）",
+  "table": "laws 或 standards。本清单规矩：仅『与本公司产品相关』的标准（洗衣机/微波炉/制冷/电器安全/EMC/能效/食品接触/插头插座/电池/无线蓝牙等）才填 standards；其余标准（职业健康/安全/环境/信息安全类国标）一律填 laws（法规表）。法规/条例/办法等填 laws。",
   "stdNo": "标准号（标准类填）",
   "docNumber": "发文字号（法规类填，查不到留空）",
   "domains": ["环境"],
@@ -686,6 +699,38 @@ STD_NO_RE = re.compile(
     r"(GB\s*/?\s*T?\s*\d|QB\s*/?\s*T|JB\s*/?\s*T|YY\s*/?\s*T|SN\s*/?\s*T|HG\s*/?\s*T|"
     r"\bIEC\s*\d|\bISO\s*\d|\bEN\s*\d)", re.I)
 
+# 产品相关标准提示词（与本公司产品有关）。用户规矩：仅这类标准才进 standards 表；
+# 其余标准（职业健康/安全/环境/信息安全类国标）进 laws 表是允许的。
+PRODUCT_STD_HINTS = re.compile(
+    r"洗衣机|微波|制冷|冰箱|电磁兼容|EMC|能效|GB\s*12021|噪声|GB\s*19606|食品接触|"
+    r"GB\s*4806|GB\s*31604|插头插座|GB\s*1002|GB\s*2099|电池|无线|蓝牙|SRRC|RED|FCC|"
+    r"电器安全|GB\s*4706|IEC\s*60335|耦合器|电线电缆|灯具|led|咀嚼冰|冰沙|啤酒机|制冰",
+    re.I)
+
+def _hcno_looks_fabricated(hcno):
+    """识别编造的 hcno：真实 hcno 是随机哈希，呈现规律重复即编造。
+
+    覆盖的编造形态：
+    ① 8 位块重复（周期8）：如 FFB7A8B3 + A8B3A8B3×3 → 拆 4 块后存在重复块；
+    ② 4 位块重复（周期4）：如 ABCDABCDABCDABCD；
+    ③ 字母-数字交替规律：如 A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6。
+    """
+    h = (hcno or "").strip()
+    if len(h) != 32:
+        return False  # 长度问题交由调用方单独判
+    # ① 8 位块重复
+    blocks8 = [h[i:i + 8] for i in range(0, 32, 8)]
+    if len(set(blocks8)) < len(blocks8):
+        return True
+    # ② 4 位块重复（同一块出现 ≥3 次）
+    blocks4 = [h[i:i + 4] for i in range(0, 32, 4)]
+    if max(blocks4.count(b) for b in set(blocks4)) >= 3:
+        return True
+    # ③ 字母-数字交替规律
+    if re.fullmatch(r"([A-Fa-f][0-9]){16}", h) or re.fullmatch(r"([0-9][A-Fa-f]){16}", h):
+        return True
+    return False
+
 
 def _norm_txt(v):
     return re.sub(r"\s+", "", str(v or "")).strip()
@@ -701,10 +746,12 @@ def check_change(table, change, target, today):
     action = (change.get("action") or "").strip().lower()
     discard = False
 
-    # ① 表归属：带标准号的条目不许进法规表（信息安全类豁免，用户允许其标准放法规表）
-    cat = (change.get("category") or (target or {}).get("category") or "")
-    if table == "laws" and cat != "信息安全" and (STD_NO_RE.search(name) or (change.get("stdNo") or "").strip()):
-        reasons.append("这是标准，却被放进了法规表")
+    # ① 表归属：用户规矩——只有「产品相关标准」才进 standards 表，
+    #    其余标准（职业健康/安全/环境/信息安全类国标）放 laws 表是允许的。
+    #    因此仅当「产品相关标准」被放进 laws 表时才拦；其余标准进 laws 放行进人工复核也不算错。
+    is_std = bool(STD_NO_RE.search(name) or (change.get("stdNo") or "").strip())
+    if table == "laws" and is_std and PRODUCT_STD_HINTS.search(name + " " + (change.get("stdNo") or "")):
+        reasons.append("这是产品相关标准，按规矩应放进标准表(standards)而非法规表(laws)")
 
     # ② 依据来源：硬门槛（无链接/死链/非官方 → 直接丢弃；超时无法验证 → 人工复核）
     su = (change.get("source_url") or "").strip()
