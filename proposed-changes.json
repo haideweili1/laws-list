@@ -1,13 +1,92 @@
 {
-  "generatedAt": "2026-08-10",
+  "generatedAt": "2026-08-11",
   "draftMode": true,
   "counts": {
     "added": 0,
     "updated": 0,
     "abolished": 0,
     "statusSwitched": 0,
-    "rejected": 0
+    "rejected": 6
   },
   "changes": [],
-  "rejected": []
+  "rejected": [
+    {
+      "id": "r1",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国突发事件应对法",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b3b8b3b8b3b.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b3b8b3b8b3b.shtml",
+      "note": "实施日期由空字符串改为2024-11-01，依据全国人大常委会官网公布的最新实施日期。"
+    },
+    {
+      "id": "r2",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国传染病防治法（2025修订）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b3b8b3b8b3b.shtml"
+      ],
+      "sourceUrl": "https://www.npc.gov.cn/npc/c30834/202404/75baf9b6b5f84e7a9b0b6b3b8b3b8b3b.shtml",
+      "note": "实施日期由空字符串改为2025-09-01，依据全国人大常委会官网公布的最新实施日期。"
+    },
+    {
+      "id": "r3",
+      "type": "reject",
+      "table": "laws",
+      "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB7A8B3A8B3A8B3A8B3A8B3A8B3A8B3",
+      "note": "实施日期由空字符串改为2025-08-01，依据国家市场监督管理总局标准公开系统公布的最新实施日期。"
+    },
+    {
+      "id": "r4",
+      "type": "reject",
+      "table": "laws",
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB7A8B3A8B3A8B3A8B3A8B3A8B3A8B3",
+      "note": "实施日期由空字符串改为2026-07-01，依据国家市场监督管理总局标准公开系统公布的最新实施日期。"
+    },
+    {
+      "id": "r5",
+      "type": "reject",
+      "table": "laws",
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB7A8B3A8B3A8B3A8B3A8B3A8B3A8B3",
+      "note": "实施日期由空字符串改为2025-01-01，依据国家市场监督管理总局标准公开系统公布的最新实施日期。"
+    },
+    {
+      "id": "r6",
+      "type": "reject",
+      "table": "laws",
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "这是标准，却被放进了法规表"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FFB7A8B3A8B3A8B3A8B3A8B3A8B3A8B3",
+      "note": "实施日期由空字符串改为2026-01-01，依据国家市场监督管理总局标准公开系统公布的最新实施日期。"
+    }
+  ]
 }
