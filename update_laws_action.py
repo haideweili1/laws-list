@@ -378,10 +378,10 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 若你判断某已有条目需要更新（修订/废止/新版替代/日期变更），请用 action="update" 或 "abolish"，不要另起一条 add。
 
 【二、链接：必须是能直接看全文的官方文档页】
-- 只接受直接展示"标题 + 完整条文/全文"的官方页面（人大网 npc.gov.cn、中国政府网 gov.cn、各部委官网、以及本清单已在用的各类官方源如 gzhxaq.com、xcoss.henan.gov.cn、yjgl.tj.gov.cn 等地方/行业站）。
+- 法规/标准的权威来源分布在不同官方渠道，请按条目去找"对的那个"，**不要默认某一个**（尤其不要一看到标准就默认 openstd）。可引用来源类别包括：① 对应部委/主管部门官网及其子站（如 npc.gov.cn、gov.cn、samr.gov.cn、mee.gov.cn、mps.gov.cn 等）；② 地方监管/行业局站（如 xcoss.henan.gov.cn、yjgl.tj.gov.cn 等）；③ 国家标准全文公开系统 openstd.samr.gov.cn（仅当该标准确由其发布、且你拿到真实详情页时）；④ 本清单该条目【已有且能打开的链接】（优先复用，见下条）。只接受直接展示"标题 + 完整条文/全文"的官方页面。
 - **优先复用清单里该条目已有的链接**：清单现有链接都是能打开的官方源，除非你确认它确实失效、并在官方站找到验证可打开的正确替代链接，否则保留原链接、不要擅自更换。
-- **openstd（标准全文平台）的真实详情页 URL 只有唯一一种格式**：`https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=32位十六进制`（注意必须带 `?hcno=` 且后面是 32 位十六进制）。任何 `openstd.samr.gov.cn` 域名下**不带 `?hcno=32位十六进制`** 的链接——例如 `.../bzgk/gb/GB4288-2018`、`.../bzgk/gb/index`、`.../bzgk/gb/GBXXXX-YYYY`、`.../bzgk/gb/newGbInfo`（无 hcno）——都是你凭标准号硬拼出来的、根本不存在的死链，系统会直接判为伪造并整条丢弃，**严禁使用**。
-- **绝对禁止从记忆/编号拼任何 URL**。link 与 source_url 只能填你**真正在 web_search 实际返回的官方结果里看到**的链接。若检索后没有拿到真实可打开的官方链接：link 填空字符串 + remark 注明「官方链接待补」；并且该条 change 若没有合格的 source_url 就**不要提交**（解释：编造的 URL 必然被系统判为伪造而整条丢弃，反而把真正有用的变更一起丢掉，得不偿失——宁可少报，不可错报）。
+- openstd 详情页 URL 必须带 `?hcno=32位十六进制` 参数（形如 `.../newGbInfo?hcno=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`，hcno 为 32 位十六进制）；不带 hcno 的 openstd 链接（如 `.../bzgk/gb/GBXXXX-YYYY`、`.../bzgk/gb/index`）是凭编号硬拼的死链，系统会判为伪造整条丢弃——所以**只有 web_search 真实返回了该 hcno 详情页才用 openstd**，不要自己拼。
+- **绝对禁止从记忆/编号拼任何 URL**。link 与 source_url 只能填你**真正在 web_search 实际返回的官方结果里看到**的链接。若检索后没有拿到真实可打开的官方链接：link 填空字符串 + remark 注明「官方链接待补」。对**新增条目(add)**，内容仍可被保留转人工复核补全链接；对**更新/废止条目**，无合格 source_url 则不要提交（编造 URL 必被系统判为伪造整条丢弃，反而把真正有用的变更一起丢掉——宁可少报，不可错报）。
 - **条目已有有效链接时，直接复用它，不要另编（但版本号有变化则严禁复用）**：本次清单在『正文链接=已有』的条目，说明已经有能打开的官方链接。若你只变更 status / effectiveDate / remark 等非链接字段，且**标准号/版本号未变**（例如 即将实施→现行有效、补填原本空白的实施日期、加废止日期），source_url 直接填该条目**现有的 link**（它是真实官方正文页，能通过校验），不要去编新的链接；也不要为了"显得有更新"去改 link 字段。⚠️ **若本次变更涉及版本号变化（如条目从 2018 版变为 2025 版、或检索发现"新版替代旧版"），这就是改版——旧条目的链接指向旧版正文，严禁复用旧链接**：新版本必须提供它自身的真实官方链接（source_url 标准号须与新版本号完全一致），否则 link 留空 + remark 注明「官方链接待补」，且新版本应作为"新增条目"处理，而不是改写旧条目的日期去复用旧链接。
 - 严禁：搜索引擎结果页、列表页、栏目首页、新闻稿/媒体报道页（除非该新闻稿本身就是官方发布的全文页）。
 - 你提供的 source_url（依据来源）必须亲自确认能显示正文、且不是「搜索不到 / 未找到 / 尚未收录」的死链（部分平台对拼错的编号也返回 200，但正文无内容）；若只是搜索页或死链，source_url 填空字符串并在 remark 注明待补。为某条标准(standards 表)提出的日期/状态变更，其 source_url 指向页面的标准号必须与本条 stdNo 完全一致（如本条是 GB/T 4288-2018 就引用 2018 版页面，绝不用 2025 版页面去改 2018 版）。
@@ -423,7 +423,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 系统会拿 fromValues 和真实清单逐字比对，对不上就判定"你没看清单"，整条拒收。
 - **禁止"无变化却返回 change"**：若你的 web 检索结果与该条目在清单里的现有值一致（即官方并未给出"变了"的白纸黑字依据），就不要返回这条 change——没有变化就别动，尤其不要把"清单已有的实施日期"先说成空、再填回原值。
 - 禁止出现"原清单未标注实施日期""清单里没有这条"之类的说法——清单内容就在下面，看清楚再写。
-- **提交前先核对清单是否已做过该变更（杜绝重复提案）**：web 检索发现某标准的"新版"（如 GB/T 4288-2025、GB 12021.4-2026）时，先在本清单的「当前清单已有条目」里查找它**是否已经作为独立条目存在**；已存在说明上次更新已加过，**不要再 action=add**（系统也会近义去重跳过，但请你主动不发）。若清单里只有旧版（如 GB/T 4288-2018）且已标「已废止」、或 remark 写「由 XX 替代」「即将被 XX 替代」，也不要重复提交 update/abolish——这些变更清单已经做完，重复提交只会被判「无变化/已做过」而丢弃。总之：对比下面清单的**最新状态**再决定要不要发，不要凭"网上看到有新版本"就盲目 add。
+- **提交前先核对清单是否已存在该条目 / 是否已做过该变更（通用，杜绝重复提案）**：在发出任何 action=add 之前，先在本清单的「当前清单已有条目」里检索**同名或同标准号**的条目。若已存在：① 不要重复新增（add）；② 判断该已有条目是否需要更新（状态/日期/链接变了）→ 需要就改提 action=update 并填 fromValues，不需要就整条跳过。只有确认清单里确实没有的，才 action=add。对旧版（已标「已废止」/「由 XX 替代」/「即将被 XX 替代」）也不要重复提交 update/abolish——这些变更清单往往已经做完，重复提交只会被判「无变化/已做过」而丢弃。总之：对比下面清单的**最新状态**再决定要不要发，不要凭"网上看到有新版本"就盲目 add。
 
 【十、铁律】
 - 一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
@@ -756,45 +756,51 @@ def check_change(table, change, target, today):
     if table == "laws" and is_std and PRODUCT_STD_HINTS.search(name + " " + (change.get("stdNo") or "")):
         reasons.append("这是产品相关标准，按规矩应放进标准表(standards)而非法规表(laws)")
 
-    # ② 依据来源：硬门槛（无链接/死链/非官方 → 直接丢弃；超时无法验证 → 人工复核）
+    # ② 依据来源：硬门槛
+    #    - update/abolish（改动已有条目）：链接无/死/非官方/非正文 → 直接丢弃（确属垃圾）
+    #    - add（新增条目）：链接问题不整条丢弃，留空待补转人工复核（保住可能真实的新增内容）
     su = (change.get("source_url") or "").strip()
+    is_add = (action == "add")
+    link_issue = None
     if not su:
-        reasons.append("没有提供依据来源网址（source_url）")
-        discard = True
+        link_issue = "没有提供依据来源网址（source_url）"
     elif not domain_ok(su):
-        reasons.append("依据来源不是官方域名：" + su)
-        discard = True
+        link_issue = "依据来源不是官方域名：" + su
     elif not url_shape_ok(su):
-        reasons.append("依据来源不是正文页（搜索页/列表页/伪造格式）：" + su)
-        discard = True
+        link_issue = "依据来源不是正文页（搜索页/列表页/伪造格式）：" + su
     else:
         pr = scf_probe_link(su)
         if pr["state"] is False:
-            reasons.append("依据来源确认失效（" + (pr.get("reason") or "404 / 跳回首页") + "），多半是编造的链接：" + su)
-            discard = True
+            link_issue = "依据来源确认失效（" + (pr.get("reason") or "404 / 跳回首页") + "），多半是编造的链接：" + su
         elif pr["state"] is None:
-            reasons.append("依据来源无法自动验证（超时 / 被拦截），请人工点开确认：" + su)
+            link_issue = "依据来源无法自动验证（超时 / 被拦截），请人工点开确认：" + su
         elif pr["state"] is True:
             if pr.get("dead_page_checked") and pr.get("dead_page"):
-                reasons.append("依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su)
-                discard = True
+                link_issue = "依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su
             elif pr.get("dead_page_checked"):
                 # 国内 SCF 已确认是真实正文页：只做版本号核对，取不到正文也放行（绝不因境外超时误杀真条目）
                 text = fetch_text(su)
                 if text is not None and table != "laws" and target and target.get("stdNo"):
                     if _source_version_mismatch(text, target.get("stdNo")):
-                        reasons.append("依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su)
+                        link_issue = "依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su
             else:
                 # 本地回退路径（SCF 未配置/不可用）：保留原逐条探活逻辑
                 text = fetch_text(su)
                 if text is None:
-                    reasons.append("依据来源能打开但无法读取正文，请人工点开确认：" + su)
+                    link_issue = "依据来源能打开但无法读取正文，请人工点开确认：" + su
                 elif is_dead_page(text):
-                    reasons.append("依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su)
-                    discard = True
+                    link_issue = "依据来源打开后无正文（显示「搜索不到 / 未找到」），属死链或编造：" + su
                 elif table != "laws" and target and target.get("stdNo"):
                     if _source_version_mismatch(text, target.get("stdNo")):
-                        reasons.append("依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su)
+                        link_issue = "依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su
+
+    if link_issue:
+        if is_add:
+            # 合法新增：链接问题不整条丢弃，留空待补转人工复核，保住可能真实的新增内容
+            reasons.append(link_issue + "；该新增条目链接已留空待补，建议人工确认是否新增")
+        else:
+            reasons.append(link_issue)
+            discard = True
 
     # ③ 旧值核对：声称的旧值必须与清单一字不差（证明它真的看过清单）
     if action in ("update", "abolish") and target:
@@ -835,6 +841,35 @@ def check_change(table, change, target, today):
     return (len(reasons) == 0), reasons, discard
 
 
+def _proposed_summary(change):
+    """提取 GLM 想设置的关键字段，供报告展示『它想改/想新增什么』。"""
+    fields = ("name", "stdNo", "docNumber", "dept", "publisher", "effectiveDate",
+              "abolishDate", "status", "link", "remark", "domains", "category",
+              "replacedBy", "source", "adopted", "copyrightNote")
+    out = {}
+    a=0
+    for f in fields:
+        v = change.get(f)
+        if v not in (None, "", [], {}):
+            out[f] = v
+    fv = change.get("fromValues")
+    if isinstance(fv, dict) and fv:
+        out["fromValues"] = fv
+    return out
+
+
+def _fmt_prop(p):
+    """把 proposed 字典格式化为可读字符串（用于 .md 报告）。"""
+    if not isinstance(p, dict) or not p:
+        return ""
+    parts = []
+    for k, v in p.items():
+        if k == "fromValues" and isinstance(v, dict):
+            v = "，".join(f"{a}={b}" for a, b in v.items())
+        parts.append(f"{k}={v}")
+    return "；想设：" + "，".join(parts)
+
+
 def apply_change(table, all_items, change, domain_id, today):
     """把一条 AI 变更应用到 all_items（原地修改/追加），并返回用于提案记录的 dict。
     kind=skip 表示跳过；kind=reject 表示未过质检（带 reasons，进待核实栏，不改数据）。"""
@@ -852,12 +887,12 @@ def apply_change(table, all_items, change, domain_id, today):
     if discard:
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
         return {"kind": "discard", "name": name, "action": action, "table": table,
-                "reason": "；".join(reasons)}
+                "reason": "；".join(reasons), "proposed": _proposed_summary(change)}
     if not ok:
         return {"kind": "reject", "name": name, "category": label, "table": table,
                 "action": action, "reasons": reasons,
                 "sourceUrl": (change.get("source_url") or "").strip(),
-                "note": str(change.get("note") or "")}
+                "note": str(change.get("note") or ""), "proposed": _proposed_summary(change)}
 
     if action == "add":
         # 去重（精确 + 近义包含）安全网：命中已有则跳过
@@ -1129,12 +1164,12 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
         "rejected_items": [
             {"name": r.get("name"), "category": r.get("category"), "table": r.get("table"),
              "action": r.get("action"), "reasons": r.get("reasons", []),
-             "sourceUrl": r.get("sourceUrl", "")}
+             "sourceUrl": r.get("sourceUrl", ""), "proposed": r.get("proposed", {})}
             for r in rejected
         ],
         "discarded_items": [
             {"name": d.get("name"), "table": d.get("table"), "action": d.get("action"),
-             "reason": d.get("reason", "")}
+             "reason": d.get("reason", ""), "proposed": d.get("proposed", {})}
             for d in discarded
         ],
     }
@@ -1167,11 +1202,11 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
         if rejected:
             lines.append("\n## 右栏条目明细")
             for r in rejected:
-                lines.append(f"- 《{r.get('name')}》[{r.get('category')}]：{'；'.join(r.get('reasons', []))}")
+                lines.append(f"- 《{r.get('name')}》[{r.get('category')}]：{'；'.join(r.get('reasons', []))}{_fmt_prop(r.get('proposed'))}")
         if discarded:
             lines.append("\n## 丢弃条目明细")
             for d in discarded:
-                lines.append(f"- 《{d.get('name')}》：{d.get('reason', '')}")
+                lines.append(f"- 《{d.get('name')}》：{d.get('reason', '')}{_fmt_prop(d.get('proposed'))}")
         with open(REPORT_MD_PATH, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
     except Exception as e:

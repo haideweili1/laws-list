@@ -53,6 +53,11 @@
   .badge.update{background:#dbeafe;color:#1d4ed8}
   .badge.abolish{background:#fee2e2;color:#b91c1c}
   .badge.status_switch{background:#fef3c7;color:#92400e}
+  .prop{margin-top:8px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:8px 10px}
+  .prop .ph{font-size:12px;color:var(--tag-t);font-weight:600;margin-bottom:4px}
+  .prop .kv{display:flex;gap:8px;font-size:12.5px;line-height:1.65}
+  .prop .k{width:78px;flex:none;color:var(--muted);text-align:right}
+  .prop .v{color:var(--text);word-break:break-all}
   a{color:var(--pri)}
   .loading,.errbox{padding:40px;text-align:center;color:var(--muted)}
   .errbox{color:var(--bad)}
@@ -88,8 +93,13 @@
     <div id="rejectChart"></div>
   </div>
 
+  <div class="panel" id="rejectItemsPanel" style="display:none">
+    <h3>人工复核条目明细 <span class="sub">可核对 GLM 想改/想新增什么，再决定是否采用</span></h3>
+    <div id="rejectList"></div>
+  </div>
+
   <div class="panel">
-    <h3>丢弃条目明细 <span class="sub">点开链接可看 GLM 给了什么假地址</span></h3>
+    <h3>丢弃条目明细 <span class="sub">点开可看 GLM 想改/想新增的内容，以及它给了什么假地址</span></h3>
     <div id="discardList"><div class="loading">…</div></div>
   </div>
 
@@ -99,6 +109,16 @@
 <script>
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function linkify(s){return esc(s).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>')}
+const PROP_LABEL={name:"名称",stdNo:"标准号",docNumber:"发文字号",dept:"部门",publisher:"发布单位",effectiveDate:"实施日期",abolishDate:"废止日期",status:"状态",link:"链接",remark:"备注",domains:"范围",replacedBy:"被替代为",source:"来源",category:"类别",fromValues:"（声称现有值）"};
+function renderProposed(p){
+  if(!p||!Object.keys(p).length) return "";
+  const rows=Object.keys(p).map(k=>{
+    let v=p[k];
+    if(k==="fromValues"&&typeof v==="object"){ v=Object.entries(v).map(([a,b])=>`${a}=${b}`).join("，"); }
+    return `<div class="kv"><span class="k">${PROP_LABEL[k]||k}</span><span class="v">${linkify(v)}</span></div>`;
+  }).join("");
+  return `<div class="prop"><div class="ph">GLM 想改成 / 想新增的内容</div>${rows}</div>`;
+}
 const TABLE_LABEL={laws:"法律法规",standards:"产品标准"};
 const ACTION_LABEL={add:"新增",update:"更新",abolish:"废止",status_switch:"状态切换"};
 const COUNT_DEFS=[
@@ -154,6 +174,29 @@ function render(d){
     rpanel.style.display="none";
   }
 
+  // 人工复核条目明细
+  const ritems=d.rejected_items||[];
+  const rip=document.getElementById("rejectItemsPanel");
+  if(ritems.length){
+    rip.style.display="";
+    document.getElementById("rejectList").innerHTML = ritems.map(it=>{
+      const tbl=TABLE_LABEL[it.table]||it.table||"";
+      const act=ACTION_LABEL[it.action]||it.action||"";
+      const reasons=(it.reasons||[]).map(r=>`<div class="rs">${linkify(r)}</div>`).join("");
+      return `<div class="item">
+        <div class="ih">
+          <span class="nm">《${esc(it.name)}》</span>
+          ${tbl?`<span class="badge ${esc(it.table)}">${tbl}</span>`:""}
+          ${act?`<span class="badge ${esc(it.action)}">${act}</span>`:""}
+        </div>
+        ${reasons}
+        ${renderProposed(it.proposed)}
+      </div>`;
+    }).join("");
+  }else{
+    rip.style.display="none";
+  }
+
   // 丢弃明细
   const items=d.discarded_items||[];
   document.getElementById("discardList").innerHTML = items.length
@@ -167,6 +210,7 @@ function render(d){
             ${act?`<span class="badge ${esc(it.action)}">${act}</span>`:""}
           </div>
           <div class="rs">${linkify(it.reason)}</div>
+          ${renderProposed(it.proposed)}
         </div>`;
       }).join("")
     : '<div class="empty">本轮没有丢弃任何条目 ✅</div>';
