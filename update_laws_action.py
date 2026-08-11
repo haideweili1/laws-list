@@ -28,6 +28,7 @@ import urllib.request
 import urllib.parse
 import ssl
 from datetime import date, datetime
+from collections import Counter
 
 try:
     from zhipuai import ZhipuAI
@@ -42,6 +43,8 @@ SUMMARY_PATH = os.path.join(ROOT, "update-summary.json")
 RETRIEVAL_STATUS_PATH = os.path.join(ROOT, "retrieval-status.json")
 PROPOSED_CHANGES_PATH = os.path.join(ROOT, "proposed-changes.json")
 PROPOSED_DATA_PATH = os.path.join(ROOT, "proposed-data.json")
+REPORT_PATH = os.path.join(ROOT, "retrieval-report.json")
+REPORT_MD_PATH = os.path.join(ROOT, "retrieval-report.md")
 
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
@@ -728,7 +731,8 @@ def apply_change(table, all_items, change, domain_id, today):
     ok, reasons, discard = check_change(table, change, pre_target, today)
     if discard:
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
-        return {"kind": "discard", "name": name, "reason": "；".join(reasons)}
+        return {"kind": "discard", "name": name, "action": action, "table": table,
+                "reason": "；".join(reasons)}
     if not ok:
         return {"kind": "reject", "name": name, "category": label, "table": table,
                 "action": action, "reasons": reasons,
@@ -944,6 +948,113 @@ def now_iso():
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
+def _classify_reason(r):
+    """把一条质检原因归类到训练用分类桶，便于逐类压降『人工复核』数量。"""
+    s = (r or "")
+    if "无法自动验证" in s or "无法读取正文" in s or "超时" in s:
+        return "探活超时/被拦截（疑似误杀，可借国内SCF消除）"
+    if "确认失效" in s or "打开后无正文" in s or "多半是编造" in s or "无正文" in s:
+        return "死链/编造（确属垃圾）"
+    if "没有提供依据来源" in s or "依据来源不是官方域名" in s or "依据来源不是正文页" in s:
+        return "无官方依据来源"
+    if "标准号与本条不一致" in s:
+        return "版本混淆（拿错版本页）"
+    if "即将实施」，但实施日期" in s or "判定为废止，却给不出" in s:
+        return "状态/日期不自洽"
+    if "声称原" in s or "未填写 fromValues" in s or "无法证明它核对过清单" in s:
+        return "旧值核对不符（未看清单）"
+    if "这是标准，却被放进了法规表" in s:
+        return "表归属错误（标准混进法规表）"
+    if "只提出了禁改字段" in s:
+        return "只改了禁改字段（同义改写）"
+    if "没有说明改了什么" in s or "理由里说改实施日期" in s:
+        return "理由缺失/不自洽"
+    return "其它"
+
+
+def _tally_reasons(items, reason_getter):
+    """对一组条目（rejected/discarded）按原因分类计数。"""
+    c = Counter()
+    for it in items:
+        rs = reason_getter(it)
+        if isinstance(rs, list):
+            for r in rs:
+                c[_classify_reason(r)] += 1
+        elif rs:
+            c[_classify_reason(rs)] += 1
+    return dict(c)
+
+
+def write_retrieval_report(summary_changes, rejected, discarded, switched, today):
+    """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让人工复核归零』的瞄准镜。
+    只产出报告文件，绝不改动 data.json。"""
+    counts = {
+        "ok_可直接应用": len(summary_changes),
+        "reject_人工复核": len(rejected),
+        "discard_丢弃": len(discarded),
+        "status_switch_状态切换": len(switched),
+    }
+    reject_breakdown = _tally_reasons(rejected, lambda r: r.get("reasons", []))
+    discard_breakdown = _tally_reasons(discarded, lambda d: d.get("reason", ""))
+    report = {
+        "generatedAt": today,
+        "note": "测量仪表：右栏(人工复核)是诊断信号不是负担。逐类压降 reject_breakdown，才能让它归零。",
+        "counts": counts,
+        "reject_breakdown": reject_breakdown,
+        "discard_breakdown": discard_breakdown,
+        "rejected_items": [
+            {"name": r.get("name"), "category": r.get("category"), "table": r.get("table"),
+             "action": r.get("action"), "reasons": r.get("reasons", []),
+             "sourceUrl": r.get("sourceUrl", "")}
+            for r in rejected
+        ],
+        "discarded_items": [
+            {"name": d.get("name"), "table": d.get("table"), "action": d.get("action"),
+             "reason": d.get("reason", "")}
+            for d in discarded
+        ],
+    }
+    try:
+        with open(REPORT_PATH, "w", encoding="utf-8") as f:
+            json.dump(report, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("  写出 retrieval-report.json 失败（可忽略）:", e)
+    try:
+        lines = []
+        lines.append(f"# 自动检索质检报告（{today}）\n")
+        lines.append("> 测量仪表：右栏(人工复核)是诊断信号。逐类压降下面 reject 的分类，才能让它归零。\n")
+        lines.append("## 计数")
+        lines.append(f"- 可直接应用（左栏）：**{counts['ok_可直接应用']}**")
+        lines.append(f"- 人工复核（右栏）：**{counts['reject_人工复核']}**")
+        lines.append(f"- 丢弃：**{counts['discard_丢弃']}**")
+        lines.append(f"- 状态切换：**{counts['status_switch_状态切换']}**")
+        lines.append("\n## 右栏「为什么被拒」分类（训练瞄准镜）")
+        if reject_breakdown:
+            for k, v in sorted(reject_breakdown.items(), key=lambda x: -x[1]):
+                lines.append(f"- {k}：{v}")
+        else:
+            lines.append("- （无）")
+        lines.append("\n## 丢弃「为什么被丢」分类")
+        if discard_breakdown:
+            for k, v in sorted(discard_breakdown.items(), key=lambda x: -x[1]):
+                lines.append(f"- {k}：{v}")
+        else:
+            lines.append("- （无）")
+        if rejected:
+            lines.append("\n## 右栏条目明细")
+            for r in rejected:
+                lines.append(f"- 《{r.get('name')}》[{r.get('category')}]：{'；'.join(r.get('reasons', []))}")
+        if discarded:
+            lines.append("\n## 丢弃条目明细")
+            for d in discarded:
+                lines.append(f"- 《{d.get('name')}》：{d.get('reason', '')}")
+        with open(REPORT_MD_PATH, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+    except Exception as e:
+        print("  写出 retrieval-report.md 失败（可忽略）:", e)
+    return report
+
+
 def _git_config():
     subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=ROOT, check=False)
     subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], cwd=ROOT, check=False)
@@ -1016,6 +1127,7 @@ def main():
     ]
     summary_changes = []
     rejected = []   # 未过质检的候选：不改数据，带着原因进网页「待核实线索」栏
+    discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，收集以便报告计数
     for table, cid in targets:
         if table == "laws":
             items = [l for l in proposed_laws if l.get("category") == cid]
@@ -1040,6 +1152,8 @@ def main():
                     print(f"    跳过（{res.get('reason')}）：{res.get('name')}")
                 continue
             if res.get("kind") == "discard":
+                discarded.append({"name": res.get("name"), "action": res.get("action", ""),
+                                  "table": res.get("table", ""), "reason": res.get("reason", "")})
                 print(f"    丢弃（{res.get('reason')}）：{res.get('name')}")
                 continue
             if res.get("kind") == "reject":
@@ -1048,6 +1162,10 @@ def main():
                 continue
             summary_changes.append(res)
             print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
+
+    # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
+    write_retrieval_report(summary_changes, rejected, discarded, switched, today)
+    print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 人工复核 {len(rejected)} / 丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
     if DRAFT_MODE:
@@ -1125,7 +1243,8 @@ def main():
                                "counts": proposed_changes["counts"]}, f, ensure_ascii=False, indent=2)
             except Exception as e:
                 print("  写入 no_change 状态失败（可忽略）:", e)
-            git_commit_push([PROPOSED_DATA_PATH, PROPOSED_CHANGES_PATH, RETRIEVAL_STATUS_PATH],
+            git_commit_push([PROPOSED_DATA_PATH, PROPOSED_CHANGES_PATH, RETRIEVAL_STATUS_PATH,
+                             REPORT_PATH, REPORT_MD_PATH],
                             f"draft: 自动检索完成 {today}（本次无合格变更）")
             print("\n[draft 模式] 本次未发现合格变更，未产出提案。")
             return
@@ -1185,7 +1304,8 @@ def main():
             json.dump({"status": "success", "updatedAt": now_iso(), "lastUpdated": today}, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print("  写入 success 状态失败（可忽略）:", e)
-    git_commit_push([DATA_PATH, SUMMARY_PATH, RETRIEVAL_STATUS_PATH], f"chore: 检索success {today}")
+    git_commit_push([DATA_PATH, SUMMARY_PATH, RETRIEVAL_STATUS_PATH,
+                     REPORT_PATH, REPORT_MD_PATH], f"chore: 检索success {today}")
 
 
 if __name__ == "__main__":
