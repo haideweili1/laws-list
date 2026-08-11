@@ -788,6 +788,36 @@ function propSummaryLine(c){
   if(r.remark)f.push("备注 "+r.remark);
   return f.length?('<ul class="prop-diff">'+f.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>"):"";
 }
+// 核准时清空明显的编造链接（防御：即便后端漏拦，也不把假链接写进清单）
+// 仅拦「一眼假」：非 http、openstd 无/假 hcno、占位符、示例域名；绝不误伤真实官方深链。
+function hcnoLooksFake(h){
+  if(!h||h.length!==32)return true;
+  if(/^(.)\1+$/.test(h))return true;            // 全同字符
+  if(/(.)\1{3,}/.test(h))return true;           // 含≥4连续相同字符
+  const blocks={};                              // 8 位块重复≥3 次（如 FFB7A8B3 重复）
+  for(let i=0;i+8<=h.length;i+=8){const b=h.substr(i,8);blocks[b]=(blocks[b]||0)+1;}
+  for(const k in blocks){ if(k && blocks[k]>=3) return true; }
+  return false;
+}
+function clearFakeLink(rec){
+  if(!rec||typeof rec!=="object")return;
+  const lk=(rec.link||"").trim();
+  if(!lk)return;
+  let fake=false;
+  if(!/^https?:\/\//i.test(lk)) fake=true;
+  else if(lk.indexOf("openstd.samr.gov.cn")>=0){
+    const m=lk.match(/hcno=([0-9A-Fa-f]+)/i);
+    if(hcnoLooksFake(m?m[1]:"")) fake=true;
+  }
+  if(/YYYY|example\.com|占位|placeholder|test\./i.test(lk)) fake=true;
+  if(fake){
+    rec.link="";
+    const old=(rec.remark||"").trim();
+    rec.remark = old.indexOf("官方链接待补")<0
+      ? (old?old+"（官方链接待补，系统自动清空编造链接）":"（官方链接待补）")
+      : old;
+  }
+}
 function renderProposals(){
   const box=document.getElementById("propList"); if(!box||!PROPOSALS)return;
   box.innerHTML=PROPOSALS.changes.map((c,i)=>{
@@ -854,12 +884,14 @@ async function applyProposals(){
       const rec=c.newRecord;
       if(!rec||!rec.name){ skipped.push(c.name+"（提案缺少记录内容）"); continue; }
       if(arr.some(r=>r.id===rec.id)||arr.some(r=>(r.name||"").trim()===(rec.name||"").trim())){ skipped.push(c.name+"（清单中已存在同名条目）"); continue; }
+      clearFakeLink(rec);   // 核准时清空 GLM 给的编造链接（防御兜底）
       arr.push(rec);
     }else{
       if(!c.targetId||!c.setFields){ skipped.push(c.name+"（提案缺少目标或字段）"); continue; }
       const rec=arr.find(r=>r.id===c.targetId);
       if(!rec){ skipped.push(c.name+"（找不到对应条目）"); continue; }
       Object.assign(rec,c.setFields);
+      clearFakeLink(rec);   // 核准时清空编造链接（防御兜底）
     }
     applied.push(c);
   }

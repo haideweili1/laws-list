@@ -381,7 +381,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 法规/标准的权威来源分布在不同官方渠道，请按条目去找"对的那个"，**不要默认某一个**（尤其不要一看到标准就默认 openstd）。可引用来源类别包括：① 对应部委/主管部门官网及其子站（如 npc.gov.cn、gov.cn、samr.gov.cn、mee.gov.cn、mps.gov.cn 等）；② 地方监管/行业局站（如 xcoss.henan.gov.cn、yjgl.tj.gov.cn 等）；③ 国家标准全文公开系统 openstd.samr.gov.cn（仅当该标准确由其发布、且你拿到真实详情页时）；④ 本清单该条目【已有且能打开的链接】（优先复用，见下条）。只接受直接展示"标题 + 完整条文/全文"的官方页面。
 - **优先复用清单里该条目已有的链接**：清单现有链接都是能打开的官方源，除非你确认它确实失效、并在官方站找到验证可打开的正确替代链接，否则保留原链接、不要擅自更换。
 - openstd 详情页 URL 必须带 `?hcno=32位十六进制` 参数（形如 `.../newGbInfo?hcno=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`，hcno 为 32 位十六进制）；不带 hcno 的 openstd 链接（如 `.../bzgk/gb/GBXXXX-YYYY`、`.../bzgk/gb/index`）是凭编号硬拼的死链，系统会判为伪造整条丢弃——所以**只有 web_search 真实返回了该 hcno 详情页才用 openstd**，不要自己拼。
-- **绝对禁止从记忆/编号拼任何 URL**。link 与 source_url 只能填你**真正在 web_search 实际返回的官方结果里看到**的链接。若检索后没有拿到真实可打开的官方链接：link 填空字符串 + remark 注明「官方链接待补」。对**新增条目(add)**，内容仍可被保留转人工复核补全链接；对**更新/废止条目**，无合格 source_url 则不要提交（编造 URL 必被系统判为伪造整条丢弃，反而把真正有用的变更一起丢掉——宁可少报，不可错报）。
+- **绝对禁止从记忆/编号拼任何 URL**。link 与 source_url 只能填你**真正在 web_search 实际返回的官方结果里看到**的链接。若检索后没有拿到真实可打开的官方链接：link 填空字符串 + remark 注明「官方链接待补」。对**新增条目(add)**：内容仍会被保留——系统会把它作为一条**可勾选的新增提案**提交给你核准，且链接自动清空待补（核准写入时绝不写入编造链接），你在网页上勾选核准后再补官方链接即可；对**更新/废止条目**，无合格 source_url 则不要提交（编造 URL 必被系统判为伪造整条丢弃，反而把真正有用的变更一起丢掉——宁可少报，不可错报）。
 - **条目已有有效链接时，直接复用它，不要另编（但版本号有变化则严禁复用）**：本次清单在『正文链接=已有』的条目，说明已经有能打开的官方链接。若你只变更 status / effectiveDate / remark 等非链接字段，且**标准号/版本号未变**（例如 即将实施→现行有效、补填原本空白的实施日期、加废止日期），source_url 直接填该条目**现有的 link**（它是真实官方正文页，能通过校验），不要去编新的链接；也不要为了"显得有更新"去改 link 字段。⚠️ **若本次变更涉及版本号变化（如条目从 2018 版变为 2025 版、或检索发现"新版替代旧版"），这就是改版——旧条目的链接指向旧版正文，严禁复用旧链接**：新版本必须提供它自身的真实官方链接（source_url 标准号须与新版本号完全一致），否则 link 留空 + remark 注明「官方链接待补」，且新版本应作为"新增条目"处理，而不是改写旧条目的日期去复用旧链接。
 - 严禁：搜索引擎结果页、列表页、栏目首页、新闻稿/媒体报道页（除非该新闻稿本身就是官方发布的全文页）。
 - 你提供的 source_url（依据来源）必须亲自确认能显示正文、且不是「搜索不到 / 未找到 / 尚未收录」的死链（部分平台对拼错的编号也返回 200，但正文无内容）；若只是搜索页或死链，source_url 填空字符串并在 remark 注明待补。为某条标准(standards 表)提出的日期/状态变更，其 source_url 指向页面的标准号必须与本条 stdNo 完全一致（如本条是 GB/T 4288-2018 就引用 2018 版页面，绝不用 2025 版页面去改 2018 版）。
@@ -758,7 +758,7 @@ def check_change(table, change, target, today):
 
     # ② 依据来源：硬门槛
     #    - update/abolish（改动已有条目）：链接无/死/非官方/非正文 → 直接丢弃（确属垃圾）
-    #    - add（新增条目）：链接问题不整条丢弃，留空待补转人工复核（保住可能真实的新增内容）
+    #    - add（新增条目）：链接问题不整条丢弃；改为生成可勾选的新增提案、链接清空待补（保住可能真实的新增内容，且核准时绝不写入假链接）
     su = (change.get("source_url") or "").strip()
     is_add = (action == "add")
     link_issue = None
@@ -796,9 +796,11 @@ def check_change(table, change, target, today):
 
     if link_issue:
         if is_add:
-            # 合法新增：链接问题不整条丢弃，留空待补转人工复核，保住可能真实的新增内容
+            # 合法新增：链接问题不整条丢弃；交由 apply_change 的 action=="add" 分支
+            # 生成可勾选的新增提案、链接自动清空待补，核准时绝不写入假链接
             reasons.append(link_issue + "；该新增条目链接已留空待补，建议人工确认是否新增")
         else:
+            # 更新/废止条目：链接无/死/非官方/非正文 → 确属垃圾，直接丢弃（不污染任何面板）
             reasons.append(link_issue)
             discard = True
 
@@ -888,6 +890,25 @@ def apply_change(table, all_items, change, domain_id, today):
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
         return {"kind": "discard", "name": name, "action": action, "table": table,
                 "reason": "；".join(reasons), "proposed": _proposed_summary(change)}
+    if action == "add":
+        # 软未过（多为链接问题，但内容可能真实）→ 仍作为可勾选的「新增」提案交人工核准。
+        # make_new_record 内部只用 url_trusted 通过的链接；未通过则 link 自动留空待补，
+        # 因此核准写入时绝不会把 GLM 编的假链接写进清单（等级保护基本要求这类即此情形）。
+        if _name_match(name, all_items):
+            return {"kind": "skip", "name": name, "reason": "已存在（近义去重）"}
+        new_id = next_id(table, all_items)
+        rec = make_new_record(table, name, change, domain_id, today, new_id, is_food=is_food)
+        disp = {
+            "diffs": [{"field": f, "from": "", "to": str(rec.get(f, ""))}
+                      for f in (("name", "docNumber", "dept", "effectiveDate", "status", "link", "remark")
+                                if table == "laws" else ("name", "stdNo", "publisher", "effectiveDate", "status", "link", "remark"))
+                      if rec.get(f)],
+            "link": rec.get("link", ""), "source": rec.get("dept" if table == "laws" else "publisher", ""),
+            "sourceUrl": (change.get("source_url") or "").strip(),
+            "reason": (change.get("note") or "新增") + "（链接已清空待补，请核准后再补官方链接）",
+        }
+        return {"kind": "add", "name": name, "category": label, "table": table,
+                "targetId": str(new_id), "newRecord": rec, "setFields": None, "display": disp}
     if not ok:
         return {"kind": "reject", "name": name, "category": label, "table": table,
                 "action": action, "reasons": reasons,
