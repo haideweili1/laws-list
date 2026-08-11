@@ -2,15 +2,15 @@
   "generatedAt": "2026-08-11",
   "note": "测量仪表：右栏(人工复核)是诊断信号不是负担。逐类压降 reject_breakdown，才能让它归零。",
   "counts": {
-    "ok_可直接应用": 0,
+    "ok_可直接应用": 1,
     "reject_人工复核": 0,
-    "discard_丢弃": 15,
+    "discard_丢弃": 10,
     "status_switch_状态切换": 0
   },
   "reject_breakdown": {},
   "discard_breakdown": {
-    "死链/编造（确属垃圾）": 2,
-    "编造URL/非正文页(搜索页/列表页/伪造格式)": 13
+    "死链/编造（确属垃圾）": 8,
+    "编造URL/非正文页(搜索页/列表页/伪造格式)": 2
   },
   "rejected_items": [],
   "discarded_items": [
@@ -18,91 +18,71 @@
       "name": "职业病分类和目录",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/202403/75baf2b8b5f84e7a9a1f8b8b8b8b8b8b8b.shtml"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/zhengceku/202403/content_6943456.htm",
+      "proposed": {}
     },
     {
       "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef；声称原日期是「」，清单里其实是「2025-08-01」；声称原状态是「即将实施」，清单里其实是「现行有效」"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
+      "proposed": {}
     },
     {
       "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef；声称原日期是「」，清单里其实是「2026-07-01」；声称原状态是「即将实施」，清单里其实是「现行有效」"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
+      "proposed": {}
     },
     {
       "name": "GB 14866-2023 眼面防护具通用技术规范",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef；声称原日期是「」，清单里其实是「2025-01-01」；声称原状态是「即将实施」，清单里其实是「现行有效」"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
+      "proposed": {}
     },
     {
       "name": "粉尘爆炸泄压规范（GB 15605-2024）",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef；声称原日期是「」，清单里其实是「2026-01-01」；声称原状态是「即将实施」，清单里其实是「现行有效」"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
+      "proposed": {}
     },
     {
       "name": "《化学品中挥发性有机组分定性分析和峰面积百分比测定顶空气相色谱-质谱法》GDOHTQC 001-2024",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源不是官方域名：http://example.com/gdohtqc001-2024；声称原日期是「」，清单里其实是「2024-11-20」；声称原状态是「即将实施」，清单里其实是「现行有效」"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gd.gov.cn/zwgk/zfxxgkpt/qfbm/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国网络安全法",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/2024-09/01/content_6949480.htm",
+      "proposed": {}
     },
     {
       "name": "网络数据安全管理条例",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/content/2024-07/15/content_6931236.htm"
-    },
-    {
-      "name": "信息安全技术 网络安全等级保护基本要求",
-      "table": "laws",
-      "action": "add",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX；标成「即将实施」，但实施日期 2024-09-01 早已过去"
-    },
-    {
-      "name": "《信息安全技术 个人信息安全规范》GB/T 35273-2020",
-      "table": "laws",
-      "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/2024-09/01/content_6949480.htm",
+      "proposed": {}
     },
     {
       "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
       "table": "standards",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CC7F7B7F7B7F7B7F7B7F7B7F7B7F7B7F"
-    },
-    {
-      "name": "GB/T 4288-2025 家用和类似用途电动洗衣机",
-      "table": "standards",
-      "action": "add",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CC7F7B7F7B7F7B7F7B7F7B7F7B7F7B7F"
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0A6F6B3C5D8E2F1A4B7C9D0E1F2A3B4C",
+      "proposed": {}
     },
     {
       "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
       "table": "standards",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CC7F7B7F7B7F7B7F7B7F7B7F7B7F7B7F；声称原状态是「已废止」，清单里其实是「现行有效」"
-    },
-    {
-      "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
-      "table": "standards",
-      "action": "add",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CC7F7B7F7B7F7B7F7B7F7B7F7B7F7B7F"
-    },
-    {
-      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
-      "table": "standards",
-      "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CC7F7B7F7B7F7B7F7B7F7B7F7B7F7B7F"
-    },
-    {
-      "name": "GB 21456-2024 家用和类似用途厨房电器能效限定值及能效等级",
-      "table": "standards",
-      "action": "add",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=CC7F7B7F7B7F7B7F7B7F7B7F7B7F7B7F"
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F",
+      "proposed": {}
     }
   ]
 }
