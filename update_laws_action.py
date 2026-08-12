@@ -51,6 +51,48 @@ REPORT_MD_PATH = os.path.join(ROOT, "retrieval-report.md")
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
 
+# ===== 链接审计专项（GLM 修正测试用，仅影响 glm_link_audit_task.json 中列出的条目）=====
+# 用途：把"12 条外省误挂链接"交给 GLM 尝试修正，再用 baseline-v2 对比看它改得对不对。
+# 设计铁律：只针对命中 LINK_AUDIT_TARGETS 的条目放宽"链接保护"（允许用正确归口链接替换误挂的外省链接）；
+#          其余条目一切照旧，绝不削弱通用质检与"不覆盖人工校对好链接"的保护。
+LINK_AUDIT_TARGETS = set()   # 存 (table, id)，命中即视为审计专项目标
+LINK_AUDIT_BLOCK = ""        # 注入 GLM 提示词的专项任务块（main 载入后填充）
+
+
+def load_link_audit_task():
+    """若存在 glm_link_audit_task.json，则载入审计专项目标并生成提示词注入块。
+    不存在则无任何影响（通用行为不变）。"""
+    global LINK_AUDIT_TARGETS, LINK_AUDIT_BLOCK
+    p = os.path.join(ROOT, "glm_link_audit_task.json")
+    if not os.path.exists(p):
+        return
+    try:
+        task = json.load(open(p, encoding="utf-8"))
+    except Exception as e:
+        print("  [链接审计] 任务文件读取失败，跳过：", e)
+        return
+    items = task.get("items", []) or []
+    rows = []
+    for it in items:
+        tid = it.get("id")
+        tbl = it.get("table")
+        if not tid or not tbl:
+            continue
+        LINK_AUDIT_TARGETS.add((tbl, tid))
+        rows.append(f"- 《{it.get('name','')}》(id={tid}, {tbl})：当前错挂 {it.get('wrong_host','')}；"
+                    f"正确归口={it.get('correct_source_site','')}；定位线索={it.get('glm_hint','')}")
+    if rows:
+        LINK_AUDIT_BLOCK = (
+            "\n═══ 专项链接复核任务（本次必须逐条处理，其余检索照常）═══\n"
+            "以下条目当前链接疑似挂在非归口官网（多为外省转载页），请逐条用 web_search 到其"
+            "【正确归口源】核实官方正文页链接，并各提一条 action=update（fromValues 填清单现值，"
+            "表示只改链接、内容字段不变）：\n" + "\n".join(rows) +
+            "\n要求：能确认官方正文页链接就填 link + source_url（务必原样复制的官方深链，"
+            "绝不许填外省转载站链接或自己拼 URL）；GB 类标准系统会自动按号解析国家标准全文公开系统直链，"
+            "你只需确认 status/effectiveDate 与清单一致。note 必须写明『链接由X站外省转载改为Y官方正文页，依据官网』。"
+        )
+        print(f"  [链接审计] 已载入 {len(rows)} 条专项复核目标（仅这些条目放宽链接保护）")
+
 # ===== 分诊自救台账：记录"哪些条目的链接是系统按官方渠道自动解析补上的" =====
 # 用途是测量：若此表持续有内容而"编造URL"分类归零，说明提示词训练已见效。
 _RESOLVE_LOG = []
@@ -772,7 +814,7 @@ def build_existing_block(items, table):
     return "\n".join(lines) or "（暂无）"
 
 
-def build_prompt(target_label, domain_text, existing_names):
+def build_prompt(target_label, domain_text, existing_names, audit_block=""):
     names_block = existing_names if isinstance(existing_names, str) else (
         "\n".join(f"- {n}" for n in existing_names) or "（暂无）")
     return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
@@ -784,7 +826,7 @@ def build_prompt(target_label, domain_text, existing_names):
 {names_block}
 
 {COMMON_RULES}
-
+{audit_block}
 请返回 JSON（无变更则 changes 为空数组）。每条 change 字段：
 {{
   "action": "add | update | abolish",
@@ -825,8 +867,8 @@ def extract_json(text):
     return text
 
 
-def search_target(client, model, label, text, existing_names):
-    prompt = build_prompt(label, text, existing_names)
+def search_target(client, model, label, text, existing_names, audit_block=""):
+    prompt = build_prompt(label, text, existing_names, audit_block)
     try:
         resp = client.chat.completions.create(
             model=model,
@@ -1075,6 +1117,11 @@ def check_change(table, change, target, today):
     #    - update/abolish（改动已有条目）：链接无/死/非官方/非正文 → 直接丢弃（确属垃圾）
     #    - add（新增条目）：链接问题不整条丢弃；改为生成可勾选的新增提案、链接清空待补（保住可能真实的新增内容，且核准时绝不写入假链接）
     su = (change.get("source_url") or "").strip()
+    # 链接审计专项：若本条目是 GB 类审计目标，忽略 GLM 给的链接（可能沿用误挂的外省链接），
+    # 强制系统按标准号解析 openstd 官方直链（只针对命中 LINK_AUDIT_TARGETS 的 GB 条目）。
+    if (table, (target or {}).get("id")) in LINK_AUDIT_TARGETS and \
+       (change.get("stdNo") or (target or {}).get("stdNo") or ""):
+        su = ""
     is_add = (action == "add")
     link_issue = None
     if not su:
@@ -1347,6 +1394,11 @@ def apply_change(table, all_items, change, domain_id, today):
         elif is_homepage(existing_url):
             set_fields["link"] = new_url
             diffs.append({"field": "来源链接", "from": "(原为首页)", "to": new_url})
+        elif (table, tid) in LINK_AUDIT_TARGETS:
+            # 链接审计专项：用系统/GLM 解析出的正确归口链接，替换误挂的外省转载链接
+            # （仅针对审计目标，通用保护"不覆盖人工校对好的有效深链"不受影响）
+            set_fields["link"] = new_url
+            diffs.append({"field": "来源链接", "from": existing_url, "to": new_url})
         # 现有已是有效深链时不动，避免把人工校对好的链接冲掉
     # 应用
     for k, v in set_fields.items():
@@ -1658,6 +1710,9 @@ def main():
     standards = data.setdefault("standards", [])
     today = date.today().isoformat()
 
+    # 链接审计专项：载入 glm_link_audit_task.json（若存在），仅影响其中列出的 12 条
+    load_link_audit_task()
+
     # proposed 为工作副本；草稿模式下它不会被写回 data.json
     proposed = copy.deepcopy(data)
     proposed_laws = proposed.setdefault("laws", [])
@@ -1693,7 +1748,7 @@ def main():
         existing_block = build_existing_block(items, table)
         label = CATEGORY_NAMES.get(cid, cid)
         print(f"检索：{label} ...")
-        result = search_target(client, model, label, text, existing_block)
+        result = search_target(client, model, label, text, existing_block, LINK_AUDIT_BLOCK)
         changes = result.get("changes", []) or []
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
         _su = [(ch.get("source_url") or "").strip() for ch in changes]
