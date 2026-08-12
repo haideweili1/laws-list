@@ -36,8 +36,7 @@ from collections import Counter
 try:
     from zhipuai import ZhipuAI
 except ImportError:
-    print("缺少 zhipuai 库，请先执行: pip install zhipuai")
-    sys.exit(1)
+    ZhipuAI = None  # 本地离线自检时可缺；生产环境(GitHub Actions)必装，main() 会校验
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(ROOT, "data.json")
@@ -157,6 +156,195 @@ def scf_probe_link(url):
            "reason": "", "via": "local"}
     PROBE_CACHE[url] = res
     return res
+
+
+# =====================================================================
+# 链接分诊解析框架（多源 / 通用，不写死任何具体标准号）
+# ---------------------------------------------------------------------
+# 设计目标（对应「让 GLM 不必再编 URL」的腿1落地）：
+#   GLM 只负责判断"这条要不要更新/废止"，链接这一环由脚本按"这条该去哪个官网"
+#   确定性地查回真实链接，而不是由模型凭记忆拼。
+# 分诊优先级（与清单铁律「链接以现有链接为准」一致）：
+#   1) 现有有效链接 → 直接复用（先核验活体+非死页），不重查、不瞎编；
+#   2) 有标准号 → 按"类别→官网源"通用映射查（国标→openstd / 食安→cfsa / 行业站→TODO）；
+#   3) 无号法规 → 按"名称+发布部门"去对应部委/地方站查（TODO，通用接口预留）。
+# 说明：本框架目前只"提供能力"，尚未接入活检索流程（接入为独立步骤，需另行确认）。
+# =====================================================================
+
+# 类别→官网源 的通用映射（不写死任何具体标准号，只按前缀/类别识别"去哪类站"）
+# 食安国标(GB 4806.x / 31604.x) openstd 不收录，归 cfsa；其余 GB/T、GB 国标归 openstd。
+_FOOD_STD_RE = re.compile(r"GB\s*4806|GB\s*31604", re.IGNORECASE)
+_GB_STD_RE = re.compile(r"^\s*GB[\s/T]*\d", re.IGNORECASE)
+_HCNO_RE = re.compile(r"[0-9A-Fa-f]{32}")
+_OPENSTD_SEARCH = "https://openstd.samr.gov.cn/bzgk/gb/std_list"
+_OPENSTD_DETAIL = "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno="
+
+
+def domestic_fetch(url, timeout=20, max_bytes=200000):
+    """取页面正文：优先走已配置的国内 SCF 代理（SYNC_PROXY）执行真实打开，
+    否则回退本地 fetch_text。返回 (text_or_None, via)。
+    注：当前 SCF 仅部署了 /probe-links，/fetch 端点为落地时新增；
+    未部署时自动回退本地（GitHub 海外 runner 可能超时，属已知限制，落地后消除）。"""
+    proxy = (os.environ.get("SYNC_PROXY") or "").strip().rstrip("/")
+    if proxy:
+        try:
+            req = urllib.request.Request(
+                proxy + "/fetch",
+                data=json.dumps({"url": url}).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                j = json.loads(r.read().decode("utf-8"))
+            if j.get("ok") and j.get("text") is not None:
+                return j.get("text"), "scf"
+        except Exception as e:
+            print(f"  [分诊] 国内 SCF /fetch 不可用，回退本地：{e}")
+    return fetch_text(url, timeout=timeout, max_bytes=max_bytes), "local"
+
+
+def _openstd_search_session(query):
+    """带浏览器会话(cookie+UA)的 openstd 检索。裸 GET 有波动性，需先取主页 cookie 再 POST 检索。
+    真实搜索参数：p.p2=关键词(标准号/名称)，p.p1=页码(0起)，p.p90/p.p91=排序。
+    返回检索页正文；失败返回 None。"""
+    s = (query or "").strip()
+    cj = urllib.request.HTTPCookieProcessor()
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    op = urllib.request.build_opener(cj, urllib.request.HTTPSHandler(context=ctx))
+    try:
+        op.open(urllib.request.Request("https://openstd.samr.gov.cn/",
+                                       headers={"User-Agent": _UA}), timeout=15)
+    except Exception:
+        pass
+    data = urllib.parse.urlencode(
+        {"p.p1": "0", "p.p2": s, "p.p90": "circulation_date", "p.p91": "desc"}).encode("utf-8")
+    req = urllib.request.Request(
+        _OPENSTD_SEARCH, data=data, method="POST",
+        headers={"User-Agent": _UA,
+                 "Content-Type": "application/x-www-form-urlencoded",
+                 "Referer": "https://openstd.samr.gov.cn/bzgk/gb/index"})
+    try:
+        with op.open(req, timeout=20) as r:
+            return r.read(300000).decode("utf-8", "replace")
+    except Exception:
+        return None
+
+
+def resolve_openstd(std_no, retries=1, max_detail_checks=6):
+    """按标准号确定性解析 openstd 真实详情页链接（hcno）。
+    步骤：检索→从列表页提取 hcno(32位十六进制)→打开详情页校验官方标准号一致。
+    返回 dict: {link, hcno, verified, reason}。查不到/校验失败返回 link=''（绝不编造）。
+    注：为低消耗与防超时，每个检索变体最多校验前 max_detail_checks 个 hcno；
+    详情页核对是确定性保障，故宁可少查不可错报。"""
+    out = {"link": "", "hcno": "", "verified": False, "reason": "", "method": "openstd"}
+    if not _GB_STD_RE.search(std_no or ""):
+        out["reason"] = "非 GB 国标，不走 openstd"
+        return out
+    norm = re.sub(r"[^A-Z0-9]", "", std_no.upper())
+    for q in _openstd_query_variants(std_no):
+        for _ in range(retries + 1):
+            html = _openstd_search_session(q)
+            if not html:
+                out["reason"] = "openstd 检索无返回（海外超时/波动）"
+                continue
+            # 列表页 hcno 为 32 位十六进制（JS showInfo('...') 写法）
+            hcnos = _HCNO_RE.findall(html)
+            if not hcnos:
+                out["reason"] = "openstd 检索结果未含 hcno（可能无此号或反爬）"
+                continue
+            # 逐个 hcno 抓详情页校验标准号，取第一个"详情页确含该号"的（有限次，防超时）。
+            # 注意：openstd 详情页正文含"尚未收录"等免责声明字样，is_dead_page 会误判有效页为死页；
+            # 这里以"详情页确含该标准号"作为确定性判据（含号即非死页），不依赖 is_dead_page。
+            found = False
+            for hcno in hcnos[:max_detail_checks]:
+                text = fetch_text(_OPENSTD_DETAIL + hcno, timeout=8)
+                if text and norm in re.sub(r"[^A-Z0-9]", "", text.upper()):
+                    out["link"] = _OPENSTD_DETAIL + hcno
+                    out["hcno"] = hcno
+                    out["verified"] = True
+                    out["reason"] = "openstd 官网返回并校验通过"
+                    found = True
+                    break
+            if found:
+                return out
+            out["reason"] = "详情页标准号与输入不符（hcno 取错或未在前%d条内）" % max_detail_checks
+        # 该 query 变体未命中，换下一个变体再试
+    return out
+
+
+def _openstd_query_variants(std_no):
+    """生成检索查询变体（通用，不写死具体标准号）。优先用"编号数字核心"（如 22239），
+    其次用"去空格斜杠全称"（如 GBT22239-2019）。openstd 对数字核心命中最稳。"""
+    s = (std_no or "").strip()
+    variants = []
+    core = re.search(r"\d+(?:\.\d+)?", s)
+    if core:
+        variants.append(core.group())
+    compact = re.sub(r"[\s/]", "", s)
+    if compact:
+        variants.append(compact)
+    seen, out = set(), []
+    for v in variants:
+        if v and v not in seen:
+            seen.add(v)
+            out.append(v)
+    return out
+
+
+def _source_kind(entry, table):
+    """通用识别该条目该去哪类官网查（返回 'reuse'/'openstd'/'cfsa'/'name_query'/'none'）。
+    不写死任何具体标准号，只按"是否有现有链接 / 标准号前缀 / 类别"判断。"""
+    link = (entry.get("link") or "").strip()
+    if link and has_valid_official_link(link):
+        return "reuse"
+    stdno = (entry.get("stdNo") or "").strip()
+    name = (entry.get("name") or "").strip()
+    if stdno:
+        if _FOOD_STD_RE.search(stdno + " " + name):
+            return "cfsa"
+        if _GB_STD_RE.search(stdno):
+            return "openstd"
+        # 其它前缀的标准（如行业/地方标准）目前无对应解析器 → 归待补
+        return "none"
+    # 无号法规：按名称+部门去部委/地方站查（TODO 落地，先归 name_query 占位）
+    return "name_query"
+
+
+def resolve_link_for_entry(entry, table, verify_existing=True):
+    """主分诊入口：给定清单条目（含 name/stdNo/link/category），返回真实官方链接。
+    返回 dict: {link, method, verified, reason}。查不到返回 link=''（留待人工补，绝不编造）。"""
+    kind = _source_kind(entry, table)
+    link = (entry.get("link") or "").strip()
+
+    if kind == "reuse":
+        if verify_existing:
+            st = scf_probe_link(link)
+            alive = (st.get("state") is True)
+            txt = fetch_text(link, timeout=12) if not alive else None
+            if alive or (txt and not is_dead_page(txt)):
+                return {"link": link, "method": "reuse_existing",
+                        "verified": True, "reason": "复用现有有效链接并核验通过"}
+            return {"link": link, "method": "reuse_existing",
+                    "verified": False, "reason": "现有链接核验失败（死链/超时），建议重查"}
+        return {"link": link, "method": "reuse_existing",
+                "verified": False, "reason": "复用现有链接（未核验）"}
+
+    if kind == "openstd":
+        return resolve_openstd(entry.get("stdNo") or "")
+
+    if kind == "cfsa":
+        # 食安国标 openstd 不收录，归 cfsa；cfsa 反爬，落地时由国内代理处理
+        return {"link": "", "method": "cfsa",
+                "verified": False, "reason": "食安国标(cfsa)解析待落地：留空待补"}
+
+    if kind == "name_query":
+        # 无号法规按名称+部门查（落地时由国内代理抓对应部委站）；当前不编造
+        return {"link": "", "method": "name_query",
+                "verified": False, "reason": "无号法规按名称+部门查询待落地：留空待补"}
+
+    return {"link": "", "method": "none",
+            "verified": False, "reason": "无对应解析源，留空待补"}
 
 
 # ===== 质检关卡：官方域名白名单（不在名单内的链接一律不采信）=====
@@ -1277,6 +1465,9 @@ def main():
     if not api_key:
         print("缺少环境变量 ZHIPU_API_KEY，跳过更新（保持原数据）。")
         sys.exit(0)
+    if ZhipuAI is None:
+        print("缺少 zhipuai 库，请先执行: pip install zhipuai")
+        sys.exit(1)
 
     model = os.environ.get("MODEL") or "glm-4-plus"
     client = ZhipuAI(api_key=api_key)
