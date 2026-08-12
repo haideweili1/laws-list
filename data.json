@@ -1828,6 +1828,38 @@
       "abolishDate": ""
     },
     {
+      "name": "生成式人工智能服务安全基本要求",
+      "docNumber": "",
+      "dept": "国家市场监督管理总局、国家标准化管理委员会",
+      "effectiveDate": "2025-11-01",
+      "status": "现行有效",
+      "domains": [
+        "信息安全"
+      ],
+      "category": "信息安全",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F67D3F376E0A0A0FF5317FB36B32A30A",
+      "region": "",
+      "id": "L0403",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
+      "name": "信息安全技术 网络安全等级保护基本要求",
+      "docNumber": "",
+      "dept": "国家市场监督管理总局、中国国家标准化管理委员会",
+      "effectiveDate": "2019-12-01",
+      "status": "现行有效",
+      "domains": [
+        "信息安全"
+      ],
+      "category": "信息安全",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
+      "region": "",
+      "id": "L0404",
+      "remark": "",
+      "abolishDate": ""
+    },
+    {
       "name": "《小型个人信息处理者个人信息保护简化措施规定》",
       "docNumber": "",
       "dept": "国家互联网信息办公室",
