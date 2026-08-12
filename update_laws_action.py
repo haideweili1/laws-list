@@ -51,6 +51,10 @@ REPORT_MD_PATH = os.path.join(ROOT, "retrieval-report.md")
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
 
+# ===== 分诊自救台账：记录"哪些条目的链接是系统按官方渠道自动解析补上的" =====
+# 用途是测量：若此表持续有内容而"编造URL"分类归零，说明提示词训练已见效。
+_RESOLVE_LOG = []
+
 # ===== 链接校验与回退（仅对新增/变更的少量链接触发，低资源） =====
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
@@ -176,7 +180,7 @@ def scf_probe_link(url):
 _FOOD_STD_RE = re.compile(r"GB\s*4806|GB\s*31604", re.IGNORECASE)
 _GB_STD_RE = re.compile(r"^\s*GB[\s/T]*\d", re.IGNORECASE)
 _HCNO_RE = re.compile(r"[0-9A-Fa-f]{32}")
-_OPENSTD_SEARCH = "https://openstd.samr.gov.cn/bzgk/gb/std_list"
+_OPENSTD_SEARCH = "https://openstd.samr.gov.cn/bzgk/std/std_list"
 _OPENSTD_DETAIL = "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno="
 
 
@@ -203,32 +207,51 @@ def domestic_fetch(url, timeout=20, max_bytes=200000):
 
 
 def _openstd_search_session(query):
-    """带浏览器会话(cookie+UA)的 openstd 检索。裸 GET 有波动性，需先取主页 cookie 再 POST 检索。
-    真实搜索参数：p.p2=关键词(标准号/名称)，p.p1=页码(0起)，p.p90/p.p91=排序。
+    """按关键词确定性检索 openstd 真实结果页（无需浏览器，纯 HTTP）。
+    实测可用姿势：先 GET /bzgk/gb/index 取会话 cookie，再
+    GET /bzgk/std/std_list?p.p1=0&p.p90=circulation_date&p.p91=desc&p.p2=<关键词>。
+    关键词可为编号数字核心(22239)或全称(GB/T 22239-2019)，均命中。
     返回检索页正文；失败返回 None。"""
     s = (query or "").strip()
+    if not s:
+        return None
     cj = urllib.request.HTTPCookieProcessor()
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
     op = urllib.request.build_opener(cj, urllib.request.HTTPSHandler(context=ctx))
     try:
-        op.open(urllib.request.Request("https://openstd.samr.gov.cn/",
+        op.open(urllib.request.Request("https://openstd.samr.gov.cn/bzgk/gb/index",
                                        headers={"User-Agent": _UA}), timeout=15)
     except Exception:
         pass
-    data = urllib.parse.urlencode(
-        {"p.p1": "0", "p.p2": s, "p.p90": "circulation_date", "p.p91": "desc"}).encode("utf-8")
+    url = (_OPENSTD_SEARCH + "?p.p1=0&p.p90=circulation_date&p.p91=desc&p.p2="
+           + urllib.parse.quote(s))
     req = urllib.request.Request(
-        _OPENSTD_SEARCH, data=data, method="POST",
+        url,
         headers={"User-Agent": _UA,
-                 "Content-Type": "application/x-www-form-urlencoded",
+                 "Accept": "text/html,*/*",
                  "Referer": "https://openstd.samr.gov.cn/bzgk/gb/index"})
     try:
         with op.open(req, timeout=20) as r:
-            return r.read(300000).decode("utf-8", "replace")
+            return r.read(400000).decode("utf-8", "replace")
     except Exception:
         return None
+
+
+def _resolve_openstd_via_proxy(proxy, std_no, timeout=25):
+    """调用国内 SCF 代理 /resolve-openstd 真实从国内 IP 搜索并校验。
+    返回 {ok, hcno, link, verified, reason}；调用失败返回 ok=False。"""
+    try:
+        req = urllib.request.Request(
+            proxy + "/resolve-openstd",
+            data=json.dumps({"stdNo": std_no}).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except Exception as e:
+        return {"ok": False, "reason": "代理调用失败：" + str(e)}
 
 
 def resolve_openstd(std_no, retries=1, max_detail_checks=6):
@@ -241,6 +264,16 @@ def resolve_openstd(std_no, retries=1, max_detail_checks=6):
     if not _GB_STD_RE.search(std_no or ""):
         out["reason"] = "非 GB 国标，不走 openstd"
         return out
+    # 优先走国内 SCF 代理 /resolve-openstd（真实从国内 IP 搜索，海外 runner 搜不到）
+    proxy = (os.environ.get("SYNC_PROXY") or "").strip().rstrip("/")
+    if proxy:
+        pr = _resolve_openstd_via_proxy(proxy, std_no)
+        if pr.get("ok"):
+            out.update({"link": pr.get("link", ""), "hcno": pr.get("hcno", ""),
+                        "verified": True, "reason": "国内代理解析：" + pr.get("reason", "")})
+            return out
+        out["reason"] = "国内代理未命中（" + pr.get("reason", "") + "），回退本地"
+    # 本地 urllib 实现（海外 runner 可能失败，属已知限制；落地代理后消除）
     norm = re.sub(r"[^A-Z0-9]", "", std_no.upper())
     for q in _openstd_query_variants(std_no):
         for _ in range(retries + 1):
@@ -248,8 +281,8 @@ def resolve_openstd(std_no, retries=1, max_detail_checks=6):
             if not html:
                 out["reason"] = "openstd 检索无返回（海外超时/波动）"
                 continue
-            # 列表页 hcno 为 32 位十六进制（JS showInfo('...') 写法）
-            hcnos = _HCNO_RE.findall(html)
+            # 列表页 hcno 为 32 位十六进制（JS showInfo('...') 写法），去重保序
+            hcnos = list(dict.fromkeys(_HCNO_RE.findall(html)))
             if not hcnos:
                 out["reason"] = "openstd 检索结果未含 hcno（可能无此号或反爬）"
                 continue
@@ -258,7 +291,12 @@ def resolve_openstd(std_no, retries=1, max_detail_checks=6):
             # 这里以"详情页确含该标准号"作为确定性判据（含号即非死页），不依赖 is_dead_page。
             found = False
             for hcno in hcnos[:max_detail_checks]:
-                text = fetch_text(_OPENSTD_DETAIL + hcno, timeout=8)
+                text = None
+                for _attempt in range(2):  # openstd 详情页偶发返回空，重试一次
+                    t = fetch_text(_OPENSTD_DETAIL + hcno, timeout=8)
+                    if t:
+                        text = t
+                        break
                 if text and norm in re.sub(r"[^A-Z0-9]", "", text.upper()):
                     out["link"] = _OPENSTD_DETAIL + hcno
                     out["hcno"] = hcno
@@ -345,6 +383,83 @@ def resolve_link_for_entry(entry, table, verify_existing=True):
 
     return {"link": "", "method": "none",
             "verified": False, "reason": "无对应解析源，留空待补"}
+
+
+def _change_version_changed(change, target):
+    """本次变更是否涉及版本号变化（改版）。改版时旧条目链接指向旧版正文，严禁复用。
+    通用判断：比对标准号主键与完整版本号（含年份），不写死任何具体标准。"""
+    if not target:
+        return False
+    new_no = (change.get("stdNo") or "").strip()
+    old_no = (target.get("stdNo") or "").strip()
+    ka, kb = _std_key(new_no), _std_key(old_no)
+    if ka and kb and ka != kb:
+        return True
+    # 年份变化（GB/T 4288-2018 → GB/T 4288-2025）也是改版
+    fa = _parse_std_full(new_no) or _parse_std_full(change.get("name") or "")
+    fb = _parse_std_full(old_no) or _parse_std_full(target.get("name") or "")
+    if fa and fb and fa != fb:
+        return True
+    return False
+
+
+def resolve_source_url_for_change(table, change, target):
+    """把「通用多源分诊」接进活检索：GLM 给不出/给错依据链接时，由本系统按
+    标准号(openstd 按号解析)或复用清单现有链接，确定性地拿到真实官方链接。
+    —— 目的是让 GLM 不必再编 URL：它只负责说清"哪个字段改了、依据是什么"，
+    取链接这件确定性的事交给代码做。解析不到就返回 link=''（绝不编造）。"""
+    # 标准号来源优先级：本条 stdNo → 清单现值 → GLM 给的 source_hint 线索 → 名称里内嵌的编号
+    # （source_hint 是提示词里承诺"你留空、系统拿线索去解析"的入口，必须真的用上）
+    stdno = ((change.get("stdNo") or "").strip()
+             or (target or {}).get("stdNo", "").strip())
+    if not stdno:
+        # 优先取「带年份的完整标准号」（GB/T 22239-2019）：年份参与详情页核对，能防版本混淆；
+        # 取不到年份才退用不带年份的编号（GB/T 22239）。
+        for pat in (_STD_FULL_RE, _STD_KEY_RE):
+            for cand in (change.get("source_hint") or "", change.get("name") or ""):
+                m = pat.search(cand or "")
+                if m:
+                    stdno = m.group(0).strip()
+                    break
+            if stdno:
+                break
+    entry = {
+        "name": (change.get("name") or "").strip(),
+        "stdNo": stdno,
+        "category": (change.get("category")
+                     or (target or {}).get("category", "")),
+        "link": "",
+    }
+    # 复用清单现有链接：仅「非改版」时允许（改版须提供新版自身链接）
+    if target and not _change_version_changed(change, target):
+        entry["link"] = (target.get("link") or "").strip()
+    try:
+        return resolve_link_for_entry(entry, table)
+    except Exception as e:
+        return {"link": "", "method": "error", "verified": False,
+                "reason": "分诊解析异常：" + str(e)}
+
+
+def _confirm_claim_on_page(change, target, url):
+    """拿系统解析出的真实官方页，反向核对 GLM 声称的变更内容。
+    返回 (是否确认, 说明)。取不到正文或页面无该日期 → (False, 原因)，
+    交人工复核，绝不当成已确认（宁可少报，不可错报）。"""
+    text = fetch_text(url, timeout=12)
+    if not text:
+        return False, "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
+    # 标准类：解析页标准号须与本条一致，防张冠李戴
+    stdno = (change.get("stdNo") or "").strip() or (target or {}).get("stdNo", "")
+    if stdno and _source_version_mismatch(text, stdno):
+        return False, "系统解析出的官方页标注了其它版本号，疑似版本混淆，请人工确认"
+    claim = _ymd(change.get("effectiveDate"))
+    if not claim:
+        return False, "系统已解析出真实官方链接，但本条未声称具体实施日期、无法在页面上自动核对，请人工确认"
+    page_date = _extract_effective_date(text)
+    if not page_date:
+        return False, "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+    if _ymd(page_date) != claim:
+        return False, (f"官方页面读到的实施日期是 {page_date}，与本条声称的 {claim} 不一致，请人工确认")
+    return True, f"链接由系统按官方渠道自动解析补正，且页面实施日期 {page_date} 与本条一致"
 
 
 # ===== 质检关卡：官方域名白名单（不在名单内的链接一律不采信）=====
@@ -572,6 +687,11 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - **绝对禁止从记忆/编号拼任何 URL**。link 与 source_url 只能填你**真正在 web_search 实际返回的官方结果里看到**的链接。若检索后没有拿到真实可打开的官方链接：link 填空字符串 + remark 注明「官方链接待补」。对**新增条目(add)**：内容仍会被保留——系统会把它作为一条**可勾选的新增提案**提交给你核准，且链接自动清空待补（核准写入时绝不写入编造链接），你在网页上勾选核准后再补官方链接即可；对**更新/废止条目**，无合格 source_url 则不要提交（编造 URL 必被系统判为伪造整条丢弃，反而把真正有用的变更一起丢掉——宁可少报，不可错报）。
 - **条目已有有效链接时，直接复用它，不要另编（但版本号有变化则严禁复用）**：本次清单在『正文链接=已有』的条目，说明已经有能打开的官方链接。若你只变更 status / effectiveDate / remark 等非链接字段，且**标准号/版本号未变**（例如 即将实施→现行有效、补填原本空白的实施日期、加废止日期），source_url 直接填该条目**现有的 link**（它是真实官方正文页，能通过校验），不要去编新的链接；也不要为了"显得有更新"去改 link 字段。⚠️ **若本次变更涉及版本号变化（如条目从 2018 版变为 2025 版、或检索发现"新版替代旧版"），这就是改版——旧条目的链接指向旧版正文，严禁复用旧链接**：新版本必须提供它自身的真实官方链接（source_url 标准号须与新版本号完全一致），否则 link 留空 + remark 注明「官方链接待补」，且新版本应作为"新增条目"处理，而不是改写旧条目的日期去复用旧链接。
 - 严禁：搜索引擎结果页、列表页、栏目首页、新闻稿/媒体报道页（除非该新闻稿本身就是官方发布的全文页）。
+- ⭐**取链接这件事，你不必硬扛：系统会替你解析（这是本轮最重要的新规则）**。系统已具备「按标准号从国内官方渠道自动解析真实链接」的能力（国内 IP 直连国家标准全文公开系统等官方站，取到真实详情页并核对标准号一致）。因此：
+  1) 只要 web_search 真实返回了官方正文链接，就照填 source_url（原样复制，一个字符都不要改动或"补全"）。
+  2) **没有真实拿到链接时：source_url 填空字符串**，改为把你掌握的定位线索填进 `source_hint` 字段（例如"GB/T 22239-2019"、"国务院令第XXX号"、"国家网信办2026年第X号公告"、"发布部门+公告标题"）。系统会拿这些线索去官方站按号/按名解析真链接，解析成功后自动补进本条。
+  3) **这是对你有利的规则**：编造 URL 的后果是整条被判伪造丢弃（你真正查到的变更也一起没了）；而留空+给线索，系统能把链接补上、这条变更得以保留。所以拿不准时**一律留空填线索，绝不要拼 URL**。
+  4) 注意：系统补上链接后，还会拿该官方页反向核对你声称的实施日期等内容。**所以日期/状态仍须来自真实检索，不能靠"反正系统会补链接"就乱填**——核对不上会被标为待人工确认，核对矛盾会被判错报。
 - 你提供的 source_url（依据来源）必须亲自确认能显示正文、且不是「搜索不到 / 未找到 / 尚未收录」的死链（部分平台对拼错的编号也返回 200，但正文无内容）；若只是搜索页或死链，source_url 填空字符串并在 remark 注明待补。为某条标准(standards 表)提出的日期/状态变更，其 source_url 指向页面的标准号必须与本条 stdNo 完全一致（如本条是 GB/T 4288-2018 就引用 2018 版页面，绝不用 2025 版页面去改 2018 版）。
 
 【三、日期：必须来自官方文件原文，禁止编造】
@@ -683,7 +803,8 @@ def build_prompt(target_label, domain_text, existing_names):
   "copyrightNote": "采标时原样照抄的官网版权原话，否则空字符串",
   "remark": "仅限三类：采标官网原话 / 食安待补说明 / 即将被XX替代说明；其余留空",
   "fromValues": {{"effectiveDate": "清单里当前的实施日期", "status": "清单里当前的状态"}},
-  "source_url": "你核实本条所依据的官方页面链接（必填，须官方域名正文页，系统会真实访问校验）",
+  "source_url": "你核实本条所依据的官方页面链接。只填 web_search 真实返回的链接（原样复制）；没真实拿到就填空字符串，改填下面的 source_hint，绝不许自己拼 URL。系统会真实访问校验。",
+  "source_hint": "当 source_url 留空时必填：本条的定位线索，供系统去官方站自动解析真链接。写标准号 / 发文字号 / 发布部门+公告标题，如「GB/T 22239-2019」或「国家网信办 2026年第3号公告」。",
   "replacedBy": "替代本标准的法规/标准名称或编号（仅当官方写明被XX替代时填；否则空字符串）",
   "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
@@ -987,6 +1108,41 @@ def check_change(table, change, target, today):
                 elif table != "laws" and target and target.get("stdNo"):
                     if _source_version_mismatch(text, target.get("stdNo")):
                         link_issue = "依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su
+
+    # ②-b 分诊自救：GLM 给不出/给错链接时，不立刻判死——先由本系统按官方渠道
+    #     （按标准号解析 openstd / 复用清单现有链接）确定性地取真实链接。
+    #     这样 GLM 不必再编 URL，真变更也不会被"链接编错"一起丢掉。
+    #     解析成功后仍要拿该页反向核对声称内容：核对通过才放行左栏，
+    #     核不上只降级到人工复核（绝不因"有了真链接"就默认变更为真）。
+    if link_issue:
+        rs = resolve_source_url_for_change(table, change, target)
+        rl = (rs.get("link") or "").strip()
+        if rl and rs.get("verified") and domain_ok(rl) and url_shape_ok(rl):
+            change["source_url"] = rl
+            change["_link_resolved"] = {
+                "link": rl, "method": rs.get("method", ""),
+                "reason": rs.get("reason", ""), "was": su,
+            }
+            # 按标准号解析出的 openstd 详情页，就是该条目自身的官方正文页（已核对标准号一致）：
+            # 若 GLM 给的 link 不可信，就用这个真链接顶上，让缺链接的条目顺势补齐。
+            # 写入仍走原有 url_trusted 关卡，安全性不降级。
+            if rs.get("method") == "openstd" and not url_trusted(change.get("link")):
+                change["link"] = rl
+            ok_claim, why = _confirm_claim_on_page(change, target, rl)
+            print(f"  [分诊自救] 《{name}》→ {rs.get('method')} {rl}｜{'确认' if ok_claim else '待人工'}")
+            _RESOLVE_LOG.append({
+                "name": name, "table": table, "action": action,
+                "method": rs.get("method", ""), "link": rl,
+                "glmGave": su or "(留空)", "claimConfirmed": bool(ok_claim),
+                "detail": why,
+            })
+            if ok_claim:
+                link_issue = None          # 依据已由系统确定性补正并核对通过
+            else:
+                link_issue = None          # 链接问题已解决，剩下是"内容待确认"
+                reasons.append(why)        # 降级人工复核，不丢弃
+        else:
+            link_issue += f"；系统按官方渠道自动解析也未取到真实链接（{rs.get('reason', '')}）"
 
     if link_issue:
         if is_add:
@@ -1321,6 +1477,14 @@ def now_iso():
 def _classify_reason(r):
     """把一条质检原因归类到训练用分类桶，便于逐类压降『人工复核』数量。"""
     s = (r or "")
+    # 分诊自救相关（新）：链接已由系统确定性补正，剩下的只是"内容待人工确认"，
+    # 与"GLM 编链接"性质完全不同，单独归类才能看清提示词是否真的见效。
+    if "系统已解析出真实官方链接" in s or "系统解析出的官方页" in s:
+        return "系统已补正链接，内容待人工确认（分诊自救成功）"
+    if "官方页面读到的实施日期" in s:
+        return "日期与官方页不一致（GLM 报错日期）"
+    if "系统按官方渠道自动解析也未取到真实链接" in s:
+        return "无来源且系统也解析不到（须落地 name_query/cfsa）"
     if "无法自动验证" in s or "无法读取正文" in s or "超时" in s:
         return "探活超时/被拦截（疑似误杀，可借国内SCF消除）"
     if "确认失效" in s or "打开后无正文" in s or "多半是编造" in s or "无正文" in s:
@@ -1387,6 +1551,9 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
              "reason": d.get("reason", ""), "proposed": d.get("proposed", {})}
             for d in discarded
         ],
+        # 分诊自救台账：GLM 没给/给错链接，但系统按官方渠道确定性补上了真链接
+        "auto_resolved_links": list(_RESOLVE_LOG),
+        "auto_resolved_count": len(_RESOLVE_LOG),
     }
     try:
         with open(REPORT_PATH, "w", encoding="utf-8") as f:
@@ -1414,6 +1581,13 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
                 lines.append(f"- {k}：{v}")
         else:
             lines.append("- （无）")
+        if _RESOLVE_LOG:
+            lines.append("\n## 系统自动补正链接的条目（分诊自救，GLM 不必再编 URL）")
+            for g in _RESOLVE_LOG:
+                lines.append(
+                    f"- 《{g['name']}》[{g['method']}]：GLM 原本给的是 {g['glmGave']} → "
+                    f"系统解析到 {g['link']}｜"
+                    f"{'内容已核对一致，可直接应用' if g['claimConfirmed'] else '内容待人工确认'}")
         if rejected:
             lines.append("\n## 右栏条目明细")
             for r in rejected:

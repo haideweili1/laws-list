@@ -14,6 +14,8 @@
 //   POST     /apply-proposed   把网页上「待确认更新」里你勾选的提案写回 data.json（唯一写数据入口）
 //   POST     /probe-links      批量链接核验（0-c：部署在广州，稳定访问 gov.cn/openstd/cfsa，
 //                                真实打开页面判断 alive/dead/uncertain + 死页，消除境外 runner 超时误杀）
+//   POST     /resolve-openstd  按标准号解析 openstd 真实 hcno 详情链接（落地腿1：GLM 不再编 URL，
+//                                由本函数从国内 IP 真实搜索+详情页核对标准号，返回可信链接；查不到返回空）
 
 const http = require('http');
 const REPO = 'haideweili1/laws-list';
@@ -374,6 +376,67 @@ async function handleProbeLinks(bodyStr) {
   return { status: 200, body: JSON.stringify({ results }) };
 }
 
+// ===== 按号解析 openstd 真实链接（落地腿1）=====
+const OPENSTD_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
+const HCNO_RE = /[0-9A-Fa-f]{32}/g;
+const DETACH_RE = /[^A-Za-z0-9]/g;
+
+async function openstdFetchText(url, cookie) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 12000);
+  try {
+    const headers = { 'User-Agent': OPENSTD_UA, 'Accept': 'text/html,*/*' };
+    if (cookie) headers['Cookie'] = cookie;
+    const r = await fetch(url, { method: 'GET', redirect: 'follow', headers, signal: ctrl.signal });
+    clearTimeout(timer);
+    return { status: r.status, text: await r.text(), cookie: r.headers.get('set-cookie') || null };
+  } catch (e) {
+    clearTimeout(timer);
+    return { status: 0, text: '', cookie: null, error: e.message };
+  }
+}
+
+async function handleResolveOpenstd(bodyStr) {
+  let payload;
+  try { payload = JSON.parse(bodyStr || "{}"); }
+  catch (e) { return { status: 400, body: JSON.stringify({ message: "请求体不是合法 JSON" }) }; }
+  const stdNo = (payload.stdNo || "").trim();
+  if (!stdNo) return { status: 400, body: JSON.stringify({ message: "缺少 stdNo" }) };
+  if (!/^\s*GB[\s/T]*\d/i.test(stdNo)) {
+    return { status: 200, body: JSON.stringify({ ok: false, hcno: "", link: "", verified: false, reason: "非 GB 国标，不走 openstd" }) };
+  }
+  // 1) 取会话 cookie（openstd 搜索需先到 /bzgk/gb/index 拿 cookie）
+  const idx = await openstdFetchText('https://openstd.samr.gov.cn/bzgk/gb/index', null);
+  const cookie = idx.cookie || null;
+  // 2) 搜索：关键词 = 全称 + 编号数字核心（如 22239），openstd 对数字核心命中最稳
+  const norm = stdNo.replace(/\s+/g, '');
+  const core = (stdNo.match(/\d+(?:\.\d+)?/) || [''])[0];
+  const queries = Array.from(new Set([norm, core].filter(Boolean)));
+  const normIn = norm.replace(DETACH_RE, '').toUpperCase();
+  for (const q of queries) {
+    const url = 'https://openstd.samr.gov.cn/bzgk/std/std_list?p.p1=0&p.p90=circulation_date&p.p91=desc&p.p2=' + encodeURIComponent(q);
+    const sr = await openstdFetchText(url, cookie);
+    if (!sr.text) continue;
+    const hcnos = Array.from(new Set(sr.text.match(HCNO_RE) || []));
+    if (!hcnos.length) continue;
+    // 3) 详情页核对标准号（确定性判据：详情页正文确含该编号）
+    for (const hcno of hcnos.slice(0, 6)) {
+      const det = await openstdFetchText('https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=' + hcno, cookie);
+      if (det.text && normIn && normIn.includes(core.replace(DETACH_RE, '').toUpperCase()) &&
+          det.text.replace(DETACH_RE, '').toUpperCase().includes(normIn)) {
+        return { status: 200, body: JSON.stringify({
+          ok: true,
+          hcno,
+          link: 'https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=' + hcno,
+          verified: true,
+          reason: "openstd 官网返回并校验通过"
+        }) };
+      }
+    }
+  }
+  return { status: 200, body: JSON.stringify({ ok: false, hcno: "", link: "", verified: false, reason: "未从 openstd 解析到该标准号（可能无此号/反爬/超时）" }) };
+}
+
 async function handleRequest(method, pathname, params, bodyStr) {
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
@@ -395,6 +458,10 @@ async function handleRequest(method, pathname, params, bodyStr) {
   if (pathname === '/probe-links') {
     if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
     return await handleProbeLinks(bodyStr);
+  }
+  if (pathname === '/resolve-openstd') {
+    if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
+    return await handleResolveOpenstd(bodyStr);
   }
   // 默认：处理 user-edits.json 的 GET/PUT（团队协同同步）
   return await proxyUserEdits(method, bodyStr, token);
