@@ -372,6 +372,137 @@ def _openstd_query_variants(std_no):
     return out
 
 
+# ===== name_query：无号法规按名称+归口部门去官方站查（通用映射，按清单现有领域定）=====
+# 键 = 清单 laws.dept / standards.publisher 的取值；值 = 官方域名（用于站内搜索 site:域名）。
+# 仅覆盖清单已出现的归口机构；清单里没有的归口一律留空待补（绝不编造）。
+OFFICIAL_SITE_MAP = {
+    # 法规归口部门（laws.dept）
+    "国家市场监督管理总局": ["samr.gov.cn"],
+    "国家市场监督管理总局、国家标准化管理委员会": ["samr.gov.cn"],
+    "国家市场监督管理总局、中国国家标准化管理委员会": ["samr.gov.cn"],
+    "国家计量局": ["samr.gov.cn"],
+    "全国人大常委会": ["npc.gov.cn"],
+    "国务院": ["gov.cn"],
+    "国家卫生健康委员会": ["nhc.gov.cn"],
+    "应急管理部": ["mem.gov.cn"],
+    "广东省人民政府": ["gd.gov.cn"],
+    "广东省人大常委会": ["rd.gd.gov.cn"],
+    "生态环境部": ["mee.gov.cn"],
+    "工业和信息化部": ["miit.gov.cn"],
+    "国家互联网信息办公室": ["cac.gov.cn"],
+    "人力资源和社会保障部": ["mohrss.gov.cn"],
+    "住房和城乡建设部": ["mohurd.gov.cn"],
+    "海关总署": ["customs.gov.cn"],
+    "中国气象局": ["cma.gov.cn"],
+    "商务部": ["mofcom.gov.cn"],
+    "国家保密局": ["gov.cn"],
+    "公安部": ["mps.gov.cn"],
+    "国家发展和改革委员会": ["ndrc.gov.cn"],
+    "中山市人民政府": ["zhongshan.gov.cn"],
+    "中山市人大常委会": ["zsrd.gov.cn"],
+    "梅州市人大常委会": ["mzrd.gov.cn"],
+    "惠州市人民政府": ["huizhou.gov.cn"],
+    "惠州市人大常委会": ["hzrd.gov.cn"],
+    "中共中央纪律检查委员会": ["ccdi.gov.cn"],
+    "国际标准化组织(ISO)": ["iso.org"],
+    "英国": ["gov.uk"],
+    "欧盟": ["europa.eu"],
+    # 标准发布机构（standards.publisher）
+    "国家标准化管理委员会": ["samr.gov.cn"],
+    "美国食品药品监督管理局": ["fda.gov"],
+    "德国标准化学会(DIN)": ["din.de"],
+    "巴西": ["abnt.org"],
+    "意大利": ["uni.com"],
+    "欧盟(ECHA)": ["echa.europa.eu"],
+    "法国": ["afnor.fr"],
+    "德国": ["din.de"],
+}
+
+
+def _official_domains_for(entry, table):
+    """通用：按 dept(法规)/publisher(标准) 取官方域名；清单未出现的归口返回 []。"""
+    key = ((entry.get("dept") or entry.get("publisher") or "")).strip()
+    if key in OFFICIAL_SITE_MAP:
+        return OFFICIAL_SITE_MAP[key]
+    for k, v in OFFICIAL_SITE_MAP.items():   # 子串兜底（清单写法偶尔略变）
+        if k and (k in key or key in k):
+            return v
+    return []
+
+
+def _bing_site_search(domain, query, timeout=12):
+    """通用站内搜索：用 Bing `site:<domain> <query>`（免费、无需密钥），
+    抽取 {title,url} 候选；是否采用由调用方按「域名 + 标题」双重核对决定。"""
+    q = "site:%s %s" % (domain, query)
+    url = "https://www.bing.com/search?q=" + urllib.parse.quote(q) + "&setlang=zh-CN&cc=CN"
+    html = fetch_text(url, timeout=timeout)
+    if not html:
+        return []
+    out = []
+    for b in re.findall(r'<li class="b_algo".*?</li>', html, re.S):
+        m = re.search(r'<h2>\s*<a[^>]*href="([^"]+)"', b)
+        if not m:
+            continue
+        u = m.group(1)
+        tm = re.search(r'<h2>\s*<a[^>]*>(.*?)</a>', b, re.S)
+        title = re.sub(r"<[^>]+>", "", tm.group(1)).strip() if tm else ""
+        if u and u.startswith("http"):
+            out.append({"url": u, "title": title})
+    return out
+
+
+def _search_site_via_proxy(proxy, domain, query, timeout=25):
+    """走国内 SCF 代理 /search-site（广州 IP 搜索，国内站索引更全）；失败回退本地。"""
+    try:
+        req = urllib.request.Request(
+            proxy + "/search-site",
+            data=json.dumps({"domain": domain, "query": query}).encode("utf-8"),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = json.loads(r.read().decode("utf-8", "ignore"))
+        return data.get("results", []) or []
+    except Exception as e:
+        print("  [name_query] 代理搜索失败：%s" % e)
+        return []
+
+
+def name_query(entry, table, max_results=6):
+    """无号法规按名称+归口部门去官方站查（完整版：真实站内搜索 + 域名/标题双重核对）。
+    返回 dict: {link, method, verified, reason}。查不到返回 link=''（留空待补，绝不编造）。"""
+    out = {"link": "", "method": "name_query", "verified": False, "reason": ""}
+    name = (entry.get("name") or "").strip()
+    if not name:
+        out["reason"] = "无法规名称，无法按名查询"
+        return out
+    domains = _official_domains_for(entry, table)
+    if not domains:
+        out["reason"] = "未匹配到归口官方站（" + (entry.get("dept") or entry.get("publisher") or "未知归口") + "），留空待补"
+        return out
+    # 检索用名去掉括号后缀（如「（2023年修订）」）提高命中；核对用全名
+    search_name = re.sub(r"[（(][^）)]*[）)]", "", name).strip() or name
+    proxy = (os.environ.get("SYNC_PROXY") or "").strip().rstrip("/")
+    norm_name = _norm_txt(name).lower()
+    for domain in domains:
+        cands = _search_site_via_proxy(proxy, domain, search_name) if proxy else []
+        if not cands:
+            cands = _bing_site_search(domain, search_name)
+        for c in cands[:max_results]:
+            u = (c.get("url") or "").strip()
+            if not u or not domain_ok(u):
+                continue
+            host = (urllib.parse.urlparse(u).hostname or "").lower()
+            if not host.endswith(domain):
+                continue
+            nt = _norm_txt(c.get("title") or "").lower()
+            if nt and (nt in norm_name or norm_name in nt):
+                out["link"] = u
+                out["verified"] = True
+                out["reason"] = "站内搜索 %s 命中「%s」" % (domain, c.get("title", ""))
+                return out
+    out["reason"] = "站内搜索未找到标题匹配的官方页（%s），留空待补" % "/".join(domains)
+    return out
+
+
 def _source_kind(entry, table):
     """通用识别该条目该去哪类官网查（返回 'reuse'/'openstd'/'cfsa'/'name_query'/'none'）。
     不写死任何具体标准号，只按"是否有现有链接 / 标准号前缀 / 类别"判断。"""
@@ -419,9 +550,8 @@ def resolve_link_for_entry(entry, table, verify_existing=True):
                 "verified": False, "reason": "食安国标(cfsa)解析待落地：留空待补"}
 
     if kind == "name_query":
-        # 无号法规按名称+部门查（落地时由国内代理抓对应部委站）；当前不编造
-        return {"link": "", "method": "name_query",
-                "verified": False, "reason": "无号法规按名称+部门查询待落地：留空待补"}
+        # 无号法规按名称+归口部门去官方站查（真实站内搜索 + 域名/标题双重核对）
+        return name_query(entry, table)
 
     return {"link": "", "method": "none",
             "verified": False, "reason": "无对应解析源，留空待补"}
@@ -475,6 +605,10 @@ def resolve_source_url_for_change(table, change, target):
     # 复用清单现有链接：仅「非改版」时允许（改版须提供新版自身链接）
     if target and not _change_version_changed(change, target):
         entry["link"] = (target.get("link") or "").strip()
+    # 链接审计专项：命中 LINK_AUDIT_TARGETS 的条目强制重新解析，不复用误挂的外省链接
+    # （否则 entry 带现有链接会走 reuse 分支，到不了 openstd/name_query，等于没修）
+    if target and (table, target.get("id")) in LINK_AUDIT_TARGETS:
+        entry["link"] = ""
     try:
         return resolve_link_for_entry(entry, table)
     except Exception as e:
@@ -1170,10 +1304,10 @@ def check_change(table, change, target, today):
                 "link": rl, "method": rs.get("method", ""),
                 "reason": rs.get("reason", ""), "was": su,
             }
-            # 按标准号解析出的 openstd 详情页，就是该条目自身的官方正文页（已核对标准号一致）：
-            # 若 GLM 给的 link 不可信，就用这个真链接顶上，让缺链接的条目顺势补齐。
+            # 系统确定性解析出的官方页（openstd 按号 / name_query 按名），就是该条目自身的官方正文页：
+            # 若 GLM 给的 link 不可信或为空，就用这个真链接顶上，让缺链接的条目顺势补齐。
             # 写入仍走原有 url_trusted 关卡，安全性不降级。
-            if rs.get("method") == "openstd" and not url_trusted(change.get("link")):
+            if rs.get("verified") and not url_trusted(change.get("link") or ""):
                 change["link"] = rl
             ok_claim, why = _confirm_claim_on_page(change, target, rl)
             print(f"  [分诊自救] 《{name}》→ {rs.get('method')} {rl}｜{'确认' if ok_claim else '待人工'}")
