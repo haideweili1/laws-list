@@ -1,88 +1,545 @@
 {
-  "generatedAt": "2026-08-11",
+  "generatedAt": "2026-08-13",
   "note": "测量仪表：右栏(人工复核)是诊断信号不是负担。逐类压降 reject_breakdown，才能让它归零。",
   "counts": {
     "ok_可直接应用": 1,
-    "reject_人工复核": 0,
-    "discard_丢弃": 10,
+    "reject_人工复核": 11,
+    "discard_丢弃": 21,
     "status_switch_状态切换": 0
   },
-  "reject_breakdown": {},
-  "discard_breakdown": {
-    "死链/编造（确属垃圾）": 8,
-    "编造URL/非正文页(搜索页/列表页/伪造格式)": 2
+  "reject_breakdown": {
+    "系统已补正链接，内容待人工确认（分诊自救成功）": 9,
+    "旧值核对不符（未看清单）": 11,
+    "状态/日期不自洽": 3
   },
-  "rejected_items": [],
+  "discard_breakdown": {
+    "无来源且系统也解析不到（须落地 name_query/cfsa）": 21
+  },
+  "rejected_items": [
+    {
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "category": "环境与职业健康",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "proposed": {
+        "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+        "stdNo": "GB 31420-2025",
+        "effectiveDate": "2026-07-01",
+        "status": "现行有效",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+        "domains": [
+          "环境"
+        ],
+        "category": "环境与职业健康",
+        "source": "国家市场监督管理总局",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2026-07-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "category": "环境与职业健康",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+      "proposed": {
+        "name": "GB 14866-2023 眼面防护具通用技术规范",
+        "stdNo": "GB 14866-2023",
+        "effectiveDate": "2025-01-01",
+        "status": "现行有效",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+        "domains": [
+          "环境"
+        ],
+        "category": "环境与职业健康",
+        "source": "国家市场监督管理总局",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2025-01-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "category": "环境与职业健康",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+      "proposed": {
+        "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+        "stdNo": "GB 15605-2024",
+        "effectiveDate": "2026-01-01",
+        "status": "现行有效",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+        "domains": [
+          "环境"
+        ],
+        "category": "环境与职业健康",
+        "source": "国家市场监督管理总局",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2026-01-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "中华人民共和国招标投标法",
+      "category": "质量",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "声称原日期是「2017-03-01」，清单里其实是「2017-12-28」"
+      ],
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202405/75baf2b6b5f84e7a8f1d4b8c9e7d6b3a.shtml",
+      "proposed": {
+        "name": "中华人民共和国招标投标法",
+        "effectiveDate": "2017-03-01",
+        "status": "现行有效",
+        "link": "http://www.npc.gov.cn/npc/c30834/202405/75baf2b6b5f84e7a8f1d4b8c9e7d6b3a.shtml",
+        "category": "质量",
+        "source": "全国人大网",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2017-03-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "中华人民共和国电子签名法",
+      "category": "质量",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "声称原日期是「2017-09-01」，清单里其实是「2019-04-23」"
+      ],
+      "sourceUrl": "http://www.npc.gov.cn/npc/c30834/202405/75baf2b6b5f84e7a8f1d4b8c9e7d6b3a.shtml",
+      "proposed": {
+        "name": "中华人民共和国电子签名法",
+        "effectiveDate": "2017-09-01",
+        "status": "现行有效",
+        "link": "http://www.npc.gov.cn/npc/c30834/202405/75baf2b6b5f84e7a8f1d4b8c9e7d6b3a.shtml",
+        "category": "质量",
+        "source": "全国人大网",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2017-09-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "category": "质量",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认",
+        "声称原日期是「2025-03-01」，清单里其实是「2026-07-01」",
+        "声称原状态是「即将实施」，清单里其实是「现行有效」",
+        "标成「即将实施」，但实施日期 2025-03-01 早已过去"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "proposed": {
+        "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+        "stdNo": "GB 31420-2025",
+        "effectiveDate": "2025-03-01",
+        "status": "即将实施",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+        "category": "质量",
+        "source": "国家标准全文公开系统",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2025-03-01",
+          "status": "即将实施"
+        }
+      }
+    },
+    {
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "category": "质量",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认",
+        "声称原日期是「2024-07-01」，清单里其实是「2025-01-01」"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+      "proposed": {
+        "name": "GB 14866-2023 眼面防护具通用技术规范",
+        "stdNo": "GB 14866-2023",
+        "effectiveDate": "2024-07-01",
+        "status": "现行有效",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+        "category": "质量",
+        "source": "国家标准全文公开系统",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2024-07-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "category": "质量",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认",
+        "声称原日期是「2024-09-01」，清单里其实是「2026-01-01」"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+      "proposed": {
+        "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+        "stdNo": "GB 15605-2024",
+        "effectiveDate": "2024-09-01",
+        "status": "现行有效",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+        "category": "质量",
+        "source": "国家标准全文公开系统",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2024-09-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "category": "信息安全",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认",
+        "声称原日期是「2025-08-01」，清单里其实是「2026-07-01」",
+        "声称原状态是「即将实施」，清单里其实是「现行有效」",
+        "标成「即将实施」，但实施日期 2025-08-01 早已过去"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "proposed": {
+        "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+        "stdNo": "GB 31420-2025",
+        "effectiveDate": "2025-08-01",
+        "status": "即将实施",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+        "category": "环境与职业健康",
+        "source": "国家标准全文公开系统",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2025-08-01",
+          "status": "即将实施"
+        }
+      }
+    },
+    {
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "category": "信息安全",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认",
+        "声称原日期是「2024-07-01」，清单里其实是「2025-01-01」"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+      "proposed": {
+        "name": "GB 14866-2023 眼面防护具通用技术规范",
+        "stdNo": "GB 14866-2023",
+        "effectiveDate": "2024-07-01",
+        "status": "现行有效",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+        "category": "环境与职业健康",
+        "source": "国家标准全文公开系统",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2024-07-01",
+          "status": "现行有效"
+        }
+      }
+    },
+    {
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "category": "信息安全",
+      "table": "laws",
+      "action": "update",
+      "reasons": [
+        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认",
+        "声称原日期是「2024-11-01」，清单里其实是「2026-01-01」",
+        "声称原状态是「即将实施」，清单里其实是「现行有效」",
+        "标成「即将实施」，但实施日期 2024-11-01 早已过去"
+      ],
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+      "proposed": {
+        "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+        "stdNo": "GB 15605-2024",
+        "effectiveDate": "2024-11-01",
+        "status": "即将实施",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+        "category": "环境与职业健康",
+        "source": "国家标准全文公开系统",
+        "adopted": false,
+        "fromValues": {
+          "effectiveDate": "2024-11-01",
+          "status": "即将实施"
+        }
+      }
+    }
+  ],
   "discarded_items": [
     {
-      "name": "职业病分类和目录",
+      "name": "国务院关于职工工作时间的规定",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/zhengceku/202403/content_6943456.htm",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
       "proposed": {}
     },
     {
-      "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
+      "name": "化学品安全标签编写规定",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
       "proposed": {}
     },
+    {
+      "name": "建筑设计防火规范",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    },
+    {
+      "name": "企业职工伤亡事故分类标准(GB6441-86)",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    },
+    {
+      "name": "关于公开征求《生产设备安全防护设计总则（征求意见稿）》意见的通知",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "GB55036-2022《消防设施通用规范》",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    },
+    {
+      "name": "国务院关于职工工作时间的规定",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/content/2017-03/01/content_5170622.htm；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "化学品安全标签编写规定",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202405/t20240520_456547.shtml；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）；声称原日期是「1992-01-01」，清单里其实是「2010-05-01」",
+      "proposed": {}
+    },
+    {
+      "name": "建筑设计防火规范",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））；声称原日期是「2015-05-01」，清单里其实是「2018-10-01」",
+      "proposed": {}
+    },
+    {
+      "name": "企业职工伤亡事故分类标准(GB6441-86)",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    },
+    {
+      "name": "关于公开征求《生产设备安全防护设计总则（征求意见稿）》意见的通知",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202405/t20240520_456547.shtml；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）；声称原日期是「」，清单里其实是「2022-04-27」",
+      "proposed": {}
+    },
+    {
+      "name": "GB55036-2022《消防设施通用规范》",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国招标投标法",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国电子签名法",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国宪法",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "国务院关于职工工作时间的规定",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "化学品安全标签编写规定",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）；声称原日期是「2009-06-21」，清单里其实是「2010-05-01」",
+      "proposed": {}
+    },
+    {
+      "name": "建筑设计防火规范",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））；声称原日期是「2015-05-01」，清单里其实是「2018-10-01」",
+      "proposed": {}
+    },
+    {
+      "name": "企业职工伤亡事故分类标准(GB6441-86)",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    },
+    {
+      "name": "关于公开征求《生产设备安全防护设计总则（征求意见稿）》意见的通知",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（samr.gov.cn），留空待补）；声称原日期是「」，清单里其实是「2022-04-27」",
+      "proposed": {}
+    },
+    {
+      "name": "GB55036-2022《消防设施通用规范》",
+      "table": "laws",
+      "action": "update",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（详情页标准号与输入不符（hcno 取错或未在前6条内））",
+      "proposed": {}
+    }
+  ],
+  "auto_resolved_links": [
     {
       "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     },
     {
       "name": "GB 14866-2023 眼面防护具通用技术规范",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     },
     {
       "name": "粉尘爆炸泄压规范（GB 15605-2024）",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.samr.gov.cn/bzj/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     },
     {
-      "name": "《化学品中挥发性有机组分定性分析和峰面积百分比测定顶空气相色谱-质谱法》GDOHTQC 001-2024",
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gd.gov.cn/zwgk/zfxxgkpt/qfbm/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3b3b.shtml",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
     },
     {
-      "name": "中华人民共和国网络安全法",
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/2024-09/01/content_6949480.htm",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     },
     {
-      "name": "网络数据安全管理条例",
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：http://www.gov.cn/zhengce/2024-09/01/content_6949480.htm",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     },
     {
-      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
-      "table": "standards",
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "table": "laws",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0A6F6B3C5D8E2F1A4B7C9D0E1F2A3B4C",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     },
     {
-      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
-      "table": "standards",
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "table": "laws",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F",
-      "proposed": {}
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+    },
+    {
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "table": "laws",
+      "action": "update",
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+      "glmGave": "(留空)",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
     }
-  ]
+  ],
+  "auto_resolved_count": 9
 }
