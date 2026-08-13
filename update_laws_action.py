@@ -1858,6 +1858,7 @@ def main():
         print(f"  [状态切换] {s['table']}《{s['name']}》{s['from']} → {s['to']}")
 
     # —— GLM 联网检索各域 ——
+    audit_only = os.environ.get("AUDIT_ONLY", "").lower() in ("1", "true", "yes")
     targets = [
         ("laws", "环境与职业健康"),
         ("laws", "质量"),
@@ -1871,12 +1872,22 @@ def main():
     for table, cid in targets:
         if table == "laws":
             items = [l for l in proposed_laws if l.get("category") == cid]
+            if audit_only and LINK_AUDIT_TARGETS:
+                items = [l for l in items if ("laws", l.get("id")) in LINK_AUDIT_TARGETS]
+                if not items:
+                    continue
             text = DOMAINS[cid]
             all_items = proposed_laws
         else:
             items = proposed_standards
+            if audit_only and LINK_AUDIT_TARGETS:
+                items = [s for s in items if ("standards", s.get("id")) in LINK_AUDIT_TARGETS]
+                if not items:
+                    continue
             text = STANDARDS_TEXT
             all_items = proposed_standards
+        if audit_only:
+            print(f"  [AUDIT_ONLY] 仅处理 {len(items)} 条审计目标（领域：{CATEGORY_NAMES.get(cid, cid)}）")
         # 把已有条目的全字段摊给模型（名称/实施日期/状态/部门/是否已有链接），
         # 它才有据可依，也才能被「旧值核对」这道关卡验证。
         existing_block = build_existing_block(items, table)
