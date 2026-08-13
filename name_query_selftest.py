@@ -44,7 +44,7 @@ check(r4["verified"] and "mem.gov.cn" in r4["link"], "命中 mem.gov.cn 且 veri
 
 
 # 备 5：_official_domains_for 覆盖 6 条非 GB 审计项的归口
-for dept, dom in [("全国人大常委会", "npc.gov.cn"), ("国务院", "gov.cn"), ("应急管理部", "mem.gov.cn")]:
+for dept, dom in [("全国人大常委会", "npc.gov.cn"), ("国务院", "www.gov.cn"), ("应急管理部", "mem.gov.cn")]:
     doms = m._official_domains_for({"dept": dept}, "laws")
     check(doms and doms[0] == dom, "归口映射 %s -> %s" % (dept, dom))
 
@@ -54,7 +54,9 @@ kind = m._source_kind({"name": "宪法", "link": ""}, "laws")
 check(kind == "name_query", "_source_kind 无号无法规 -> name_query")
 
 
-# 备 7：审计专项强制重解析（修掉“审计项仍走 reuse”的 bug）
+# 备 7：通用规则——现有链接不在归口官方域内 -> 强制重新解析（不沿用错域链接）
+#   （替代已删除的“审计专项特例”：现在对所有条目统一按“链接是否在归口域内”判断，
+#    不再写死审计 ID 列表；错域链接一律重新解析，归口域内链接才复用）
 called = {}
 
 
@@ -64,12 +66,20 @@ def fake_name_query(entry, table, max_results=6):
 
 
 m.name_query = fake_name_query
-m.load_link_audit_task()
+m.scf_probe_link = lambda u, timeout=10: {"state": True}   # 打桩，避免复用路径联网探测
+# L0062 现链接挂在 beijing.gov.cn（非归口 npc.gov.cn）-> 不应 reuse，应重新解析
 target = {"id": "L0062", "name": "中华人民共和国招标投标法",
           "link": "https://www.beijing.gov.cn/wrong.pdf", "dept": "全国人大常委会"}
 res = m.resolve_source_url_for_change("laws", {"name": "中华人民共和国招标投标法", "action": "update"}, target)
-check(called.get("entry") is not None, "审计目标走到 name_query（未停留在 reuse）")
-check(called["entry"].get("link") == "", "审计目标 entry.link 被强制清空")
-check(res.get("method") == "name_query" and res.get("verified"), "审计目标解析结果来自 name_query")
+check(called.get("entry") is not None, "错域链接条目走到 name_query（未停留在 reuse）")
+check(res.get("method") == "name_query" and res.get("verified"), "错域链接解析结果来自 name_query")
+
+# 反向：现有链接就在归口域内 -> 复用，不重新解析
+called.clear()
+target2 = {"id": "L0062", "name": "中华人民共和国招标投标法",
+           "link": "https://www.npc.gov.cn/fl/1999/legal_123.html", "dept": "全国人大常委会"}
+res2 = m.resolve_source_url_for_change("laws", {"name": "中华人民共和国招标投标法", "action": "update"}, target2)
+check(called.get("entry") is None, "归口域内链接 -> 复用，不重新解析")
+check(res2.get("method") == "reuse_existing" and res2.get("link") == target2["link"], "归口域内链接原样复用")
 
 print("\nname_query 自测通过 %d 项" % passed)

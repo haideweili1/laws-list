@@ -51,47 +51,9 @@ REPORT_MD_PATH = os.path.join(ROOT, "retrieval-report.md")
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
 
-# ===== 链接审计专项（GLM 修正测试用，仅影响 glm_link_audit_task.json 中列出的条目）=====
-# 用途：把"12 条外省误挂链接"交给 GLM 尝试修正，再用 baseline-v2 对比看它改得对不对。
-# 设计铁律：只针对命中 LINK_AUDIT_TARGETS 的条目放宽"链接保护"（允许用正确归口链接替换误挂的外省链接）；
-#          其余条目一切照旧，绝不削弱通用质检与"不覆盖人工校对好链接"的保护。
-LINK_AUDIT_TARGETS = set()   # 存 (table, id)，命中即视为审计专项目标
-LINK_AUDIT_BLOCK = ""        # 注入 GLM 提示词的专项任务块（main 载入后填充）
-
-
-def load_link_audit_task():
-    """若存在 glm_link_audit_task.json，则载入审计专项目标并生成提示词注入块。
-    不存在则无任何影响（通用行为不变）。"""
-    global LINK_AUDIT_TARGETS, LINK_AUDIT_BLOCK
-    p = os.path.join(ROOT, "glm_link_audit_task.json")
-    if not os.path.exists(p):
-        return
-    try:
-        task = json.load(open(p, encoding="utf-8"))
-    except Exception as e:
-        print("  [链接审计] 任务文件读取失败，跳过：", e)
-        return
-    items = task.get("items", []) or []
-    rows = []
-    for it in items:
-        tid = it.get("id")
-        tbl = it.get("table")
-        if not tid or not tbl:
-            continue
-        LINK_AUDIT_TARGETS.add((tbl, tid))
-        rows.append(f"- 《{it.get('name','')}》(id={tid}, {tbl})：当前错挂 {it.get('wrong_host','')}；"
-                    f"正确归口={it.get('correct_source_site','')}；定位线索={it.get('glm_hint','')}")
-    if rows:
-        LINK_AUDIT_BLOCK = (
-            "\n═══ 专项链接复核任务（本次必须逐条处理，其余检索照常）═══\n"
-            "以下条目当前链接疑似挂在非归口官网（多为外省转载页），请逐条用 web_search 到其"
-            "【正确归口源】核实官方正文页链接，并各提一条 action=update（fromValues 填清单现值，"
-            "表示只改链接、内容字段不变）：\n" + "\n".join(rows) +
-            "\n要求：能确认官方正文页链接就填 link + source_url（务必原样复制的官方深链，"
-            "绝不许填外省转载站链接或自己拼 URL）；GB 类标准系统会自动按号解析国家标准全文公开系统直链，"
-            "你只需确认 status/effectiveDate 与清单一致。note 必须写明『链接由X站外省转载改为Y官方正文页，依据官网』。"
-        )
-        print(f"  [链接审计] 已载入 {len(rows)} 条专项复核目标（仅这些条目放宽链接保护）")
+# ===== 链接分诊/解析：通用规则，不针对任何具体条目（"取消人工复核"信号靠此持续归零）=====
+# 历史上曾有"仅对 12 条审计目标放宽链接保护"的特殊分支；现已移除——下面所有逻辑对
+# 全部条目一视同仁：现有链接须落在归口官方域内才复用，否则一律重新确定性解析。
 
 # ===== 分诊自救台账：记录"哪些条目的链接是系统按官方渠道自动解析补上的" =====
 # 用途是测量：若此表持续有内容而"编造URL"分类归零，说明提示词训练已见效。
@@ -296,7 +258,19 @@ def _resolve_openstd_via_proxy(proxy, std_no, timeout=25):
         return {"ok": False, "reason": "代理调用失败：" + str(e)}
 
 
-def resolve_openstd(std_no, retries=1, max_detail_checks=6):
+def _page_has_stdno(text, stdno):
+    """官方详情页是否确实包含该完整标准号（编号+年份），用于 openstd 解析的确定性核对。
+    编号与年份分开比对，避免官网把『编号』与『年份』分两处写导致的误判。"""
+    t = _parse_std_full(stdno)
+    if not t:
+        return False
+    for m in _STD_FULL_RE.finditer(text or ""):
+        if (_norm_fam(m.group(1)), m.group(2), m.group(3)) == t:
+            return True
+    return False
+
+
+def resolve_openstd(std_no, retries=1, max_detail_checks=12):
     """按标准号确定性解析 openstd 真实详情页链接（hcno）。
     步骤：检索→从列表页提取 hcno(32位十六进制)→打开详情页校验官方标准号一致。
     返回 dict: {link, hcno, verified, reason}。查不到/校验失败返回 link=''（绝不编造）。
@@ -339,7 +313,7 @@ def resolve_openstd(std_no, retries=1, max_detail_checks=6):
                     if t:
                         text = t
                         break
-                if text and norm in re.sub(r"[^A-Z0-9]", "", text.upper()):
+                if text and (_page_has_stdno(text, std_no) or norm in re.sub(r"[^A-Z0-9]", "", text.upper())):
                     out["link"] = _OPENSTD_DETAIL + hcno
                     out["hcno"] = hcno
                     out["verified"] = True
@@ -382,7 +356,7 @@ OFFICIAL_SITE_MAP = {
     "国家市场监督管理总局、中国国家标准化管理委员会": ["samr.gov.cn"],
     "国家计量局": ["samr.gov.cn"],
     "全国人大常委会": ["npc.gov.cn"],
-    "国务院": ["gov.cn"],
+    "国务院": ["www.gov.cn"],
     "国家卫生健康委员会": ["nhc.gov.cn"],
     "应急管理部": ["mem.gov.cn"],
     "广东省人民政府": ["gd.gov.cn"],
@@ -395,7 +369,7 @@ OFFICIAL_SITE_MAP = {
     "海关总署": ["customs.gov.cn"],
     "中国气象局": ["cma.gov.cn"],
     "商务部": ["mofcom.gov.cn"],
-    "国家保密局": ["gov.cn"],
+    "国家保密局": ["www.gov.cn"],
     "公安部": ["mps.gov.cn"],
     "国家发展和改革委员会": ["ndrc.gov.cn"],
     "中山市人民政府": ["zhongshan.gov.cn"],
@@ -420,12 +394,21 @@ OFFICIAL_SITE_MAP = {
 
 
 def _official_domains_for(entry, table):
-    """通用：按 dept(法规)/publisher(标准) 取官方域名；清单未出现的归口返回 []。"""
+    """通用：按 dept(法规)/publisher(标准) 取官方域名；清单未出现的归口返回 []。
+    ① 空部门直接返回 []（绝不返回映射表第一条），这是 name_query 误走 samr.gov.cn 的根因修复；
+    ② GB50xxx / GB55xxx 工程建设规范（含 GB55 全文强制性系列）由住建部发布、openstd 不收录 → 归 mohurd.gov.cn。"""
+    if not entry:
+        return []
+    stdno = (entry.get("stdNo") or "").strip()
+    if stdno and re.match(r"^\s*GB[\s/T]*5[05]", stdno, re.I):
+        return ["mohurd.gov.cn"]
     key = ((entry.get("dept") or entry.get("publisher") or "")).strip()
+    if not key:
+        return []
     if key in OFFICIAL_SITE_MAP:
         return OFFICIAL_SITE_MAP[key]
     for k, v in OFFICIAL_SITE_MAP.items():   # 子串兜底（清单写法偶尔略变）
-        if k and (k in key or key in k):
+        if k and key and (k in key or key in k):
             return v
     return []
 
@@ -505,20 +488,28 @@ def name_query(entry, table, max_results=6):
 
 def _source_kind(entry, table):
     """通用识别该条目该去哪类官网查（返回 'reuse'/'openstd'/'cfsa'/'name_query'/'none'）。
-    不写死任何具体标准号，只按"是否有现有链接 / 标准号前缀 / 类别"判断。"""
+    不写死任何具体标准号，只按"现有链接是否落在归口官方域 / 标准号前缀 / 类别"判断。"""
     link = (entry.get("link") or "").strip()
     if link and has_valid_official_link(link):
-        return "reuse"
+        # 若条目已知归口官方域，且现有链接不在归口域内（如误挂外省转载页），
+        # 则不复用、继续往下按标准号/名称重新确定性解析。否则才复用现有链接。
+        off = _official_domains_for(entry, table)
+        if not off or any((urllib.parse.urlparse(link).hostname or "").lower().endswith(d) for d in off):
+            return "reuse"
+        # 落到下面按标准号/名称重新解析的分支（修复"外省误挂链接被当成有效链接复用"）
     stdno = (entry.get("stdNo") or "").strip()
     name = (entry.get("name") or "").strip()
     if stdno:
         if _FOOD_STD_RE.search(stdno + " " + name):
             return "cfsa"
         if _GB_STD_RE.search(stdno):
+            if re.match(r"^\s*GB[\s/T]*5[05]", stdno, re.I):
+                # 工程建设规范(GB50xxx 及 GB55 全文强制性系列)由住建部发布，openstd 不收录 → 走住建部站内搜
+                return "name_query"
             return "openstd"
         # 其它前缀的标准（如行业/地方标准）目前无对应解析器 → 归待补
         return "none"
-    # 无号法规：按名称+部门去部委/地方站查（TODO 落地，先归 name_query 占位）
+    # 无号法规：按名称+部门去部委/地方站查
     return "name_query"
 
 
@@ -600,15 +591,17 @@ def resolve_source_url_for_change(table, change, target):
         "stdNo": stdno,
         "category": (change.get("category")
                      or (target or {}).get("category", "")),
+        # 必须把发布部门带进解析器：否则 _official_domains_for 拿不到 dept，
+        # 空部门会命中映射表第一条 samr.gov.cn，导致无号法规全跑去标准网搜（错域根因）。
+        "dept": ((target or {}).get("dept", "") or (change.get("dept") or "")) if table == "laws" else "",
+        "publisher": ((target or {}).get("publisher", "") or (change.get("publisher") or "")) if table != "laws" else "",
         "link": "",
     }
     # 复用清单现有链接：仅「非改版」时允许（改版须提供新版自身链接）
     if target and not _change_version_changed(change, target):
         entry["link"] = (target.get("link") or "").strip()
-    # 链接审计专项：命中 LINK_AUDIT_TARGETS 的条目强制重新解析，不复用误挂的外省链接
-    # （否则 entry 带现有链接会走 reuse 分支，到不了 openstd/name_query，等于没修）
-    if target and (table, target.get("id")) in LINK_AUDIT_TARGETS:
-        entry["link"] = ""
+    # 通用规则：现有链接是否可靠由 _source_kind 统一判断（归口域内才复用，否则重新解析），
+    # 不再有"仅对部分条目强制重解析"的特殊分支。
     try:
         return resolve_link_for_entry(entry, table)
     except Exception as e:
@@ -689,6 +682,24 @@ def url_shape_ok(url):
         if _hcno_looks_fabricated(m.group(1)):
             return False
     return True
+
+
+def url_looks_fabricated(url):
+    """通用编造链接拦截（覆盖所有官方域）：
+    openstd 的 hcno 是 32 位十六进制专有格式；若 npc/gov/mem/mohurd 等非 openstd 官方域的
+    链接里出现 32 位十六进制片段，必为照搬 openstd 的 hcno 编造而成 → 判编造。
+    仅拦截精确的 32 位十六进制段，避免误伤真实官文带的长 ID。"""
+    u = (url or "").strip()
+    if not u:
+        return False
+    host = (urllib.parse.urlparse(u).hostname or "").lower()
+    if "openstd.samr.gov.cn" in host:
+        return False   # openstd 的 hcno 形态由 url_shape_ok 负责
+    if any(h in host for h in (".gov.cn", "npc.gov.cn", "mem.gov.cn", "mohurd.gov.cn",
+                               "nhc.gov.cn", "mee.gov.cn", "miit.gov.cn", "mps.gov.cn")):
+        if _HCNO_RE.search(u):
+            return True
+    return False
 
 
 def url_trusted(url):
@@ -873,6 +884,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 【三、日期：必须来自官方文件原文，禁止编造】
 - effectiveDate（实施日期）与 abolishDate（废止日期）必须取自官方文件明确写明的日期。
 - 查不到确切日期就填 ""（空字符串），绝对不要凭记忆猜测或填错日期。
+- 若系统已替你解析出官方正文页，请以该页面读到的实施日期为准，不要填写与官方页读到的日期相矛盾的日期（页面读到的才是权威）。
 
 【四、备注 remark：只允许三类，其余一律不写】
 - 类型A（采标）：该标准采用国际标准时，remark 必须原样照抄官网版权原话（"暂不提供在线阅读服务"或"仅提供在线阅读服务"）。无官网原话不得写。
@@ -1251,15 +1263,12 @@ def check_change(table, change, target, today):
     #    - update/abolish（改动已有条目）：链接无/死/非官方/非正文 → 直接丢弃（确属垃圾）
     #    - add（新增条目）：链接问题不整条丢弃；改为生成可勾选的新增提案、链接清空待补（保住可能真实的新增内容，且核准时绝不写入假链接）
     su = (change.get("source_url") or "").strip()
-    # 链接审计专项：若本条目是 GB 类审计目标，忽略 GLM 给的链接（可能沿用误挂的外省链接），
-    # 强制系统按标准号解析 openstd 官方直链（只针对命中 LINK_AUDIT_TARGETS 的 GB 条目）。
-    if (table, (target or {}).get("id")) in LINK_AUDIT_TARGETS and \
-       (change.get("stdNo") or (target or {}).get("stdNo") or ""):
-        su = ""
     is_add = (action == "add")
     link_issue = None
     if not su:
         link_issue = "没有提供依据来源网址（source_url）"
+    elif url_looks_fabricated(su):
+        link_issue = "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：" + su
     elif not domain_ok(su):
         link_issue = "依据来源不是官方域名：" + su
     elif not url_shape_ok(su):
@@ -1528,11 +1537,15 @@ def apply_change(table, all_items, change, domain_id, today):
         elif is_homepage(existing_url):
             set_fields["link"] = new_url
             diffs.append({"field": "来源链接", "from": "(原为首页)", "to": new_url})
-        elif (table, tid) in LINK_AUDIT_TARGETS:
-            # 链接审计专项：用系统/GLM 解析出的正确归口链接，替换误挂的外省转载链接
-            # （仅针对审计目标，通用保护"不覆盖人工校对好的有效深链"不受影响）
-            set_fields["link"] = new_url
-            diffs.append({"field": "来源链接", "from": existing_url, "to": new_url})
+        else:
+            # 通用规则：现有链接虽能打开，但不在本条归口官方域内（误挂的外省/转载页），
+            # 而新链接经校验确为归口官方正文页 → 允许用正确归口链接替换误挂链接（不再写死条目）。
+            off = _official_domains_for(target, table)
+            new_host = (urllib.parse.urlparse(new_url).hostname or "").lower()
+            old_host = (urllib.parse.urlparse(existing_url).hostname or "").lower()
+            if off and any(new_host.endswith(d) for d in off) and not any(old_host.endswith(d) for d in off):
+                set_fields["link"] = new_url
+                diffs.append({"field": "来源链接", "from": existing_url, "to": new_url})
         # 现有已是有效深链时不动，避免把人工校对好的链接冲掉
     # 应用
     for k, v in set_fields.items():
@@ -1844,9 +1857,6 @@ def main():
     standards = data.setdefault("standards", [])
     today = date.today().isoformat()
 
-    # 链接审计专项：载入 glm_link_audit_task.json（若存在），仅影响其中列出的 12 条
-    load_link_audit_task()
-
     # proposed 为工作副本；草稿模式下它不会被写回 data.json
     proposed = copy.deepcopy(data)
     proposed_laws = proposed.setdefault("laws", [])
@@ -1857,8 +1867,7 @@ def main():
     for s in switched:
         print(f"  [状态切换] {s['table']}《{s['name']}》{s['from']} → {s['to']}")
 
-    # —— GLM 联网检索各域 ——
-    audit_only = os.environ.get("AUDIT_ONLY", "").lower() in ("1", "true", "yes")
+    # —— GLM 联网检索各域（每周自动触发，全量检索；通用规则覆盖全部条目）——
     targets = [
         ("laws", "环境与职业健康"),
         ("laws", "质量"),
@@ -1869,31 +1878,22 @@ def main():
     summary_changes = []
     rejected = []   # 未过质检的候选：不改数据，带着原因进网页「待核实线索」栏
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，收集以便报告计数
+    seen = set()    # 跨领域去重：GLM 可能把同一条目归入多个领域，避免重复计数/处理
     for table, cid in targets:
         if table == "laws":
             items = [l for l in proposed_laws if l.get("category") == cid]
-            if audit_only and LINK_AUDIT_TARGETS:
-                items = [l for l in items if ("laws", l.get("id")) in LINK_AUDIT_TARGETS]
-                if not items:
-                    continue
             text = DOMAINS[cid]
             all_items = proposed_laws
         else:
             items = proposed_standards
-            if audit_only and LINK_AUDIT_TARGETS:
-                items = [s for s in items if ("standards", s.get("id")) in LINK_AUDIT_TARGETS]
-                if not items:
-                    continue
             text = STANDARDS_TEXT
             all_items = proposed_standards
-        if audit_only:
-            print(f"  [AUDIT_ONLY] 仅处理 {len(items)} 条审计目标（领域：{CATEGORY_NAMES.get(cid, cid)}）")
         # 把已有条目的全字段摊给模型（名称/实施日期/状态/部门/是否已有链接），
         # 它才有据可依，也才能被「旧值核对」这道关卡验证。
         existing_block = build_existing_block(items, table)
         label = CATEGORY_NAMES.get(cid, cid)
         print(f"检索：{label} ...")
-        result = search_target(client, model, label, text, existing_block, LINK_AUDIT_BLOCK)
+        result = search_target(client, model, label, text, existing_block, "")
         changes = result.get("changes", []) or []
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
         _su = [(ch.get("source_url") or "").strip() for ch in changes]
@@ -1902,6 +1902,11 @@ def main():
             scf_batch_probe(_su)
         print(f"  发现 {len(changes)} 条候选：{result.get('summary', '')}")
         for ch in changes:
+            dk = (table, _norm_txt(ch.get("name") or ""))
+            if dk in seen:
+                print(f"    跨领域重复，跳过：{ch.get('name')}")
+                continue
+            seen.add(dk)
             res = apply_change(table, all_items, ch, cid, today)
             if not res or res.get("kind") == "skip":
                 if res:
