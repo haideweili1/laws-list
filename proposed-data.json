@@ -1001,7 +1001,7 @@
         "信息安全"
       ],
       "category": "信息安全",
-      "link": "https://ggzyfw.beijing.gov.cn/cmsbj/u/cms/cn.gov.bjggzyfw.www/202208/31151520qlxw.pdf",
+      "link": "https://flk.npc.gov.cn/detail?id=2c909fdd678bf17901678bf88f170b31",
       "region": "",
       "id": "L0062",
       "remark": "",
@@ -1066,7 +1066,7 @@
         "信息安全"
       ],
       "category": "信息安全",
-      "link": "https://www.beijing.gov.cn/gate/big5/www.beijing.gov.cn/zhengce/zhengcefagui/202202/t20220208_2606143.html",
+      "link": "http://www.npc.gov.cn/zgrdw/npc/xinwen/2019-05/07/content_2086835.htm",
       "region": "",
       "id": "L0066",
       "remark": "",
@@ -1885,7 +1885,7 @@
         "质量"
       ],
       "category": "质量",
-      "link": "http://www.npc.gov.cn/npc/c30834/202405/75baf2b6b5f84e7a8f1d4b8c9e7d6b3a.shtml",
+      "link": "https://flk.npc.gov.cn/detail?id=2c909fdd678bf17901678bf5a483004b&title=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%AE%AA%E6%B3%95%282018%E5%B9%B4%E4%BF%AE%E6%AD%A3%E6%96%87%E6%9C%AC%29&detailType=constitution",
       "region": "",
       "id": "L0119",
       "remark": "",
@@ -3917,7 +3917,7 @@
         "环境"
       ],
       "category": "环境与职业健康",
-      "link": "http://app.shandong.gov.cn/zhengbao/1995/1995-05.pdf",
+      "link": "http://www.gov.cn/gongbao/shuju/1994/gwyb199403.pdf",
       "region": "",
       "id": "L0247",
       "remark": "",
@@ -4077,7 +4077,7 @@
         "职业健康安全"
       ],
       "category": "环境与职业健康",
-      "link": "http://yjt.shandong.gov.cn/uploadfiles/day_150408/201504081642596205.pdf",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4D487D68BF0BD87E68CE0EA68183DAD6",
       "region": "",
       "id": "L0257",
       "remark": "",
@@ -4125,27 +4125,29 @@
         "环境"
       ],
       "category": "环境与职业健康",
-      "link": "https://zrzyt.xinjiang.gov.cn/xjgtzy/tzgg/202311/f1bc95ce98e74f90bd91b78d8a354461/files/77-%E3%80%8A%E5%BB%BA%E7%AD%91%E8%AE%BE%E8%AE%A1%E9%98%B2%E7%81%AB%E8%A7%84%E8%8C%83%E3%80%8B%EF%BC%88GB50016-2014%EF%BC%89.pdf",
+      "link": "https://www.mohurd.gov.cn/gongkai/zc/wjk/art/2018/art_17339_235971.html",
       "region": "",
       "id": "L0260",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "stdNo": "GB50016-2014"
     },
     {
       "name": "企业职工伤亡事故分类标准(GB6441-86)",
       "docNumber": "",
       "dept": "国家市场监督管理总局",
       "effectiveDate": "1987-02-01",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "职业健康安全"
       ],
       "category": "环境与职业健康",
-      "link": "https://jyglj.sc.gov.cn/scjyglj/cdnzjyzfgk/2019/6/28/af51b56ac43b4797b3c26d30587ac5fb.shtml",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0DF1CC96FCD4E197722CC47833681108",
       "region": "",
       "id": "L0261",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "由 GB 6441-2025《生产安全事故分类与编码》全部代替（2026-07-01 起实施）",
+      "abolishDate": "",
+      "stdNo": "GB6441-1986"
     },
     {
       "name": "广东省安全生产条例",
@@ -5508,20 +5510,21 @@
       "abolishDate": ""
     },
     {
-      "name": "关于公开征求《生产设备安全防护设计总则（征求意见稿）》意见的通知",
+      "name": "生产设备安全卫生设计总则（GB 5083-2023）",
       "docNumber": "",
-      "dept": "应急管理部",
+      "dept": "国家市场监督管理总局、国家标准化管理委员会",
       "effectiveDate": "2022-04-27",
       "status": "现行有效",
       "domains": [
         "职业健康安全"
       ],
       "category": "环境与职业健康",
-      "link": "https://yjt.shaanxi.gov.cn/hd/yjzj/202204/P020250117653444362196.pdf",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=EF8DFA874E9A4FB6DD9966E1DABECF3C",
       "region": "",
       "id": "L0349",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "原条目为《生产设备安全防护设计总则（征求意见稿）》公开征求意见通知，该标准已正式发布为 GB 5083-2023《生产设备安全卫生设计总则》（2025-01-01 实施，代替 GB 5083-1999）；归口应急管理部",
+      "abolishDate": "",
+      "stdNo": "GB 5083-2023"
     },
     {
       "name": "GB/T36507-2023 工业车辆 使用、操作与维护安全规范",
@@ -5661,11 +5664,12 @@
         "职业健康安全"
       ],
       "category": "环境与职业健康",
-      "link": "https://sc.119.gov.cn/scxfjyzd/gfbz/2023/8/7/254f02a5fb4f4a2da7936366945149ba/files/%E6%B6%88%E9%98%B2%E8%AE%BE%E6%96%BD%E9%80%9A%E7%94%A8%E8%A7%84%E8%8C%83.pdf",
+      "link": "https://www.mohurd.gov.cn/gongkai/zc/wjk/art/2024/art_17339_767704.html",
       "region": "",
       "id": "L0358",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "stdNo": "GB55036-2022"
     },
     {
       "name": "GB∕T43500-2023《安全管理体系 要求》",
@@ -5869,11 +5873,12 @@
         "环境"
       ],
       "category": "环境与职业健康",
-      "link": "https://xcoss.henan.gov.cn/typtfile/20250806/ddec43282aba4f1a8a9885edfa14b0b8.pdf",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
       "region": "",
       "id": "L0371",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "stdNo": "GB 31420-2025"
     },
     {
       "name": "GB 14866-2023 眼面防护具通用技术规范",
@@ -5885,11 +5890,12 @@
         "环境"
       ],
       "category": "环境与职业健康",
-      "link": "https://xcoss.henan.gov.cn/typtfile/20250317/b2874f5976ab424688f23d78bb222685.pdf",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
       "region": "",
       "id": "L0372",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "stdNo": "GB 14866-2023"
     },
     {
       "name": "《工作场所空气有毒物质测定第132 部分：甲苯二异氰酸酯、二苯基甲烷二异氰酸酯和异佛尔酮二异氰酸酯》GBZ/T 300.132-2017",
@@ -6301,11 +6307,12 @@
         "环境"
       ],
       "category": "环境与职业健康",
-      "link": "https://yjgl.tj.gov.cn/ZWFW5050/BZ2939/GJBZ6056/202503/W020250328537008987213.pdf",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
       "region": "",
       "id": "L0399",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "stdNo": "GB 15605-2024"
     },
     {
       "name": "生态环境统计管理办法",
@@ -6354,6 +6361,23 @@
       "id": "L0402",
       "remark": "",
       "abolishDate": ""
+    },
+    {
+      "name": "生产安全事故分类与编码",
+      "docNumber": "",
+      "dept": "国家市场监督管理总局、国家标准化管理委员会",
+      "effectiveDate": "2026-07-01",
+      "status": "现行有效",
+      "domains": [
+        "职业健康安全"
+      ],
+      "category": "环境与职业健康",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=39334B61DAD4CC7F9E412A868C567717",
+      "region": "",
+      "id": "L0405",
+      "remark": "替代 GB/T 6441-1986（全部代替）；归口应急管理部",
+      "abolishDate": "",
+      "stdNo": "GB 6441-2025"
     }
   ],
   "standards": [
