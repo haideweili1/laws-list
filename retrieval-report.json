@@ -2,78 +2,28 @@
   "generatedAt": "2026-08-14",
   "note": "测量仪表：右栏(人工复核)是诊断信号不是负担。逐类压降 reject_breakdown，才能让它归零。",
   "counts": {
-    "ok_可直接应用": 0,
-    "reject_人工复核": 16,
-    "discard_丢弃": 5,
+    "ok_可直接应用": 1,
+    "reject_人工复核": 4,
+    "discard_丢弃": 17,
     "status_switch_状态切换": 0
   },
   "reject_breakdown": {
-    "系统已补正链接，内容待人工确认（分诊自救成功）": 16,
+    "日期与官方页不一致（GLM 报错日期）": 4,
     "旧值核对不符（未看清单）": 1
   },
   "discard_breakdown": {
-    "无来源且系统也解析不到（须落地 name_query/cfsa）": 5
+    "无来源且系统也解析不到（须落地 name_query/cfsa）": 7,
+    "日期与官方页不一致（GLM 报错日期）": 9,
+    "其它": 1
   },
   "rejected_items": [
-    {
-      "name": "中华人民共和国传染病防治法（2025修订）",
-      "category": "环境与职业健康",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "http://www.npc.gov.cn/c2/c30834/202504/t20250430_445085.html",
-      "proposed": {
-        "name": "中华人民共和国传染病防治法（2025修订）",
-        "effectiveDate": "2025-09-01",
-        "status": "现行有效",
-        "link": "http://www.npc.gov.cn/c2/c30834/202504/t20250430_445085.html",
-        "domains": [
-          "环境"
-        ],
-        "category": "环境与职业健康",
-        "source": "全国人大常委会",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2025-09-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "职业病分类和目录",
-      "category": "环境与职业健康",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://www.gov.cn/gongbao/2025/issue_11886/202502/content_7007111.html",
-      "proposed": {
-        "name": "职业病分类和目录",
-        "effectiveDate": "2025-08-01",
-        "status": "现行有效",
-        "link": "https://www.gov.cn/gongbao/2025/issue_11886/202502/content_7007111.html",
-        "domains": [
-          "环境"
-        ],
-        "category": "环境与职业健康",
-        "source": "国务院",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2025-08-01",
-          "status": "现行有效"
-        }
-      }
-    },
     {
       "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
       "category": "环境与职业健康",
       "table": "laws",
       "action": "update",
       "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+        "官方页面读到的实施日期是 2017-01-01，与本条声称的 2025-08-01 不一致，请人工确认"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=54A5358F7925AEB1941F11D4A90F2AD5",
       "proposed": {
@@ -95,76 +45,22 @@
       }
     },
     {
-      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
-      "category": "环境与职业健康",
+      "name": "GB/T 22080-2025 网络安全技术 信息安全管理体系 要求",
+      "category": "质量",
       "table": "laws",
       "action": "update",
       "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+        "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-01-01 不一致，请人工确认"
       ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
+      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=886C4EE1A50A26626A7BAD8571301CEC",
       "proposed": {
-        "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
-        "stdNo": "GB 31420-2025",
-        "effectiveDate": "2026-07-01",
-        "status": "现行有效",
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
-        "domains": [
-          "环境"
-        ],
-        "category": "质量",
-        "source": "国家市场监督管理总局",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2026-07-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "GB 14866-2023 眼面防护具通用技术规范",
-      "category": "环境与职业健康",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
-      "proposed": {
-        "name": "GB 14866-2023 眼面防护具通用技术规范",
-        "stdNo": "GB 14866-2023",
-        "effectiveDate": "2025-01-01",
-        "status": "现行有效",
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
-        "domains": [
-          "环境"
-        ],
-        "category": "质量",
-        "source": "国家市场监督管理总局",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2025-01-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
-      "category": "环境与职业健康",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
-      "proposed": {
-        "name": "粉尘爆炸泄压规范（GB 15605-2024）",
-        "stdNo": "GB 15605-2024",
+        "name": "GB/T 22080-2025 网络安全技术 信息安全管理体系 要求",
+        "stdNo": "GB/T 22080-2025",
         "effectiveDate": "2026-01-01",
         "status": "现行有效",
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
+        "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=886C4EE1A50A26626A7BAD8571301CEC",
         "domains": [
-          "环境"
+          "质量"
         ],
         "category": "质量",
         "source": "国家市场监督管理总局",
@@ -176,194 +72,12 @@
       }
     },
     {
-      "name": "生产安全事故分类与编码",
-      "category": "环境与职业健康",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=39334B61DAD4CC7F9E412A868C567717",
-      "proposed": {
-        "name": "生产安全事故分类与编码",
-        "effectiveDate": "2026-07-01",
-        "status": "现行有效",
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=39334B61DAD4CC7F9E412A868C567717",
-        "domains": [
-          "环境"
-        ],
-        "category": "质量",
-        "source": "国家市场监督管理总局、国家标准化管理委员会",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2026-07-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "网络数据安全管理条例",
-      "category": "信息安全",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
-      "proposed": {
-        "name": "网络数据安全管理条例",
-        "effectiveDate": "2025-01-01",
-        "status": "现行有效",
-        "link": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
-        "domains": [
-          "信息安全"
-        ],
-        "category": "信息安全",
-        "source": "国务院",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2025-01-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "国家网络安全事件报告管理办法",
-      "category": "信息安全",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://www.cac.gov.cn/2025-09/15/c_1759583017717009.htm",
-      "proposed": {
-        "name": "国家网络安全事件报告管理办法",
-        "effectiveDate": "2025-11-01",
-        "status": "现行有效",
-        "link": "https://www.cac.gov.cn/2025-09/15/c_1759583017717009.htm",
-        "domains": [
-          "信息安全"
-        ],
-        "category": "信息安全",
-        "source": "国家互联网信息办公室",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2025-11-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "小型个人信息处理者个人信息保护简化措施规定",
-      "category": "信息安全",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm",
-      "proposed": {
-        "name": "小型个人信息处理者个人信息保护简化措施规定",
-        "effectiveDate": "2026-09-01",
-        "status": "现行有效",
-        "link": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm",
-        "domains": [
-          "信息安全"
-        ],
-        "category": "信息安全",
-        "source": "国家互联网信息办公室",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2026-09-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "生成式人工智能服务安全管理暂行办法",
-      "category": "信息安全",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm",
-      "proposed": {
-        "name": "生成式人工智能服务安全管理暂行办法",
-        "effectiveDate": "2023-08-15",
-        "status": "现行有效",
-        "link": "https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm",
-        "domains": [
-          "信息安全"
-        ],
-        "category": "信息安全",
-        "source": "国家互联网信息办公室",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2023-08-15",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "生成式人工智能服务安全基本要求",
-      "category": "信息安全",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F67D3F376E0A0A0FF5317FB36B32A30A",
-      "proposed": {
-        "name": "生成式人工智能服务安全基本要求",
-        "effectiveDate": "2025-11-01",
-        "status": "现行有效",
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F67D3F376E0A0A0FF5317FB36B32A30A",
-        "domains": [
-          "信息安全"
-        ],
-        "category": "信息安全",
-        "source": "国家市场监督管理总局、国家标准化管理委员会",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2025-11-01",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
-      "name": "《小型个人信息处理者个人信息保护简化措施规定》",
-      "category": "信息安全",
-      "table": "laws",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://www.cac.gov.cn/2026-07/24/c_1786638889704872.htm",
-      "proposed": {
-        "name": "《小型个人信息处理者个人信息保护简化措施规定》",
-        "effectiveDate": "2024-08-15",
-        "status": "现行有效",
-        "link": "https://www.cac.gov.cn/2026-07/24/c_1786638889704872.htm",
-        "domains": [
-          "信息安全"
-        ],
-        "category": "信息安全",
-        "source": "国家互联网信息办公室",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2024-08-15",
-          "status": "现行有效"
-        }
-      }
-    },
-    {
       "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
       "category": "产品标准",
       "table": "standards",
       "action": "update",
       "reasons": [
-        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
+        "官方页面读到的实施日期是 2017-01-01，与本条声称的 2018-10-01 不一致，请人工确认"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
       "proposed": {
@@ -393,7 +107,7 @@
       "table": "standards",
       "action": "update",
       "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认",
+        "官方页面读到的实施日期是 2017-01-01，与本条声称的 2013-10-01 不一致，请人工确认",
         "声称原状态是「已废止」，清单里其实是「现行有效」"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
@@ -406,44 +120,14 @@
         "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
         "remark": "即将被 GB 12021.4-2026 替代（新标准实施日期 2027-04-01）",
         "domains": [
-          "能源"
+          "环境"
         ],
-        "category": "质量",
+        "category": "环境与职业健康",
         "replacedBy": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
         "source": "国家标准化管理委员会",
         "adopted": false,
         "fromValues": {
           "effectiveDate": "2013-10-01",
-          "status": "已废止"
-        }
-      }
-    },
-    {
-      "name": "GB/T 1019 家用和类似用途电器包装通则",
-      "category": "产品标准",
-      "table": "standards",
-      "action": "update",
-      "reasons": [
-        "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E22434C73AF364800DFDA8CCCDC09BA",
-      "proposed": {
-        "name": "GB/T 1019 家用和类似用途电器包装通则",
-        "stdNo": "GB/T 1019",
-        "effectiveDate": "2009-05-01",
-        "abolishDate": "2025-11-01",
-        "status": "已废止",
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E22434C73AF364800DFDA8CCCDC09BA",
-        "remark": "即将被 GB/T 22939.1-2025 替代（新标准实施日期 2025-11-01）",
-        "domains": [
-          "包装"
-        ],
-        "category": "质量",
-        "replacedBy": "GB/T 22939.1-2025 家用和类似用途电器包装 第1部分：通用要求",
-        "source": "国家标准化管理委员会",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2009-05-01",
           "status": "已废止"
         }
       }
@@ -454,35 +138,119 @@
       "name": "中华人民共和国突发事件应对法",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：https://www.npc.gov.cn/npc/c30834/202403/75baf2b8b5f84e7a9b6b4f8b8b8b8b8b.shtml；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（npc.gov.cn），留空待补）",
+      "reason": "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：http://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3d0c.shtml；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（npc.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国传染病防治法（2025修订）",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 1989-02-21，与本条声称的 2025-09-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
       "proposed": {}
     },
     {
       "name": "中华人民共和国食品安全法",
       "table": "laws",
       "action": "update",
-      "reason": "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：https://www.npc.gov.cn/npc/c30834/202403/75baf2b8b5f84e7a9b6b4f8b8b8b8b8b.shtml；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
+      "reason": "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：http://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3d0c.shtml；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
+      "proposed": {}
+    },
+    {
+      "name": "职业病分类和目录",
+      "table": "laws",
+      "action": "update",
+      "reason": "伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-07-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "GB 14866-2023 眼面防护具通用技术规范",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
+      "proposed": {}
+    },
+    {
+      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
+      "proposed": {}
+    },
+    {
+      "name": "生产安全事故分类与编码",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-07-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国反不正当竞争法(2025修订)",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 1993-09-02，与本条声称的 2025-10-15 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "网络安全技术 信息系统灾难恢复规范",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-01-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
       "proposed": {}
     },
     {
       "name": "中华人民共和国网络安全法",
       "table": "laws",
       "action": "update",
-      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（npc.gov.cn），留空待补）",
+      "reason": "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：https://www.npc.gov.cn/npc/c30834/202407/75baf5b8b5f54e7a9b6b4f8b8b8b8b8b.shtml；系统按官方渠道自动解析也未取到真实链接（站内搜索未找到标题匹配的官方页（npc.gov.cn），留空待补）",
+      "proposed": {}
+    },
+    {
+      "name": "网络数据安全管理条例",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2024-08-30，与本条声称的 2025-01-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "关键信息基础设施安全保护条例",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2021-04-27，与本条声称的 2021-09-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "生成式人工智能服务安全管理暂行办法",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2023-07-13，与本条声称的 2023-08-15 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "生成式人工智能服务安全基本要求",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2025-11-01 不一致，请人工确认；伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃",
+      "proposed": {}
+    },
+    {
+      "name": "信息安全技术 网络安全等级保护基本要求",
+      "table": "laws",
+      "action": "update",
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
       "proposed": {}
     },
     {
       "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
       "table": "standards",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
-      "proposed": {}
-    },
-    {
-      "name": "GB/T 19606-2004 家用和类似用途电器噪声限值",
-      "table": "standards",
-      "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）；声称原状态是「已废止」，清单里其实是「现行有效」",
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
       "proposed": {}
     }
   ],
@@ -493,9 +261,9 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "http://www.npc.gov.cn/c2/c30834/202504/t20250430_445085.html",
-      "glmGave": "https://www.npc.gov.cn/npc/c30834/202403/75baf2b8b5f84e7a9b6b4f8b8b8b8b8b.shtml",
+      "glmGave": "http://www.npc.gov.cn/npc/c30834/202403/75baf2b6b5f84e7a9e1e8b3a7c9b3d0c.shtml",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 1989-02-21，与本条声称的 2025-09-01 不一致，请人工确认"
     },
     {
       "name": "职业病分类和目录",
@@ -503,9 +271,9 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "https://www.gov.cn/gongbao/2025/issue_11886/202502/content_7007111.html",
-      "glmGave": "https://www.gov.cn/zhengce/zhengceku/202403/content_6931236.htm",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "glmGave": "http://www.gov.cn/zhengce/zhengceku/202403/20240315_1234567.htm",
+      "claimConfirmed": true,
+      "detail": "链接由系统按官方渠道自动解析补正，且页面实施日期 2025-08-01 与本条一致"
     },
     {
       "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
@@ -515,7 +283,7 @@
       "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=54A5358F7925AEB1941F11D4A90F2AD5",
       "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2025-08-01 不一致，请人工确认"
     },
     {
       "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
@@ -525,27 +293,7 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
       "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    },
-    {
-      "name": "GB 14866-2023 眼面防护具通用技术规范",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
-    },
-    {
-      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-07-01 不一致，请人工确认"
     },
     {
       "name": "生产安全事故分类与编码",
@@ -555,7 +303,37 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=39334B61DAD4CC7F9E412A868C567717",
       "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-07-01 不一致，请人工确认"
+    },
+    {
+      "name": "中华人民共和国反不正当竞争法(2025修订)",
+      "table": "laws",
+      "action": "update",
+      "method": "reuse_existing",
+      "link": "http://www.npc.gov.cn/c2/c30834/202506/t20250627_446247.html",
+      "glmGave": "http://www.npc.gov.cn/npc/c30834/202504/75b8f5b8a5f54e7a9b6b8f8b8b8b8b8b.shtml",
+      "claimConfirmed": false,
+      "detail": "官方页面读到的实施日期是 1993-09-02，与本条声称的 2025-10-15 不一致，请人工确认"
+    },
+    {
+      "name": "网络安全技术 信息系统灾难恢复规范",
+      "table": "laws",
+      "action": "update",
+      "method": "reuse_existing",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=ABE370E7DABA83CD71BCAC2042A95F70",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
+      "claimConfirmed": false,
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-01-01 不一致，请人工确认"
+    },
+    {
+      "name": "GB/T 22080-2025 网络安全技术 信息安全管理体系 要求",
+      "table": "laws",
+      "action": "update",
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=886C4EE1A50A26626A7BAD8571301CEC",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=abcdef1234567890abcdef1234567890",
+      "claimConfirmed": false,
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-01-01 不一致，请人工确认"
     },
     {
       "name": "网络数据安全管理条例",
@@ -563,29 +341,19 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
-      "glmGave": "(留空)",
+      "glmGave": "http://www.gov.cn/zhengce/content/2024-07/30/content_6948962.htm",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2024-08-30，与本条声称的 2025-01-01 不一致，请人工确认"
     },
     {
-      "name": "国家网络安全事件报告管理办法",
+      "name": "关键信息基础设施安全保护条例",
       "table": "laws",
       "action": "update",
       "method": "reuse_existing",
-      "link": "https://www.cac.gov.cn/2025-09/15/c_1759583017717009.htm",
-      "glmGave": "(留空)",
+      "link": "https://www.gov.cn/zhengce/zhengceku/2021-08/17/content_5631671.htm",
+      "glmGave": "http://www.gov.cn/zhengce/content/2021-08/17/content_5631682.htm",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    },
-    {
-      "name": "小型个人信息处理者个人信息保护简化措施规定",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://www.cac.gov.cn/2026-07/24/c_1786638889443160.htm",
-      "glmGave": "(留空)",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2021-04-27，与本条声称的 2021-09-01 不一致，请人工确认"
     },
     {
       "name": "生成式人工智能服务安全管理暂行办法",
@@ -593,9 +361,9 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm",
-      "glmGave": "(留空)",
+      "glmGave": "https://www.cac.gov.cn/2023-07/13/c_1129746029.htm",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2023-07-13，与本条声称的 2023-08-15 不一致，请人工确认"
     },
     {
       "name": "生成式人工智能服务安全基本要求",
@@ -603,19 +371,9 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F67D3F376E0A0A0FF5317FB36B32A30A",
-      "glmGave": "(留空)",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8A8B8C8D8E8F8G8H8I8J8K8L8M8N8O8P",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    },
-    {
-      "name": "《小型个人信息处理者个人信息保护简化措施规定》",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://www.cac.gov.cn/2026-07/24/c_1786638889704872.htm",
-      "glmGave": "(留空)",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2025-11-01 不一致，请人工确认"
     },
     {
       "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
@@ -623,9 +381,9 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0B3E8F3C5A2B4D6E7F8A9B0C1D2E3F4A",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0B3E8F3C5D2A1B4C6E7F8A9B0C1D2E3F",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2018-10-01 不一致，请人工确认"
     },
     {
       "name": "GB/T 4288-2025 家用和类似用途电动洗衣机",
@@ -633,9 +391,9 @@
       "action": "add",
       "method": "openstd",
       "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=A6DD817E54CC5A9C5D231F1480876CAD",
-      "glmGave": "(留空)",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E6F",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2026-05-01 不一致，请人工确认"
     },
     {
       "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
@@ -643,9 +401,9 @@
       "action": "update",
       "method": "reuse_existing",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1C4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2013-10-01 不一致，请人工确认"
     },
     {
       "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
@@ -653,9 +411,9 @@
       "action": "add",
       "method": "openstd",
       "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4804719D7D206D7538788BE44F54DC64",
-      "glmGave": "(留空)",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2027-04-01 不一致，请人工确认"
     },
     {
       "name": "GB 21456-2024 家用和类似用途厨房电器能效限定值及能效等级",
@@ -663,50 +421,10 @@
       "action": "add",
       "method": "openstd",
       "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F966E2FC4C7AB718356847B0DB1045E4",
-      "glmGave": "(留空)",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A0B",
       "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    },
-    {
-      "name": "GB/T 19606-2024 家用和类似用途电器噪声限值",
-      "table": "standards",
-      "action": "add",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=9E694A86CF9AB7D112069910B37DD217",
-      "glmGave": "(留空)",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    },
-    {
-      "name": "GB/T 1019 家用和类似用途电器包装通则",
-      "table": "standards",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8E22434C73AF364800DFDA8CCCDC09BA",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    },
-    {
-      "name": "GB/T 22939.1-2025 家用和类似用途电器包装 第1部分：通用要求",
-      "table": "standards",
-      "action": "add",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=1A9CB0EB86F26BB6BDA2B7B57275CFE9",
-      "glmGave": "(留空)",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
-    },
-    {
-      "name": "GB/T 22939.5-2025 家用和类似用途电器包装 电动洗衣机和干衣机的特殊要求",
-      "table": "standards",
-      "action": "add",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=7C5776EC046C3EA9A7A3E3C0F60BDAB4",
-      "glmGave": "(留空)",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
+      "detail": "官方页面读到的实施日期是 2017-01-01，与本条声称的 2025-09-01 不一致，请人工确认"
     }
   ],
-  "auto_resolved_count": 22
+  "auto_resolved_count": 17
 }
