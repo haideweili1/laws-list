@@ -1885,7 +1885,7 @@
         "质量"
       ],
       "category": "质量",
-      "link": "https://flk.npc.gov.cn/detail?id=2c909fdd678bf5a483004b",
+      "link": "https://flk.npc.gov.cn/detail?id=2c909fdd678bf17901678bf5a483004b&title=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E5%AE%AA%E6%B3%95%282018%E5%B9%B4%E4%BF%AE%E6%AD%A3%E6%96%87%E6%9C%AC%29&detailType=constitution",
       "region": "",
       "id": "L0119",
       "remark": "",
@@ -4137,7 +4137,7 @@
       "docNumber": "",
       "dept": "国家市场监督管理总局",
       "effectiveDate": "1987-02-01",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "职业健康安全"
       ],
@@ -4145,7 +4145,7 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0DF1CC96FCD4E197722CC47833681108",
       "region": "",
       "id": "L0261",
-      "remark": "",
+      "remark": "由 GB 6441-2025《生产安全事故分类与编码》全部代替（2026-07-01 起实施）",
       "abolishDate": "",
       "stdNo": "GB6441-1986"
     },
@@ -5510,20 +5510,21 @@
       "abolishDate": ""
     },
     {
-      "name": "关于公开征求《生产设备安全防护设计总则（征求意见稿）》意见的通知",
+      "name": "生产设备安全卫生设计总则（GB 5083-2023）",
       "docNumber": "",
-      "dept": "应急管理部",
+      "dept": "国家市场监督管理总局、国家标准化管理委员会",
       "effectiveDate": "2022-04-27",
       "status": "现行有效",
       "domains": [
         "职业健康安全"
       ],
       "category": "环境与职业健康",
-      "link": "",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=EF8DFA874E9A4FB6DD9966E1DABECF3C",
       "region": "",
       "id": "L0349",
-      "remark": "【官方链接待补】",
-      "abolishDate": ""
+      "remark": "原条目为《生产设备安全防护设计总则（征求意见稿）》公开征求意见通知，该标准已正式发布为 GB 5083-2023《生产设备安全卫生设计总则》（2025-01-01 实施，代替 GB 5083-1999）；归口应急管理部",
+      "abolishDate": "",
+      "stdNo": "GB 5083-2023"
     },
     {
       "name": "GB/T36507-2023 工业车辆 使用、操作与维护安全规范",
@@ -6360,6 +6361,23 @@
       "id": "L0402",
       "remark": "",
       "abolishDate": ""
+    },
+    {
+      "name": "生产安全事故分类与编码",
+      "docNumber": "",
+      "dept": "国家市场监督管理总局、国家标准化管理委员会",
+      "effectiveDate": "2026-07-01",
+      "status": "现行有效",
+      "domains": [
+        "职业健康安全"
+      ],
+      "category": "环境与职业健康",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=39334B61DAD4CC7F9E412A868C567717",
+      "region": "",
+      "id": "L0405",
+      "remark": "替代 GB/T 6441-1986（全部代替）；归口应急管理部",
+      "abolishDate": "",
+      "stdNo": "GB 6441-2025"
     }
   ],
   "standards": [
