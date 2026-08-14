@@ -815,6 +815,72 @@ def _read_page_effective_date(url, stdno=None):
     return None
 
 
+_PAGE_CACHE = {}
+
+
+def _page_text(url):
+    """抓官方页正文文本：优先国内代理渲染动态页，回退境外直连。同 URL 进程内缓存一次。
+
+    缓存顺手解决『同一官方链接被重复抓取』的旧问题（确定性探测抓一次，后续质检/回填直接复用）。"""
+    if not url:
+        return None
+    if url in _PAGE_CACHE:
+        return _PAGE_CACHE[url]
+    t, _ = domestic_fetch(url, timeout=20)
+    t = t or fetch_text(url, timeout=10) or None
+    _PAGE_CACHE[url] = t
+    return t
+
+
+def _page_status_signal(text):
+    """从官方页正文抽『废止/被替代』信号；返回 True 表示页面显示该标准已废止/被代替。"""
+    if not text:
+        return False
+    return bool(re.search(r"(已?废止|已?作废|被[^\s，。]{1,20}?代替|本标准代替|不再实施)", text))
+
+
+def should_skip_for_retrieval(e):
+    """检索前确定性预筛：返回 True 表示这条无需交给 GLM 核实（从源头减少生成量）。
+
+    通用规则（不点名任何法规/标准）：
+    - 状态已『废止/失效/过期/停止』的：不会再变，无需检索；
+    - 链接为空（待补）的：不让 GLM 去『发现』（易产生幻觉），留给专门的补链接流程。"""
+    st = (e.get("status") or "")
+    if any(k in st for k in ("废止", "失效", "过期", "停止")):
+        return True
+    if not (e.get("link") or "").strip():
+        return True
+    return False
+
+
+def _page_indicates_change(url, e):
+    """确定性探测：这条官方页是否真有变化。把『发现变更』从 GLM 挪回系统。
+
+    返回：
+    - False：官方页读到的状态/日期与清单一致 → 系统直接跳过，不调 GLM（零 GLM 成本）；
+    - True ：官方页显示废止/替代，或实施日期与清单不同 → 疑似变更，交 GLM 核实；
+    - None ：读不到官方页正文（多为法律类 JS 渲染页）→ 交给 GLM 带 web_search 核实。
+
+    仅对标准类（openstd）做确定性探测；法律类（npc/gov/cac/flk）直接返回 None 由 GLM 核实。"""
+    if not url or "openstd.samr.gov.cn" not in url:
+        return None
+    text = _page_text(url)
+    if not text and e.get("stdNo"):
+        text = _openstd_search_session(e["stdNo"]) or None
+    if not text:
+        return None
+    cur_date = (e.get("effectiveDate") or "").strip()
+    cur_status = (e.get("status") or "")
+    official_date = _read_page_effective_date(url, e.get("stdNo"))
+    if _page_status_signal(text) and "废止" not in cur_status and "失效" not in cur_status:
+        return True
+    if official_date and cur_date and official_date != cur_date:
+        return True
+    if official_date and not cur_date:
+        return True
+    return False
+
+
 def _fill_missing_effective_date(change, target):
     """仅当 GLM 未给出实施日期、且官方页能读到真实日期时，回填真实日期。
 
@@ -1022,7 +1088,7 @@ def build_existing_block(items, table):
 def build_prompt(target_label, domain_text, existing_names, audit_block=""):
     names_block = existing_names if isinstance(existing_names, str) else (
         "\n".join(f"- {n}" for n in existing_names) or "（暂无）")
-    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
+    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行【核实模式】：我只把「系统已用确定性脚本检测到疑似变更的少数条目」交给你，你只负责依据官方白纸黑字核对它们当前的状态/实施日期是否真变了并给出权威新值。不要主动联网去搜索清单以外的法规/标准，也不要新增清单里没有的条目。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 
 ═══ 本次检索范围（{target_label}）═══
 {domain_text}
@@ -1057,6 +1123,12 @@ def build_prompt(target_label, domain_text, existing_names, audit_block=""):
 }}
 
 注意：action=update / abolish 时 fromValues 必填且必须与上面清单一字不差，否则整条拒收。
+
+═══ 核实模式专属约束（从源头减少生成，压低候选量）═══
+1. 你收到的【当前清单已有条目】是封闭域：只核实这些条目，绝不搜索/新增清单以外的法规或标准。
+2. 每条若没有白纸黑字的官方依据（具体公告 URL + 明确日期/状态）证明它变了，就不要把它写进 changes（即 no_change）——宁可漏报不可错报。
+3. 禁止编造 URL / 实施日期 / 状态；读不到就留空，由系统或人工补。
+4. 若某条系统未附官方页文本、你确需核对，可用 web_search 仅查【该条自身】的官方依据，不要发散搜索其它条目。
 只输出 JSON，不要额外说明文字。"""
 
 
@@ -1072,15 +1144,17 @@ def extract_json(text):
     return text
 
 
-def search_target(client, model, label, text, existing_names, audit_block=""):
+def search_target(client, model, label, text, existing_names, audit_block="", web_search=True):
     prompt = build_prompt(label, text, existing_names, audit_block)
+    kwargs = dict(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,
+    )
+    if web_search:
+        kwargs["tools"] = [{"type": "web_search", "web_search": {"enable": True, "search_result": True}}]
     try:
-        resp = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            tools=[{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
-            temperature=0,
-        )
+        resp = client.chat.completions.create(**kwargs)
         return json.loads(extract_json(resp.choices[0].message.content))
     except Exception as e:
         print(f"  [{label}] 检索出错: {e}")
@@ -1979,11 +2053,23 @@ def main():
             items = proposed_standards
             text = STANDARDS_TEXT
             all_items = proposed_standards
-        # 把已有条目的全字段摊给模型（名称/实施日期/状态/部门/是否已有链接），
-        # 它才有据可依，也才能被「旧值核对」这道关卡验证。
-        existing_block = build_existing_block(items, table)
+        # —— A 检索前确定性预筛：砍掉明显不会变的（已废止/待补），减少 GLM 处理量 ——
+        items = [e for e in items if not should_skip_for_retrieval(e)]
+        # —— B 确定性探测：系统先剔除「官方页无变化」的条目，GLM 只核实疑似变更 ——
+        verify_items = []
+        for e in items:
+            sig = _page_indicates_change(e.get("link"), e)
+            if sig is False:
+                print(f"    确定性无变化，跳过：{e.get('name')}")
+                continue
+            verify_items.append(e)
+        if not verify_items:
+            print(f"检索：{CATEGORY_NAMES.get(cid, cid)} → 无疑似变更，跳过 GLM")
+            continue
+        # 把疑似变更条目的全字段摊给模型（封闭域，只核实这些），它才有据可依。
+        existing_block = build_existing_block(verify_items, table)
         label = CATEGORY_NAMES.get(cid, cid)
-        print(f"检索：{label} ...")
+        print(f"检索：{label}（候选 {len(verify_items)} 条，已剔除无变化）...")
         result = search_target(client, model, label, text, existing_block, "")
         changes = result.get("changes", []) or []
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
