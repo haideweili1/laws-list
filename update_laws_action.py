@@ -1067,6 +1067,58 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 """
 
 
+# ===== 发现通道（恢复「发现清单外全新适用法规」功能，但有界、低耗）=====
+# 设计：核实通道是封闭域（只核实现有条目、压假阳性）；发现通道单独跑，只盯官方
+# 「新发布 / 公告」栏目，且结果一律进草稿人工复核、绝不自动写入、绝不编链接。
+# 这样既不回到之前满屏幻觉，又保住用户「发现新法规」的原始诉求。
+DISCOVERY_ENABLED = True
+DISCOVERY_RECENCY_MONTHS = 12   # 只报近 N 个月内新发布 / 新实施的
+
+# 通用查询范围（不点名任何具体标准号 / 具体 bug；用户可自由增删官方渠道）。
+# 每条 = (标签, 给 GLM 的「官方新发布栏目」范围描述)。发现通道只在这些范围内搜，不漫天搜。
+DISCOVERY_SOURCES = [
+    ("国家标准/行业标准新发布",
+     "国家标准化管理委员会「国家标准全文公开系统(openstd.samr.gov.cn)」与「全国标准信息公共服务平台」的"
+     "『标准公告 / 新发布 / 即将实施』栏目；以及工信部、发改委等行业主管部门官网的『标准公告』栏目。"),
+    ("生态环境",
+     "生态环境部官网(mee.gov.cn)『政策法规 / 新发布』栏目，及地方生态环境部门公开文件。"),
+    ("卫生健康 / 食品接触",
+     "国家卫健委官网(nhc.gov.cn)『政策法规』栏目；食品安全国家标准（GB 4806.x / GB 31604.x 等）"
+     "以国家食品安全风险评估中心(cfsa.net.cn)公告为准。"),
+    ("网信 / 数据安全 / 个人信息",
+     "国家网信办官网(cac.gov.cn)『法律法规 / 公告』栏目，及数据安全、个人信息保护相关新规。"),
+    ("安全生产 / 职业健康",
+     "应急管理部(www.mem.gov.cn)与人力资源社会保障部(mohrss.gov.cn)官网『政策法规 / 规章制度』栏目。"),
+    ("海关 / 反恐贸易合规",
+     "海关总署官网(customs.gov.cn)『公告 / 政策法规』栏目，及反恐贸易合规（C-TPAT / AEO）相关新规。"),
+    ("行政法规 / 国务院令",
+     "中国政府网(www.gov.cn)『政策法规 / 国务院公报 / 国务院令』栏目，覆盖各部委联合规章与行政法规。"),
+]
+
+
+def build_discovery_prompt(label, sources_text, existing_block):
+    """发现模式提示词：只搜官方新发布栏目，报清单外全新适用法规/标准（action=add）。"""
+    return f"""你是中国法律法规与标准检索助手。本次运行【发现模式】：目标是在「官方新发布栏目」里找出【清单里当前没有、但本家电制造业公司合规体系应当收录】的全新法规/标准，交人工复核后补入清单。
+
+═══ 本次发现范围（{label}）═══
+{sources_text}
+
+═══ 适用判定（只报这些范围内的新发布）═══
+本清单服务一家家电制造业企业的体系合规：三体系（质量 / 环境 / 职业健康安全）、社会责任、反恐、信息安全、产品安全 / 电气安全 / EMC / 能效 / 食品接触 / 插头插座 / 电池 / 无线蓝牙，以及对应的法规与国家标准。只报【近 {DISCOVERY_RECENCY_MONTHS} 个月内新发布或新实施、且明显适用上述范围】的全新法规或标准；明显不适用的（如纯农业、纯医药临床、纯金融证券投资等）不要报。
+
+═══ 当前清单已有条目（去重基准：报之前务必确认清单里确实没有）═══
+{existing_block}
+
+{COMMON_RULES}
+
+═══ 发现模式专属约束（有界、低耗、只报真凭实据）═══
+1. 只查上面列出的官方「新发布 / 公告」栏目，不漫天搜、不发散到无关领域；每个范围聚焦最近变更，不做几十次搜索。
+2. 每条候选必须是 action="add"；其名称 / 编号 / 部门 / 实施日期每一项都必须来自你在 web_search 真实返回的官方页面。任何一项你指不出官方来源，就不要输出该条（宁可不出，也不要把拼凑的内容交出去）。
+3. 必须给出真实可打开的官方正文页链接（source_url）；无法给出真实链接时 source_url 留空、改填 source_hint（系统会去官方站按号/按名解析），内容仍作为「可勾选新增提案」交人工核准——绝不许自己拼 URL。
+4. 报之前先核对上面清单：同名或同标准号已存在则不报（避免重复）；旧版已废止 / 被替代的新版也先确认清单是否已收录，已收录则不重复报。
+5. 只输出 JSON（changes 数组，全为 action="add"）；无新发现则 changes 为空数组。"""
+
+
 def build_existing_block(items, table):
     """把清单已有条目的关键字段全部摊开给模型看（名称/实施日期/状态/部门/是否已有链接）。
     这是「旧值核对」这道质检关卡的基准，模型再也不能说『原清单未标注』。"""
@@ -1144,8 +1196,9 @@ def extract_json(text):
     return text
 
 
-def search_target(client, model, label, text, existing_names, audit_block="", web_search=True):
-    prompt = build_prompt(label, text, existing_names, audit_block)
+def search_target(client, model, label, text, existing_names, audit_block="", web_search=True, prompt=None):
+    if prompt is None:
+        prompt = build_prompt(label, text, existing_names, audit_block)
     kwargs = dict(
         model=model,
         messages=[{"role": "user", "content": prompt}],
@@ -1998,6 +2051,58 @@ def write_running_status():
         print("  写入 running 状态失败（可忽略）:", e)
 
 
+def discovery_phase(client, model, proposed_laws, proposed_standards,
+                    summary_changes, rejected, discarded, today):
+    """发现通道：在官方新发布栏目里找清单外全新适用法规/标准，全部作为草稿新增提案交人工复核。
+
+    有界、低耗：只盯 DISCOVERY_SOURCES 列出的官方「新发布/公告」栏目（不漫天搜），
+    每条来源仅 1 次 GLM 调用（带 web_search）。结果仍走 apply_change 的 add 分支——
+    链接不可信时自动清空待补、只进草稿人工复核，绝不自动写入、绝不编链接。"""
+    if not DISCOVERY_ENABLED:
+        print("\n发现通道：已关闭（DISCOVERY_ENABLED=False），跳过。")
+        return
+    # 去重基准 = 全量清单（laws + standards 合并展示给模型）
+    existing_block = (build_existing_block(proposed_laws, "laws")
+                      + "\n" + build_existing_block(proposed_standards, "standards"))
+    disc_seen = set()  # 跨来源去重：同一新条目被多个来源报出只处理一次
+    for label, sources_text in DISCOVERY_SOURCES:
+        print(f"\n发现通道：{label} ...")
+        prompt = build_discovery_prompt(label, sources_text, existing_block)
+        result = search_target(client, model, label, sources_text, existing_block,
+                               web_search=True, prompt=prompt)
+        changes = result.get("changes", []) or []
+        print(f"  发现候选 {len(changes)} 条：{result.get('summary', '')}")
+        for ch in changes:
+            if (ch.get("action") or "").strip().lower() != "add":
+                continue  # 发现模式只处理新增；现有条目的 update/abolish 由核实通道覆盖
+            nk = _norm_txt(ch.get("name") or "")
+            if not nk or nk in disc_seen:
+                continue
+            disc_seen.add(nk)
+            # 表归属：产品相关标准进 standards，其余进 laws（GLM 应填 table 字段，缺省归 laws）
+            table = "standards" if str(ch.get("table") or "").lower().startswith("stand") else "laws"
+            all_items = proposed_standards if table == "standards" else proposed_laws
+            dom = ch.get("category")
+            if not dom and ch.get("domains"):
+                dom = (ch.get("domains") or [""])[0]
+            res = apply_change(table, all_items, ch, dom, today)
+            if not res or res.get("kind") == "skip":
+                if res:
+                    print(f"    跳过（{res.get('reason')}）：{res.get('name')}")
+                continue
+            if res.get("kind") == "discard":
+                discarded.append({"name": res.get("name"), "action": res.get("action", ""),
+                                  "table": res.get("table", ""), "reason": res.get("reason", "")})
+                print(f"    丢弃（{res.get('reason')}）：{res.get('name')}")
+                continue
+            if res.get("kind") == "reject":
+                rejected.append(res)
+                print(f"    [未过质检] {res['name']} → {'；'.join(res['reasons'])}")
+                continue
+            summary_changes.append(res)
+            print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
+
+
 def main():
     api_key = os.environ.get("ZHIPU_API_KEY")
     if not api_key:
@@ -2100,6 +2205,10 @@ def main():
                 continue
             summary_changes.append(res)
             print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
+
+    # —— 发现通道：在官方新发布栏目里找清单外全新适用法规/标准（恢复「新增」功能，但有界、低耗）——
+    discovery_phase(client, model, proposed_laws, proposed_standards,
+                    summary_changes, rejected, discarded, today)
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
     write_retrieval_report(summary_changes, rejected, discarded, switched, today)
