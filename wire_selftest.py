@@ -159,6 +159,30 @@ def main():
           f"实际拿去解析的标准号={used}")
     results.append(hint_ok)
 
+    # ── 用例 G：伪变更——状态「由 已废止 改为 已废止」（新值=旧值）──
+    _page_text.clear()
+    tgt_g = {"id": "L0009", "name": "某办法", "link": "",
+             "effectiveDate": "2025-01-01", "status": "已废止", "dept": "国务院"}
+    chg_g = {"action": "update", "name": "某办法", "source_url": GOV,
+             "effectiveDate": "2025-01-01", "status": "已废止",
+             "fromValues": {"effectiveDate": "2025-01-01", "status": "已废止"},
+             "note": "状态 由已废止 改为 已废止"}
+    r, _ = run("G 伪变更：状态由已废止改为已废止(新值=旧值) → 整条丢弃",
+               "laws", chg_g, tgt_g, expect_ok=False, expect_discard=True,
+               expect_in_reason="伪变更")
+    results.append(r)
+
+    # ── 用例 H：伪变更——实施日期前后一样（新值=旧值）──
+    tgt_h = dict(tgt_g, id="L0010", status="现行有效")
+    chg_h = {"action": "update", "name": "某办法", "source_url": GOV,
+             "effectiveDate": "2025-01-01", "status": "现行有效",
+             "fromValues": {"effectiveDate": "2025-01-01", "status": "现行有效"},
+             "note": "实施日期 由2025-01-01 改为 2025-01-01"}
+    r, _ = run("H 伪变更：实施日期前后一样(新值=旧值) → 整条丢弃",
+               "laws", chg_h, tgt_h, expect_ok=False, expect_discard=True,
+               expect_in_reason="伪变更")
+    results.append(r)
+
     print("\n===== 汇总 =====")
     print(f"通过 {sum(1 for x in results if x)} / {len(results)}")
     if all(results):

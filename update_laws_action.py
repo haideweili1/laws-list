@@ -32,6 +32,7 @@ import urllib.parse
 import ssl
 from datetime import date, datetime
 from collections import Counter
+import unicodedata
 
 try:
     from zhipuai import ZhipuAI
@@ -763,16 +764,72 @@ def has_valid_official_link(url):
 
 
 def _extract_effective_date(text):
-    """从标准官方页正文里提取『实施日期』，返回 YYYY-MM-DD；取不到返回 None。"""
+    """从官方页正文里提取『实施日期 / 发布日期』，返回 YYYY-MM-DD；取不到返回 None。
+
+    已放宽正则，覆盖更多官方写法：YYYY-MM-DD / YYYY年M月D日 / 实施日期 / 发布日期 /
+    『YYYY年M月D日实施』等。优先匹配『实施』语境，兜底取首个 YYYY年M月D日。"""
     if not text:
         return None
-    m = re.search(r"实施日期[：:\s]*(\d{4})-(\d{2})-(\d{2})", text)
+    pats = (
+        r"实施日期[：:\s]*(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})",
+        r"发布日期[：:\s]*(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})",
+        r"(\d{4})年(\d{1,2})月(\d{1,2})日[起]?\s*实施",
+        r"实施于\s*(\d{4})年(\d{1,2})月(\d{1,2})日",
+    )
+    for pat in pats:
+        m = re.search(pat, text)
+        if m:
+            try:
+                return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+            except Exception:
+                pass
+    # 兜底：任意 YYYY年M月D日（仅当上面的『实施』语境都没命中时）
+    m = re.search(r"(\d{4})年(\d{1,2})月(\d{1,2})日", text)
     if m:
-        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
-    m = re.search(r"实施日期[：:\s]*(\d{4})年(\d{1,2})月(\d{1,2})日", text)
-    if m:
-        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+        try:
+            return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+        except Exception:
+            pass
     return None
+
+
+def _read_page_effective_date(url, stdno=None):
+    """从官方页真实读回实施日期（优先国内代理渲染动态内容；openstd 额外走搜索列表页兜底）。
+    取不到返回 None。仅用真实页面读到的日期，绝不返回任何编造值。"""
+    if url:
+        text, _via = domestic_fetch(url, timeout=20)
+        if text:
+            d = _extract_effective_date(text)
+            if d:
+                return d
+    # openstd 详情页是 JS 渲染、境外直连常取不到正文：改用纯 HTTP 的站内搜索列表页兜底读日期
+    if stdno and "openstd.samr.gov.cn" in (url or ""):
+        try:
+            s = _openstd_search_session(stdno)
+            if s:
+                d = _extract_effective_date(s)
+                if d:
+                    return d
+        except Exception:
+            pass
+    return None
+
+
+def _fill_missing_effective_date(change, target):
+    """仅当 GLM 未给出实施日期、且官方页能读到真实日期时，回填真实日期。
+
+    关键：GLM 已给出非空实施日期时【绝不覆盖】——避免把 GLM 编造/与官方矛盾的日期当成权威。
+    读完若仍取不到，则保持留空（由人工补），绝不写入编造值。"""
+    if change.get("effectiveDate"):
+        return
+    url = (change.get("link") or (target or {}).get("link") or "").strip()
+    if not url:
+        return
+    stdno = (change.get("stdNo") or (target or {}).get("stdNo") or "").strip()
+    d = _read_page_effective_date(url, stdno)
+    if d:
+        change["effectiveDate"] = d
+        change["_date_filled_from_page"] = d
 
 
 def _source_name(url):
@@ -864,7 +921,7 @@ CATEGORY_NAMES = {
 COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格遵守，违反任一条都算不合格）
 
 【一、去重：严禁新增已有条目】
-- 你拿到的"当前清单已有条目"列表是权威去重基准。任何候选新增项，若其名称与列表中某条相同，或高度相似（互为包含/被包含、仅差"管理""办法""条例""规定"等少量字），一律不得新增，视为已存在。
+- 你拿到的"当前清单已有条目"列表是权威去重基准。任何候选新增项，若其名称与列表中某条相同，或高度相似（互为包含/被包含、仅差"管理""办法""条例""规定"等少量字），一律不得新增，视为已存在。比名时忽略书名号《》与引号差异——「X规定」与「《X规定》」视为同一条；系统也会按归一化名称去重。
 - 若你判断某已有条目需要更新（修订/废止/新版替代/日期变更），请用 action="update" 或 "abolish"，不要另起一条 add。
 
 【二、链接：必须是能直接看全文的官方文档页】
@@ -885,6 +942,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - effectiveDate（实施日期）与 abolishDate（废止日期）必须取自官方文件明确写明的日期。
 - 查不到确切日期就填 ""（空字符串），绝对不要凭记忆猜测或填错日期。
 - 若系统已替你解析出官方正文页，请以该页面读到的实施日期为准，不要填写与官方页读到的日期相矛盾的日期（页面读到的才是权威）。
+- 若你实在读不到确切实施日期，effectiveDate 填空字符串即可——系统会从官方页自动补回真实日期（前提是官方页可被读取）；不要为了「看起来有更新」而凭记忆编一个日期。
 
 【四、备注 remark：只允许三类，其余一律不写】
 - 类型A（采标）：该标准采用国际标准时，remark 必须原样照抄官网版权原话（"暂不提供在线阅读服务"或"仅提供在线阅读服务"）。无官网原话不得写。
@@ -918,6 +976,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 每条 change 必须填写 fromValues 对象：{"字段名": "清单里当前的值"}，且必须与我给你的清单值**一字不差**。
 - 系统会拿 fromValues 和真实清单逐字比对，对不上就判定"你没看清单"，整条拒收。
 - **禁止"无变化却返回 change"**：若你的 web 检索结果与该条目在清单里的现有值一致（即官方并未给出"变了"的白纸黑字依据），就不要返回这条 change——没有变化就别动，尤其不要把"清单已有的实施日期"先说成空、再填回原值。
+- **尤其禁止提交「由 X 改为 Y」但 X 与 Y 完全相同**的 change（如「由 已废止 改为 已废止」「实施日期 由 2026-01-01 改为 2026-01-01」）——这类无变化系统会直接判伪变更丢弃，纯属浪费额度。提交前先核对：你填的「新值」必须确实不同于 fromValues 里的「旧值」，旧值与新值相同就不叫变更。
 - 禁止出现"原清单未标注实施日期""清单里没有这条"之类的说法——清单内容就在下面，看清楚再写。
 - **提交前先核对清单是否已存在该条目 / 是否已做过该变更（通用，杜绝重复提案）**：在发出任何 action=add 之前，先在本清单的「当前清单已有条目」里检索**同名或同标准号**的条目。若已存在：① 不要重复新增（add）；② 判断该已有条目是否需要更新（状态/日期/链接变了）→ 需要就改提 action=update 并填 fromValues，不需要就整条跳过。只有确认清单里确实没有的，才 action=add。对旧版（已标「已废止」/「由 XX 替代」/「即将被 XX 替代」）也不要重复提交 update/abolish——这些变更清单往往已经做完，重复提交只会被判「无变化/已做过」而丢弃。总之：对比下面清单的**最新状态**再决定要不要发，不要凭"网上看到有新版本"就盲目 add。
 
@@ -1239,7 +1298,17 @@ def _hcno_looks_fabricated(hcno):
 
 
 def _norm_txt(v):
-    return re.sub(r"\s+", "", str(v or "")).strip()
+    """通用名称/文本归一化：去空格、去书名号《》、引号「」『』""''、全角转半角。
+    
+    关键作用（通用去重）：「规定」与「《规定》」在归一化后都变成「规定」，
+    使精确比对/互相包含/相似度比对视为同一条，从根本上解决书名号差异造成的重复识别不出来问题。
+    对所有法规名、状态、日期字段通用，不点名任何具体条目。"""
+    s = re.sub(r"\s+", "", str(v or ""))
+    for ch in ("《", "》", "“", "”", "‘", "’", "「", "」", "【", "】",
+               "(", ")", "（", "）", "[", "]", '"', "'"):
+        s = s.replace(ch, "")
+    s = unicodedata.normalize("NFKC", s)  # 全角字母/数字/标点转半角
+    return s.strip()
 
 
 def check_change(table, change, target, today):
@@ -1380,6 +1449,25 @@ def check_change(table, change, target, today):
         reasons.append("理由里说改实施日期，实际却没给出日期")
         discard = True
 
+    # ⑥ 伪变更：声称要改，但所声称的新值每一项都与清单现值完全一致（说改实则没改）。
+    #    通用覆盖「由 已废止 改为 已废止」「实施日期 由 X 改为 X」这类纯噪音。
+    #    链接补正 / 采标备注 / remark 这类确属有效变更的不计入；仅当"除这些外无任何实质字段变化"才判伪变更丢弃。
+    if action in ("update", "abolish") and target:
+        real_changes = []
+        if change.get("effectiveDate") and _ymd(change.get("effectiveDate")) != _ymd(target.get("effectiveDate")):
+            real_changes.append("实施日期")
+        ns = norm_status(change.get("status"))
+        if ns and ns != norm_status(target.get("status")):
+            real_changes.append("状态")
+        if change.get("abolishDate") and _ymd(change.get("abolishDate")) != _ymd(target.get("abolishDate")):
+            real_changes.append("废止日期")
+        link_changed = bool(change.get("link")) and change.get("link") != (target.get("link") or "")
+        remark_changed = bool((change.get("remark") or "").strip()) and change.get("remark") != (target.get("remark") or "")
+        copyright_changed = bool((change.get("copyrightNote") or "").strip())
+        if not real_changes and not link_changed and not remark_changed and not copyright_changed:
+            reasons.append("伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃")
+            discard = True
+
     return (len(reasons) == 0), reasons, discard
 
 
@@ -1425,6 +1513,9 @@ def apply_change(table, all_items, change, domain_id, today):
 
     # —— 质检：不通过则整条拦下，带原因进「待核实线索」栏，绝不改动数据 ——
     pre_target = None if action == "add" else _name_match(name, all_items)
+    # 新增：GLM 未给实施日期时，从官方页真实读回并回填（不覆盖 GLM 已给的值，避免采用编造日期）
+    if action in ("update", "abolish"):
+        _fill_missing_effective_date(change, pre_target)
     ok, reasons, discard = check_change(table, change, pre_target, today)
     if discard:
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板

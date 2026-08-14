@@ -455,22 +455,6 @@
       "abolishDate": ""
     },
     {
-      "name": "中华人民共和国特种设备安全法",
-      "docNumber": "",
-      "dept": "全国人大常委会",
-      "effectiveDate": "2014-01-01",
-      "status": "现行有效",
-      "domains": [
-        "质量"
-      ],
-      "category": "质量",
-      "link": "https://big5.www.gov.cn/gate/big5/www.gov.cn/flfg/2013-06/30/content_2437160.htm",
-      "region": "",
-      "id": "L0029",
-      "remark": "",
-      "abolishDate": ""
-    },
-    {
       "name": "女职工劳动保护特别规定",
       "docNumber": "",
       "dept": "国务院",
@@ -1856,22 +1840,6 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
       "region": "",
       "id": "L0404",
-      "remark": "",
-      "abolishDate": ""
-    },
-    {
-      "name": "《小型个人信息处理者个人信息保护简化措施规定》",
-      "docNumber": "",
-      "dept": "国家互联网信息办公室",
-      "effectiveDate": "2024-08-15",
-      "status": "现行有效",
-      "domains": [
-        "信息安全"
-      ],
-      "category": "信息安全",
-      "link": "https://www.cac.gov.cn/2026-07/24/c_1786638889704872.htm",
-      "region": "",
-      "id": "L0117",
       "remark": "",
       "abolishDate": ""
     },
