@@ -1,11 +1,5 @@
 {
-  "status": "draft_ready",
-  "updatedAt": "2026-08-14T03:16:46",
-  "counts": {
-    "added": 0,
-    "updated": 0,
-    "abolished": 0,
-    "statusSwitched": 0,
-    "rejected": 16
-  }
+  "status": "idle",
+  "updatedAt": "2026-08-14T06:03:46.823Z",
+  "note": "提案已丢弃"
 }
