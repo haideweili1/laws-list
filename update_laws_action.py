@@ -55,6 +55,13 @@ DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", 
 # 用途是测量：若此表持续有内容而"编造URL"分类归零，说明提示词训练已见效。
 _RESOLVE_LOG = []
 
+# ===== 质量测量计数器（Step⑤）：每轮检索统计 4 类问题，报告里直接数、看改善 =====
+#   fake_abolish        —— 模型称「已废止/替代」但官方页无任何依据，被 Step② 直接丢弃（伪废止·伪替代）
+#   publish_date_misfill—— 模型把「发布日期」填进「实施日期」，被 Step① 纠正清空（发布日期误填）
+#   dup_rereport        —— 模型重报清单里【早已做过】的变更（无实质变更/已废止再报），被当作重复拦下
+#   cross_file          —— Step③ 从新文件「代替」声明跨文件推断命中的废止条数
+_METRICS = {"fake_abolish": 0, "publish_date_misfill": 0, "dup_rereport": 0, "cross_file": 0}
+
 # ===== 链接校验与回退（仅对新增/变更的少量链接触发，低资源） =====
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
@@ -451,15 +458,79 @@ def _confirm_claim_on_page(change, target, url):
     stdno = (change.get("stdNo") or "").strip() or (target or {}).get("stdNo", "")
     if stdno and _source_version_mismatch(text, stdno):
         return False, "系统解析出的官方页标注了其它版本号，疑似版本混淆，请人工确认"
-    claim = _ymd(change.get("effectiveDate"))
-    if not claim:
-        return False, "系统已解析出真实官方链接，但本条未声称具体实施日期、无法在页面上自动核对，请人工确认"
-    page_date = _extract_effective_date(text)
-    if not page_date:
-        return False, "系统已解析出真实官方链接，但页面上未能自动读出实施日期，请人工点开确认"
-    if _ymd(page_date) != claim:
-        return False, (f"官方页面读到的实施日期是 {page_date}，与本条声称的 {claim} 不一致，请人工确认")
-    return True, f"链接由系统按官方渠道自动解析补正，且页面实施日期 {page_date} 与本条一致"
+    # 实施日期防御：以官方页正文『实施日期』为权威，自动纠正/留空（显式排除『发布日期』）
+    page_date, why_ed = _rectify_effective_date(change, url, target=target, text=text)
+    if page_date and _ymd(change.get("effectiveDate")) == _ymd(page_date):
+        return True, f"链接由系统按官方渠道自动解析补正，且实施日期 {page_date} 与官方页正文一致（{why_ed}）"
+    # page_date 为空 = 官方页未标注实施日期（或版本混淆）：交人工复核，不默认确认
+    return False, (why_ed or "官方页未能读出实施日期，请人工确认")
+
+
+def _rectify_effective_date(change, url, target=None, text=None):
+    """实施日期防御：以官方页正文『实施日期』为权威，显式排除『发布日期』。
+    模型把发布日期填进实施日期时，自动纠正为正文实施日期；页面无实施日期时清空留待人工核。
+    返回 (修正后日期或None, 说明)。"""
+    if text is None:
+        text = fetch_text(url, timeout=12)
+    if not text:
+        return None, "官方页正文取不到，实施日期无法自动核对"
+    stdno = (change.get("stdNo") or "").strip() or (target or {}).get("stdNo", "")
+    if stdno and _source_version_mismatch(text, stdno):
+        return None, "官方页标注了其它版本号，疑似版本混淆，实施日期未自动修改"
+    page_date = _extract_effective_date(text)   # 只匹配『实施日期』，绝不会取到发布日期
+    if page_date:
+        claimed = _ymd(change.get("effectiveDate"))
+        if claimed and claimed != _ymd(page_date):
+            change["effectiveDate"] = page_date
+            return page_date, f"实施日期已按官方页正文修正为 {page_date}（原称 {claimed}）"
+        if not claimed:
+            change["effectiveDate"] = page_date
+            return page_date, f"实施日期按官方页正文补为 {page_date}"
+        return page_date, "实施日期与官方页正文一致"
+    # 页面没有『实施日期』：确认是否只有『发布日期』——绝不能把发布日期当实施日期
+    pub = _extract_publish_date(text)
+    claimed = _ymd(change.get("effectiveDate"))
+    if claimed:
+        change["effectiveDate"] = ""   # 模型所填（多为发布日期）清空，留待人工核
+        if pub and claimed == _ymd(pub):
+            _METRICS["publish_date_misfill"] += 1
+            return None, "官方页只标注发布日期、未标注实施日期，已把误填的实施日期清空待核"
+        return None, "官方页未标注实施日期，原填实施日期已清空待核"
+    return None, "官方页未标注实施日期，无法自动填写"
+
+
+def _confirm_status_on_page(change, target, url):
+    """状态/废止/替代证据核对（Step②）：称某条『已废止』或带『替代关系』时，
+    拿真实官方页正文核对——正文必须出现『废止/代替』等字样，且出现本标准号（防张冠李戴）。
+    返回三态：
+      ("ok",    说明)          —— 有依据，放行；
+      ("discard",原因)          —— 页面取到了但【无任何废止依据】，直接丢弃、不提出（用户要求：没依据别提废止）；
+      ("review", 原因)          —— 页面取不到/无法核实（超时），降级人工复核，不自动采信也不误杀。
+    注意：旧标准自己的页面通常不写『废止』，废止信号只在替代它的新文件里——
+    本函数只核对【所引官方页】是否有据；跨文件推断（有依据）见 Step③。"""
+    status = (change.get("status") or "").strip()
+    replaced = (change.get("replacedBy") or "").strip()
+    abolish = (change.get("abolishDate") or "").strip()
+    if status != "已废止" and not replaced and not abolish:
+        return "ok", "非废止/替代类变更，无需正文废止词核对"
+    # 重复重报守卫：清单里该条本就已是废止，模型又来报废止 = 重报早已做过的变更，
+    #   直接丢弃、且不计入 fake_abolish（改由 dup_rereport 计数，避免重复计数）。
+    if status == "已废止" and target and (target.get("status") or "") == "已废止":
+        return "discard", "清单里该条目本就标记已废止，模型又报一次废止 = 重复重报，直接丢弃（不提出）"
+    text = fetch_text(url, timeout=12)
+    if not text:
+        return "review", "官方页正文取不到，所称废止/替代无法自动核实，请人工点开确认"
+    stdno = (change.get("stdNo") or "").strip() or (target or {}).get("stdNo", "")
+    # 搜废止/代替类关键词（含『代替/替代/被代替/同时废止/作废』）
+    kw = re.search(r"(废止|代替|替代|被代替|同时废止|作废|修订并代替)", text)
+    if not kw:
+        _METRICS["fake_abolish"] += 1
+        return "discard", "官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）"
+    # 防张冠李戴：关键词附近应出现本标准号（或所称被替代号），否则疑似拿错文件
+    if stdno and stdno not in text:
+        _METRICS["fake_abolish"] += 1
+        return "discard", f"官方页出现了废止/代替字样，但未出现本标准号 {stdno}，疑似张冠李戴，直接丢弃（不提出）"
+    return "ok", "官方页正文含废止/代替依据，与所称变更一致"
 
 
 # ===== 质检关卡：官方域名白名单（不在名单内的链接一律不采信）=====
@@ -576,15 +647,42 @@ def has_valid_official_link(url):
 
 
 def _extract_effective_date(text):
-    """从标准官方页正文里提取『实施日期』，返回 YYYY-MM-DD；取不到返回 None。"""
+    """从标准官方页正文里提取『实施日期』，返回 YYYY-MM-DD；取不到返回 None。
+    覆盖多种官方写法：实施日期：YYYY-MM-DD / 实施日期：YYYY年M月D日 / 实施日期为YYYY-MM-DD /
+    自YYYY年M月D日起实施(施行) / 自YYYY-MM-DD起实施(施行) / 于YYYY年M月D日实施(施行)。"""
     if not text:
         return None
-    m = re.search(r"实施日期[：:\s]*(\d{4})-(\d{2})-(\d{2})", text)
-    if m:
-        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
-    m = re.search(r"实施日期[：:\s]*(\d{4})年(\d{1,2})月(\d{1,2})日", text)
-    if m:
-        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    patterns = [
+        r"实施日期[：:\s为是]*(\d{4})-(\d{2})-(\d{2})",
+        r"实施日期[：:\s为是]*(\d{4})年(\d{1,2})月(\d{1,2})日",
+        r"实施日期[：:\s为是]*(\d{4})/(\d{2})/(\d{2})",
+        r"自\s*(\d{4})-(\d{2})-(\d{2})\s*起\s*(实施|施行)",
+        r"自\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s*起\s*(实施|施行)",
+        r"于\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s*(实施|施行)",
+    ]
+    for p in patterns:
+        m = re.search(p, text)
+        if m:
+            return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    return None
+
+
+def _extract_publish_date(text):
+    """从官方页正文里提取『发布日期』，返回 YYYY-MM-DD；取不到返回 None。
+    仅用于实施日期防御：当页面没有『实施日期』时，确认模型所填是否其实是发布日期。
+    所有写法都带『发布』字样，绝不会误抓到实施日期。"""
+    if not text:
+        return None
+    patterns = [
+        r"发布日期[：:\s]*(\d{4})-(\d{2})-(\d{2})",
+        r"发布日期[：:\s]*(\d{4})年(\d{1,2})月(\d{1,2})日",
+        r"发布于\s*(\d{4})年(\d{1,2})月(\d{1,2})日",
+        r"(\d{4})年(\d{1,2})月(\d{1,2})日\s*发布",
+    ]
+    for p in patterns:
+        m = re.search(p, text)
+        if m:
+            return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
     return None
 
 
@@ -1071,12 +1169,24 @@ def check_change(table, change, target, today):
     if table == "laws" and is_std and PRODUCT_STD_HINTS.search(name + " " + (change.get("stdNo") or "")):
         reasons.append("这是产品相关标准，按规矩应放进标准表(standards)而非法规表(laws)")
 
+    # 重复重报计数（Step⑤）：模型重报清单里早已做过的变更，仅计数、不改任何处置。
+    if action in ("update", "abolish") and target is not None:
+        ns = norm_status(change.get("status"))
+        ts = norm_status(target.get("status"))
+        ce = _ymd(change.get("effectiveDate"))
+        te = _ymd(target.get("effectiveDate"))
+        if ns == "已废止" and ts == "已废止":
+            _METRICS["dup_rereport"] += 1
+        elif (not ns or ns == ts) and (not ce or ce == te) and not (change.get("replacedBy") or "").strip():
+            _METRICS["dup_rereport"] += 1
+
     # ② 依据来源：硬门槛
     #    - update/abolish（改动已有条目）：链接无/死/非官方/非正文 → 直接丢弃（确属垃圾）
     #    - add（新增条目）：链接问题不整条丢弃；改为生成可勾选的新增提案、链接清空待补（保住可能真实的新增内容，且核准时绝不写入假链接）
     su = (change.get("source_url") or "").strip()
     is_add = (action == "add")
     link_issue = None
+    rl = ""   # 分诊自救解析到的真链接（在下方 if link_issue 块内赋值）；先置空避免 step② 提前引用未绑定
     if not su:
         link_issue = "没有提供依据来源网址（source_url）"
     elif not domain_ok(su):
@@ -1108,6 +1218,24 @@ def check_change(table, change, target, today):
                 elif table != "laws" and target and target.get("stdNo"):
                     if _source_version_mismatch(text, target.get("stdNo")):
                         link_issue = "依据来源页面标注的标准号与本条不一致（疑似拿其它版本页面改动本条）：" + su
+
+    # 实施日期防御：模型给出可信官方链接时，也拿官方页正文核对实施日期，
+    #   避免把『发布日期』当『实施日期』写入（仅修正 change，不新增 reject 逻辑）。
+    if not link_issue and su:
+        _rectify_effective_date(change, su, target=target)
+
+    # 状态/废止/替代证据核对（Step②）：称废止/替代必须有官方页正文依据。
+    #   - 页面取到了但【无任何废止依据】→ 直接丢弃，不提出（用户要求：没依据别提废止）；
+    #   - 页面取不到/无法核实（超时）→ 降级人工复核，不自动采信也不误杀；
+    #   - 有依据 → 放行。根治伪废止与张冠李戴。
+    status_url = rl if (link_issue and rl) else (su if not link_issue else None)
+    if status_url:
+        verdict_st, why_st = _confirm_status_on_page(change, target, status_url)
+        if verdict_st == "discard":
+            reasons.append(why_st)
+            discard = True
+        elif verdict_st == "review":
+            reasons.append("状态/废止/替代依据未能在官方页自动核实：" + why_st)
 
     # ②-b 分诊自救：GLM 给不出/给错链接时，不立刻判死——先由本系统按官方渠道
     #     （按标准号解析 openstd / 复用清单现有链接）确定性地取真实链接。
@@ -1371,6 +1499,80 @@ def apply_change(table, all_items, change, domain_id, today):
                         "reason": change.get("note", "") or "更新"}}
 
 
+def _find_replaced_stdnos(text, self_stdno):
+    """Step③：从官方页正文提取被代替/被废止的标准号。
+    匹配『代替/替代/被代替/同时废止/修订并代替』之后出现的标准号，排除自身标准号。"""
+    if not text:
+        return []
+    pat = re.compile(r"GB\s*/?\s*T?\s*\d[\w.\-]*(?:-\d{4})?|IEC\s*\d[\w.\-]*(?:-\d{4})?|ISO\s*\d[\w.\-]*(?:-\d{4})?")
+    out = []
+    for m in re.finditer(r"(代替|替代|被代替|同时废止|修订并代替)", text):
+        tail = text[m.end():m.end() + 30]
+        sm = pat.search(tail)
+        if sm:
+            no = sm.group(0).strip().upper()
+            if no and no != (self_stdno or "").strip().upper():
+                out.append(no)
+    seen, res = set(), []
+    for x in out:
+        if x not in seen:
+            seen.add(x); res.append(x)
+    return res
+
+
+def _scan_abolish_for_target(ch, res, proposed_laws, proposed_standards, today):
+    """Step③ 跨文件废止推断：本条官方页声明『代替 GB/T X』，反查清单把 X 标已废止。
+    仅当本条有可信官方链接时才做（无依据不自动判定，符合诚实边界）。
+    返回新增的 abolish 结果列表（已应用到 proposed 工作副本）。"""
+    url = (ch.get("source_url") or "").strip() or (res.get("display") or {}).get("sourceUrl", "") or ""
+    if not (url and domain_ok(url)):   # 仅限官方域名；url_shape_ok 对 openstd 详情页有误判，且 Y 链接本就经 check_change 使用过
+        return []
+    text = fetch_text(url, timeout=12)
+    if not text:
+        return []
+    new_rec = res.get("newRecord") or {}
+    self_no = (new_rec.get("stdNo") or ch.get("stdNo") or "").strip() or (new_rec.get("name") or "")
+    replaced = _find_replaced_stdnos(text, self_no)
+    new_res = []
+    for x in replaced:
+        hit, hit_table = None, None
+        for tbl, items in (("laws", proposed_laws), ("standards", proposed_standards)):
+            for it in items:
+                if re.sub(r"\s+", "", (it.get("stdNo") or "")).upper() == re.sub(r"\s+", "", x).upper():
+                    hit, hit_table = it, tbl
+                    break
+            if hit:
+                break
+        if not hit or (hit.get("status") or "") == "已废止":
+            continue
+        y_no = self_no
+        # 依据来自同源官方页正文（确定性提取"代替 GB/T X"），比 AI 自觉更可靠，
+        # 故直接标记 X 为已废止，不走 apply_change 的 AI 防御路径（避免被表归属/链接硬门槛误拦）。
+        old_status = hit.get("status", "")
+        if y_no:
+            remark = f"由 {y_no} 替代。废止标准不提供标准文本阅读服务。"
+            hit["replacedBy"] = y_no
+        else:
+            remark = "跨文件推断：被新版标准替代（具体替代号未能从页面解析）"
+        hit["status"] = "已废止"
+        hit["remark"] = remark
+        res_x = {
+            "kind": "abolish", "name": hit.get("name", ""),
+            "category": hit.get("category") or "", "table": hit_table,
+            "targetId": hit.get("id"), "newRecord": None,
+            "setFields": {"status": "已废止", "replacedBy": y_no, "remark": remark},
+            "display": {"diffs": [{"field": "状态", "from": old_status, "to": "已废止"}],
+                        "link": hit.get("link", ""), "source": "",
+                        "sourceUrl": url,
+                        "reason": f"跨文件推断：官方页（{y_no}）声明代替 {x}"},
+            "crossFile": True,
+        }
+        new_res.append(res_x)
+        _METRICS["cross_file"] += 1
+        print(f"    [Step③跨文件废止] 《{hit.get('name')}》→ 由 {y_no} 替代，标已废止")
+    return new_res
+
+
 def apply_status_rules(proposed, today):
     """通用状态切换（日期到期自动转状态）。仅当该条目自身有有效官方链接时才切换，
     并以该链接作为依据；无有效官方链接则不盲目切换（避免『无来源的状态切换』）。"""
@@ -1523,9 +1725,11 @@ def _tally_reasons(items, reason_getter):
     return dict(c)
 
 
-def write_retrieval_report(summary_changes, rejected, discarded, switched, today):
+def write_retrieval_report(summary_changes, rejected, discarded, switched, today, metrics=None):
     """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让人工复核归零』的瞄准镜。
     只产出报告文件，绝不改动 data.json。"""
+    if metrics is None:
+        metrics = _METRICS
     counts = {
         "ok_可直接应用": len(summary_changes),
         "reject_人工复核": len(rejected),
@@ -1554,6 +1758,13 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
         # 分诊自救台账：GLM 没给/给错链接，但系统按官方渠道确定性补上了真链接
         "auto_resolved_links": list(_RESOLVE_LOG),
         "auto_resolved_count": len(_RESOLVE_LOG),
+        # 质量测量（Step⑤）：4 类问题计数，推送后点开报告即可直接数到改善
+        "quality_metrics": {
+            "fake_abolish": metrics["fake_abolish"],
+            "publish_date_misfill": metrics["publish_date_misfill"],
+            "dup_rereport": metrics["dup_rereport"],
+            "cross_file": metrics["cross_file"],
+        },
     }
     try:
         with open(REPORT_PATH, "w", encoding="utf-8") as f:
@@ -1581,6 +1792,11 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
                 lines.append(f"- {k}：{v}")
         else:
             lines.append("- （无）")
+        lines.append("\n## 质量测量（Step⑤：推送后直接看这 4 个数是否下降）")
+        lines.append(f"- 伪废止·无依据直接丢弃（本应归零）：**{metrics['fake_abolish']}**")
+        lines.append(f"- 发布日期误填实施日期（本应归零）：**{metrics['publish_date_misfill']}**")
+        lines.append(f"- 重复重报早已做过的变更（本应归零）：**{metrics['dup_rereport']}**")
+        lines.append(f"- 跨文件废止命中（越多越好）：**{metrics['cross_file']}**")
         if _RESOLVE_LOG:
             lines.append("\n## 系统自动补正链接的条目（分诊自救，GLM 不必再编 URL）")
             for g in _RESOLVE_LOG:
@@ -1677,6 +1893,8 @@ def main():
         ("standards", "standards"),
     ]
     summary_changes = []
+    for k in _METRICS:  # 每轮检索重置质量测量计数器
+        _METRICS[k] = 0
     rejected = []   # 未过质检的候选：不改数据，带着原因进网页「待核实线索」栏
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，收集以便报告计数
     for table, cid in targets:
@@ -1718,9 +1936,13 @@ def main():
                 continue
             summary_changes.append(res)
             print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
+            # Step③ 跨文件废止推断：本条官方页声明"代替 GB/T X"→反查清单把 X 标已废止
+            if res.get("kind") in ("add", "update", "abolish"):
+                for r3 in _scan_abolish_for_target(ch, res, proposed_laws, proposed_standards, today):
+                    summary_changes.append(r3)
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
-    write_retrieval_report(summary_changes, rejected, discarded, switched, today)
+    write_retrieval_report(summary_changes, rejected, discarded, switched, today, metrics=_METRICS)
     print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 人工复核 {len(rejected)} / 丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
