@@ -437,6 +437,35 @@ async function handleResolveOpenstd(bodyStr) {
   return { status: 200, body: JSON.stringify({ ok: false, hcno: "", link: "", verified: false, reason: "未从 openstd 解析到该标准号（可能无此号/反爬/超时）" }) };
 }
 
+// ===== /search-site：无号法规按名称+归口去官方站查（广州 IP 站内搜索）=====
+// 用 Bing `site:<domain> <query>`（免费、无需密钥）抽取候选 {title,url}；
+// 是否采用由检索脚本按「域名 + 标题」双重核对决定（本函数只负责搜，不负责判定）。
+async function searchSite(domain, query) {
+  if (!domain || !query) {
+    return { status: 200, body: JSON.stringify({ results: [], error: 'domain/query 缺失' }) };
+  }
+  const q = `site:${domain} ${query}`;
+  const url = `https://www.bing.com/search?q=${encodeURIComponent(q)}&setlang=zh-CN&cc=CN`;
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'Accept-Language': 'zh-CN,zh;q=0.9' }
+    });
+    const html = await res.text();
+    const results = [];
+    const blocks = html.match(/<li class="b_algo"[\s\S]*?<\/li>/g) || [];
+    for (const b of blocks) {
+      const mm = b.match(/<h2>\s*<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+      if (!mm) continue;
+      const u = mm[1];
+      const title = (mm[2] || '').replace(/<[^>]+>/g, '').trim();
+      if (u && u.startsWith('http')) results.push({ title, url: u });
+    }
+    return { status: 200, body: JSON.stringify({ results }) };
+  } catch (e) {
+    return { status: 200, body: JSON.stringify({ results: [], error: String(e) }) };
+  }
+}
+
 async function handleRequest(method, pathname, params, bodyStr) {
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
@@ -462,6 +491,12 @@ async function handleRequest(method, pathname, params, bodyStr) {
   if (pathname === '/resolve-openstd') {
     if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
     return await handleResolveOpenstd(bodyStr);
+  }
+  if (pathname === '/search-site') {
+    if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
+    let payload = {};
+    try { payload = JSON.parse(bodyStr || '{}'); } catch (e) {}
+    return await searchSite(payload.domain, payload.query);
   }
   // 默认：处理 user-edits.json 的 GET/PUT（团队协同同步）
   return await proxyUserEdits(method, bodyStr, token);

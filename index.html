@@ -3,7 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>法律法规与产品标准清单</title>
+<script>
+  // 版本自检：服务端发新版后，已打开的旧标签页会在轮询时发现并自动刷新，
+  // 避免旧版 JS（如历史上“每45秒自动同步”的循环）长期驻留后台反复推送。
+  window.__APP_VERSION = "20260817.1";
+  (function () {
+    setInterval(function () {
+      fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j && j.version && j.version !== window.__APP_VERSION) {
+            location.reload(true);
+          }
+        })
+        .catch(function () {});
+    }, 60000);
+  })();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -682,6 +702,8 @@ function setBtn(btn,st){
   else { if(ico)ico.textContent=""; }
 }
 async function manualSync(){
+  if (window.__syncing) return;      // 防连点：上一次同步未完成前忽略重复点击
+  window.__syncing = true;
   const btn=document.getElementById("syncBtn");
   setBtn(btn,"loading");
   try{
@@ -690,7 +712,7 @@ async function manualSync(){
     if(res===true){ setBtn(btn,"ok"); toast("已同步云端"); }
     else { setBtn(btn,"err"); toast(typeof res==="string"?res:"同步失败"); }
   }catch(e){ setBtn(btn,"err"); toast("同步失败"); }
-  finally{ setTimeout(()=>setBtn(btn,"idle"),1500); }
+  finally{ window.__syncing = false; setTimeout(()=>setBtn(btn,"idle"),1500); }
 }
 async function triggerRetrieve(){
   const btn=document.getElementById('retrieveBtn');

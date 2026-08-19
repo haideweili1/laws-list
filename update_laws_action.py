@@ -32,6 +32,7 @@ import urllib.parse
 import ssl
 from datetime import date, datetime
 from collections import Counter
+import unicodedata
 
 try:
     from zhipuai import ZhipuAI
@@ -50,6 +51,10 @@ REPORT_MD_PATH = os.path.join(ROOT, "retrieval-report.md")
 
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
+
+# ===== 链接分诊/解析：通用规则，不针对任何具体条目（"取消人工复核"信号靠此持续归零）=====
+# 历史上曾有"仅对 12 条审计目标放宽链接保护"的特殊分支；现已移除——下面所有逻辑对
+# 全部条目一视同仁：现有链接须落在归口官方域内才复用，否则一律重新确定性解析。
 
 # ===== 分诊自救台账：记录"哪些条目的链接是系统按官方渠道自动解析补上的" =====
 # 用途是测量：若此表持续有内容而"编造URL"分类归零，说明提示词训练已见效。
@@ -254,7 +259,19 @@ def _resolve_openstd_via_proxy(proxy, std_no, timeout=25):
         return {"ok": False, "reason": "代理调用失败：" + str(e)}
 
 
-def resolve_openstd(std_no, retries=1, max_detail_checks=6):
+def _page_has_stdno(text, stdno):
+    """官方详情页是否确实包含该完整标准号（编号+年份），用于 openstd 解析的确定性核对。
+    编号与年份分开比对，避免官网把『编号』与『年份』分两处写导致的误判。"""
+    t = _parse_std_full(stdno)
+    if not t:
+        return False
+    for m in _STD_FULL_RE.finditer(text or ""):
+        if (_norm_fam(m.group(1)), m.group(2), m.group(3)) == t:
+            return True
+    return False
+
+
+def resolve_openstd(std_no, retries=1, max_detail_checks=12):
     """按标准号确定性解析 openstd 真实详情页链接（hcno）。
     步骤：检索→从列表页提取 hcno(32位十六进制)→打开详情页校验官方标准号一致。
     返回 dict: {link, hcno, verified, reason}。查不到/校验失败返回 link=''（绝不编造）。
@@ -297,7 +314,7 @@ def resolve_openstd(std_no, retries=1, max_detail_checks=6):
                     if t:
                         text = t
                         break
-                if text and norm in re.sub(r"[^A-Z0-9]", "", text.upper()):
+                if text and (_page_has_stdno(text, std_no) or norm in re.sub(r"[^A-Z0-9]", "", text.upper())):
                     out["link"] = _OPENSTD_DETAIL + hcno
                     out["hcno"] = hcno
                     out["verified"] = True
@@ -330,22 +347,170 @@ def _openstd_query_variants(std_no):
     return out
 
 
+# ===== name_query：无号法规按名称+归口部门去官方站查（通用映射，按清单现有领域定）=====
+# 键 = 清单 laws.dept / standards.publisher 的取值；值 = 官方域名（用于站内搜索 site:域名）。
+# 仅覆盖清单已出现的归口机构；清单里没有的归口一律留空待补（绝不编造）。
+OFFICIAL_SITE_MAP = {
+    # 法规归口部门（laws.dept）
+    "国家市场监督管理总局": ["samr.gov.cn"],
+    "国家市场监督管理总局、国家标准化管理委员会": ["samr.gov.cn"],
+    "国家市场监督管理总局、中国国家标准化管理委员会": ["samr.gov.cn"],
+    "国家计量局": ["samr.gov.cn"],
+    "全国人大常委会": ["npc.gov.cn"],
+    "国务院": ["www.gov.cn"],
+    "国家卫生健康委员会": ["nhc.gov.cn"],
+    "应急管理部": ["mem.gov.cn"],
+    "广东省人民政府": ["gd.gov.cn"],
+    "广东省人大常委会": ["rd.gd.gov.cn"],
+    "生态环境部": ["mee.gov.cn"],
+    "工业和信息化部": ["miit.gov.cn"],
+    "国家互联网信息办公室": ["cac.gov.cn"],
+    "人力资源和社会保障部": ["mohrss.gov.cn"],
+    "住房和城乡建设部": ["mohurd.gov.cn"],
+    "海关总署": ["customs.gov.cn"],
+    "中国气象局": ["cma.gov.cn"],
+    "商务部": ["mofcom.gov.cn"],
+    "国家保密局": ["www.gov.cn"],
+    "公安部": ["mps.gov.cn"],
+    "国家发展和改革委员会": ["ndrc.gov.cn"],
+    "中山市人民政府": ["zhongshan.gov.cn"],
+    "中山市人大常委会": ["zsrd.gov.cn"],
+    "梅州市人大常委会": ["mzrd.gov.cn"],
+    "惠州市人民政府": ["huizhou.gov.cn"],
+    "惠州市人大常委会": ["hzrd.gov.cn"],
+    "中共中央纪律检查委员会": ["ccdi.gov.cn"],
+    "国际标准化组织(ISO)": ["iso.org"],
+    "英国": ["gov.uk"],
+    "欧盟": ["europa.eu"],
+    # 标准发布机构（standards.publisher）
+    "国家标准化管理委员会": ["samr.gov.cn"],
+    "美国食品药品监督管理局": ["fda.gov"],
+    "德国标准化学会(DIN)": ["din.de"],
+    "巴西": ["abnt.org"],
+    "意大利": ["uni.com"],
+    "欧盟(ECHA)": ["echa.europa.eu"],
+    "法国": ["afnor.fr"],
+    "德国": ["din.de"],
+}
+
+
+def _official_domains_for(entry, table):
+    """通用：按 dept(法规)/publisher(标准) 取官方域名；清单未出现的归口返回 []。
+    ① 空部门直接返回 []（绝不返回映射表第一条），这是 name_query 误走 samr.gov.cn 的根因修复；
+    ② GB50xxx / GB55xxx 工程建设规范（含 GB55 全文强制性系列）由住建部发布、openstd 不收录 → 归 mohurd.gov.cn。"""
+    if not entry:
+        return []
+    stdno = (entry.get("stdNo") or "").strip()
+    if stdno and re.match(r"^\s*GB[\s/T]*5[05]", stdno, re.I):
+        return ["mohurd.gov.cn"]
+    key = ((entry.get("dept") or entry.get("publisher") or "")).strip()
+    if not key:
+        return []
+    if key in OFFICIAL_SITE_MAP:
+        return OFFICIAL_SITE_MAP[key]
+    for k, v in OFFICIAL_SITE_MAP.items():   # 子串兜底（清单写法偶尔略变）
+        if k and key and (k in key or key in k):
+            return v
+    return []
+
+
+def _bing_site_search(domain, query, timeout=12):
+    """通用站内搜索：用 Bing `site:<domain> <query>`（免费、无需密钥），
+    抽取 {title,url} 候选；是否采用由调用方按「域名 + 标题」双重核对决定。"""
+    q = "site:%s %s" % (domain, query)
+    url = "https://www.bing.com/search?q=" + urllib.parse.quote(q) + "&setlang=zh-CN&cc=CN"
+    html = fetch_text(url, timeout=timeout)
+    if not html:
+        return []
+    out = []
+    for b in re.findall(r'<li class="b_algo".*?</li>', html, re.S):
+        m = re.search(r'<h2>\s*<a[^>]*href="([^"]+)"', b)
+        if not m:
+            continue
+        u = m.group(1)
+        tm = re.search(r'<h2>\s*<a[^>]*>(.*?)</a>', b, re.S)
+        title = re.sub(r"<[^>]+>", "", tm.group(1)).strip() if tm else ""
+        if u and u.startswith("http"):
+            out.append({"url": u, "title": title})
+    return out
+
+
+def _search_site_via_proxy(proxy, domain, query, timeout=25):
+    """走国内 SCF 代理 /search-site（广州 IP 搜索，国内站索引更全）；失败回退本地。"""
+    try:
+        req = urllib.request.Request(
+            proxy + "/search-site",
+            data=json.dumps({"domain": domain, "query": query}).encode("utf-8"),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = json.loads(r.read().decode("utf-8", "ignore"))
+        return data.get("results", []) or []
+    except Exception as e:
+        print("  [name_query] 代理搜索失败：%s" % e)
+        return []
+
+
+def name_query(entry, table, max_results=6):
+    """无号法规按名称+归口部门去官方站查（完整版：真实站内搜索 + 域名/标题双重核对）。
+    返回 dict: {link, method, verified, reason}。查不到返回 link=''（留空待补，绝不编造）。"""
+    out = {"link": "", "method": "name_query", "verified": False, "reason": ""}
+    name = (entry.get("name") or "").strip()
+    if not name:
+        out["reason"] = "无法规名称，无法按名查询"
+        return out
+    domains = _official_domains_for(entry, table)
+    if not domains:
+        out["reason"] = "未匹配到归口官方站（" + (entry.get("dept") or entry.get("publisher") or "未知归口") + "），留空待补"
+        return out
+    # 检索用名去掉括号后缀（如「（2023年修订）」）提高命中；核对用全名
+    search_name = re.sub(r"[（(][^）)]*[）)]", "", name).strip() or name
+    proxy = (os.environ.get("SYNC_PROXY") or "").strip().rstrip("/")
+    norm_name = _norm_txt(name).lower()
+    for domain in domains:
+        cands = _search_site_via_proxy(proxy, domain, search_name) if proxy else []
+        if not cands:
+            cands = _bing_site_search(domain, search_name)
+        for c in cands[:max_results]:
+            u = (c.get("url") or "").strip()
+            if not u or not domain_ok(u):
+                continue
+            host = (urllib.parse.urlparse(u).hostname or "").lower()
+            if not host.endswith(domain):
+                continue
+            nt = _norm_txt(c.get("title") or "").lower()
+            if nt and (nt in norm_name or norm_name in nt):
+                out["link"] = u
+                out["verified"] = True
+                out["reason"] = "站内搜索 %s 命中「%s」" % (domain, c.get("title", ""))
+                return out
+    out["reason"] = "站内搜索未找到标题匹配的官方页（%s），留空待补" % "/".join(domains)
+    return out
+
+
 def _source_kind(entry, table):
     """通用识别该条目该去哪类官网查（返回 'reuse'/'openstd'/'cfsa'/'name_query'/'none'）。
-    不写死任何具体标准号，只按"是否有现有链接 / 标准号前缀 / 类别"判断。"""
+    不写死任何具体标准号，只按"现有链接是否落在归口官方域 / 标准号前缀 / 类别"判断。"""
     link = (entry.get("link") or "").strip()
     if link and has_valid_official_link(link):
-        return "reuse"
+        # 若条目已知归口官方域，且现有链接不在归口域内（如误挂外省转载页），
+        # 则不复用、继续往下按标准号/名称重新确定性解析。否则才复用现有链接。
+        off = _official_domains_for(entry, table)
+        if not off or any((urllib.parse.urlparse(link).hostname or "").lower().endswith(d) for d in off):
+            return "reuse"
+        # 落到下面按标准号/名称重新解析的分支（修复"外省误挂链接被当成有效链接复用"）
     stdno = (entry.get("stdNo") or "").strip()
     name = (entry.get("name") or "").strip()
     if stdno:
         if _FOOD_STD_RE.search(stdno + " " + name):
             return "cfsa"
         if _GB_STD_RE.search(stdno):
+            if re.match(r"^\s*GB[\s/T]*5[05]", stdno, re.I):
+                # 工程建设规范(GB50xxx 及 GB55 全文强制性系列)由住建部发布，openstd 不收录 → 走住建部站内搜
+                return "name_query"
             return "openstd"
         # 其它前缀的标准（如行业/地方标准）目前无对应解析器 → 归待补
         return "none"
-    # 无号法规：按名称+部门去部委/地方站查（TODO 落地，先归 name_query 占位）
+    # 无号法规：按名称+部门去部委/地方站查
     return "name_query"
 
 
@@ -377,9 +542,8 @@ def resolve_link_for_entry(entry, table, verify_existing=True):
                 "verified": False, "reason": "食安国标(cfsa)解析待落地：留空待补"}
 
     if kind == "name_query":
-        # 无号法规按名称+部门查（落地时由国内代理抓对应部委站）；当前不编造
-        return {"link": "", "method": "name_query",
-                "verified": False, "reason": "无号法规按名称+部门查询待落地：留空待补"}
+        # 无号法规按名称+归口部门去官方站查（真实站内搜索 + 域名/标题双重核对）
+        return name_query(entry, table)
 
     return {"link": "", "method": "none",
             "verified": False, "reason": "无对应解析源，留空待补"}
@@ -428,11 +592,17 @@ def resolve_source_url_for_change(table, change, target):
         "stdNo": stdno,
         "category": (change.get("category")
                      or (target or {}).get("category", "")),
+        # 必须把发布部门带进解析器：否则 _official_domains_for 拿不到 dept，
+        # 空部门会命中映射表第一条 samr.gov.cn，导致无号法规全跑去标准网搜（错域根因）。
+        "dept": ((target or {}).get("dept", "") or (change.get("dept") or "")) if table == "laws" else "",
+        "publisher": ((target or {}).get("publisher", "") or (change.get("publisher") or "")) if table != "laws" else "",
         "link": "",
     }
     # 复用清单现有链接：仅「非改版」时允许（改版须提供新版自身链接）
     if target and not _change_version_changed(change, target):
         entry["link"] = (target.get("link") or "").strip()
+    # 通用规则：现有链接是否可靠由 _source_kind 统一判断（归口域内才复用，否则重新解析），
+    # 不再有"仅对部分条目强制重解析"的特殊分支。
     try:
         return resolve_link_for_entry(entry, table)
     except Exception as e:
@@ -515,6 +685,24 @@ def url_shape_ok(url):
     return True
 
 
+def url_looks_fabricated(url):
+    """通用编造链接拦截（覆盖所有官方域）：
+    openstd 的 hcno 是 32 位十六进制专有格式；若 npc/gov/mem/mohurd 等非 openstd 官方域的
+    链接里出现 32 位十六进制片段，必为照搬 openstd 的 hcno 编造而成 → 判编造。
+    仅拦截精确的 32 位十六进制段，避免误伤真实官文带的长 ID。"""
+    u = (url or "").strip()
+    if not u:
+        return False
+    host = (urllib.parse.urlparse(u).hostname or "").lower()
+    if "openstd.samr.gov.cn" in host:
+        return False   # openstd 的 hcno 形态由 url_shape_ok 负责
+    if any(h in host for h in (".gov.cn", "npc.gov.cn", "mem.gov.cn", "mohurd.gov.cn",
+                               "nhc.gov.cn", "mee.gov.cn", "miit.gov.cn", "mps.gov.cn")):
+        if _HCNO_RE.search(u):
+            return True
+    return False
+
+
 def url_trusted(url):
     """四重校验：官方域名 + 正文形态 + 真实可访问 + 正文非死页。任一不过即不采信。"""
     u = (url or "").strip()
@@ -576,16 +764,138 @@ def has_valid_official_link(url):
 
 
 def _extract_effective_date(text):
-    """从标准官方页正文里提取『实施日期』，返回 YYYY-MM-DD；取不到返回 None。"""
+    """从官方页正文里提取『实施日期 / 发布日期』，返回 YYYY-MM-DD；取不到返回 None。
+
+    已放宽正则，覆盖更多官方写法：YYYY-MM-DD / YYYY年M月D日 / 实施日期 / 发布日期 /
+    『YYYY年M月D日实施』等。优先匹配『实施』语境，兜底取首个 YYYY年M月D日。"""
     if not text:
         return None
-    m = re.search(r"实施日期[：:\s]*(\d{4})-(\d{2})-(\d{2})", text)
+    pats = (
+        r"实施日期[：:\s]*(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})",
+        r"发布日期[：:\s]*(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})",
+        r"(\d{4})年(\d{1,2})月(\d{1,2})日[起]?\s*实施",
+        r"实施于\s*(\d{4})年(\d{1,2})月(\d{1,2})日",
+    )
+    for pat in pats:
+        m = re.search(pat, text)
+        if m:
+            try:
+                return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+            except Exception:
+                pass
+    # 兜底：任意 YYYY年M月D日（仅当上面的『实施』语境都没命中时）
+    m = re.search(r"(\d{4})年(\d{1,2})月(\d{1,2})日", text)
     if m:
-        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
-    m = re.search(r"实施日期[：:\s]*(\d{4})年(\d{1,2})月(\d{1,2})日", text)
-    if m:
-        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+        try:
+            return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+        except Exception:
+            pass
     return None
+
+
+def _read_page_effective_date(url, stdno=None):
+    """从官方页真实读回实施日期（优先国内代理渲染动态内容；openstd 额外走搜索列表页兜底）。
+    取不到返回 None。仅用真实页面读到的日期，绝不返回任何编造值。"""
+    if url:
+        text, _via = domestic_fetch(url, timeout=20)
+        if text:
+            d = _extract_effective_date(text)
+            if d:
+                return d
+    # openstd 详情页是 JS 渲染、境外直连常取不到正文：改用纯 HTTP 的站内搜索列表页兜底读日期
+    if stdno and "openstd.samr.gov.cn" in (url or ""):
+        try:
+            s = _openstd_search_session(stdno)
+            if s:
+                d = _extract_effective_date(s)
+                if d:
+                    return d
+        except Exception:
+            pass
+    return None
+
+
+_PAGE_CACHE = {}
+
+
+def _page_text(url):
+    """抓官方页正文文本：优先国内代理渲染动态页，回退境外直连。同 URL 进程内缓存一次。
+
+    缓存顺手解决『同一官方链接被重复抓取』的旧问题（确定性探测抓一次，后续质检/回填直接复用）。"""
+    if not url:
+        return None
+    if url in _PAGE_CACHE:
+        return _PAGE_CACHE[url]
+    t, _ = domestic_fetch(url, timeout=20)
+    t = t or fetch_text(url, timeout=10) or None
+    _PAGE_CACHE[url] = t
+    return t
+
+
+def _page_status_signal(text):
+    """从官方页正文抽『废止/被替代』信号；返回 True 表示页面显示该标准已废止/被代替。"""
+    if not text:
+        return False
+    return bool(re.search(r"(已?废止|已?作废|被[^\s，。]{1,20}?代替|本标准代替|不再实施)", text))
+
+
+def should_skip_for_retrieval(e):
+    """检索前确定性预筛：返回 True 表示这条无需交给 GLM 核实（从源头减少生成量）。
+
+    通用规则（不点名任何法规/标准）：
+    - 状态已『废止/失效/过期/停止』的：不会再变，无需检索；
+    - 链接为空（待补）的：不让 GLM 去『发现』（易产生幻觉），留给专门的补链接流程。"""
+    st = (e.get("status") or "")
+    if any(k in st for k in ("废止", "失效", "过期", "停止")):
+        return True
+    if not (e.get("link") or "").strip():
+        return True
+    return False
+
+
+def _page_indicates_change(url, e):
+    """确定性探测：这条官方页是否真有变化。把『发现变更』从 GLM 挪回系统。
+
+    返回：
+    - False：官方页读到的状态/日期与清单一致 → 系统直接跳过，不调 GLM（零 GLM 成本）；
+    - True ：官方页显示废止/替代，或实施日期与清单不同 → 疑似变更，交 GLM 核实；
+    - None ：读不到官方页正文（多为法律类 JS 渲染页）→ 交给 GLM 带 web_search 核实。
+
+    仅对标准类（openstd）做确定性探测；法律类（npc/gov/cac/flk）直接返回 None 由 GLM 核实。"""
+    if not url or "openstd.samr.gov.cn" not in url:
+        return None
+    text = _page_text(url)
+    if not text and e.get("stdNo"):
+        text = _openstd_search_session(e["stdNo"]) or None
+    if not text:
+        return None
+    cur_date = (e.get("effectiveDate") or "").strip()
+    cur_status = (e.get("status") or "")
+    official_date = _read_page_effective_date(url, e.get("stdNo"))
+    if _page_status_signal(text) and "废止" not in cur_status and "失效" not in cur_status:
+        return True
+    if official_date and cur_date and official_date != cur_date:
+        return True
+    if official_date and not cur_date:
+        return True
+    return False
+
+
+def _fill_missing_effective_date(change, target):
+    """仅当 GLM 未给出实施日期、且官方页能读到真实日期时，回填真实日期。
+
+    关键：GLM 已给出非空实施日期时【绝不覆盖】——避免把 GLM 编造/与官方矛盾的日期当成权威。
+    读完若仍取不到，则保持留空（由人工补），绝不写入编造值。"""
+    if change.get("effectiveDate"):
+        return
+    url = (change.get("link") or (target or {}).get("link") or "").strip()
+    if not url:
+        return
+    stdno = (change.get("stdNo") or (target or {}).get("stdNo") or "").strip()
+    d = _read_page_effective_date(url, stdno)
+    if d:
+        change["effectiveDate"] = d
+        change["_date_filled_from_page"] = d
 
 
 def _source_name(url):
@@ -677,7 +987,7 @@ CATEGORY_NAMES = {
 COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格遵守，违反任一条都算不合格）
 
 【一、去重：严禁新增已有条目】
-- 你拿到的"当前清单已有条目"列表是权威去重基准。任何候选新增项，若其名称与列表中某条相同，或高度相似（互为包含/被包含、仅差"管理""办法""条例""规定"等少量字），一律不得新增，视为已存在。
+- 你拿到的"当前清单已有条目"列表是权威去重基准。任何候选新增项，若其名称与列表中某条相同，或高度相似（互为包含/被包含、仅差"管理""办法""条例""规定"等少量字），一律不得新增，视为已存在。比名时忽略书名号《》与引号差异——「X规定」与「《X规定》」视为同一条；系统也会按归一化名称去重。
 - 若你判断某已有条目需要更新（修订/废止/新版替代/日期变更），请用 action="update" 或 "abolish"，不要另起一条 add。
 
 【二、链接：必须是能直接看全文的官方文档页】
@@ -697,6 +1007,8 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 【三、日期：必须来自官方文件原文，禁止编造】
 - effectiveDate（实施日期）与 abolishDate（废止日期）必须取自官方文件明确写明的日期。
 - 查不到确切日期就填 ""（空字符串），绝对不要凭记忆猜测或填错日期。
+- 若系统已替你解析出官方正文页，请以该页面读到的实施日期为准，不要填写与官方页读到的日期相矛盾的日期（页面读到的才是权威）。
+- 若你实在读不到确切实施日期，effectiveDate 填空字符串即可——系统会从官方页自动补回真实日期（前提是官方页可被读取）；不要为了「看起来有更新」而凭记忆编一个日期。
 
 【四、备注 remark：只允许三类，其余一律不写】
 - 类型A（采标）：该标准采用国际标准时，remark 必须原样照抄官网版权原话（"暂不提供在线阅读服务"或"仅提供在线阅读服务"）。无官网原话不得写。
@@ -730,6 +1042,7 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 每条 change 必须填写 fromValues 对象：{"字段名": "清单里当前的值"}，且必须与我给你的清单值**一字不差**。
 - 系统会拿 fromValues 和真实清单逐字比对，对不上就判定"你没看清单"，整条拒收。
 - **禁止"无变化却返回 change"**：若你的 web 检索结果与该条目在清单里的现有值一致（即官方并未给出"变了"的白纸黑字依据），就不要返回这条 change——没有变化就别动，尤其不要把"清单已有的实施日期"先说成空、再填回原值。
+- **尤其禁止提交「由 X 改为 Y」但 X 与 Y 完全相同**的 change（如「由 已废止 改为 已废止」「实施日期 由 2026-01-01 改为 2026-01-01」）——这类无变化系统会直接判伪变更丢弃，纯属浪费额度。提交前先核对：你填的「新值」必须确实不同于 fromValues 里的「旧值」，旧值与新值相同就不叫变更。
 - 禁止出现"原清单未标注实施日期""清单里没有这条"之类的说法——清单内容就在下面，看清楚再写。
 - **提交前先核对清单是否已存在该条目 / 是否已做过该变更（通用，杜绝重复提案）**：在发出任何 action=add 之前，先在本清单的「当前清单已有条目」里检索**同名或同标准号**的条目。若已存在：① 不要重复新增（add）；② 判断该已有条目是否需要更新（状态/日期/链接变了）→ 需要就改提 action=update 并填 fromValues，不需要就整条跳过。只有确认清单里确实没有的，才 action=add。对旧版（已标「已废止」/「由 XX 替代」/「即将被 XX 替代」）也不要重复提交 update/abolish——这些变更清单往往已经做完，重复提交只会被判「无变化/已做过」而丢弃。总之：对比下面清单的**最新状态**再决定要不要发，不要凭"网上看到有新版本"就盲目 add。
 
@@ -754,6 +1067,58 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 """
 
 
+# ===== 发现通道（恢复「发现清单外全新适用法规」功能，但有界、低耗）=====
+# 设计：核实通道是封闭域（只核实现有条目、压假阳性）；发现通道单独跑，只盯官方
+# 「新发布 / 公告」栏目，且结果一律进草稿人工复核、绝不自动写入、绝不编链接。
+# 这样既不回到之前满屏幻觉，又保住用户「发现新法规」的原始诉求。
+DISCOVERY_ENABLED = True
+DISCOVERY_RECENCY_MONTHS = 12   # 只报近 N 个月内新发布 / 新实施的
+
+# 通用查询范围（不点名任何具体标准号 / 具体 bug；用户可自由增删官方渠道）。
+# 每条 = (标签, 给 GLM 的「官方新发布栏目」范围描述)。发现通道只在这些范围内搜，不漫天搜。
+DISCOVERY_SOURCES = [
+    ("国家标准/行业标准新发布",
+     "国家标准化管理委员会「国家标准全文公开系统(openstd.samr.gov.cn)」与「全国标准信息公共服务平台」的"
+     "『标准公告 / 新发布 / 即将实施』栏目；以及工信部、发改委等行业主管部门官网的『标准公告』栏目。"),
+    ("生态环境",
+     "生态环境部官网(mee.gov.cn)『政策法规 / 新发布』栏目，及地方生态环境部门公开文件。"),
+    ("卫生健康 / 食品接触",
+     "国家卫健委官网(nhc.gov.cn)『政策法规』栏目；食品安全国家标准（GB 4806.x / GB 31604.x 等）"
+     "以国家食品安全风险评估中心(cfsa.net.cn)公告为准。"),
+    ("网信 / 数据安全 / 个人信息",
+     "国家网信办官网(cac.gov.cn)『法律法规 / 公告』栏目，及数据安全、个人信息保护相关新规。"),
+    ("安全生产 / 职业健康",
+     "应急管理部(www.mem.gov.cn)与人力资源社会保障部(mohrss.gov.cn)官网『政策法规 / 规章制度』栏目。"),
+    ("海关 / 反恐贸易合规",
+     "海关总署官网(customs.gov.cn)『公告 / 政策法规』栏目，及反恐贸易合规（C-TPAT / AEO）相关新规。"),
+    ("行政法规 / 国务院令",
+     "中国政府网(www.gov.cn)『政策法规 / 国务院公报 / 国务院令』栏目，覆盖各部委联合规章与行政法规。"),
+]
+
+
+def build_discovery_prompt(label, sources_text, existing_block):
+    """发现模式提示词：只搜官方新发布栏目，报清单外全新适用法规/标准（action=add）。"""
+    return f"""你是中国法律法规与标准检索助手。本次运行【发现模式】：目标是在「官方新发布栏目」里找出【清单里当前没有、但本家电制造业公司合规体系应当收录】的全新法规/标准，交人工复核后补入清单。
+
+═══ 本次发现范围（{label}）═══
+{sources_text}
+
+═══ 适用判定（只报这些范围内的新发布）═══
+本清单服务一家家电制造业企业的体系合规：三体系（质量 / 环境 / 职业健康安全）、社会责任、反恐、信息安全、产品安全 / 电气安全 / EMC / 能效 / 食品接触 / 插头插座 / 电池 / 无线蓝牙，以及对应的法规与国家标准。只报【近 {DISCOVERY_RECENCY_MONTHS} 个月内新发布或新实施、且明显适用上述范围】的全新法规或标准；明显不适用的（如纯农业、纯医药临床、纯金融证券投资等）不要报。
+
+═══ 当前清单已有条目（去重基准：报之前务必确认清单里确实没有）═══
+{existing_block}
+
+{COMMON_RULES}
+
+═══ 发现模式专属约束（有界、低耗、只报真凭实据）═══
+1. 只查上面列出的官方「新发布 / 公告」栏目，不漫天搜、不发散到无关领域；每个范围聚焦最近变更，不做几十次搜索。
+2. 每条候选必须是 action="add"；其名称 / 编号 / 部门 / 实施日期每一项都必须来自你在 web_search 真实返回的官方页面。任何一项你指不出官方来源，就不要输出该条（宁可不出，也不要把拼凑的内容交出去）。
+3. 必须给出真实可打开的官方正文页链接（source_url）；无法给出真实链接时 source_url 留空、改填 source_hint（系统会去官方站按号/按名解析），内容仍作为「可勾选新增提案」交人工核准——绝不许自己拼 URL。
+4. 报之前先核对上面清单：同名或同标准号已存在则不报（避免重复）；旧版已废止 / 被替代的新版也先确认清单是否已收录，已收录则不重复报。
+5. 只输出 JSON（changes 数组，全为 action="add"）；无新发现则 changes 为空数组。"""
+
+
 def build_existing_block(items, table):
     """把清单已有条目的关键字段全部摊开给模型看（名称/实施日期/状态/部门/是否已有链接）。
     这是「旧值核对」这道质检关卡的基准，模型再也不能说『原清单未标注』。"""
@@ -772,10 +1137,10 @@ def build_existing_block(items, table):
     return "\n".join(lines) or "（暂无）"
 
 
-def build_prompt(target_label, domain_text, existing_names):
+def build_prompt(target_label, domain_text, existing_names, audit_block=""):
     names_block = existing_names if isinstance(existing_names, str) else (
         "\n".join(f"- {n}" for n in existing_names) or "（暂无）")
-    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
+    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行【核实模式】：我只把「系统已用确定性脚本检测到疑似变更的少数条目」交给你，你只负责依据官方白纸黑字核对它们当前的状态/实施日期是否真变了并给出权威新值。不要主动联网去搜索清单以外的法规/标准，也不要新增清单里没有的条目。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 
 ═══ 本次检索范围（{target_label}）═══
 {domain_text}
@@ -784,7 +1149,7 @@ def build_prompt(target_label, domain_text, existing_names):
 {names_block}
 
 {COMMON_RULES}
-
+{audit_block}
 请返回 JSON（无变更则 changes 为空数组）。每条 change 字段：
 {{
   "action": "add | update | abolish",
@@ -810,6 +1175,12 @@ def build_prompt(target_label, domain_text, existing_names):
 }}
 
 注意：action=update / abolish 时 fromValues 必填且必须与上面清单一字不差，否则整条拒收。
+
+═══ 核实模式专属约束（从源头减少生成，压低候选量）═══
+1. 你收到的【当前清单已有条目】是封闭域：只核实这些条目，绝不搜索/新增清单以外的法规或标准。
+2. 每条若没有白纸黑字的官方依据（具体公告 URL + 明确日期/状态）证明它变了，就不要把它写进 changes（即 no_change）——宁可漏报不可错报。
+3. 禁止编造 URL / 实施日期 / 状态；读不到就留空，由系统或人工补。
+4. 若某条系统未附官方页文本、你确需核对，可用 web_search 仅查【该条自身】的官方依据，不要发散搜索其它条目。
 只输出 JSON，不要额外说明文字。"""
 
 
@@ -825,15 +1196,18 @@ def extract_json(text):
     return text
 
 
-def search_target(client, model, label, text, existing_names):
-    prompt = build_prompt(label, text, existing_names)
+def search_target(client, model, label, text, existing_names, audit_block="", web_search=True, prompt=None):
+    if prompt is None:
+        prompt = build_prompt(label, text, existing_names, audit_block)
+    kwargs = dict(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,
+    )
+    if web_search:
+        kwargs["tools"] = [{"type": "web_search", "web_search": {"enable": True, "search_result": True}}]
     try:
-        resp = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            tools=[{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
-            temperature=0,
-        )
+        resp = client.chat.completions.create(**kwargs)
         return json.loads(extract_json(resp.choices[0].message.content))
     except Exception as e:
         print(f"  [{label}] 检索出错: {e}")
@@ -1051,7 +1425,17 @@ def _hcno_looks_fabricated(hcno):
 
 
 def _norm_txt(v):
-    return re.sub(r"\s+", "", str(v or "")).strip()
+    """通用名称/文本归一化：去空格、去书名号《》、引号「」『』""''、全角转半角。
+    
+    关键作用（通用去重）：「规定」与「《规定》」在归一化后都变成「规定」，
+    使精确比对/互相包含/相似度比对视为同一条，从根本上解决书名号差异造成的重复识别不出来问题。
+    对所有法规名、状态、日期字段通用，不点名任何具体条目。"""
+    s = re.sub(r"\s+", "", str(v or ""))
+    for ch in ("《", "》", "“", "”", "‘", "’", "「", "」", "【", "】",
+               "(", ")", "（", "）", "[", "]", '"', "'"):
+        s = s.replace(ch, "")
+    s = unicodedata.normalize("NFKC", s)  # 全角字母/数字/标点转半角
+    return s.strip()
 
 
 def check_change(table, change, target, today):
@@ -1079,6 +1463,8 @@ def check_change(table, change, target, today):
     link_issue = None
     if not su:
         link_issue = "没有提供依据来源网址（source_url）"
+    elif url_looks_fabricated(su):
+        link_issue = "依据来源链接形态疑似编造（非官方格式/含规律ID，必为照搬）：" + su
     elif not domain_ok(su):
         link_issue = "依据来源不是官方域名：" + su
     elif not url_shape_ok(su):
@@ -1123,10 +1509,10 @@ def check_change(table, change, target, today):
                 "link": rl, "method": rs.get("method", ""),
                 "reason": rs.get("reason", ""), "was": su,
             }
-            # 按标准号解析出的 openstd 详情页，就是该条目自身的官方正文页（已核对标准号一致）：
-            # 若 GLM 给的 link 不可信，就用这个真链接顶上，让缺链接的条目顺势补齐。
+            # 系统确定性解析出的官方页（openstd 按号 / name_query 按名），就是该条目自身的官方正文页：
+            # 若 GLM 给的 link 不可信或为空，就用这个真链接顶上，让缺链接的条目顺势补齐。
             # 写入仍走原有 url_trusted 关卡，安全性不降级。
-            if rs.get("method") == "openstd" and not url_trusted(change.get("link")):
+            if rs.get("verified") and not url_trusted(change.get("link") or ""):
                 change["link"] = rl
             ok_claim, why = _confirm_claim_on_page(change, target, rl)
             print(f"  [分诊自救] 《{name}》→ {rs.get('method')} {rl}｜{'确认' if ok_claim else '待人工'}")
@@ -1190,6 +1576,25 @@ def check_change(table, change, target, today):
         reasons.append("理由里说改实施日期，实际却没给出日期")
         discard = True
 
+    # ⑥ 伪变更：声称要改，但所声称的新值每一项都与清单现值完全一致（说改实则没改）。
+    #    通用覆盖「由 已废止 改为 已废止」「实施日期 由 X 改为 X」这类纯噪音。
+    #    链接补正 / 采标备注 / remark 这类确属有效变更的不计入；仅当"除这些外无任何实质字段变化"才判伪变更丢弃。
+    if action in ("update", "abolish") and target:
+        real_changes = []
+        if change.get("effectiveDate") and _ymd(change.get("effectiveDate")) != _ymd(target.get("effectiveDate")):
+            real_changes.append("实施日期")
+        ns = norm_status(change.get("status"))
+        if ns and ns != norm_status(target.get("status")):
+            real_changes.append("状态")
+        if change.get("abolishDate") and _ymd(change.get("abolishDate")) != _ymd(target.get("abolishDate")):
+            real_changes.append("废止日期")
+        link_changed = bool(change.get("link")) and change.get("link") != (target.get("link") or "")
+        remark_changed = bool((change.get("remark") or "").strip()) and change.get("remark") != (target.get("remark") or "")
+        copyright_changed = bool((change.get("copyrightNote") or "").strip())
+        if not real_changes and not link_changed and not remark_changed and not copyright_changed:
+            reasons.append("伪变更：声称的变更字段新值与清单现值完全一致（如「已废止→已废止」），无实际改动，已丢弃")
+            discard = True
+
     return (len(reasons) == 0), reasons, discard
 
 
@@ -1235,6 +1640,9 @@ def apply_change(table, all_items, change, domain_id, today):
 
     # —— 质检：不通过则整条拦下，带原因进「待核实线索」栏，绝不改动数据 ——
     pre_target = None if action == "add" else _name_match(name, all_items)
+    # 新增：GLM 未给实施日期时，从官方页真实读回并回填（不覆盖 GLM 已给的值，避免采用编造日期）
+    if action in ("update", "abolish"):
+        _fill_missing_effective_date(change, pre_target)
     ok, reasons, discard = check_change(table, change, pre_target, today)
     if discard:
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
@@ -1347,6 +1755,15 @@ def apply_change(table, all_items, change, domain_id, today):
         elif is_homepage(existing_url):
             set_fields["link"] = new_url
             diffs.append({"field": "来源链接", "from": "(原为首页)", "to": new_url})
+        else:
+            # 通用规则：现有链接虽能打开，但不在本条归口官方域内（误挂的外省/转载页），
+            # 而新链接经校验确为归口官方正文页 → 允许用正确归口链接替换误挂链接（不再写死条目）。
+            off = _official_domains_for(target, table)
+            new_host = (urllib.parse.urlparse(new_url).hostname or "").lower()
+            old_host = (urllib.parse.urlparse(existing_url).hostname or "").lower()
+            if off and any(new_host.endswith(d) for d in off) and not any(old_host.endswith(d) for d in off):
+                set_fields["link"] = new_url
+                diffs.append({"field": "来源链接", "from": existing_url, "to": new_url})
         # 现有已是有效深链时不动，避免把人工校对好的链接冲掉
     # 应用
     for k, v in set_fields.items():
@@ -1634,6 +2051,58 @@ def write_running_status():
         print("  写入 running 状态失败（可忽略）:", e)
 
 
+def discovery_phase(client, model, proposed_laws, proposed_standards,
+                    summary_changes, rejected, discarded, today):
+    """发现通道：在官方新发布栏目里找清单外全新适用法规/标准，全部作为草稿新增提案交人工复核。
+
+    有界、低耗：只盯 DISCOVERY_SOURCES 列出的官方「新发布/公告」栏目（不漫天搜），
+    每条来源仅 1 次 GLM 调用（带 web_search）。结果仍走 apply_change 的 add 分支——
+    链接不可信时自动清空待补、只进草稿人工复核，绝不自动写入、绝不编链接。"""
+    if not DISCOVERY_ENABLED:
+        print("\n发现通道：已关闭（DISCOVERY_ENABLED=False），跳过。")
+        return
+    # 去重基准 = 全量清单（laws + standards 合并展示给模型）
+    existing_block = (build_existing_block(proposed_laws, "laws")
+                      + "\n" + build_existing_block(proposed_standards, "standards"))
+    disc_seen = set()  # 跨来源去重：同一新条目被多个来源报出只处理一次
+    for label, sources_text in DISCOVERY_SOURCES:
+        print(f"\n发现通道：{label} ...")
+        prompt = build_discovery_prompt(label, sources_text, existing_block)
+        result = search_target(client, model, label, sources_text, existing_block,
+                               web_search=True, prompt=prompt)
+        changes = result.get("changes", []) or []
+        print(f"  发现候选 {len(changes)} 条：{result.get('summary', '')}")
+        for ch in changes:
+            if (ch.get("action") or "").strip().lower() != "add":
+                continue  # 发现模式只处理新增；现有条目的 update/abolish 由核实通道覆盖
+            nk = _norm_txt(ch.get("name") or "")
+            if not nk or nk in disc_seen:
+                continue
+            disc_seen.add(nk)
+            # 表归属：产品相关标准进 standards，其余进 laws（GLM 应填 table 字段，缺省归 laws）
+            table = "standards" if str(ch.get("table") or "").lower().startswith("stand") else "laws"
+            all_items = proposed_standards if table == "standards" else proposed_laws
+            dom = ch.get("category")
+            if not dom and ch.get("domains"):
+                dom = (ch.get("domains") or [""])[0]
+            res = apply_change(table, all_items, ch, dom, today)
+            if not res or res.get("kind") == "skip":
+                if res:
+                    print(f"    跳过（{res.get('reason')}）：{res.get('name')}")
+                continue
+            if res.get("kind") == "discard":
+                discarded.append({"name": res.get("name"), "action": res.get("action", ""),
+                                  "table": res.get("table", ""), "reason": res.get("reason", "")})
+                print(f"    丢弃（{res.get('reason')}）：{res.get('name')}")
+                continue
+            if res.get("kind") == "reject":
+                rejected.append(res)
+                print(f"    [未过质检] {res['name']} → {'；'.join(res['reasons'])}")
+                continue
+            summary_changes.append(res)
+            print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
+
+
 def main():
     api_key = os.environ.get("ZHIPU_API_KEY")
     if not api_key:
@@ -1668,7 +2137,7 @@ def main():
     for s in switched:
         print(f"  [状态切换] {s['table']}《{s['name']}》{s['from']} → {s['to']}")
 
-    # —— GLM 联网检索各域 ——
+    # —— GLM 联网检索各域（每周自动触发，全量检索；通用规则覆盖全部条目）——
     targets = [
         ("laws", "环境与职业健康"),
         ("laws", "质量"),
@@ -1679,6 +2148,7 @@ def main():
     summary_changes = []
     rejected = []   # 未过质检的候选：不改数据，带着原因进网页「待核实线索」栏
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，收集以便报告计数
+    seen = set()    # 跨领域去重：GLM 可能把同一条目归入多个领域，避免重复计数/处理
     for table, cid in targets:
         if table == "laws":
             items = [l for l in proposed_laws if l.get("category") == cid]
@@ -1688,12 +2158,24 @@ def main():
             items = proposed_standards
             text = STANDARDS_TEXT
             all_items = proposed_standards
-        # 把已有条目的全字段摊给模型（名称/实施日期/状态/部门/是否已有链接），
-        # 它才有据可依，也才能被「旧值核对」这道关卡验证。
-        existing_block = build_existing_block(items, table)
+        # —— A 检索前确定性预筛：砍掉明显不会变的（已废止/待补），减少 GLM 处理量 ——
+        items = [e for e in items if not should_skip_for_retrieval(e)]
+        # —— B 确定性探测：系统先剔除「官方页无变化」的条目，GLM 只核实疑似变更 ——
+        verify_items = []
+        for e in items:
+            sig = _page_indicates_change(e.get("link"), e)
+            if sig is False:
+                print(f"    确定性无变化，跳过：{e.get('name')}")
+                continue
+            verify_items.append(e)
+        if not verify_items:
+            print(f"检索：{CATEGORY_NAMES.get(cid, cid)} → 无疑似变更，跳过 GLM")
+            continue
+        # 把疑似变更条目的全字段摊给模型（封闭域，只核实这些），它才有据可依。
+        existing_block = build_existing_block(verify_items, table)
         label = CATEGORY_NAMES.get(cid, cid)
-        print(f"检索：{label} ...")
-        result = search_target(client, model, label, text, existing_block)
+        print(f"检索：{label}（候选 {len(verify_items)} 条，已剔除无变化）...")
+        result = search_target(client, model, label, text, existing_block, "")
         changes = result.get("changes", []) or []
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
         _su = [(ch.get("source_url") or "").strip() for ch in changes]
@@ -1702,6 +2184,11 @@ def main():
             scf_batch_probe(_su)
         print(f"  发现 {len(changes)} 条候选：{result.get('summary', '')}")
         for ch in changes:
+            dk = (table, _norm_txt(ch.get("name") or ""))
+            if dk in seen:
+                print(f"    跨领域重复，跳过：{ch.get('name')}")
+                continue
+            seen.add(dk)
             res = apply_change(table, all_items, ch, cid, today)
             if not res or res.get("kind") == "skip":
                 if res:
@@ -1718,6 +2205,10 @@ def main():
                 continue
             summary_changes.append(res)
             print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
+
+    # —— 发现通道：在官方新发布栏目里找清单外全新适用法规/标准（恢复「新增」功能，但有界、低耗）——
+    discovery_phase(client, model, proposed_laws, proposed_standards,
+                    summary_changes, rejected, discarded, today)
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
     write_retrieval_report(summary_changes, rejected, discarded, switched, today)
