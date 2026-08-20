@@ -726,6 +726,134 @@ def norm_status(s):
             "已废止": "已废止"}.get(s, s)
 
 
+# ===== 根因修复：结论抽取器（GLM 只当检索员，结论 100% 由代码从官方页确定性抽取）=====
+def _resolve_new_std_effective_date(new_stdno):
+    """被替代标准的真实废止日 = 替代它的新标准实施日（确定性解析新标准官方页取实施日）。取不到返回空字符串。"""
+    try:
+        entry = {"name": new_stdno, "stdNo": new_stdno, "category": "", "link": ""}
+        rs = resolve_link_for_entry(entry, "standards")
+        link = (rs.get("link") or "").strip()
+        if not (link and domain_ok(link) and url_shape_ok(link)):
+            return ""
+        txt = fetch_text(link, timeout=8)
+        if not txt or is_dead_page(txt):
+            return ""
+        return _extract_effective_date(txt) or ""
+    except Exception:
+        return ""
+
+
+def _extract_conclusions_from_page(text, stdno="", today=None):
+    """从官方页正文【确定性】抽取结论字段，返回 dict: effectiveDate/status/abolishDate/replacedBy。
+    全部由通用正则/规则得出，绝不编造；取不到的字段为空字符串。规则（不硬编码任何标准号/日期）：
+      - 实施日期：复用 _extract_effective_date（只匹配『实施日期』，绝不含『发布日期』）。
+      - 状态：页面含 废止/被代替/作废/停止施行/不再施行/明令废止 → 已废止；
+              页面含『代替/替代 GB/T X』（真实替代）→ 旧标准已废止（被替代=已废止）；
+              以上都无 且 实施日期已给出 → 实施日<=today 现行有效，否则 即将实施；
+              以上都无 且 实施日期无 → 空（交人工）。
+      - 替代关系：页面『代替/替代 GB/T X』→ 抽 X。
+      - 废止日期：页面明写 废止日期 YYYY-MM-DD 用之；否则若被真实替代，尝试解析新标准官方页取其
+              实施日（即旧标准真实废止日）；都取不到则空。"""
+    eff = _extract_effective_date(text)
+    status = ""
+    abolish = ""
+    replaced = ""
+    # 替代关系（通用：代替/替代 + 标准号）
+    m_rep = re.search(r"(代替|替代)\s*[《]?\s*(GB[/\s]?T?\s?[0-9]+(?:\.[0-9]+)*\s*-\s*\d{4})", text)
+    if not m_rep:
+        m_rep = re.search(r"(代替|替代)\s*[《]?\s*([A-Za-z]+[/\s]?\d+(?:\.\d+)*\s*-\s*\d{4})", text)
+    if m_rep:
+        replaced = m_rep.group(2).strip().upper()   # 保留 "GB/T 4288-2025" 原格式，仅去空格
+    # 废止/被代替 信号（涵盖"被替代"与"起废止/废止日期"等明确废止表述）
+    has_abolish_word = bool(re.search(
+        r"(同时废止|予以废止|现予废止|被代替|停止施行|不再施行|明令废止|予以宣布废止|起废止|废止日期)", text))
+    if has_abolish_word:
+        status = "已废止"
+    elif replaced:
+        status = "已废止"          # 被替代 = 已废止（通用，不针对具体标准）
+    else:
+        if eff:
+            status = "现行有效" if (today and _ymd(eff) <= today) else "即将实施"
+        else:
+            status = ""
+    # 废止日期：页面明写
+    m_ab = re.search(r"(废止日期|自[^\n]{0,30}?起废止)[：:\s]*(\d{4})-(\d{2})-(\d{2})", text)
+    if m_ab:
+        abolish = f"{m_ab.group(2)}-{int(m_ab.group(3)):02d}-{int(m_ab.group(4)):02d}"
+    elif replaced and stdno:
+        # 被真实替代：废止日期 = 新标准实施日（确定性解析新标准官方页取实施日）
+        nb = _resolve_new_std_effective_date(replaced)
+        if nb:
+            abolish = nb
+    return {"effectiveDate": eff or "", "status": status,
+            "abolishDate": abolish, "replacedBy": replaced}
+
+
+def reconcile_conclusions(change, target, table, today):
+    """【根因修复核心】GLM 检索后只给了"它认为的变更草稿"。本函数拿官方页正文，用通用规则
+    确定性抽取 实施日期/状态/废止日期/替代关系，并【覆盖】GLM 的同名字段，使结论 100% 来自
+    官方页 + 规则，而非 LLM 生成。
+      - 取不到官方正文 / 死链 / 张冠李戴 → 标记 _unverified（后续质检转人工复核，不静默丢弃、不自动采信）。
+      - 抽到的字段覆盖 GLM（GLM 编的被顶掉）；抽不到的字段：若 GLM 曾声称与清单不同 → 保留并标
+        _unverified 交人工；否则清空（无变更意图→自然跳过，减少拦截栏条目）。
+    不改动 apply_status_rules（用户确认其状态切换正确，不动）。"""
+    stdno = ((change.get("stdNo") or "").strip()
+             or (target or {}).get("stdNo", "").strip())
+    if not stdno:
+        for pat in (_STD_FULL_RE, _STD_KEY_RE):
+            for cand in (change.get("source_hint") or "", change.get("name") or ""):
+                m = pat.search(cand or "")
+                if m:
+                    stdno = m.group(0).strip()
+                    break
+            if stdno:
+                break
+    # 1) 确定官方页 URL：优先 GLM 给的合法 source_url，否则按标准号确定性解析
+    url = (change.get("source_url") or "").strip()
+    if not (url and domain_ok(url) and url_shape_ok(url)):
+        rs = resolve_source_url_for_change(table, change, target)
+        ru = (rs.get("link") or "").strip()
+        if ru and rs.get("verified") and domain_ok(ru) and url_shape_ok(ru):
+            url = ru
+            change["source_url"] = ru          # 用确定性解析出的真链接顶上
+    # 2) 取官方页正文
+    text = fetch_text(url, timeout=12) if url else None
+    if not text:
+        change["_unverified"] = True
+        change["_unverified_reason"] = "系统未能从官方页取到正文，所称变更无法自动核实，请人工点开确认"
+        return change
+    if is_dead_page(text):
+        change["_unverified"] = True
+        change["_unverified_reason"] = "官方页打开后无正文（死链/编造），所称变更无法核实，请人工确认"
+        return change
+    # 3) 版本号核对：官方页讲的不是本条版本 → 不采信该页结论（防张冠李戴）
+    if stdno and _source_version_mismatch(text, stdno):
+        change["_unverified"] = True
+        change["_unverified_reason"] = "官方页标注了其它版本号（疑似张冠李戴），所称变更无法核实，请人工确认"
+        return change
+    # 4) 通用确定性抽取结论
+    derived = _extract_conclusions_from_page(text, stdno, today)
+    # 5) 覆盖 GLM 字段：抽到的覆盖；抽不到的按"是否曾声称与清单不同"决定保留待核 or 清空
+    for fld in ("effectiveDate", "status", "abolishDate", "replacedBy"):
+        dv = (derived.get(fld) or "").strip()
+        tv = (target or {}).get(fld, "") if target else ""
+        if dv:
+            change[fld] = dv                  # 代码抽到的结论覆盖 GLM
+        else:
+            gv = (change.get(fld) or "").strip()
+            if gv and gv != tv:
+                change["_unverified"] = True   # 声称了但官方页抽不到 → 交人工核实
+                change.setdefault("_unverified_reason",
+                                  f"官方页未能核实字段「{fld}」（{gv}），请人工确认")
+            else:
+                change[fld] = ""               # 无声称或与清单一致 → 清空，避免伪变更
+    change["_verified"] = True
+    change["_derived"] = derived
+    print(f"  [结论抽取] 《{change.get('name')}》实施日={derived.get('effectiveDate') or '-'} "
+          f"状态={derived.get('status') or '-'} 废止日={derived.get('abolishDate') or '-'} 替代={derived.get('replacedBy') or '-'}")
+    return change
+
+
 # ===== 检索领域（喂给模型做定向检索）=====
 DOMAINS = {
     "环境与职业健康": (
@@ -906,6 +1034,8 @@ def build_prompt(target_label, domain_text, existing_names):
   "replacedBy": "替代本标准的法规/标准名称或编号（仅当官方写明被XX替代时填；否则空字符串）",
   "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
+
+重要：effectiveDate / status / abolishDate / replacedBy 这四个结论字段你【不必填写】（直接留空字符串 ""），系统会依据你提供的 source_url 官方页确定性抽取并覆盖，不会采用你生成的值。你只需：① 确保 source_url 是你 web_search 真实返回的官方页链接（原样复制，绝不自造 URL）；② 在 note 里尽量引用官方页原文；③ fromValues 仍须如实填写清单当前值（旧值核对基准）。
 
 注意：action=update / abolish 时 fromValues 必填且必须与上面清单一字不差，否则整条拒收。
 只输出 JSON，不要额外说明文字。"""
@@ -1162,6 +1292,10 @@ def check_change(table, change, target, today):
     action = (change.get("action") or "").strip().lower()
     discard = False
 
+    # 根因修复：结论无法从官方页核实 → 进人工复核（不静默丢弃、不自动采信）
+    if change.get("_unverified"):
+        return (False, [change.get("_unverified_reason", "官方页无法核实，请人工确认")], False)
+
     # ① 表归属：用户规矩——只有「产品相关标准」才进 standards 表，
     #    其余标准（职业健康/安全/环境/信息安全类国标）放 laws 表是允许的。
     #    因此仅当「产品相关标准」被放进 laws 表时才拦；其余标准进 laws 放行进人工复核也不算错。
@@ -1305,7 +1439,10 @@ def check_change(table, change, target, today):
     st = norm_status(change.get("status"))
     eff = _ymd(change.get("effectiveDate")) or (_ymd((target or {}).get("effectiveDate")))
     if st == "即将实施" and eff and eff <= today:
-        reasons.append(f"标成「即将实施」，但实施日期 {eff} 早已过去")
+        # 实施日期已过却标"即将实施" = 矛盾，自动纠正为现行有效（不进任何拦截栏）；
+        # 若清单现状本就是现行有效，则不再是变更，后续因无差异自然跳过。
+        change["status"] = "现行有效"
+        st = "现行有效"
     if st == "已废止" and not (_ymd(change.get("abolishDate")) or (target or {}).get("abolishDate")):
         reasons.append("判定为废止，却给不出官方写明的废止日期")
 
@@ -1363,6 +1500,8 @@ def apply_change(table, all_items, change, domain_id, today):
 
     # —— 质检：不通过则整条拦下，带原因进「待核实线索」栏，绝不改动数据 ——
     pre_target = None if action == "add" else _name_match(name, all_items)
+    # 根因修复：先拿官方页正文确定性抽取结论，覆盖 GLM 草稿（GLM 不再当事实来源）
+    change = reconcile_conclusions(change, pre_target, table, today)
     ok, reasons, discard = check_change(table, change, pre_target, today)
     if discard:
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
