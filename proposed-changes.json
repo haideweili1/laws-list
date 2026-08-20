@@ -1,23 +1,69 @@
 {
-  "generatedAt": "2026-08-19",
-  "pending": 0,
+  "generatedAt": "2026-08-20",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 0,
+    "abolished": 0,
+    "statusSwitched": 0,
+    "rejected": 6
+  },
   "changes": [],
   "rejected": [
     {
       "id": "r1",
+      "type": "reject",
+      "table": "laws",
+      "name": "中华人民共和国传染病防治法（2025修订）",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "标成「即将实施」，但实施日期 2025-09-01 早已过去"
+      ],
+      "sourceUrl": "http://www.npc.gov.cn/c2/c30834/202504/t20250430_445085.html",
+      "note": "状态由“现行有效”更新为“即将实施”，依据全国人大常委会官网公布的最新实施日期。"
+    },
+    {
+      "id": "r2",
+      "type": "reject",
+      "table": "laws",
+      "name": "中山市排水管理条例",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "标成「即将实施」，但实施日期 2025-04-11 早已过去"
+      ],
+      "sourceUrl": "http://www.zsrd.gov.cn/zjzs/rdwh/202403/t20240329_1234567.htm",
+      "note": "状态由“现行有效”更新为“即将实施”，依据中山市人大常委会官网公布的最新实施日期。"
+    },
+    {
+      "id": "r3",
+      "type": "reject",
+      "table": "laws",
+      "name": "职业病分类和目录",
+      "category": "环境与职业健康",
+      "action": "update",
+      "reasons": [
+        "标成「即将实施」，但实施日期 2025-08-01 早已过去"
+      ],
+      "sourceUrl": "https://www.gov.cn/gongbao/2025/issue_11886/202502/content_7007111.html",
+      "note": "状态由“现行有效”更新为“即将实施”，依据国务院官网公布的最新实施日期。"
+    },
+    {
+      "id": "r4",
       "type": "reject",
       "table": "standards",
       "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
       "category": "产品标准",
       "action": "update",
       "reasons": [
-        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
+        "官方页未标注实施日期，原填实施日期已清空待核"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
       "note": "status 由 已废止 改为 已废止，abolishDate 由 空字符串 改为 2026-05-01，依据是官方发布的 GB/T 4288-2025 实施公告"
     },
     {
-      "id": "r2",
+      "id": "r5",
       "type": "reject",
       "table": "standards",
       "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
@@ -31,14 +77,14 @@
       "note": "status 由 已废止 改为 已废止，abolishDate 由 空字符串 改为 2027-04-01，依据是官方发布的 GB 12021.4-2026 实施公告"
     },
     {
-      "id": "r3",
+      "id": "r6",
       "type": "reject",
       "table": "standards",
       "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
       "category": "产品标准",
       "action": "update",
       "reasons": [
-        "官方页未标注实施日期，原填实施日期已清空待核"
+        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
       "note": "status 由 已废止 改为 已废止，abolishDate 由 空字符串 改为 2025-09-01，依据是官方发布的 GB 21456-2024 实施公告"
