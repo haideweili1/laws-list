@@ -38,6 +38,10 @@ def _stub_network():
 
 def run(title, table, change, target, expect_ok, expect_discard, expect_in_reason=None):
     M._RESOLVE_LOG.clear()
+    # 真实管线：apply_change 在 check_change 之前会先跑 reconcile_conclusions
+    # （拿官方页正文确定性抽取结论覆盖 GLM 草稿）。自测必须走这条真实路径，
+    # 否则会漏掉"reconcile 把本应丢弃的垃圾错误转成人肉复核"这类回归。
+    change = M.reconcile_conclusions(change, target, table, TODAY)
     ok, reasons, discard = M.check_change(table, change, target, TODAY)
     tag = "PASS" if (ok == expect_ok and discard == expect_discard) else "FAIL"
     print(f"[{tag}] {title}")
@@ -88,7 +92,7 @@ def main():
     print(f"       source_url 已被改写为真链接：{chg_b.get('source_url') == GOV}")
     results.append(chg_b.get("source_url") == GOV)
 
-    # ── 用例 C：不默认为真 ──
+    # ── 用例 C：GLM 编错实施日期 → 系统从官方页抽到真值覆盖，正确数据直接可应用 ──
     _page_text.clear()
     _page_text[GOV] = "某某条例  实施日期：%s  正文……" % PAGE_DATE
     tgt_c = dict(tgt_b, id="L0003")
@@ -96,10 +100,13 @@ def main():
              "effectiveDate": "2026-05-01", "status": "现行有效",
              "fromValues": {"effectiveDate": "", "status": "现行有效"},
              "note": "实施日期 由空 改为 2026-05-01，依据官方正文"}
-    r, _ = run("C 不默认为真：拿到真链接但日期与官方页矛盾 → 只降人工复核，不丢弃",
-               "laws", chg_c, tgt_c, expect_ok=False, expect_discard=False,
-               expect_in_reason="官方页面读到的实施日期")
+    r, _ = run("C 自我纠正：GLM 编错实施日期，系统从官方页抽到真值覆盖 → 正确数据直接可应用",
+               "laws", chg_c, tgt_c, expect_ok=True, expect_discard=False)
     results.append(r)
+    # 额外断言：实施日期被纠正为官方页真值（2026-03-01），而非 GLM 编造的 2026-05-01
+    corrected = (chg_c.get("effectiveDate") == PAGE_DATE)
+    print(f"       实施日期已自我纠正为官方真值 {PAGE_DATE}：{corrected}（GLM 原称 2026-05-01）")
+    results.append(corrected)
 
     # ── 用例 D：按标准号解析 openstd，并把真链接补进 link 字段 ──
     _page_text.clear()

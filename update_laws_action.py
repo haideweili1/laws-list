@@ -793,9 +793,10 @@ def reconcile_conclusions(change, target, table, today):
     """【根因修复核心】GLM 检索后只给了"它认为的变更草稿"。本函数拿官方页正文，用通用规则
     确定性抽取 实施日期/状态/废止日期/替代关系，并【覆盖】GLM 的同名字段，使结论 100% 来自
     官方页 + 规则，而非 LLM 生成。
-      - 取不到官方正文 / 死链 / 张冠李戴 → 标记 _unverified（后续质检转人工复核，不静默丢弃、不自动采信）。
-      - 抽到的字段覆盖 GLM（GLM 编的被顶掉）；抽不到的字段：若 GLM 曾声称与清单不同 → 保留并标
-        _unverified 交人工；否则清空（无变更意图→自然跳过，减少拦截栏条目）。
+      - 取不到官方正文 / 死链 / 张冠李戴（无可用官方页候选）：交回 check_change 按既有规则处置
+        （编造/无链接/死链→整条丢弃），【绝不】改成「人工复核」——否则会把本应丢弃的垃圾塞进
+        人工复核栏，反而增加用户核查负担（与"减少人工复核/丢弃"目标相悖）。
+      - 仅在「有真实官方页、且 GLM 声称的字段与页面抽不到的结论矛盾」时，才标 _unverified 转人工复核。
     不改动 apply_status_rules（用户确认其状态切换正确，不动）。"""
     stdno = ((change.get("stdNo") or "").strip()
              or (target or {}).get("stdNo", "").strip())
@@ -808,32 +809,41 @@ def reconcile_conclusions(change, target, table, today):
                     break
             if stdno:
                 break
-    # 1) 确定官方页 URL：优先 GLM 给的合法 source_url，否则按标准号确定性解析
+    # 1) 确定官方页候选 URL：优先 GLM 给的合法 source_url，否则按标准号/复用现有链接确定性解析
     url = (change.get("source_url") or "").strip()
+    resolved = False
     if not (url and domain_ok(url) and url_shape_ok(url)):
         rs = resolve_source_url_for_change(table, change, target)
         ru = (rs.get("link") or "").strip()
         if ru and rs.get("verified") and domain_ok(ru) and url_shape_ok(ru):
             url = ru
-            change["source_url"] = ru          # 用确定性解析出的真链接顶上
-    # 2) 取官方页正文
+            resolved = True
+        else:
+            url = ""                         # 无可用官方页候选
+    # 2) 取官方页正文（仅在确有候选时才取；无候选交回 check_change 按「编造/无链接→丢弃」）
     text = fetch_text(url, timeout=12) if url else None
+    # 3) 取不到正文：区分「无候选（垃圾）」与「有链接但读取失败（超时）」
     if not text:
-        change["_unverified"] = True
-        change["_unverified_reason"] = "系统未能从官方页取到正文，所称变更无法自动核实，请人工点开确认"
+        if url:
+            # 有真实链接候选但读取失败（超时/被拦截）→ 无法自动核实，转人工复核，不静默丢弃
+            change["_unverified"] = True
+            change["_unverified_reason"] = "官方页超时/无法读取，所称变更无法自动核实，请人工点开确认"
+        # 无候选(url="")：不标 _unverified、不改 source_url，交回 check_change 按「编造/无链接→丢弃」
         return change
-    if is_dead_page(text):
-        change["_unverified"] = True
-        change["_unverified_reason"] = "官方页打开后无正文（死链/编造），所称变更无法核实，请人工确认"
+    # 4) 死页 / 张冠李戴：该页不能作为依据 → 交回 check_change 按「死链/版本不符→丢弃」处置
+    #    （不标 _unverified、不改 source_url，避免把垃圾塞进人工复核栏）
+    if is_dead_page(text) or (stdno and _source_version_mismatch(text, stdno)):
         return change
-    # 3) 版本号核对：官方页讲的不是本条版本 → 不采信该页结论（防张冠李戴）
-    if stdno and _source_version_mismatch(text, stdno):
-        change["_unverified"] = True
-        change["_unverified_reason"] = "官方页标注了其它版本号（疑似张冠李戴），所称变更无法核实，请人工确认"
-        return change
-    # 4) 通用确定性抽取结论
+    # 5) 成功：提交确定性解析出的真链接 + 通用抽取结论覆盖 GLM 草稿
+    if resolved:
+        change["source_url"] = url
+        # 同步把官方真链接补进条目的 link 字段（仅当条目原本缺链接/是首页时），
+        # 与 apply_change 的链接保护逻辑一致；不改已有深链，避免冲掉人工校对好的链接。
+        tgt_link = (((target or {}).get("link", "") or "").strip()) if target else ""
+        if not tgt_link or is_homepage(tgt_link):
+            change["link"] = url
     derived = _extract_conclusions_from_page(text, stdno, today)
-    # 5) 覆盖 GLM 字段：抽到的覆盖；抽不到的按"是否曾声称与清单不同"决定保留待核 or 清空
+    # 6) 覆盖 GLM 字段：抽到的覆盖；抽不到的按"是否曾声称与清单不同"决定保留待核 or 清空
     for fld in ("effectiveDate", "status", "abolishDate", "replacedBy"):
         dv = (derived.get(fld) or "").strip()
         tv = (target or {}).get(fld, "") if target else ""
