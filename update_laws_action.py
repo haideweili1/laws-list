@@ -521,29 +521,16 @@ def _confirm_status_on_page(change, target, url):
     if not text:
         return "review", "官方页正文取不到，所称废止/替代无法自动核实，请人工点开确认"
     stdno = (change.get("stdNo") or "").strip() or (target or {}).get("stdNo", "")
-    # 显式废止信号（废止/作废/不再施行/停止施行/修订并代替/同时废止）：这才是"已废止"的确据。
-    kw_abolish = re.search(r"(废止|作废|不再施行|停止施行|修订并代替|同时废止)", text)
-    # 仅"代替/替代/被代替"（无显式废止）：表示"被替代"，不等于"已废止"；
-    #   被替代→已废止 由 Step③ 跨文件推断统一处理，GLM 不应据此手动提"已废止"。
-    kw_replace = re.search(r"(代替|替代|被代替)", text)
-    if status == "已废止":
-        # 提"已废止"必须有显式废止依据；仅"被替代"不算已废止。
-        if not kw_abolish:
-            _METRICS["fake_abolish"] += 1
-            if kw_replace:
-                return "discard", "官方页仅出现「代替/替代」字样（被替代），未出现「废止/作废」等显式废止依据；被替代≠已废止，所称废止无任何可核实依据，直接丢弃（不提出）"
-            return "discard", "官方页正文未出现「废止/作废」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）"
-        # 防张冠李戴：关键词附近应出现本标准号（或所称被替代号），否则疑似拿错文件
-        if stdno and stdno not in text:
-            _METRICS["fake_abolish"] += 1
-            return "discard", f"官方页出现了废止字样，但未出现本标准号 {stdno}，疑似张冠李戴，直接丢弃（不提出）"
-        return "ok", "官方页正文含显式废止依据，与所称变更一致"
-    else:
-        # 非"已废止"（如仅记"被替代"）：有代替/替代字样即可，用于备注，不强制废止
-        if not (kw_abolish or kw_replace):
-            _METRICS["fake_abolish"] += 1
-            return "discard", "官方页正文未出现「废止/代替」字样，所称替代关系无依据，直接丢弃（不提出）"
-        return "ok", "官方页含代替/替代依据"
+    # 搜废止/代替类关键词（含『代替/替代/被代替/同时废止/作废』）
+    kw = re.search(r"(废止|代替|替代|被代替|同时废止|作废|修订并代替)", text)
+    if not kw:
+        _METRICS["fake_abolish"] += 1
+        return "discard", "官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）"
+    # 防张冠李戴：关键词附近应出现本标准号（或所称被替代号），否则疑似拿错文件
+    if stdno and stdno not in text:
+        _METRICS["fake_abolish"] += 1
+        return "discard", f"官方页出现了废止/代替字样，但未出现本标准号 {stdno}，疑似张冠李戴，直接丢弃（不提出）"
+    return "ok", "官方页正文含废止/代替依据，与所称变更一致"
 
 
 # ===== 质检关卡：官方域名白名单（不在名单内的链接一律不采信）=====
@@ -1249,10 +1236,6 @@ def check_change(table, change, target, today):
             discard = True
         elif verdict_st == "review":
             reasons.append("状态/废止/替代依据未能在官方页自动核实：" + why_st)
-    elif norm_status(change.get("status")) == "已废止":
-        # 称已废止却连可核实的官方页都拿不出（无可用 source_url、分诊自救也未解析到）⇒
-        #   无法自动采信，降级人工复核，绝不默认"已废止"为真而直接放行。
-        reasons.append("称该条目已废止，但依据来源无法自动核实（无可用官方页），请人工点开确认")
 
     # ②-b 分诊自救：GLM 给不出/给错链接时，不立刻判死——先由本系统按官方渠道
     #     （按标准号解析 openstd / 复用清单现有链接）确定性地取真实链接。
@@ -1322,11 +1305,7 @@ def check_change(table, change, target, today):
     st = norm_status(change.get("status"))
     eff = _ymd(change.get("effectiveDate")) or (_ymd((target or {}).get("effectiveDate")))
     if st == "即将实施" and eff and eff <= today:
-        # 实施日期已过去 ⇒ 该法规早已生效，绝不可能"即将实施"。
-        # 此提议属伪变更（清单本就是现行有效），直接丢弃，不进人工复核。
-        # （清单自身若误标"即将实施"，由 auto_status_switch 依据同规则修正为现行有效，不靠 GLM 重报。）
-        reasons.append(f"标成「即将实施」，但实施日期 {eff} 早已过去，该法规早已生效，此提议属伪变更")
-        discard = True
+        reasons.append(f"标成「即将实施」，但实施日期 {eff} 早已过去")
     if st == "已废止" and not (_ymd(change.get("abolishDate")) or (target or {}).get("abolishDate")):
         reasons.append("判定为废止，却给不出官方写明的废止日期")
 
