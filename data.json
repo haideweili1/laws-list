@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-08",
+  "lastUpdated": "2026-08-20",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -66,7 +66,7 @@
       "abolishDate": ""
     },
     {
-      "name": "中华人民共和国认证认可条例",
+      "name": "中华人民共���国认证认可条例",
       "docNumber": "",
       "dept": "国务院",
       "effectiveDate": "2023-07-20",
@@ -134,7 +134,7 @@
       "docNumber": "",
       "dept": "生态环境部",
       "effectiveDate": "2015-01-01",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -149,8 +149,8 @@
       "name": "中华人民共和国大气污染防治法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2018-10-26",
-      "status": "现行有效",
+      "effectiveDate": "2016-01-01",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -165,8 +165,8 @@
       "name": "中华人民共和国水污染防治法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2018-01-01",
-      "status": "现行有效",
+      "effectiveDate": "2008-06-01",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -182,7 +182,7 @@
       "docNumber": "",
       "dept": "全国人大常委会",
       "effectiveDate": "2020-09-01",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -198,7 +198,7 @@
       "docNumber": "",
       "dept": "全国人大常委会",
       "effectiveDate": "2022-06-05",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -214,7 +214,7 @@
       "docNumber": "",
       "dept": "全国人大常委会",
       "effectiveDate": "2019-01-01",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -229,8 +229,8 @@
       "name": "中华人民共和国环境影响评价法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2018-12-29",
-      "status": "现行有效",
+      "effectiveDate": "2003-09-01",
+      "status": "已废止",
       "domains": [
         "环境"
       ],
@@ -262,8 +262,8 @@
       "name": "中华人民共和国清洁生产促进法",
       "docNumber": "",
       "dept": "全国人大常委会",
-      "effectiveDate": "2012-07-01",
-      "status": "现行有效",
+      "effectiveDate": "２００３-01-01",
+      "status": "已废止",
       "domains": [
         "环境",
         "职业健康安全"
@@ -508,7 +508,7 @@
       "docNumber": "",
       "dept": "全国人大常委会",
       "effectiveDate": "2026-08-15",
-      "status": "即将实施",
+      "status": "现行有效",
       "domains": [
         "环境"
       ],
@@ -3492,7 +3492,7 @@
       "abolishDate": ""
     },
     {
-      "name": "排污单位污染物排放口二维码标识技术规范（HJ 1297-2023）",
+      "name": "���污单位污染物排放口二维码标识技术规范（HJ 1297-2023）",
       "docNumber": "",
       "dept": "生态环境部",
       "effectiveDate": "2023-05-26",
@@ -3782,7 +3782,7 @@
     {
       "name": "机关、团体、企业、事业单位消防安全管理规定",
       "docNumber": "",
-      "dept": "应急管理部",
+      "dept": "应急管理��",
       "effectiveDate": "2002-05-01",
       "status": "现行有效",
       "domains": [
