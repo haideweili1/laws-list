@@ -735,7 +735,7 @@ def _resolve_new_std_effective_date(new_stdno):
         link = (rs.get("link") or "").strip()
         if not (link and domain_ok(link) and url_shape_ok(link)):
             return ""
-        txt = fetch_text(link, timeout=8)
+        txt, _via = domestic_fetch(link, timeout=8)   # 走国内 SCF 代理取正文，境外 runner 不被墙
         if not txt or is_dead_page(txt):
             return ""
         return _extract_effective_date(txt) or ""
@@ -821,7 +821,8 @@ def reconcile_conclusions(change, target, table, today):
         else:
             url = ""                         # 无可用官方页候选
     # 2) 取官方页正文（仅在确有候选时才取；无候选交回 check_change 按「编造/无链接→丢弃」）
-    text = fetch_text(url, timeout=12) if url else None
+    #    走 domestic_fetch：优先经国内 SCF 代理(SYNC_PROXY)真实打开，境外 runner 不被墙/超时
+    text, _via = domestic_fetch(url, timeout=12) if url else (None, "none")
     # 3) 取不到正文：区分「无候选（垃圾）」与「有链接但读取失败（超时）」
     if not text:
         if url:

@@ -437,6 +437,43 @@ async function handleResolveOpenstd(bodyStr) {
   return { status: 200, body: JSON.stringify({ ok: false, hcno: "", link: "", verified: false, reason: "未从 openstd 解析到该标准号（可能无此号/反爬/超时）" }) };
 }
 
+// ===== 取页面正文（落地验证层：reconcile 经此从国内 IP 真实打开官方页）=====
+// 请求体：{ url: "https://..." }；返回：{ ok: true, text: "<正文>", httpStatus } 或 { ok: false, reason }
+// 注意：此端点从腾讯云广州 SCF（国内 IP）发起请求，可稳定访问 gov.cn / openstd / npc.gov.cn，
+// 避免 GitHub 境外 runner 直连被墙/超时。openstd 需先到首页取会话 cookie 再打开详情/列表页。
+async function handleFetch(bodyStr) {
+  let payload;
+  try { payload = JSON.parse(bodyStr || "{}"); }
+  catch (e) { return { status: 400, body: JSON.stringify({ message: "请求体不是合法 JSON" }) }; }
+  const url = (payload.url || "").trim();
+  if (!url) return { status: 400, body: JSON.stringify({ message: "缺少 url" }) };
+  try {
+    const u = new URL(url);
+    const host = (u.hostname || "").toLowerCase();
+    if (!(host.endsWith("gov.cn") || host.endsWith("samr.gov.cn") || host.endsWith("npc.gov.cn") ||
+          host.endsWith("cfsa.net.cn") || host.startsWith("www.") || host.includes("."))) {
+      return { status: 400, body: JSON.stringify({ message: "不在允许域名范围" }) };
+    }
+    let cookie = null;
+    if (host.endsWith("openstd.samr.gov.cn")) {
+      const idx = await openstdFetchText('https://openstd.samr.gov.cn/bzgk/gb/index', null);
+      cookie = idx.cookie || null;
+    }
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 15000);
+    const headers = { 'User-Agent': OPENSTD_UA, 'Accept': 'text/html,application/xhtml+xml,*/*' };
+    if (cookie) headers['Cookie'] = cookie;
+    const r = await fetch(url, { method: 'GET', redirect: 'follow', headers, signal: ctrl.signal });
+    clearTimeout(timer);
+    const text = await r.text();
+    if (!text) return { status: 200, body: JSON.stringify({ ok: false, reason: "空正文" }) };
+    return { status: 200, body: JSON.stringify({ ok: true, text, httpStatus: r.status }) };
+  } catch (e) {
+    const msg = (e && e.name === "AbortError") ? "超时" : (e && e.message ? e.message : "网络错误");
+    return { status: 200, body: JSON.stringify({ ok: false, reason: msg }) };
+  }
+}
+
 async function handleRequest(method, pathname, params, bodyStr) {
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
@@ -462,6 +499,10 @@ async function handleRequest(method, pathname, params, bodyStr) {
   if (pathname === '/resolve-openstd') {
     if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
     return await handleResolveOpenstd(bodyStr);
+  }
+  if (pathname === '/fetch') {
+    if (method !== 'POST') return { status: 405, body: JSON.stringify({ message: '仅支持 POST' }) };
+    return await handleFetch(bodyStr);
   }
   // 默认：处理 user-edits.json 的 GET/PUT（团队协同同步）
   return await proxyUserEdits(method, bodyStr, token);
