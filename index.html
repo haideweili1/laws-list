@@ -123,10 +123,11 @@
 .pt.abolish{background:#fee2e2;color:#b91c1c}
 .pt.status_switch{background:#ede9fe;color:#6d28d9}
 .pt.reject{background:#fee2e2;color:#b91c1c}
+.pt.discard{background:#e2e8f0;color:#475569}
 .prop-diff{margin:3px 0 0;padding-left:18px}
 .prop-diff li{font-size:12px}
 .prop-sub{font-size:12px;color:var(--muted);word-break:break-all}
-/* 两栏：左＝通过质检可直接应用；右＝未通过质检的待核实线索（只看不写） */
+/* 两栏：左＝通过质检可直接应用；右＝自动丢弃（无依据/死链/编造，只看不写，供核对检索质量） */
 .prop-cols{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
 .prop-col{flex:1 1 380px;min-width:0}
 .prop-col-h{font-weight:600;font-size:13px;padding-bottom:6px;border-bottom:2px solid #fcd34d;margin-bottom:4px}
@@ -201,15 +202,15 @@
       <button class="btn sm" id="propDiscardBtn" onclick="discardProposals()">全部忽略</button>
     </span>
   </div>
-  <div class="prop-tip">自动检索结果<b>不会自动改数据</b>。左栏是已通过 7 道自动质检的条目，仍请核对后勾选；右栏是质检没通过的线索，<b>只作参考、不会写入清单</b>，可据此判断检索质量。</div>
+  <div class="prop-tip">自动检索结果<b>不会自动改数据</b>。左栏是已通过 7 道自动质检、建议应用的条目，请核对后勾选；右栏是系统<b>自动丢弃</b>的条目（已确认无依据/死链/编造），<b>不会写入清单</b>，供你核对检索质量、确认没有把好条目误删。</div>
   <div class="prop-cols">
     <div class="prop-col">
       <div class="prop-col-h">✅ 可直接应用 <span id="propCountL" class="prop-tip"></span></div>
       <div class="prop-list" id="propList"></div>
     </div>
     <div class="prop-col">
-      <div class="prop-col-h rj">⚠️ 待核实线索（未通过质检） <span id="propCountR" class="prop-tip"></span></div>
-      <div class="prop-list" id="propRejectList"></div>
+      <div class="prop-col-h dc">🗑️ 自动丢弃（无依据/死链/编造） <span id="propCountR" class="prop-tip"></span></div>
+      <div class="prop-list" id="propDiscardList"></div>
     </div>
   </div>
   <div class="cc-status" id="propStatus"></div>
@@ -803,12 +804,12 @@ async function loadProposals(){
   let p=null;
   try{ const r=await fetch("proposed-changes.json?t="+Date.now(),{cache:"no-store"}); if(r.ok)p=await r.json(); }catch(e){}
   const nOk=(p&&Array.isArray(p.changes))?p.changes.length:0;
-  const nRj=(p&&Array.isArray(p.rejected))?p.rejected.length:0;
-  // 只要「可应用」或「待核实」任一非空就展示面板
-  PROPOSALS=(nOk||nRj)?p:null;
+  const nDc=(p&&Array.isArray(p.discarded))?p.discarded.length:0;
+  // 只要「可应用」或「自动丢弃」任一非空就展示面板（人工复核栏已删除）
+  PROPOSALS=(nOk||nDc)?p:null;
   if(!PROPOSALS){ card.style.display="none"; return 0; }
   if(!Array.isArray(PROPOSALS.changes))PROPOSALS.changes=[];
-  if(!Array.isArray(PROPOSALS.rejected))PROPOSALS.rejected=[];
+  if(!Array.isArray(PROPOSALS.discarded))PROPOSALS.discarded=[];
   card.style.display="";
   renderProposals();
   return nOk;
@@ -870,35 +871,34 @@ function renderProposals(){
       +'<div class="prop-title"><span class="pt '+esc(c.type)+'">'+(PROP_TYPE[c.type]||esc(c.type))+"</span>["+tbl+"] 《"+esc(c.name)+"》 <span class=\"muted\">"+esc(c.category||"")+"</span></div>"
       +body+reason+link+src+"</div></div>";
   }).join("")||'<div class="prop-empty">本次没有通过质检的可应用条目。</div>';
-  renderRejected();
+  renderDiscarded();
   updatePropCount();
 }
-// 未通过质检的线索：只展示不勾选，用来看清 GLM 到底错在哪，便于迭代提示词
-function renderRejected(){
-  const box=document.getElementById("propRejectList"); if(!box)return;
-  const list=(PROPOSALS&&Array.isArray(PROPOSALS.rejected))?PROPOSALS.rejected:[];
-  if(!list.length){ box.innerHTML='<div class="prop-empty">本次没有被拦下的线索。</div>'; return; }
+// 自动丢弃的条目：已确认无依据/死链/编造，只展示不勾选，供核对检索质量（确认没把好条目误删）
+function renderDiscarded(){
+  const box=document.getElementById("propDiscardList"); if(!box)return;
+  const list=(PROPOSALS&&Array.isArray(PROPOSALS.discarded))?PROPOSALS.discarded:[];
+  if(!list.length){ box.innerHTML='<div class="prop-empty">本次没有自动丢弃的条目。</div>'; return; }
   box.innerHTML=list.map(r=>{
-    const tbl=r.table==="standards"?"标准":"法规";
+    const tbl=(r.table==="standards")?"标准":"法规";
     const act={add:"想新增",update:"想更新",abolish:"想废止"}[r.action]||esc(r.action||"");
-    const reasons=(r.reasons||[]).map(x=>"<li>"+esc(x)+"</li>").join("");
+    const reason=r.reason?'<ul class="rj-reason"><li>'+esc(r.reason)+"</li></ul>":"";
     const su=r.sourceUrl?'<div class="prop-sub">它给的依据：<a href="'+esc(r.sourceUrl)+'" target="_blank" rel="noopener">'+esc(r.sourceUrl)+"</a></div>":'<div class="prop-sub">它给的依据：<span class="old">未提供</span></div>';
-    const note=r.note?'<div class="prop-sub">它的说法：'+esc(r.note)+"</div>":"";
     return '<div class="prop-item"><div class="prop-main">'
-      +'<div class="prop-title"><span class="pt reject">未通过</span>['+tbl+'] 《'+esc(r.name||"")+'》 <span class="muted">'+esc(r.category||"")+"　"+act+"</span></div>"
-      +'<ul class="rj-reason">'+reasons+"</ul>"+note+su+"</div></div>";
+      +'<div class="prop-title"><span class="pt discard">已丢弃</span>['+tbl+'] 《'+esc(r.name||"")+'》 <span class="muted">'+esc(r.category||"")+"　"+act+"</span></div>"
+      +reason+su+"</div></div>";
   }).join("");
 }
 function updatePropCount(){
   const boxes=[...document.querySelectorAll("#propList input[type=checkbox]")];
   const n=boxes.filter(x=>x.checked).length;
-  const nRj=(PROPOSALS&&Array.isArray(PROPOSALS.rejected))?PROPOSALS.rejected.length:0;
+  const nDc=(PROPOSALS&&Array.isArray(PROPOSALS.discarded))?PROPOSALS.discarded.length:0;
   const el=document.getElementById("propCount");
-  if(el)el.textContent="（可应用 "+boxes.length+" 条／待核实 "+nRj+" 条"+(PROPOSALS&&PROPOSALS.generatedAt?("，检索于 "+PROPOSALS.generatedAt):"")+"）";
+  if(el)el.textContent="（可应用 "+boxes.length+" 条／自动丢弃 "+nDc+" 条"+(PROPOSALS&&PROPOSALS.generatedAt?("，检索于 "+PROPOSALS.generatedAt):"")+"）";
   const l=document.getElementById("propCountL");
   if(l)l.textContent="共 "+boxes.length+" 条，已选 "+n+" 条";
   const rr=document.getElementById("propCountR");
-  if(rr)rr.textContent="共 "+nRj+" 条（不会写入清单）";
+  if(rr)rr.textContent="共 "+nDc+" 条（不会写入清单）";
 }
 function toggleAllProposals(checked){
   document.querySelectorAll("#propList input[type=checkbox]").forEach(x=>{x.checked=!!checked;});
@@ -947,14 +947,14 @@ async function applyProposals(){
   try{
     const r=await fetch(SYNC_PROXY+"/apply-proposed",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({data:nd,summary:summary,remaining:remaining,
-        rejected:(PROPOSALS.rejected||[]),generatedAt:PROPOSALS.generatedAt||today})});
+        discarded:(PROPOSALS.discarded||[]),generatedAt:PROPOSALS.generatedAt||today})});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){ if(btn)btn.disabled=false; setPropSt("err","写入失败："+(j.message||"请稍后再试")); return; }
     DATA=nd;
     $("#lastUpdated").textContent=DATA.lastUpdated||"-";
     buildFilterOptions(); renderLaws(); renderStandards();
-    const keepRj=PROPOSALS.rejected||[];
-    PROPOSALS=(remaining.length||keepRj.length)?Object.assign({},PROPOSALS,{changes:remaining,rejected:keepRj}):null;
+    const keepDc=PROPOSALS.discarded||[];
+    PROPOSALS=(remaining.length||keepDc.length)?Object.assign({},PROPOSALS,{changes:remaining,discarded:keepDc}):null;
     if(PROPOSALS){ renderProposals(); }
     else { const card=document.getElementById("proposalCard"); if(card)card.style.display="none"; }
     setPropSt("ok","✅ 已应用 "+applied.length+" 条"+(skipped.length?("，跳过 "+skipped.length+" 条："+skipped.join("；")):"")+"。约 1 分钟后线上同步生效。");
@@ -977,8 +977,8 @@ function closeProposalCard(msg){
 }
 async function discardProposals(){
   if(!PROPOSALS)return;
-  const total=(PROPOSALS.changes||[]).length+(PROPOSALS.rejected||[]).length;
-  if(!confirm("确认丢弃本次全部 "+total+" 条提案（含待核实线索）？清单数据不会有任何改动。")) return;
+  const total=(PROPOSALS.changes||[]).length+(PROPOSALS.discarded||[]).length;
+  if(!confirm("确认丢弃本次全部 "+total+" 条提案（含自动丢弃项）？清单数据不会有任何改动。")) return;
   const btn=document.getElementById("propDiscardBtn"); if(btn)btn.disabled=true;
   setPropSt("running","正在清理提案…");
   try{

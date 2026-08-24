@@ -1293,19 +1293,37 @@ def _norm_txt(v):
     return re.sub(r"\s+", "", str(v or "")).strip()
 
 
+def _is_hard_reason(r):
+    """判断一条质检原因是否为『硬伤』（应丢弃）。返回 False 表示『软提示』（实施日期待补/正文超时，放行可应用）。"""
+    s = str(r or "")
+    # 软提示：实施日期取不到 / 正文超时 / 状态依据待核 —— 放行「可应用」，实施日期留空标注待补
+    if "实施日期" in s and ("未标注" in s or "无法自动填写" in s or "待补" in s
+                             or "待人工" in s or "正文取不到" in s or "超时" in s or "无法核实" in s):
+        return False
+    if "正文取不到" in s or "境外超时" in s or "请人工点开确认" in s or "请人工确认" in s or "无法核实" in s:
+        return False
+    if "状态/废止/替代依据未能在官方页自动核实" in s:
+        return False
+    return True
+
+
 def check_change(table, change, target, today):
     """7 道质检关卡。返回 (是否通过, 未通过原因列表, 是否直接丢弃)。
-    - 通过：进「可直接应用」。
-    - 未通过但 '丢弃'=False：进「待核实线索」栏（人工复核，真候选）。
-    - '丢弃'=True：确属垃圾（无依据/死链/非官方/理由缺失），直接丢弃，不污染任何面板。"""
+    - 通过(ok=True)：进「可直接应用」（人工在可应用面板点开确认后应用）。
+    - '丢弃'=True：确属垃圾（无依据/死链/非官方/理由缺失/硬伤矛盾），直接丢弃，不污染任何面板。
+    - 注：人工复核栏已删除。凡『软提示』（官方页超时取不到/实施日期待补/状态依据待核）一律放行「可应用」并随附理由，
+      由用户人工点开确认——既不静默采信，也不因"无法自动核实"就把高价值更新踢进丢弃。"""
     reasons = []
     name = (change.get("name") or "").strip()
     action = (change.get("action") or "").strip().lower()
     discard = False
 
-    # 根因修复：结论无法从官方页核实 → 进人工复核（不静默丢弃、不自动采信）
+    # 人工复核栏已删除（用户确认）：结论无法从官方页核实(_unverified)属『软提示』，
+    # 不再单列待核实栏——放行「可应用」并随附理由（如"请人工点开确认"），
+    # 由用户在可应用面板点开确认后再应用：既减少丢弃、保住高价值更新，又不静默采信。
     if change.get("_unverified"):
-        return (False, [change.get("_unverified_reason", "官方页无法核实，请人工确认")], False)
+        reasons.append(change.get("_unverified_reason", "官方页无法核实，请人工确认"))
+        return (True, reasons, False)
 
     # ① 表归属：用户规矩——只有「产品相关标准」才进 standards 表，
     #    其余标准（职业健康/安全/环境/信息安全类国标）放 laws 表是允许的。
@@ -1466,7 +1484,15 @@ def check_change(table, change, target, today):
         reasons.append("理由里说改实施日期，实际却没给出日期")
         discard = True
 
-    return (len(reasons) == 0), reasons, discard
+    # 人工复核栏已删除：重新归类——硬伤(矛盾/无依据)直接丢弃，软提示(实施日期待补/正文超时)放行可应用
+    if discard:
+        return (False, reasons, True)
+    hard = [r for r in reasons if _is_hard_reason(r)]
+    if hard:
+        # 矛盾/硬伤（如 fromValues 与清单不符、称废止却无废止日期、无依据）：进丢弃，透明写明理由
+        return (False, reasons, True)
+    # 仅剩软提示（实施日期待补 / 正文超时 / 状态依据待核）：放行「可应用」，实施日期留空标注待补
+    return (True, reasons, False)
 
 
 def _proposed_summary(change):
@@ -1538,7 +1564,7 @@ def apply_change(table, all_items, change, domain_id, today):
         return {"kind": "add", "name": name, "category": label, "table": table,
                 "targetId": str(new_id), "newRecord": rec, "setFields": None, "display": disp}
     if not ok:
-        return {"kind": "reject", "name": name, "category": label, "table": table,
+        return {"kind": "discard", "name": name, "category": label, "table": table,
                 "action": action, "reasons": reasons,
                 "sourceUrl": (change.get("source_url") or "").strip(),
                 "note": str(change.get("note") or ""), "proposed": _proposed_summary(change)}
@@ -1599,6 +1625,11 @@ def apply_change(table, all_items, change, domain_id, today):
     if new_status and new_status != target.get("status"):
         set_fields["status"] = new_status
         diffs.append({"field": "状态", "from": target.get("status", ""), "to": new_status})
+    # 被替代关系：GLM 提供的 replacedBy 一并应用（避免高价值"被XX替代"信息在 update 动作下丢失）
+    rb = (change.get("replacedBy") or "").strip()
+    if rb and rb != (target.get("replacedBy") or "").strip():
+        set_fields["replacedBy"] = rb
+        diffs.append({"field": "被替代", "from": target.get("replacedBy", "") or "（无）", "to": rb})
     # 【禁改字段】名称与发布部门/发布单位一律不许改动。
     # "国家互联网信息办公室"→"国家网信办" 这类同义简称改写不是变更，直接忽略。
     src = (change.get("source") or "").strip()
@@ -1634,7 +1665,7 @@ def apply_change(table, all_items, change, domain_id, today):
         # 摆到「待核实线索」栏里，让人看得见 GLM 到底错在哪，才能迭代提示词。
         tried_dept = bool(src) and _norm_txt(src) != _norm_txt(target.get(src_field, ""))
         if tried_dept:
-            return {"kind": "reject", "name": name, "category": label, "table": table,
+            return {"kind": "discard", "name": name, "category": label, "table": table,
                     "action": action,
                     "reasons": [f"只提出了禁改字段的改动：想把部门「{target.get(src_field,'') or '空'}」"
                                 f"改成「{src}」，属同义改写，已拦截"],
@@ -1863,7 +1894,7 @@ def _classify_reason(r):
 
 
 def _tally_reasons(items, reason_getter):
-    """对一组条目（rejected/discarded）按原因分类计数。"""
+    """对一组条目（discarded）按原因分类计数。"""
     c = Counter()
     for it in items:
         rs = reason_getter(it)
@@ -1875,31 +1906,22 @@ def _tally_reasons(items, reason_getter):
     return dict(c)
 
 
-def write_retrieval_report(summary_changes, rejected, discarded, switched, today, metrics=None):
-    """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让人工复核归零』的瞄准镜。
+def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None):
+    """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让高价值更新都进左栏』的瞄准镜。
     只产出报告文件，绝不改动 data.json。"""
     if metrics is None:
         metrics = _METRICS
     counts = {
         "ok_可直接应用": len(summary_changes),
-        "reject_人工复核": len(rejected),
         "discard_丢弃": len(discarded),
         "status_switch_状态切换": len(switched),
     }
-    reject_breakdown = _tally_reasons(rejected, lambda r: r.get("reasons", []))
     discard_breakdown = _tally_reasons(discarded, lambda d: d.get("reason", ""))
     report = {
         "generatedAt": today,
-        "note": "测量仪表：右栏(人工复核)是诊断信号不是负担。逐类压降 reject_breakdown，才能让它归零。",
+        "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
         "counts": counts,
-        "reject_breakdown": reject_breakdown,
         "discard_breakdown": discard_breakdown,
-        "rejected_items": [
-            {"name": r.get("name"), "category": r.get("category"), "table": r.get("table"),
-             "action": r.get("action"), "reasons": r.get("reasons", []),
-             "sourceUrl": r.get("sourceUrl", ""), "proposed": r.get("proposed", {})}
-            for r in rejected
-        ],
         "discarded_items": [
             {"name": d.get("name"), "table": d.get("table"), "action": d.get("action"),
              "reason": d.get("reason", ""), "proposed": d.get("proposed", {})}
@@ -1924,19 +1946,12 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
     try:
         lines = []
         lines.append(f"# 自动检索质检报告（{today}）\n")
-        lines.append("> 测量仪表：右栏(人工复核)是诊断信号。逐类压降下面 reject 的分类，才能让它归零。\n")
+        lines.append("> 测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降下面 discard 的分类，可应用才会变多。\n")
         lines.append("## 计数")
         lines.append(f"- 可直接应用（左栏）：**{counts['ok_可直接应用']}**")
-        lines.append(f"- 人工复核（右栏）：**{counts['reject_人工复核']}**")
-        lines.append(f"- 丢弃：**{counts['discard_丢弃']}**")
+        lines.append(f"- 自动丢弃（右栏）：**{counts['discard_丢弃']}**")
         lines.append(f"- 状态切换：**{counts['status_switch_状态切换']}**")
-        lines.append("\n## 右栏「为什么被拒」分类（训练瞄准镜）")
-        if reject_breakdown:
-            for k, v in sorted(reject_breakdown.items(), key=lambda x: -x[1]):
-                lines.append(f"- {k}：{v}")
-        else:
-            lines.append("- （无）")
-        lines.append("\n## 丢弃「为什么被丢」分类")
+        lines.append("\n## 自动丢弃「为什么被丢」分类（训练瞄准镜）")
         if discard_breakdown:
             for k, v in sorted(discard_breakdown.items(), key=lambda x: -x[1]):
                 lines.append(f"- {k}：{v}")
@@ -1954,10 +1969,6 @@ def write_retrieval_report(summary_changes, rejected, discarded, switched, today
                     f"- 《{g['name']}》[{g['method']}]：GLM 原本给的是 {g['glmGave']} → "
                     f"系统解析到 {g['link']}｜"
                     f"{'内容已核对一致，可直接应用' if g['claimConfirmed'] else '内容待人工确认'}")
-        if rejected:
-            lines.append("\n## 右栏条目明细")
-            for r in rejected:
-                lines.append(f"- 《{r.get('name')}》[{r.get('category')}]：{'；'.join(r.get('reasons', []))}{_fmt_prop(r.get('proposed'))}")
         if discarded:
             lines.append("\n## 丢弃条目明细")
             for d in discarded:
@@ -1998,6 +2009,27 @@ def write_running_status():
         print("  已写入检索状态：running")
     except Exception as e:
         print("  写入 running 状态失败（可忽略）:", e)
+
+
+def _already_done(table, all_items, ch):
+    """变更已在清单体现（重复重报）→ 跳过，不计入可应用/丢弃/人工复核。"""
+    action = (ch.get("action") or "").lower()
+    name = (ch.get("name") or "").strip()
+    tgt = _name_match(name, all_items) if name else None
+    if action == "add":
+        return tgt is not None  # 新增但已存在 = 重复
+    if tgt is None:
+        return False
+    cs = norm_status(ch.get("status"))
+    ts = norm_status(tgt.get("status"))
+    rb = (ch.get("replacedBy") or "").strip()
+    trb = (tgt.get("replacedBy") or "").strip()
+    ce = _ymd(ch.get("effectiveDate"))
+    te = _ymd(tgt.get("effectiveDate"))
+    # 想改的状态/替代/实施日期 与清单一致（或没提新值）→ 无实质变更 = 已做过
+    if (not cs or cs == ts) and (not rb or rb == trb) and (not ce or ce == te):
+        return True
+    return False
 
 
 def main():
@@ -2045,8 +2077,7 @@ def main():
     summary_changes = []
     for k in _METRICS:  # 每轮检索重置质量测量计数器
         _METRICS[k] = 0
-    rejected = []   # 未过质检的候选：不改数据，带着原因进网页「待核实线索」栏
-    discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，收集以便报告计数
+    discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失/硬伤矛盾）：直接丢弃，收集以便报告计数
     for table, cid in targets:
         if table == "laws":
             items = [l for l in proposed_laws if l.get("category") == cid]
@@ -2070,6 +2101,11 @@ def main():
             scf_batch_probe(_su)
         print(f"  发现 {len(changes)} 条候选：{result.get('summary', '')}")
         for ch in changes:
+            # 去重：变更已在清单体现（重复重报）→ 跳过，不污染任何面板
+            if _already_done(table, all_items, ch):
+                print(f"    跳过（变更已在清单体现，属重复重报）：{ch.get('name')}")
+                _METRICS["dup_rereport"] += 1
+                continue
             res = apply_change(table, all_items, ch, cid, today)
             if not res or res.get("kind") == "skip":
                 if res:
@@ -2080,10 +2116,6 @@ def main():
                                   "table": res.get("table", ""), "reason": res.get("reason", "")})
                 print(f"    丢弃（{res.get('reason')}）：{res.get('name')}")
                 continue
-            if res.get("kind") == "reject":
-                rejected.append(res)
-                print(f"    [未过质检] {res['name']} → {'；'.join(res['reasons'])}")
-                continue
             summary_changes.append(res)
             print(f"    [{res['kind']}] {res['name']}（{res['display'].get('reason')}）")
             # Step③ 跨文件废止推断：本条官方页声明"代替 GB/T X"→反查清单把 X 标已废止
@@ -2092,8 +2124,8 @@ def main():
                     summary_changes.append(r3)
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
-    write_retrieval_report(summary_changes, rejected, discarded, switched, today, metrics=_METRICS)
-    print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 人工复核 {len(rejected)} / 丢弃 {len(discarded)}）")
+    write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS)
+    print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 自动丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
     if DRAFT_MODE:
@@ -2106,22 +2138,22 @@ def main():
                 "updated": sum(1 for c in summary_changes if c["kind"] == "update"),
                 "abolished": sum(1 for c in summary_changes if c["kind"] == "abolish"),
                 "statusSwitched": len(switched),
-                "rejected": len(rejected),
+                "discarded": len(discarded),
             },
             "changes": [],
-            "rejected": [
+            "discarded": [
                 {
-                    "id": f"r{i + 1}",
-                    "type": "reject",
-                    "table": r.get("table"),
-                    "name": r.get("name"),
-                    "category": r.get("category"),
-                    "action": r.get("action"),
-                    "reasons": r.get("reasons", []),
-                    "sourceUrl": r.get("sourceUrl", ""),
-                    "note": r.get("note", ""),
+                    "id": f"d{i + 1}",
+                    "type": "discard",
+                    "table": d.get("table"),
+                    "name": d.get("name"),
+                    "category": d.get("category"),
+                    "action": d.get("action"),
+                    "reason": d.get("reason", ""),
+                    "sourceUrl": d.get("sourceUrl", ""),
+                    "proposed": d.get("proposed", {}),
                 }
-                for i, r in enumerate(rejected)
+                for i, d in enumerate(discarded)
             ],
         }
         for c in summary_changes:
@@ -2159,7 +2191,7 @@ def main():
             })
         # 本轮零结果（既无可应用变更，也无待核实线索）时不产出提案文件，
         # 避免网页弹出一个空的「待确认更新」面板。
-        if not proposed_changes["changes"] and not proposed_changes["rejected"]:
+        if not proposed_changes["changes"] and not proposed_changes["discarded"]:
             for p in (PROPOSED_DATA_PATH, PROPOSED_CHANGES_PATH):
                 try:
                     os.remove(p)

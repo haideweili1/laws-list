@@ -166,10 +166,44 @@ def main():
           f"实际拿去解析的标准号={used}")
     results.append(hint_ok)
 
+    # ── 用例 G：软提示(官方页取不到/超时) → 放行可应用，不踢人工复核 ──
+    # 真实链接已知（gov.cn），但官方页正文读不到（模拟境外超时）→ reconcile 标 _unverified。
+    # 新逻辑：_unverified 属软提示 → 放行「可应用」，附"请人工确认"警告，不再进人工复核。
+    _page_text.clear()  # GOV 不放入 → fetch_text(GOV)=None，模拟超时
+    tgt_g = {"id": "L0009", "name": "某某管理办法", "link": GOV,
+             "effectiveDate": "2025-01-01", "status": "现行有效", "dept": "国务院"}
+    chg_g = {"action": "update", "name": "某某管理办法", "source_url": GOV,
+             "status": "现行有效", "effectiveDate": "2025-01-01",
+             "fromValues": {"effectiveDate": "2025-01-01", "status": "现行有效"},
+             "note": "例行更新"}
+    r, reasons_g = run("G 软提示：官方页取不到(超时) → 放行可应用(附请人工确认)，不踢人工复核",
+                       "laws", chg_g, tgt_g, expect_ok=True, expect_discard=False,
+                       expect_in_reason="请人工点开确认")
+    results.append(r)
+
+    # ── 用例 H：_is_hard_reason 纯函数断言（不受 reconcile 归一化干扰）──
+    # 硬伤(矛盾/无依据) → True；软提示(实施日期待补/正文超时) → False。
+    hard_samples = [
+        "声称原状态是「已废止」，清单里其实是「现行有效」",
+        "判定为废止，却给不出官方写明的废止日期",
+        "没有说明改了什么、依据是什么",
+        "这是产品相关标准，按规矩应放进标准表(standards)而非法规表(laws)",
+    ]
+    soft_samples = [
+        "官方页未标注实施日期，无法自动填写",
+        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认",
+        "状态/废止/替代依据未能在官方页自动核实：页面无相关字样",
+    ]
+    h_ok = all(M._is_hard_reason(x) for x in hard_samples)
+    s_ok = all(not M._is_hard_reason(x) for x in soft_samples)
+    hpass = h_ok and s_ok
+    print(f"[{'PASS' if hpass else 'FAIL'}] H _is_hard_reason：硬伤=True({h_ok}) / 软提示=False({s_ok})")
+    results.append(hpass)
+
     print("\n===== 汇总 =====")
     print(f"通过 {sum(1 for x in results if x)} / {len(results)}")
     if all(results):
-        print("结论：质检关卡未放水——垃圾照丢、真变更被救回、拿不准只降人工复核。")
+        print("结论：质检关卡未放水——垃圾照丢、真变更被救回、实施日期待补放行可应用、矛盾项丢弃。")
         return 0
     print("结论：存在未通过项，需修正后再推送。")
     return 1
