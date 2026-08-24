@@ -6,6 +6,7 @@
 <title>法律法规与产品标准清单</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="vendor/html2canvas.min.js"></script>
+<script src="vendor/jszip.min.js"></script>
 <!-- jspdf 已移除：PDF 改用浏览器原生打印(window.print)，彻底摆脱外部 CDN 依赖 -->
 <style>
   :root{
@@ -1168,17 +1169,31 @@ function exportPDF(table){
   window.addEventListener("afterprint",cleanup);
   window.print();
 }
-/* PNG：自托管 html2canvas + 按行分块（每块不超画布上限），长清单分页导出多张 */
+/* PNG：自托管 html2canvas + 按行分块（每块不超画布上限），长清单分页打包成单个 zip 下载 */
 function exportPNG(table){
   const src=table==="laws"?$("#lawTable"):$("#stdTable");
   const rows=src.tBodies[0]?Array.prototype.slice.call(src.tBodies[0].rows):[];
   if(!rows.length){alert("没有可导出的数据，请检查筛选条件。");return;}
+  if(typeof window.JSZip==="undefined"){alert("压缩组件未加载，请刷新页面后重试；若仍失败请联系管理员检查 vendor/jszip.min.js 是否已随站点部署。");return;}
   const thead=src.querySelector("thead");
   const perPage=40; // 每块行数：控制单张画布高度不超浏览器上限
+  const baseName=table==="laws"?"法律法规":"产品标准";
+  const totalPages=Math.ceil(rows.length/perPage);
+  const zip=new window.JSZip();
   let page=0;
-  showLoading("正在导出图片（长清单将分多张下载）…");
+  showLoading("正在导出图片（分 "+totalPages+" 页打包为压缩包）…");
   function renderChunk(){
-    if(page*perPage>=rows.length){hideLoading();return;}
+    if(page>=totalPages){
+      zip.generateAsync({type:"blob"}).then(blob=>{
+        const a=document.createElement("a");
+        a.download=baseName+"清单_图片.zip";
+        a.href=URL.createObjectURL(blob);
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+        hideLoading();
+      }).catch(err=>{hideLoading();alert("打包压缩包失败："+(err&&err.message?err.message:err));});
+      return;
+    }
     const frag=document.createElement("table");
     frag.appendChild(thead.cloneNode(true));
     const tb=document.createElement("tbody");
@@ -1191,13 +1206,13 @@ function exportPNG(table){
     holder.appendChild(frag);
     document.body.appendChild(holder);
     window.html2canvas(frag,{scale:2,backgroundColor:"#ffffff"}).then(canvas=>{
-      const a=document.createElement("a");
-      a.download=(table==="laws"?"法律法规":"产品标准")+"_第"+(page+1)+"页.png";
-      a.href=canvas.toDataURL("image/png");
       if(holder.parentNode)document.body.removeChild(holder);
-      a.click();
-      page++;
-      setTimeout(renderChunk,250); // 错开连续下载，避免被浏览器拦截
+      canvas.toBlob(blob=>{
+        if(!blob){hideLoading();alert("第"+(page+1)+"页图片生成失败");return;}
+        zip.file(baseName+"_第"+(page+1)+"页.png",blob);
+        page++;
+        setTimeout(renderChunk,50);
+      },"image/png");
     }).catch(err=>{
       if(holder.parentNode)document.body.removeChild(holder);
       hideLoading();
