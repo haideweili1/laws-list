@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>法律法规与产品标准清单</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="vendor/html2canvas.min.js"></script>
+<!-- jspdf 已移除：PDF 改用浏览器原生打印(window.print)，彻底摆脱外部 CDN 依赖 -->
 <style>
   :root{
     --bg:#f5f7fa; --card:#fff; --line:#e3e8ef; --text:#1f2733; --muted:#6b7785;
@@ -145,6 +145,25 @@
   .filterbar .fchip .fx{color:#9a3412;cursor:pointer;font-weight:700;font-size:12px;line-height:1}
   .filterbar .fchip .fx:hover{color:#7c2d12}
   .filterbar .btn.sm{padding:4px 10px;font-size:12px}
+  /* ===== 导出优化：PDF 原生打印 + PNG 分块（2026-08-24） ===== */
+  #printArea{display:none}
+  .export-holder{position:fixed;left:-99999px;top:0;width:1100px;background:#fff;padding:8px}
+  .export-loading{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:300}
+  .export-loading .el-box{background:#fff;border-radius:12px;padding:18px 26px;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+  .export-loading .el-spin{width:20px;height:20px;border:3px solid var(--line);border-top-color:var(--pri);border-radius:50%;animation:elspin .8s linear infinite}
+  @keyframes elspin{to{transform:rotate(360deg)}}
+  @media print{
+    @page{size:A4 landscape;margin:10mm}
+    body.printing > *:not(#printArea){display:none!important}
+    body.printing #printArea{display:block!important}
+    body.printing #printArea .print-title{display:block!important;font-size:15px;font-weight:700;margin-bottom:8px}
+    body.printing #printArea table{display:table!important;width:100%;border-collapse:collapse;font-size:10px}
+    body.printing #printArea thead{display:table-header-group!important}
+    body.printing #printArea tbody{display:table-row-group!important}
+    body.printing #printArea tr{display:table-row!important;page-break-inside:avoid}
+    body.printing #printArea th,body.printing #printArea td{display:table-cell!important;border:1px solid #999;padding:3px 5px;text-align:left;vertical-align:top}
+    body.printing #printArea tbody tr:nth-child(even){background:#f5f7fa}
+  }
 </style>
 </head>
 <body>
@@ -1129,37 +1148,68 @@ function exportExcel(table){
   const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,table==="laws"?"法律法规":"产品标准");
   XLSX.writeFile(wb,(table==="laws"?"法律法规":"产品标准")+"清单.xlsx");
 }
-function exportPDF(table){exportCanvas(table,true);}
-function exportPNG(table){exportCanvas(table,false);}
-function exportCanvas(table,asPdf){
-  const el=table==="laws"?$("#lawTable"):$("#stdTable");
-  html2canvas(el,{scale:2}).then(canvas=>{
-    if(!asPdf){const a=document.createElement("a");a.download=(table==="laws"?"法律法规":"产品标准")+"清单.png";a.href=canvas.toDataURL("image/png");a.click();return;}
-    const img=canvas.toDataURL("image/png");const p=new window.jspdf.jsPDF("l","mm","a4");
-    const pw=p.internal.pageSize.getWidth(),ph=p.internal.pageSize.getHeight();
-    const iw=pw, ih=canvas.height*ik(pw)/canvas.width; let y=0;
-    function ik(w){return w/canvas.width;}
-    let pos=0; const h=ih;
-    // 简单分页
-    let remaining=canvas.height, pageH=ph*canvas.width/pw;
-    const pageCanvas=document.createElement("canvas");pageCanvas.width=canvas.width;
-    const ctx=pageCanvas.getContext("2d");
-    let sy=0;
-    while(sy<canvas.height){
-      const sh=Math.min(pageH,canvas.height-sy);
-      pageCanvas.height=sh;
-      ctx.drawImage(canvas,0,sy,canvas.width,sh,0,0,canvas.width,sh);
-      const pImg=pageCanvas.toDataURL("image/png");
-      if(sy>0)p.addPage();
-      const dh=sh*ik(pw);
-      p.addImage(pImg,"PNG",0,0,pw,dh);
-      sy+=sh;
-    }
-    p.save((table==="laws"?"法律法规":"产品标准")+"清单.pdf");
-  });
+function showLoading(msg){const el=document.getElementById("exportLoading");if(el){el.querySelector(".el-msg").textContent=msg||"处理中…";el.classList.remove("hidden");}}
+function hideLoading(){const el=document.getElementById("exportLoading");if(el)el.classList.add("hidden");}
+/* PDF：浏览器原生打印 + 打印样式（零外部依赖、长清单原生分页、文字清晰可搜索） */
+function exportPDF(table){
+  const src=table==="laws"?$("#lawTable"):$("#stdTable");
+  const area=document.getElementById("printArea");
+  area.innerHTML="";
+  const title=document.createElement("div");
+  title.className="print-title";
+  const cnt=src.tBodies[0]?src.tBodies[0].rows.length:0;
+  title.textContent=(table==="laws"?"法律法规清单":"产品标准清单")+"（共 "+cnt+" 条"+(cnt>40?"，已自动分页打印":"" )+"）";
+  const clone=src.cloneNode(true);
+  clone.querySelectorAll("th:last-child,td:last-child").forEach(e=>e.remove()); // 去掉“操作”列（复选框）
+  area.appendChild(title);
+  area.appendChild(clone);
+  document.body.classList.add("printing");
+  const cleanup=()=>{document.body.classList.remove("printing");area.innerHTML="";window.removeEventListener("afterprint",cleanup);};
+  window.addEventListener("afterprint",cleanup);
+  window.print();
+}
+/* PNG：自托管 html2canvas + 按行分块（每块不超画布上限），长清单分页导出多张 */
+function exportPNG(table){
+  const src=table==="laws"?$("#lawTable"):$("#stdTable");
+  const rows=src.tBodies[0]?Array.prototype.slice.call(src.tBodies[0].rows):[];
+  if(!rows.length){alert("没有可导出的数据，请检查筛选条件。");return;}
+  const thead=src.querySelector("thead");
+  const perPage=40; // 每块行数：控制单张画布高度不超浏览器上限
+  let page=0;
+  showLoading("正在导出图片（长清单将分多张下载）…");
+  function renderChunk(){
+    if(page*perPage>=rows.length){hideLoading();return;}
+    const frag=document.createElement("table");
+    frag.appendChild(thead.cloneNode(true));
+    const tb=document.createElement("tbody");
+    const end=Math.min((page+1)*perPage,rows.length);
+    for(let i=page*perPage;i<end;i++)tb.appendChild(rows[i].cloneNode(true));
+    frag.appendChild(tb);
+    frag.querySelectorAll("th:last-child,td:last-child").forEach(e=>e.remove());
+    const holder=document.createElement("div");
+    holder.className="export-holder";
+    holder.appendChild(frag);
+    document.body.appendChild(holder);
+    window.html2canvas(frag,{scale:2,backgroundColor:"#ffffff"}).then(canvas=>{
+      const a=document.createElement("a");
+      a.download=(table==="laws"?"法律法规":"产品标准")+"_第"+(page+1)+"页.png";
+      a.href=canvas.toDataURL("image/png");
+      if(holder.parentNode)document.body.removeChild(holder);
+      a.click();
+      page++;
+      setTimeout(renderChunk,250); // 错开连续下载，避免被浏览器拦截
+    }).catch(err=>{
+      if(holder.parentNode)document.body.removeChild(holder);
+      hideLoading();
+      alert("导出图片失败："+(err&&err.message?err.message:err));
+    });
+  }
+  renderChunk();
 }
 init();
 </script>
 <button id="backTop" class="back-top" type="button" onclick="goToTop()" title="返回顶部"><span class="bt-ico">↑</span><span class="bt-txt">顶部</span></button>
+<div id="printArea"></div>
+<div id="exportLoading" class="export-loading hidden"><div class="el-box"><span class="el-spin"></span><span class="el-msg">处理中…</span></div></div>
 </body>
 </html>
