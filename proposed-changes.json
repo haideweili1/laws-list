@@ -6,7 +6,7 @@
     "updated": 0,
     "abolished": 0,
     "statusSwitched": 0,
-    "rejected": 3
+    "rejected": 2
   },
   "changes": [],
   "rejected": [
@@ -18,10 +18,10 @@
       "category": "产品标准",
       "action": "update",
       "reasons": [
-        "官方页未标注实施日期，原填实施日期已清空待核"
+        "官方页未标注实施日期，无法自动填写"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
-      "note": "status 由 已废止 改为 已废止，abolishDate 由 空字符串 改为 2026-05-01，依据是官方发布的 GB/T 4288-2025 实施公告"
+      "note": "status 由 已废止 改为 已废止，依据是官方发布的 GB/T 4288-2025 替代信息"
     },
     {
       "id": "r2",
@@ -31,24 +31,12 @@
       "category": "产品标准",
       "action": "update",
       "reasons": [
-        "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认",
-        "声称原状态是「已废止」，清单里其实是「现行有效」"
+        "官方页未标注实施日期，无法自动填写",
+        "声称原状态是「已废止」，清单里其实是「现行有效」",
+        "判定为废止，却给不出官方写明的废止日期"
       ],
       "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
-      "note": "status 由 已废止 改为 已废止，abolishDate 由 空字符串 改为 2027-04-01，依据是官方发布的 GB 12021.4-2026 实施公告"
-    },
-    {
-      "id": "r3",
-      "type": "reject",
-      "table": "standards",
-      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
-      "category": "产品标准",
-      "action": "update",
-      "reasons": [
-        "官方页未标注实施日期，原填实施日期已清空待核"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
-      "note": "status 由 已废止 改为 已废止，abolishDate 由 空字符串 改为 2025-09-01，依据是官方发布的 GB 21456-2024 实施公告"
+      "note": "status 由 已废止 改为 已废止，依据是官方发布的 GB 12021.4-2026 替代信息"
     }
   ]
 }
