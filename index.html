@@ -52,7 +52,7 @@
   a.link.doc:hover{background:#e3eefb;border-color:#9dbfe6;text-decoration:none}
   a.link.doc:active{background:#d4e4f7}
   .cnt{color:var(--muted);font-size:12px;margin-left:auto}
-  .filter-pop{position:absolute;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);padding:8px;z-index:50;min-width:160px;max-height:260px;overflow:auto;display:none}
+  .filter-pop{position:fixed;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);padding:8px;z-index:150;min-width:160px;max-height:260px;overflow:auto;display:none}
   .filter-pop label{display:block;padding:4px 6px;cursor:pointer;font-size:13px;white-space:nowrap}
   .filter-pop .fp-actions{display:flex;gap:6px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
   .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:100}
@@ -508,7 +508,13 @@ function openFilter(btn){
   </div>`;
   const layer=$("#filterLayer"); layer.innerHTML=html;
   const pop=$("#"+id);
-  const r=btn.getBoundingClientRect(); pop.style.left=r.left+"px"; pop.style.top=(r.bottom+4)+"px";
+  const r=btn.getBoundingClientRect();
+  let left=r.left, top=r.bottom+4;
+  const ph=pop.getBoundingClientRect().height;
+  // 视口边界保护：下方空间不足则翻到按钮上方；右侧贴边则左移，避免超出屏幕
+  if(top+ph>window.innerHeight) top=Math.max(8,r.top-ph-4);
+  if(left+pop.offsetWidth>window.innerWidth) left=Math.max(8,window.innerWidth-pop.offsetWidth-8);
+  pop.style.left=left+"px"; pop.style.top=top+"px";
   pop.querySelectorAll("input").forEach(cb=>cb.onchange=()=>{cb.checked?sel.add(cb.value):sel.delete(cb.value); if(table==="laws")renderLaws();else renderStandards();});
 }
 function clearFilter(table,fkey){state.filters[table][fkey].clear(); if(table==="laws")renderLaws();else renderStandards(); $("#filterLayer").innerHTML="";}
