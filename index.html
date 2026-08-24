@@ -66,9 +66,11 @@
   .modal .acts{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
   .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gray);margin-right:6px}
   .dot.synced{background:var(--ok)} .dot.err{background:var(--bad)} .dot.dirty{background:var(--warn)}
-  .back-top{position:fixed;right:20px;bottom:24px;width:46px;height:46px;border-radius:50%;background:var(--pri);color:#fff;border:none;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;visibility:hidden;transform:translateY(8px);transition:.25s;z-index:210}
+  .back-top{position:fixed;right:20px;bottom:24px;width:46px;height:46px;border-radius:50%;background:var(--pri);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;visibility:hidden;transform:translateY(8px);transition:.25s;z-index:210;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;padding:0}
   .back-top.show{opacity:1;visibility:visible;transform:translateY(0)}
   .back-top:hover{background:var(--pri-d)}
+  .back-top .bt-ico{font-size:18px;line-height:1}
+  .back-top .bt-txt{font-size:10px;margin-top:1px;letter-spacing:1px}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2733;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.3s;z-index:200;pointer-events:none}
   .toast.show{opacity:1}
   .manual{background:#faf5ff} .modified{background:#fff7ed}
@@ -406,15 +408,28 @@ function getMerged(table){
   return arr;
 }
 
+/* 当前「可见行」= 合并数据按筛选条件过滤后的结果（渲染与导出共用，保证导出=屏幕所见） */
+function getFilteredRows(table){
+  let arr=getMerged(table);
+  if(table==="laws"){
+    if(state.lawSub!=="全部") arr=arr.filter(r=>r.category===state.lawSub);
+    const f=state.filters.laws, q=state.search.laws.trim().toLowerCase();
+    if(f.status.size) arr=arr.filter(r=>f.status.has(r.status));
+    if(f.domains.size) arr=arr.filter(r=>(r.domains||[]).some(d=>f.domains.has(d)));
+    if(q) arr=arr.filter(r=>LAW_COLS.some(c=>String(r[c]||"").toLowerCase().includes(q)));
+  }else{
+    const f=state.filters.standards, q=state.search.standards.trim().toLowerCase();
+    if(f.stdType.size) arr=arr.filter(r=>f.stdType.has(r.stdType));
+    if(f.status.size) arr=arr.filter(r=>f.status.has(r.status));
+    if(q) arr=arr.filter(r=>STD_COLS.some(c=>String(r[c]||"").toLowerCase().includes(q)));
+  }
+  return arr;
+}
+
 /* ---------- 法律法规渲染 ---------- */
 const LAW_COLS=["name","docNumber","dept","effectiveDate","status","domains","link","remark"];
 function renderLaws(){
-  let arr=getMerged("laws");
-  if(state.lawSub!=="全部") arr=arr.filter(r=>r.category===state.lawSub);
-  const f=state.filters.laws, q=state.search.laws.trim().toLowerCase();
-  if(f.status.size) arr=arr.filter(r=>f.status.has(r.status));
-  if(f.domains.size) arr=arr.filter(r=>(r.domains||[]).some(d=>f.domains.has(d)));
-  if(q) arr=arr.filter(r=>LAW_COLS.some(c=>String(r[c]||"").toLowerCase().includes(q)));
+  const arr=getFilteredRows("laws");
   const tb=$("#lawTable tbody"); tb.innerHTML=arr.map((r,i)=>{
     const manual=edits.manual.some(m=>m.table==="laws"&&m.id===r.id);
     const cls=manual?"manual":(edits.overrides[keyOf("laws",r.id)]?"modified":"");
@@ -432,11 +447,7 @@ function renderLaws(){
 }
 const STD_COLS=["stdNo","name","stdType","publisher","effectiveDate","status","link","remark"];
 function renderStandards(){
-  let arr=getMerged("standards");
-  const f=state.filters.standards, q=state.search.standards.trim().toLowerCase();
-  if(f.stdType.size) arr=arr.filter(r=>f.stdType.has(r.stdType));
-  if(f.status.size) arr=arr.filter(r=>f.status.has(r.status));
-  if(q) arr=arr.filter(r=>STD_COLS.some(c=>String(r[c]||"").toLowerCase().includes(q)));
+  const arr=getFilteredRows("standards");
   const tb=$("#stdTable tbody"); tb.innerHTML=arr.map((r,i)=>{
     const manual=edits.manual.some(m=>m.table==="standards"&&m.id===r.id);
     const cls=manual?"manual":(edits.overrides[keyOf("standards",r.id)]?"modified":"");
@@ -1001,27 +1012,31 @@ async function openChangelog(){
   const manual=edits.log.slice().sort((a,b)=>b.ts-a.ts);
   let auto=null;
   try{ auto=await fetch("update-summary.json?t="+Date.now()).then(r=>r.ok?r.json():null); }catch(e){}
-  let h='<h4>手动变更（'+manual.length+'）</h4>';
-  if(!manual.length) h+='<p class="muted">暂无手动变更</p>';
-  else h+=manual.map(e=>{
-    let body;
-    if(e.op==="add") body='<p>➕ 新增《'+esc(e.name)+'》</p>';
-    else if(e.op==="delete") body='<p>🗑 删除《'+esc(e.name)+'》</p>';
-    else body='<p>✏ 修改《'+esc(e.name)+'》</p>'+(e.diff&&e.diff.length?'<ul>'+e.diff.map(d=>'<li>'+d.f+'：<span class="old">'+(esc(d.old)||'（空）')+'</span> → <span class="new">'+(esc(d.new)||'（空）')+'</span></li>').join("")+'</ul>':"");
-    return '<div class="cl-entry"><div class="cl-meta">'+fmtTime(e.ts)+'</div>'+body+'</div>';
+  // 合并「手动」+「自动」为单一时间线，按时间倒序统一排列（不再分两栏，每条用标签区分来源）
+  const entries=[];
+  manual.forEach(e=>entries.push({kind:"手动",ts:e.ts,e}));
+  if(auto&&(auto.hasUpdates||(auto.changes&&auto.changes.length)||auto.updatedAt))
+    entries.push({kind:"自动",ts:auto.updatedAt?new Date(auto.updatedAt).getTime():0,e:auto});
+  entries.sort((a,b)=>b.ts-a.ts);
+  if(!entries.length){ box.innerHTML='<p class="muted">暂无变更记录</p>'; return; }
+  box.innerHTML=entries.map(en=>{
+    const tag=en.kind==="手动"?'<span class="ct manual">手动</span>':'<span class="ct auto">自动</span>';
+    const t=en.kind==="手动"?fmtTime(en.ts):(en.e.updatedAt||"-");
+    let body="";
+    if(en.kind==="手动"){ const e=en.e;
+      if(e.op==="add") body='<p>➕ 新增《'+esc(e.name)+'》</p>';
+      else if(e.op==="delete") body='<p>🗑 删除《'+esc(e.name)+'》</p>';
+      else body='<p>✏ 修改《'+esc(e.name)+'》</p>'+(e.diff&&e.diff.length?'<ul>'+e.diff.map(d=>'<li>'+d.f+'：<span class="old">'+(esc(d.old)||'（空）')+'</span> → <span class="new">'+(esc(d.new)||'（空）')+'</span></li>').join("")+'</ul>':"");
+    } else {
+      const a=en.e; const ch=(a.changes||[]);
+      if(!ch.length){ const c=a.counts||{}; body='<p>更新：新增'+(c.added||0)+' 修改'+(c.updated||0)+' 废止'+(c.abolished||0)+'</p>'; }
+      else body=ch.map(x=>{
+        const ic=x.type==="add"?"➕":x.type==="abolish"?"🗑":x.type==="status_switch"?"🔄":"✏";
+        return '<p>'+ic+' 《'+esc(x.name)+'》'+(x.detail?(' — '+esc(x.detail)):"")+'</p>';
+      }).join("");
+    }
+    return '<div class="cl-entry"><div class="cl-meta">'+tag+' <span class="ct-time">'+t+'</span></div>'+body+'</div>';
   }).join("");
-  h+='<h4>自动更新</h4>';
-  if(!auto) h+='<p class="muted">暂无自动更新记录</p>';
-  else{
-    h+='<p>运行时间：'+esc(auto.updatedAt||"-")+(auto.hasUpdates?"（有更新）":"（无变更）")+'</p>';
-    const ch=(auto.changes||[]);
-    if(!ch.length) h+='<p class="muted">本次无具体变更项</p>';
-    else h+=ch.map(x=>{
-      const ic=x.type==="add"?"➕":x.type==="abolish"?"🗑":x.type==="status_switch"?"🔄":"✏";
-      return '<div class="cl-entry"><div class="cl-meta">'+(esc(x.category||"")||"")+'</div><p>'+ic+' 《'+esc(x.name)+'》'+(x.detail?(' — '+esc(x.detail)):"")+'</p></div>';
-    }).join("");
-  }
-  box.innerHTML=h;
 }
 function closeChangelog(){ $("#clogMask").style.display="none"; }
 
@@ -1102,7 +1117,7 @@ function applyBatchDomain(){
 }
 
 /* ---------- 导出 ---------- */
-function currentRows(table){return getMerged(table);}
+function currentRows(table){return getFilteredRows(table);}
 function exportExcel(table){
   const rows=currentRows(table);
   const cols=table==="laws"
@@ -1145,6 +1160,6 @@ function exportCanvas(table,asPdf){
 }
 init();
 </script>
-<button id="backTop" class="back-top" type="button" onclick="goToTop()" title="返回顶部">↑</button>
+<button id="backTop" class="back-top" type="button" onclick="goToTop()" title="返回顶部"><span class="bt-ico">↑</span><span class="bt-txt">顶部</span></button>
 </body>
 </html>
