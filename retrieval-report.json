@@ -1,298 +1,50 @@
 {
   "generatedAt": "2026-08-24",
-  "note": "测量仪表：右栏(人工复核)是诊断信号不是负担。逐类压降 reject_breakdown，才能让它归零。",
+  "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
-    "ok_可直接应用": 0,
-    "reject_人工复核": 2,
-    "discard_丢弃": 11,
+    "ok_可直接应用": 2,
+    "discard_丢弃": 1,
     "status_switch_状态切换": 0
   },
-  "reject_breakdown": {
-    "其它": 2,
-    "旧值核对不符（未看清单）": 1,
-    "状态/日期不自洽": 1
-  },
   "discard_breakdown": {
-    "理由缺失/不自洽": 8,
-    "系统已补正链接，内容待人工确认（分诊自救成功）": 2,
     "无来源且系统也解析不到（须落地 name_query/cfsa）": 1
   },
-  "rejected_items": [
-    {
-      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
-      "category": "产品标准",
-      "table": "standards",
-      "action": "update",
-      "reasons": [
-        "官方页未标注实施日期，无法自动填写"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
-      "proposed": {
-        "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
-        "stdNo": "GB/T 4288-2018",
-        "status": "已废止",
-        "link": "已有",
-        "remark": "即将被 GB/T 4288-2025 替代（新标准实施日期 2026-05-01）",
-        "domains": [
-          "质量"
-        ],
-        "category": "质量",
-        "replacedBy": "GB/T 4288-2025",
-        "source": "国家标准化管理委员会",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2018-10-01",
-          "status": "已废止"
-        }
-      }
-    },
-    {
-      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
-      "category": "产品标准",
-      "table": "standards",
-      "action": "update",
-      "reasons": [
-        "官方页未标注实施日期，无法自动填写",
-        "声称原状态是「已废止」，清单里其实是「现行有效」",
-        "判定为废止，却给不出官方写明的废止日期"
-      ],
-      "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
-      "proposed": {
-        "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
-        "stdNo": "GB 12021.4-2013",
-        "status": "已废止",
-        "link": "已有",
-        "remark": "即将被 GB 12021.4-2026 替代（新标准实施日期 2027-04-01）",
-        "domains": [
-          "质量"
-        ],
-        "category": "质量",
-        "replacedBy": "GB 12021.4-2026",
-        "source": "国家标准化管理委员会",
-        "adopted": false,
-        "fromValues": {
-          "effectiveDate": "2013-10-01",
-          "status": "已废止"
-        }
-      }
-    }
-  ],
   "discarded_items": [
     {
-      "name": "中华人民共和国突发事件应对法",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国传染病防治法",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国食品安全法",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "中山市排水管理条例",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未标注实施日期，无法自动填写；理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未标注实施日期，无法自动填写；理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "GB 14866-2023 眼面防护具通用技术规范",
-      "table": "laws",
-      "action": "update",
-      "reason": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认；理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
-      "table": "laws",
-      "action": "update",
-      "reason": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认；理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "生产安全事故分类与编码",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未标注实施日期，无法自动填写；理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国网络安全法",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未标注实施日期，无法自动填写；理由里说改实施日期，实际却没给出日期",
-      "proposed": {}
-    },
-    {
-      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
+      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
       "table": "standards",
       "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）",
+      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4E0J0P6E2G2J8I7F3B1I0J8F5G4H3I2J；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）；声称原状态是「已废止」，清单里其实是「现行有效」；判定为废止，却给不出官方写明的废止日期",
       "proposed": {}
     }
   ],
   "auto_resolved_links": [
-    {
-      "name": "职业病分类和目录",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://www.gov.cn/gongbao/2025/issue_11886/202502/content_7007111.html",
-      "glmGave": "http://www.gov.cn/zhengce/2024-03/15/content_6931236.htm",
-      "claimConfirmed": true,
-      "detail": "链接由系统按官方渠道自动解析补正，且实施日期 2025-08-01 与官方页正文一致（实施日期按官方页正文补为 2025-08-01）"
-    },
-    {
-      "name": "《起重机 安全使用 第5部分-桥式和门式起重机》GB/T 23723.5-2025",
-      "table": "laws",
-      "action": "update",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=54A5358F7925AEB1941F11D4A90F2AD5",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，无法自动填写"
-    },
-    {
-      "name": "个体防护装备有毒有害及限量物质要求 GB 31420-2025",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4B0290E8521F5205389AB02ECF17B0CC",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，无法自动填写"
-    },
-    {
-      "name": "GB 14866-2023 眼面防护具通用技术规范",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=AA239F6971526695D122CEFF9F3FA301",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
-    },
-    {
-      "name": "粉尘爆炸泄压规范（GB 15605-2024）",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F60B16F6F204597DDAFD8CCCFC931E11",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
-    },
-    {
-      "name": "生产安全事故分类与编码",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=39334B61DAD4CC7F9E412A868C567717",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1234567890abcdef1234567890abcdef",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，无法自动填写"
-    },
-    {
-      "name": "中华人民共和国网络安全法",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://www.cac.gov.cn/2016-11/07/c_1119867116.htm",
-      "glmGave": "https://www.gov.cn/zhengce/2024-09/30/content_6947960.htm",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，无法自动填写"
-    },
-    {
-      "name": "网络数据安全管理条例",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
-      "glmGave": "https://www.gov.cn/zhengce/2024-09/30/content_6947960.htm",
-      "claimConfirmed": true,
-      "detail": "链接由系统按官方渠道自动解析补正，且实施日期 2025-01-01 与官方页正文一致（实施日期按官方页正文补为 2025-01-01）"
-    },
     {
       "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
       "table": "standards",
       "action": "update",
       "method": "reuse_existing",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0A6F6B3C8F2D4E5B6A7C8D9E0F1A2B3C",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0A6F6D2A8C8F4E3B9C7D6E5F4A3B2C1D",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
     },
     {
-      "name": "GB/T 4288-2025 家用和类似用途电动洗衣机",
-      "table": "standards",
-      "action": "add",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=A6DD817E54CC5A9C5D231F1480876CAD",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，原填实施日期已清空待核"
-    },
-    {
-      "name": "GB 21456-2024 家用和类似用途厨房电器能效限定值及能效等级",
-      "table": "standards",
-      "action": "add",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F966E2FC4C7AB718356847B0DB1045E4",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8G",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，原填实施日期已清空待核"
-    },
-    {
-      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
+      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
       "table": "standards",
       "action": "update",
       "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4E5F6A7B8C9D0E1F2A3B4C5D6E7F8G9H",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2C8H8N4C0E0H6G5D1F9G8H6D4E3F2G1H",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
-    },
-    {
-      "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
-      "table": "standards",
-      "action": "add",
-      "method": "openstd",
-      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=4804719D7D206D7538788BE44F54DC64",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=5F6A7B8C9D0E1F2A3B4C5D6E7F8G9H0I",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，原填实施日期已清空待核"
     }
   ],
-  "auto_resolved_count": 13,
+  "auto_resolved_count": 2,
   "quality_metrics": {
     "fake_abolish": 0,
     "publish_date_misfill": 0,
-    "dup_rereport": 13,
+    "dup_rereport": 16,
     "cross_file": 0
   }
 }
