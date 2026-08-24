@@ -988,6 +988,12 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - **名称与编号自检**：你填写的标准编号（stdNo 或名称里的 GB/T XXXX）其真实名称，必须与你填写的条目名称一致。若不一致（如编号对应"冲模"而你写的是"AI 安全"），说明你串了标准，立即放弃该条、不要输出。
 - **每字段都要有出处，没有就别填**：effectiveDate / dept / status / stdNo 每个值都必须能指到你检索到的官方来源原文；若 web_search 没有返回该值，就填 "" 或跳过该条，**绝不凭记忆猜**（例如把实施日期写成 2024-09-01 而官网其实是 2025-11-01）。
 - **新增条目(add)同样要可靠**：新增不是"可以先编、留待人工补"——你填写的新增条目的名称、编号、部门、实施日期，每一项都必须来自真实检索来源；任何一项你无法指出来源，就不要输出该新增提案。宁可这条不出，也不要把拼凑的内容交出去。
+
+【十三、理由(note)必须只描述实际要改的字段，不写没变的字段】
+- note 是你写给人工看的一句话说明，**只能写本次真正发生变化的字段**（例如"被 GB/T X 替代""状态由现行有效改为已废止"）；**绝不写没变化的字段**（例如 status 本来就是已废止、本次只补了被替代关系，note 就写"被 GB/T X 替代"，不要写"status 由已废止改为已废止"——这种自相矛盾的表述会被系统判定为事实不符，整条丢弃）。
+- **fromValues 必须如实核对清单当前 status**：status 字段严禁凭记忆填写；若你没在清单里看到该字段的当前值，就如实写 ""，不要猜"已废止"或"现行有效"。把现行有效误写成已废止，会与清单矛盾被丢弃。
+- **update / abolish 不带可验证官方链接不得提交**：你为某条目提供的 source_url 必须能在官方域名下打开（正文页）；打不开、是搜索页/列表页、或你没给链接的 update/abolish 提案，系统会整条丢弃——与其白生成一条被丢，不如不生成。
+- **note 与 diffs 必须自洽**：你声称改了什么，系统就以实际差异为准；若 note 写"由X改为Y"而 X==Y 且清单并无此变化，系统判定为表述与事实不符，直接丢弃。
 """
 
 
@@ -1318,12 +1324,26 @@ def check_change(table, change, target, today):
     action = (change.get("action") or "").strip().lower()
     discard = False
 
+    # ⑥ GLM 理由(note)与事实矛盾检测（置于最前，_unverified 软提示提前返回前也要拦住）：
+    # note 里写『由X改为Y』但 X==Y（声称变了其实没变），且实际意图改动也无此字段 → 视为 GLM 胡说，直接丢弃。
+    # 通用规则，不限于『已废止』具体词；这正治『已废止改为已废止』这类误导可应用文案（用户反复投诉的根因）。
+    note_txt0 = str(change.get("note") or "").strip()
+    _note_claim0 = re.findall(r"由\s*(.+?)\s*改[变为为]\s*(.+?)(?:[，。；,;]|$)", note_txt0)
+    if _note_claim0:
+        _real_diffs0 = _intended_diff_fields(change, target)
+        for _x, _y in _note_claim0:
+            _x, _y = _norm_txt(_x), _norm_txt(_y)
+            if _x and _x == _y and _real_diffs0.isdisjoint(_norm_field(_x)):
+                reasons.append(f"理由声称『由{_x}改为{_y}』但二者相同且清单并无此字段变化，GLM 表述与事实不符")
+                discard = True
+        if discard:
+            return (False, reasons, True)
+
     # 人工复核栏已删除（用户确认）：结论无法从官方页核实(_unverified)属『软提示』，
     # 不再单列待核实栏——放行「可应用」并随附理由（如"请人工点开确认"），
     # 由用户在可应用面板点开确认后再应用：既减少丢弃、保住高价值更新，又不静默采信。
     if change.get("_unverified"):
         reasons.append(change.get("_unverified_reason", "官方页无法核实，请人工确认"))
-        return (True, reasons, False)
 
     # ① 表归属：用户规矩——只有「产品相关标准」才进 standards 表，
     #    其余标准（职业健康/安全/环境/信息安全类国标）放 laws 表是允许的。
@@ -1524,6 +1544,71 @@ def _fmt_prop(p):
     return "；想设：" + "，".join(parts)
 
 
+def _build_reason_from_diffs(diffs, source_url):
+    """文案以『实际差异』为准，绝不采用 GLM 的 note（避免『已废止改为已废止』这类误导文案）。
+    返回人类可读的一句话，概括 diffs 里到底改了什么。"""
+    if not diffs:
+        return "更新"
+    parts = []
+    for d in diffs:
+        f = d.get("field", "")
+        to = (d.get("to") or "").strip()
+        if f == "被替代":
+            parts.append(f"新增被替代关系：{to}")
+        elif f == "状态":
+            parts.append(f"状态变为「{to}」")
+        elif f == "实施时间" or f == "实施日期":
+            parts.append(f"实施日期更新为 {to}")
+        elif f == "采标备注":
+            parts.append("补采标版权备注")
+        elif f == "来源链接":
+            parts.append("更新来源链接")
+        elif f == "废止日期" or f == "abolishDate":
+            parts.append(f"补废止日期 {to}")
+        else:
+            parts.append(f"{f}→{to}")
+    base = "；".join(parts)
+    return base
+
+
+def _norm_field(x):
+    """把 note 里的字段词归一化为与 diffs.field 可比较的集合（通用，不硬编码具体标准号/词）。"""
+    x = _norm_txt(x)
+    s = set()
+    if "状态" in x or "status" in x or "废止" in x or "有效" in x or "实施" in x:
+        s.add("status")
+    if "替代" in x or "代替" in x or "被替代" in x or "replaced" in x:
+        s.add("replacedBy")
+    if "实施" in x or "生效" in x or "日期" in x or "date" in x:
+        s.add("effectiveDate")
+    if "部门" in x or "单位" in x or "发布" in x:
+        s.add("dept")
+    if "链接" in x or "link" in x:
+        s.add("link")
+    if "备注" in x or "remark" in x:
+        s.add("remark")
+    # 命中不到具体字段时不返回空（避免误杀），返回原词以防漏判
+    return s or {x}
+
+
+def _intended_diff_fields(change, target):
+    """返回 change 相对 target 『意图改动』的字段集合（用于 note 矛盾判定，不依赖最终 diffs）。"""
+    s = set()
+    ns = norm_status(change.get("status"))
+    if ns and target and ns != norm_status(target.get("status")):
+        s.add("status")
+    ce = _ymd(change.get("effectiveDate"))
+    if ce and target and ce != _ymd(target.get("effectiveDate")):
+        s.add("effectiveDate")
+    rb = (change.get("replacedBy") or "").strip()
+    if rb and target and rb != (target.get("replacedBy") or "").strip():
+        s.add("replacedBy")
+    ca = _ymd(change.get("abolishDate"))
+    if ca and target and ca != _ymd(target.get("abolishDate")):
+        s.add("abolishDate")
+    return s
+
+
 def apply_change(table, all_items, change, domain_id, today):
     """把一条 AI 变更应用到 all_items（原地修改/追加），并返回用于提案记录的 dict。
     kind=skip 表示跳过；kind=reject 表示未过质检（带 reasons，进待核实栏，不改数据）。"""
@@ -1613,7 +1698,11 @@ def apply_change(table, all_items, change, domain_id, today):
                 "display": {"diffs": [{"field": "状态", "from": old_status, "to": "已废止"}],
                             "link": target.get("link", ""), "source": target.get(src_field, ""),
                             "sourceUrl": (change.get("source_url") or "").strip(),
-                            "reason": ((f"由 {replaced_by} 替代：" if replaced_by else "") + (change.get("note", "") or "废止"))}}
+                            "reason": _build_reason_from_diffs(
+                                [{"field": "状态", "from": old_status, "to": "已废止"}]
+                                + ([{"field": "被替代", "from": "（无）", "to": replaced_by}] if replaced_by else []),
+                                change.get("source_url") or ""),
+                            "_glm_note": str(change.get("note") or "")}}
 
     # update
     set_fields = {}
@@ -1672,12 +1761,15 @@ def apply_change(table, all_items, change, domain_id, today):
                     "sourceUrl": (change.get("source_url") or "").strip(),
                     "note": str(change.get("note") or "")}
         return {"kind": "skip", "name": name, "reason": "无实质变更"}
+    # 文案以实际 diffs 为准，不再直接采用 GLM 的 note（避免「已废止改为已废止」这类与事实不符的误导文案）
+    reason = _build_reason_from_diffs(diffs, change.get("source_url") or "")
     return {"kind": "update", "name": name, "category": label, "table": table,
             "targetId": tid, "newRecord": None, "setFields": set_fields,
             "display": {"diffs": diffs, "link": target.get("link", ""),
                         "source": target.get(src_field, ""),
                         "sourceUrl": (change.get("source_url") or "").strip(),
-                        "reason": change.get("note", "") or "更新"}}
+                        "reason": reason,
+                        "_glm_note": str(change.get("note") or "")}}
 
 
 def _find_replaced_stdnos(text, self_stdno):

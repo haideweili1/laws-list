@@ -200,6 +200,58 @@ def main():
     print(f"[{'PASS' if hpass else 'FAIL'}] H _is_hard_reason：硬伤=True({h_ok}) / 软提示=False({s_ok})")
     results.append(hpass)
 
+    # ── 用例 I：note 与 diffs 矛盾 → 丢弃（治"已废止改为已废止"误导文案）──
+    # 真实场景：旧版已废止，本次只补"被替代关系"，GLM 却在 note 写"status 由已废止改为已废止"
+    # （X==Y 且清单无 status 变化）→ 系统判定表述与事实不符，整条丢弃。
+    _page_text.clear()
+    # 页面含本条目实施日期2018-01-01(≤今天→现行有效)；target.status 也设现行有效，
+    # 这样 reconcile 不会改写 status。note 称"由 现行有效 改为 现行有效"(X==Y无变化) → 触发矛盾规则丢弃。
+    _page_text[GOV] = "GB/T 4288-2018 家用电动洗衣机 实施日期：2018-01-01 已被替代"
+    _resolved.clear()
+    tgt_i = {"id": "S0003", "name": "GB/T 4288-2018 家用电动洗衣机",
+             "stdNo": "GB/T 4288-2018", "link": GOV,
+             "effectiveDate": "2018-01-01", "status": "现行有效", "publisher": "SAC",
+             "replacedBy": ""}
+    chg_i = {"action": "update", "name": "GB/T 4288-2018 家用电动洗衣机",
+             "stdNo": "GB/T 4288-2018", "source_url": GOV, "link": GOV,
+             "effectiveDate": "2018-01-01", "status": "现行有效",
+             "replacedBy": "GB/T 4288-2025",
+             "fromValues": {"effectiveDate": "2018-01-01", "status": "现行有效", "replacedBy": ""},
+             "note": "status 由 现行有效 改为 现行有效，依据官方发布的 GB/T 4288-2025 替代信息"}
+    r, reasons_i = run("I note矛盾：status由已废止改为已废止(X==Y无变化) → 整条丢弃",
+                       "standards", chg_i, tgt_i, expect_ok=False, expect_discard=True,
+                       expect_in_reason="理由声称")
+    results.append(r)
+    # 额外断言：用实际 diffs 生成的 reason 不再含误导的"已废止改为已废止"
+    disp_i = M.apply_change("standards", [tgt_i], dict(chg_i), None, TODAY)
+    # disp_i 在被丢弃时 kind=discard，无 display；此处仅验证 check_change 结论即可
+    print(f"       I 的 check_change 结论：ok=False discard=True（丢弃该误导提案）")
+
+    # ── 用例 J：replacedBy 变化(真实差异) → 文案由 diffs 生成，显示"新增被替代关系"而非误导 status 文案 ──
+    # 与 I 同数据但 note 正确：只写"被 GB/T 4288-2025 替代"。应放行可应用，且 display.reason 含"被替代关系"。
+    _page_text.clear()
+    _page_text[GOV] = "GB/T 4288-2018 家用电动洗衣机 实施日期：2018-01-01 被新版代替"  # 不写具体新版号，避免版本混淆误判
+    _resolved.clear()
+    tgt_j = {"id": "S0004", "name": "GB/T 4288-2018 家用电动洗衣机",
+             "stdNo": "GB/T 4288-2018", "link": GOV,
+             "effectiveDate": "2018-01-01", "status": "已废止", "publisher": "SAC",
+             "replacedBy": ""}
+    chg_j = {"action": "update", "name": "GB/T 4288-2018 家用电动洗衣机",
+             "stdNo": "GB/T 4288-2018", "source_url": GOV, "link": GOV,
+             "effectiveDate": "2018-01-01", "status": "已废止",
+             "replacedBy": "GB/T 4288-2025",
+             "fromValues": {"effectiveDate": "2018-01-01", "status": "已废止", "replacedBy": ""},
+             "note": "被 GB/T 4288-2025 替代"}
+    r, reasons_j = run("J 真实差异(replacedBy)：被替代关系新增 → 放行可应用",
+                       "standards", chg_j, tgt_j, expect_ok=True, expect_discard=False)
+    results.append(r)
+    # 走真实管线拿 display.reason，断言它基于 diffs（含"被替代关系"），不含误导的"已废止改为已废止"
+    res_j = M.apply_change("standards", [tgt_j], dict(chg_j), None, TODAY)
+    reason_j = (res_j.get("display") or {}).get("reason", "")
+    good_j = ("被替代关系" in reason_j) and ("已废止改为已废止" not in reason_j)
+    print(f"[{'PASS' if good_j else 'FAIL'}] J display.reason 由 diffs 生成：{reason_j!r}")
+    results.append(good_j)
+
     print("\n===== 汇总 =====")
     print(f"通过 {sum(1 for x in results if x)} / {len(results)}")
     if all(results):
