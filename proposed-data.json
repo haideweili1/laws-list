@@ -1832,7 +1832,7 @@
       "docNumber": "",
       "dept": "国家市场监督管理总局、中国国家标准化管理委员会",
       "effectiveDate": "2019-12-01",
-      "status": "已废止",
+      "status": "现行有效",
       "domains": [
         "信息安全"
       ],
@@ -1840,8 +1840,8 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
       "region": "",
       "id": "L0404",
-      "remark": "由 GB/T 22239-2024 替代。废止标准不提供标准文本阅读服务。",
-      "abolishDate": "2024-09-01"
+      "remark": "",
+      "abolishDate": ""
     },
     {
       "name": "中华人民共和国宪法",
@@ -7447,13 +7447,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2005-08-01",
-      "status": "已废止",
+      "status": "现行有效",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7F4223722F84EFC3421AE7E2B6E074C",
       "region": "",
       "id": "S0086",
       "remark": "即将被 GB/T 19606-2024 替代（新标准实施日期 2026-09-01）",
-      "abolishDate": "",
-      "replacedBy": "GB/T 19606-2024 家用和类似用途电器噪声限值"
+      "abolishDate": ""
     },
     {
       "name": "IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求",
@@ -7812,13 +7811,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2013-10-01",
-      "status": "已废止",
+      "status": "现行有效",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
       "region": "",
       "id": "S0114",
       "remark": "即将被 GB 12021.4-2026 替代（新标准实施日期 2027-04-01）",
-      "abolishDate": "",
-      "replacedBy": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级"
+      "abolishDate": ""
     },
     {
       "name": "UL 250      家用冰箱和冷冻柜安全通用要求",
