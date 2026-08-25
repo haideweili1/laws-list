@@ -4218,7 +4218,7 @@
       "docNumber": "",
       "dept": "国家市场监督管理总局",
       "effectiveDate": "1999-05-14",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "职业健康安全"
       ],
@@ -4226,8 +4226,8 @@
       "link": "http://www.hraqpj.com/uploadfiles/2021-02/16125114952610288.pdf",
       "region": "",
       "id": "L0268",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "由 GB 5083-2023 替代。废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2022-04-27"
     },
     {
       "name": "机械加工设备危险与有害因素分类GB/T2299-90",
