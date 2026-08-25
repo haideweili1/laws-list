@@ -1,11 +1,5 @@
 {
-  "status": "draft_ready",
-  "updatedAt": "2026-08-25T09:33:30",
-  "counts": {
-    "added": 0,
-    "updated": 0,
-    "abolished": 0,
-    "statusSwitched": 1,
-    "discarded": 0
-  }
+  "status": "idle",
+  "appliedAt": "2026-08-25T09:39:23.820Z",
+  "note": "提案已人工确认并应用"
 }
