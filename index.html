@@ -957,9 +957,9 @@ async function applyProposals(){
     PROPOSALS=(remaining.length||keepDc.length)?Object.assign({},PROPOSALS,{changes:remaining,discarded:keepDc}):null;
     if(PROPOSALS){ renderProposals(); }
     else { const card=document.getElementById("proposalCard"); if(card)card.style.display="none"; }
-    setPropSt("ok","✅ 已应用 "+applied.length+" 条"+(skipped.length?("，跳过 "+skipped.length+" 条："+skipped.join("；")):"")+"。约 1 分钟后线上同步生效。");
+    setPropSt("ok","✅ 已应用 "+applied.length+" 条"+(skipped.length?("，跳过 "+skipped.length+" 条："+skipped.join("；")):"")+"。变更记录已即时显示；清单数据约 1 分钟后线上生效。");
     toast("已应用 "+applied.length+" 条更新");
-    renderChangePreview();
+    renderChangePreview(summary);
   }catch(e){ setPropSt("err","写入失败："+e.message+"。请勿重复点击，先刷新页面确认是否已生效。"); }
   finally{ if(btn)btn.disabled=false; }
 }
@@ -1003,11 +1003,11 @@ async function discardProposals(){
 }
 
 /* ---------- 变更记录（手动+自动合并） ---------- */
-async function renderChangePreview(){
+async function renderChangePreview(overrideAuto){
   const box=$("#changePreview");
   const manual=edits.log.slice().sort((a,b)=>b.ts-a.ts);
   let auto=null;
-  try{ auto=await fetch("update-summary.json?t="+Date.now()).then(r=>r.ok?r.json():null); }catch(e){}
+  try{ auto=overrideAuto?overrideAuto:await fetch("update-summary.json?t="+Date.now()).then(r=>r.ok?r.json():null); }catch(e){}
   const entries=[];
   manual.forEach(e=>entries.push({kind:"手动",ts:e.ts,e}));
   if(auto&&(auto.hasUpdates||(auto.changes&&auto.changes.length)||auto.updatedAt))
