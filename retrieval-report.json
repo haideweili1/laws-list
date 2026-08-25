@@ -1,46 +1,63 @@
 {
-  "generatedAt": "2026-08-24",
+  "generatedAt": "2026-08-25",
   "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
-    "ok_可直接应用": 2,
-    "discard_丢弃": 1,
+    "ok_可直接应用": 3,
+    "discard_丢弃": 2,
     "status_switch_状态切换": 0
   },
   "discard_breakdown": {
-    "无来源且系统也解析不到（须落地 name_query/cfsa）": 1
+    "其它": 2
   },
   "discarded_items": [
-    {
-      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
-      "table": "standards",
-      "action": "update",
-      "reason": "依据来源不是正文页（搜索页/列表页/伪造格式）：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4E0J0P6E2G2J8I7F3B1I0J8F5G4H3I2J；系统按官方渠道自动解析也未取到真实链接（现有链接核验失败（死链/超时），建议重查）；声称原状态是「已废止」，清单里其实是「现行有效」；判定为废止，却给不出官方写明的废止日期",
-      "proposed": {}
-    }
-  ],
-  "auto_resolved_links": [
     {
       "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
       "table": "standards",
       "action": "update",
-      "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8D9D545E31B5D9912134BFFBA4409B7A",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0A6F6D2A8C8F4E3B9C7D6E5F4A3B2C1D",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，无法自动填写"
+      "reason": "理由声称『由已废止改为已废止』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
+      "proposed": {}
     },
     {
       "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
       "table": "standards",
       "action": "update",
+      "reason": "理由声称『由已废止改为已废止』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
+      "proposed": {}
+    }
+  ],
+  "auto_resolved_links": [
+    {
+      "name": "信息安全技术 网络安全等级保护基本要求",
+      "table": "laws",
+      "action": "abolish",
       "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2BBC7015B075B8AE7C3F3AA4D6A7340",
-      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2C8H8N4C0E0H6G5D1F9G8H6D4E3F2G1H",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
+      "glmGave": "https://www.gov.cn/zhengce/2024-09/24/content_6947964.htm",
+      "claimConfirmed": false,
+      "detail": "官方页未标注实施日期，原填实施日期已清空待核"
+    },
+    {
+      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
+      "table": "standards",
+      "action": "update",
+      "method": "reuse_existing",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F",
+      "claimConfirmed": false,
+      "detail": "系统已解析出真实官方链接，但正文取不到（境外超时/反爬），请人工点开确认"
+    },
+    {
+      "name": "GB/T 19606-2004 家用和类似用途电器噪声限值",
+      "table": "standards",
+      "action": "update",
+      "method": "reuse_existing",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7F4223722F84EFC3421AE7E2B6E074C",
+      "glmGave": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=5F6A7B8C9D0E1F2A3B4C5D6E7F8G9H0I",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
     }
   ],
-  "auto_resolved_count": 2,
+  "auto_resolved_count": 3,
   "quality_metrics": {
     "fake_abolish": 0,
     "publish_date_misfill": 0,

@@ -1,0 +1,129 @@
+{
+  "generatedAt": "2026-08-25",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 2,
+    "abolished": 1,
+    "statusSwitched": 0,
+    "discarded": 2
+  },
+  "changes": [
+    {
+      "id": "c1",
+      "type": "abolish",
+      "table": "laws",
+      "name": "信息安全技术 网络安全等级保护基本要求",
+      "category": "信息安全",
+      "targetId": "L0404",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止",
+        "abolishDate": "2024-09-01",
+        "remark": "由 GB/T 22239-2024 替代。废止标准不提供标准文本阅读服务。"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "现行有效",
+            "to": "已废止"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
+        "source": "国家市场监督管理总局、中国国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
+        "reason": "状态变为「已废止」；新增被替代关系：GB/T 22239-2024",
+        "_glm_note": "被 GB/T 22239-2024 替代，废止日期 2024-09-01"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "update",
+      "table": "standards",
+      "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
+      "category": "产品标准",
+      "targetId": "S0114",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止",
+        "replacedBy": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "现行有效",
+            "to": "已废止"
+          },
+          {
+            "field": "被替代",
+            "from": "（无）",
+            "to": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
+        "source": "国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F90B89DADC888F069B9993659D39BD4F",
+        "reason": "状态变为「已废止」；新增被替代关系：GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
+        "_glm_note": "status 由 现行有效 改为 已废止，abolishDate 由 空字符串 改为 2027-04-01，依据是官方发布的 GB 12021.4-2026 替代信息"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "update",
+      "table": "standards",
+      "name": "GB/T 19606-2004 家用和类似用途电器噪声限值",
+      "category": "产品标准",
+      "targetId": "S0086",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止",
+        "replacedBy": "GB/T 19606-2024 家用和类似用途电器噪声限值"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "现行有效",
+            "to": "已废止"
+          },
+          {
+            "field": "被替代",
+            "from": "（无）",
+            "to": "GB/T 19606-2024 家用和类似用途电器噪声限值"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7F4223722F84EFC3421AE7E2B6E074C",
+        "source": "国家标准化管理委员会",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7F4223722F84EFC3421AE7E2B6E074C",
+        "reason": "状态变为「已废止」；新增被替代关系：GB/T 19606-2024 家用和类似用途电器噪声限值",
+        "_glm_note": "status 由 现行有效 改为 已废止，abolishDate 由 空字符串 改为 2026-09-01，依据是官方发布的 GB/T 19606-2024 替代信息"
+      }
+    }
+  ],
+  "discarded": [
+    {
+      "id": "d1",
+      "type": "discard",
+      "table": "standards",
+      "name": "GB/T 4288-2018 家用和类似用途电动洗衣机",
+      "category": null,
+      "action": "update",
+      "reason": "理由声称『由已废止改为已废止』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d2",
+      "type": "discard",
+      "table": "standards",
+      "name": "GB 24849-2017 家用和类似用途微波炉能效限定值及能效等级",
+      "category": null,
+      "action": "update",
+      "reason": "理由声称『由已废止改为已废止』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
+      "sourceUrl": "",
+      "proposed": {}
+    }
+  ]
+}
