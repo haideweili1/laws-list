@@ -1,11 +1,4 @@
 {
-  "status": "draft_ready",
-  "updatedAt": "2026-08-25T05:57:48",
-  "counts": {
-    "added": 0,
-    "updated": 2,
-    "abolished": 1,
-    "statusSwitched": 0,
-    "discarded": 2
-  }
+  "status": "running",
+  "updatedAt": "2026-08-25T07:09:19"
 }
