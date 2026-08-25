@@ -8,6 +8,7 @@
 全程不联网（打桩替换网络函数），不改动 data.json。
 """
 import sys
+import copy
 import update_laws_action as M
 
 TODAY = "2026-08-11"
@@ -27,6 +28,9 @@ def _stub_network():
     M.probe_link = lambda u, timeout=10: True
     M.fetch_text = lambda u, timeout=10, max_bytes=150000: _page_text.get(u)
     M.is_dead_page = lambda t: False
+    # 链接有效性校验：本自测聚焦"日期驱动切换逻辑"，与链接格式校验解耦——非空链接即视为有效。
+    # （真实链接格式校验由生产环境的 domain_ok / url_shape_ok 负责，不在本例覆盖范围。）
+    M.has_valid_official_link = lambda u: bool((u or "").strip())
     # 官方页正文：走桩字典，避免真实联网（使结论抽取可离线复现）
     M.domestic_fetch = lambda u, timeout=12: (_page_text.get(u), "stub")
     # 按标准号解析官方链接：仅对 _resolved_link 中显式配置的标准号做受控返回，
@@ -356,6 +360,63 @@ def main():
         n_pass = n_pass and ok
         print(f"[{'PASS' if ok else 'FAIL'}] N 检索范围过滤：{title} (got={got}, expect={expect})")
     results.append(n_pass)
+
+    # ── 用例 O/P：被替代旧版通用识别 + 到期自动切换（不读 remark、不查网络）──
+    # 构造最小清单：含『跨前缀』对（GB 19606-2004 ↔ GB/T 19606-2024）、
+    # 含 replacedBy 为空但靠标准号家族识别的对（GB 12021.4-2013 ↔ GB 12021.4-2026）、
+    # 以及一个无新版同族的普通现行有效标准（GB 4706.1-2005）作反例。
+    proposed_op = {
+        "laws": [],
+        "standards": [
+            {"id": "S0086", "name": "GB 19606-2004 家用和类似用途电器噪声限值",
+             "stdNo": "GB 19606-2004", "status": "现行有效", "effectiveDate": "2005-08-01",
+             "abolishDate": "", "replacedBy": "", "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=AAAA", "remark": ""},
+            {"id": "S0154", "name": "GB/T 19606-2024 家用和类似用途电器噪声限值",
+             "stdNo": "GB/T 19606-2024", "status": "即将实施", "effectiveDate": "2026-09-01",
+             "abolishDate": "", "replacedBy": "", "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=BBBB", "remark": ""},
+            {"id": "S0114", "name": "GB 12021.4-2013 电动洗衣机能效水效限定值及等级",
+             "stdNo": "GB 12021.4-2013", "status": "现行有效", "effectiveDate": "2013-10-01",
+             "abolishDate": "", "replacedBy": "", "link": "", "remark": "即将被 GB 12021.4-2026 替代"},
+            {"id": "S0156", "name": "GB 12021.4-2026 电动洗衣机和洗干一体机能效水效限定值及等级",
+             "stdNo": "GB 12021.4-2026", "status": "即将实施", "effectiveDate": "2027-04-01",
+             "abolishDate": "", "replacedBy": "", "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=CCCC", "remark": ""},
+            {"id": "S4706", "name": "GB 4706.1-2005 家用和类似用途电器的安全",
+             "stdNo": "GB 4706.1-2005", "status": "现行有效", "effectiveDate": "2006-01-01",
+             "abolishDate": "", "replacedBy": "", "link": "", "remark": ""},
+        ],
+    }
+    sup = M._compute_superseded_ids(proposed_op)
+    succ_0086 = M._successor_of(proposed_op["standards"][0], proposed_op, "standards")
+    o_pass = (("S0086" in sup) and ("S0114" in sup)
+              and ("S0154" not in sup) and ("S0156" not in sup) and ("S4706" not in sup)
+              and succ_0086 is not None and succ_0086.get("id") == "S0154")
+    print(f"[{'PASS' if o_pass else 'FAIL'}] O 被替代旧版识别（容错 GB/GB-T 前缀、replacedBy 空也能识别）："
+          f"superseded={sorted(sup)} successor(S0086)={succ_0086.get('id') if succ_0086 else None}")
+    results.append(o_pass)
+
+    # P1：新标准实施日已到（today=2026-09-02）→ 旧版切已废止、补 abolishDate 与 remark；新版转现行有效
+    p1 = copy.deepcopy(proposed_op)
+    switched1 = M.apply_status_rules(p1, "2026-09-02")
+    s086 = next(x for x in p1["standards"] if x["id"] == "S0086")
+    s114 = next(x for x in p1["standards"] if x["id"] == "S0114")
+    s154 = next(x for x in p1["standards"] if x["id"] == "S0154")
+    s706 = next(x for x in p1["standards"] if x["id"] == "S4706")
+    p1_ok = (s086["status"] == "已废止" and s086["abolishDate"] == "2026-09-01"
+             and "替代" in (s086.get("remark") or "")
+             and s114["status"] == "现行有效"          # 未到（2027-04-01）保持现行有效
+             and s154["status"] == "现行有效"          # 新标准到日转现行有效
+             and s706["status"] == "现行有效")          # 反例不变
+    print(f"[{'PASS' if p1_ok else 'FAIL'}] P1 到期切换（today=2026-09-02）："
+          f"S0086={s086['status']}/{s086['abolishDate']} S0114={s114['status']} S0154={s154['status']} S4706={s706['status']}")
+    results.append(p1_ok)
+
+    # P2：新标准实施日未到（today=2026-08-25）→ 旧版不应切、保持现行有效
+    p2 = copy.deepcopy(proposed_op)
+    M.apply_status_rules(p2, "2026-08-25")
+    s086b = next(x for x in p2["standards"] if x["id"] == "S0086")
+    p2_ok = (s086b["status"] == "现行有效")
+    print(f"[{'PASS' if p2_ok else 'FAIL'}] P2 未到不切（today=2026-08-25）：S0086={s086b['status']}（期望 现行有效）")
+    results.append(p2_ok)
 
     print("\n===== 汇总 =====")
     print(f"通过 {sum(1 for x in results if x)} / {len(results)}")

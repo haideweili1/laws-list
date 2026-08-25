@@ -726,7 +726,63 @@ def norm_status(s):
             "已废止": "已废止"}.get(s, s)
 
 
-def _is_retrieval_target(item, today):
+def _std_core(s):
+    """提取标准号『数字核心』（含小数点、去掉 GB/GB-T 前缀与末尾年份），用于『被替代旧版』的通用识别。
+    例：GB 19606-2004 → 19606；GB/T 19606-2024 → 19606（容错 GB 与 GB/T 前缀差异）；
+        GB 12021.4-2013 → 12021.4（保留小数点，避免与 12021.2 等混淆）；GB/T 4288-2018 → 4288。
+    无法识别返回空字符串。"""
+    s = (s or "").strip()
+    if not s:
+        return ""
+    m = re.search(r'GB\s*/?\s*T?\s*(\d+(?:\.\d+)?)', s, re.IGNORECASE)
+    return m.group(1) if m else ""
+
+
+def _std_year(s):
+    """从标准号末尾提取年份（4 位）。无则返回 None。"""
+    s = (s or "").strip()
+    m = re.search(r'-(\d{4})(?:\b|$)', s)
+    return int(m.group(1)) if m else None
+
+
+def _compute_superseded_ids(proposed):
+    """返回『被替代旧版』的 id 集合（通用，不硬编码）：同表内存在『同数字核心、年份更晚』的
+    标准即视为本条被替代。该集合用于：① 检索范围排除（不反复查旧版）；② 到期自动切换状态。"""
+    ids = set()
+    for table, key in (("laws", "laws"), ("standards", "standards")):
+        cores = {}
+        for it in proposed.get(key, []):
+            core = _std_core(it.get("stdNo") or it.get("name", ""))
+            if core:
+                cores.setdefault(core, []).append(it)
+        for group in cores.values():
+            years = [(_std_year(it.get("stdNo") or it.get("name", "")) or 0, it) for it in group]
+            max_year = max((y for y, _ in years), default=0)
+            for y, it in years:
+                if 0 < y < max_year:        # 存在更新年份的同核心标准 → 本条是被替代旧版
+                    ids.add(it.get("id"))
+    return ids
+
+
+def _successor_of(item, proposed, table):
+    """在清单同表内，按数字核心找『年份更晚』的替代新标准。返回新标准条目或 None。"""
+    core = _std_core(item.get("stdNo") or item.get("name", ""))
+    if not core:
+        return None
+    my_year = _std_year(item.get("stdNo") or item.get("name", "")) or 0
+    best = None
+    for o in proposed.get(table, []):
+        if o.get("id") == item.get("id"):
+            continue
+        if _std_core(o.get("stdNo") or o.get("name", "")) != core:
+            continue
+        oy = _std_year(o.get("stdNo") or o.get("name", "")) or 0
+        if oy > my_year and (best is None or oy > (_std_year(best.get("stdNo") or best.get("name", "")) or 0)):
+            best = o
+    return best
+
+
+def _is_retrieval_target(item, today, superseded_ids=None):
     """决定某条目本轮是否需要喂给 GLM 主动检索变更（通用规则，不硬编码任何标准号/日期）。
 
     返回 False 的条目：仍保留在 all_items（去重基准，避免 GLM 当新增 add 回来），
@@ -741,9 +797,13 @@ def _is_retrieval_target(item, today):
     st = norm_status(item.get("status", ""))
     if st == "已废止":
         return False
+    # 被替代旧版（通用识别：同表存在同数字核心、年份更晚的标准；不管 replacedBy 是否为空）：
+    # 替代关系已标好，旧版状态切换交给 apply_status_rules 到期自动处理，本轮不主动检索。
+    if superseded_ids and item.get("id") in superseded_ids:
+        return False
     rb = (item.get("replacedBy") or "").strip()
     if rb and st != "已废止":
-        # 已被替代、等待替代标准实施 → 不主动检索
+        # 已被替代、等待替代标准实施 → 不主动检索（双保险，replacedBy 非空时即便不在 superseded 集也排除）
         return False
     if st == "即将实施" and not rb:
         # 新标准等待生效 → 不主动检索
@@ -1066,8 +1126,8 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 【十五、本轮不主动检索的条目（你必须严格遵守，不要输出针对它们的任何 change）】
 系统已按通用规则把以下三类条目排除在本轮检索范围之外（你不会在「当前清单已有条目」里看到它们），但以防你凭记忆生成，现明确告知：
 - 状态已为「已废止」的条目：无需再查废止，不要输出 update / abolish。
-- 已标注「被XX替代」（replacedBy 非空）且当前仍非「已废止」的条目：清单已标好替代关系，旧版状态切换由系统到期自动处理，本轮不查。
-- 状态为「即将实施」且无被替代关系的条目（新标准等待生效）：不查变更，到期由系统自动转现行有效。
+- 被替代的旧版（无论 replacedBy 是否为空；只要清单里存在同标准号、年份更新的新标准）：清单已标好替代关系与新标准实施日，旧版状态切换由系统到期自动处理，本轮不查、不要输出针对它的任何 change。
+- 状态为「即将实施」的条目（新标准等待生效）：不查变更，到期由系统自动转现行有效。
 若你擅自对以上三类条目输出 update / abolish，系统会直接整条丢弃，你真正查到的有用变更也会一起丢掉。请只针对「现行有效且未被替代」的条目检索变更。
 注意：fromValues 里的"当前状态/实施日期"必须和你在该条目「★当前状态★」处看到的值【逐字一致】，不准改写、不准凭记忆改成别的。
 """
@@ -1949,25 +2009,25 @@ def _scan_abolish_for_target(ch, res, proposed_laws, proposed_standards, today):
 
 
 def apply_status_rules(proposed, today):
-    """通用状态切换（日期到期自动转状态）。仅当该条目自身有有效官方链接时才切换，
-    并以该链接作为依据；无有效官方链接则不盲目切换（避免『无来源的状态切换』）。"""
+    """通用状态切换（日期到期自动转状态）。
+    规则①/②：条目自身实施日/废止日到期，需【官方链接】才切（以官方页为据，并可顺带校正实施日期）。
+    规则③：被替代旧版，新标准实施日已到 → 自动转已废止，【纯日期驱动】（以清单内新标准实施日为据，
+            不查网络、不依赖 remark），并补 abolishDate 与替代说明 remark。"""
     switched = []
     for table, key in (("laws", "laws"), ("standards", "standards")):
         for it in proposed[key]:
-            # 先做同义归一（废止 ≡ 已废止、在用 ≡ 现行有效），归一后相同就不算变更，
-            # 杜绝每跑一次就报一遍「废止 → 已废止」这种纯噪音。
+            # 同义归一（废止 ≡ 已废止、在用 ≡ 现行有效），归一后相同不算变更
             old = norm_status(it.get("status", ""))
             new = old
             eff = _ymd(it.get("effectiveDate"))
-            if old == "即将实施" and eff and eff <= today:
-                new = "现行有效"
+            set_fields = {}
+            reason = ""
+            link = (it.get("link") or "").strip()
+
+            # 规则①/②：自身实施日或废止日到期，需官方链接才切（以官方页为据，并可顺带校正实施日期）
             ad = _ymd(it.get("abolishDate"))
-            if ad and ad <= today and old != "已废止":
-                new = "已废止"
-            if new != old:
-                link = (it.get("link") or "").strip()
+            if (old == "即将实施" and eff and eff <= today) or (ad and ad <= today and old != "已废止"):
                 if has_valid_official_link(link):
-                    # 顺便从官方页抓正确实施日期，和状态一起建议（境外访问偶发超时则只改状态）
                     eff_date = None
                     try:
                         txt = fetch_text(link, timeout=8)
@@ -1975,21 +2035,44 @@ def apply_status_rules(proposed, today):
                             eff_date = _extract_effective_date(txt)
                     except Exception:
                         eff_date = None
+                    if old == "即将实施" and eff and eff <= today and new != "已废止":
+                        new = "现行有效"
+                    if ad and ad <= today and old != "已废止":
+                        new = "已废止"
                     set_fields = {"status": new}
-                    reason = f"实施日期已至，依据标准官方页自动转为{new}"
+                    reason = f"日期已至，依据标准官方页自动转为{new}"
                     if eff_date and eff_date != eff:
                         set_fields["effectiveDate"] = eff_date
                         reason += f"；官方页实施日期为 {eff_date}，已据实修正"
                     elif eff_date:
                         reason += f"（官方页实施日期 {eff_date}）"
-                    it["status"] = new
-                    switched.append({"table": table, "name": it.get("name", ""), "id": it.get("id"),
-                                     "from": old, "to": new, "eff_old": eff,
-                                     "sourceUrl": link, "setFields": set_fields,
-                                     "reason": reason})
                 else:
                     # 无有效官方链接：不盲目切换，保持原状态，留待有链接时再处理
                     print(f"  [状态切换跳过] {it.get('name','')}：无有效官方链接，不自动切换")
+
+            # 规则③：被替代旧版，新标准实施日已到 → 已废止（纯日期驱动，不查网络、不依赖 remark）
+            if old != "已废止":
+                succ = _successor_of(it, proposed, table)
+                if succ is not None and norm_status(succ.get("status", "")) in ("现行有效", "即将实施"):
+                    succ_eff = _ymd(succ.get("effectiveDate"))
+                    if succ_eff and succ_eff <= today:
+                        new = "已废止"
+                        repl = succ.get("stdNo") or succ.get("name", "")
+                        set_fields = {"status": "已废止",
+                                     "abolishDate": (it.get("abolishDate") or "") or succ_eff,
+                                     "remark": f"由 {repl} 替代。废止标准不提供标准文本阅读服务。"}
+                        reason = f"被 {repl} 替代，新标准实施日 {succ_eff} 已至，依据清单新标准实施日自动转为已废止"
+
+            if new != old:
+                it["status"] = new
+                if set_fields.get("abolishDate"):
+                    it["abolishDate"] = set_fields["abolishDate"]
+                if set_fields.get("remark"):
+                    it["remark"] = set_fields["remark"]
+                switched.append({"table": table, "name": it.get("name", ""), "id": it.get("id"),
+                                 "from": old, "to": new, "eff_old": eff,
+                                 "sourceUrl": link, "setFields": set_fields,
+                                 "reason": reason})
     return switched
 
 
@@ -2254,6 +2337,8 @@ def main():
     proposed = copy.deepcopy(data)
     proposed_laws = proposed.setdefault("laws", [])
     proposed_standards = proposed.setdefault("standards", [])
+    # 被替代旧版集合（通用识别：同表存在同数字核心、年份更晚的标准），用于检索范围排除
+    superseded_ids = _compute_superseded_ids(proposed)
 
     # —— 通用状态自动切换（先跑，确保到期法规按时切换；草稿模式也只进提案）——
     switched = apply_status_rules(proposed, today)
@@ -2284,7 +2369,7 @@ def main():
         # 检索范围过滤（通用，不硬编码具体标准号）：已废止 / 被替代未实施 / 即将实施 三类
         # 不主动喂给 GLM 检索（清单已标注好，状态切换由 apply_status_rules 到期自动处理）。
         # 注意：all_items 仍保持全量，作为去重基准，避免 GLM 把已排除条目当新增 add 回来。
-        items = [it for it in items if _is_retrieval_target(it, today)]
+        items = [it for it in items if _is_retrieval_target(it, today, superseded_ids)]
         # 低消耗：本域过滤后已无主动检索目标，则跳过本次 GLM 调用（省 token）。
         if not items:
             print(f"  跳过检索（{label}）：当前无主动检索目标"
