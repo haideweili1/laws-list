@@ -140,7 +140,7 @@ async function ghDeleteFile(token, path, message, knownSha) {
   return { ok: res.status >= 200 && res.status < 300, status: res.status };
 }
 
-// 读取文件内容（用于合并式写回，如把应用记录追加进 user-edits.json）
+// 读取文件内容（合并式写回时先取现有文件内容，便于保留未改动字段）
 async function ghGetContent(token, path) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
   try {
@@ -207,21 +207,6 @@ async function applyProposed(bodyStr, token) {
     if (summary && typeof summary === 'object') {
       const sumStr = JSON.stringify(summary, null, 2) + '\n';
       await ghPutFile(token, 'update-summary.json', sumStr, 'chore: 更新变更记录（已确认提案）', pick('update-summary.json'));
-    }
-    // 方案A：把应用记录也合并进云端「手动记录」(user-edits.json)，保证换设备/换浏览器可见，且与本地 edits.log 用同一 key 去重
-    const appliedLog = Array.isArray(payload.appliedLog) ? payload.appliedLog : [];
-    if (appliedLog.length) {
-      const ue = await ghGetContent(token, 'user-edits.json');
-      const ueObj = ue.obj && typeof ue.obj === 'object' ? ue.obj : { log: [], overrides: {}, deleted: [], manual: [] };
-      if (!Array.isArray(ueObj.log)) ueObj.log = [];
-      const seen = new Set(ueObj.log.map(e => e && e.key));
-      for (const e of appliedLog) {
-        if (e && e.key && e.op && e.name && e.ts && !seen.has(e.key)) { ueObj.log.push(e); seen.add(e.key); }
-      }
-      if (ueObj.log.length > 500) ueObj.log = ueObj.log.slice(-500); // 防无限膨胀
-      ueObj.ts = Date.now();
-      const ueStr = JSON.stringify(ueObj, null, 2) + '\n';
-      await ghPutFile(token, 'user-edits.json', ueStr, 'chore: 记录应用提案到变更历史（累积）', ue.sha);
     }
     // 3) 处理提案文件：还有保留项（未采纳的提案 或 待核实线索）就改写，否则删除
     const keepRejected = Array.isArray(payload.rejected) ? payload.rejected : [];
