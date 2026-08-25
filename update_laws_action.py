@@ -757,36 +757,66 @@ def _extract_conclusions_from_page(text, stdno="", today=None):
     eff = _extract_effective_date(text)
     status = ""
     abolish = ""
-    replaced = ""
-    # 替代关系（通用：代替/替代 + 标准号）
-    m_rep = re.search(r"(代替|替代)\s*[《]?\s*(GB[/\s]?T?\s?[0-9]+(?:\.[0-9]+)*\s*-\s*\d{4})", text)
-    if not m_rep:
-        m_rep = re.search(r"(代替|替代)\s*[《]?\s*([A-Za-z]+[/\s]?\d+(?:\.\d+)*\s*-\s*\d{4})", text)
-    if m_rep:
-        replaced = m_rep.group(2).strip().upper()   # 保留 "GB/T 4288-2025" 原格式，仅去空格
-    # 废止/被代替 信号（涵盖"被替代"与"起废止/废止日期"等明确废止表述）
+    replaced = ""      # 谁替代了「本条」（被动：本条被 X 替代）→ 本条是旧版
+    replaces = ""      # 「本条」替代了谁（主动：本标准代替 X）→ 本条是新版，不影响本条状态
+    _repl_unverified = False
+    STD_PAT = r"GB[/\s]?T?\s?[0-9]+(?:\.[0-9]+)*\s*-\s*\d{4}"
+    STD_PAT2 = r"[A-Za-z]+[/\s]?\d+(?:\.\d+)*\s*-\s*\d{4}"
+    # 主动替代：本标准（修订并）代替/替代 <标准号> → 本条是新版，不据此外部判废止
+    m_active = re.search(r"(?:标准|本标准)\s*(?:.*?)?(?:修订并)?(?:代替|替代)\s*[《]?\s*(" + STD_PAT + ")", text)
+    if not m_active:
+        m_active = re.search(r"(?:标准|本标准)\s*(?:.*?)?(?:修订并)?(?:代替|替代)\s*[《]?\s*(" + STD_PAT2 + ")", text)
+    if m_active:
+        replaces = m_active.group(1).strip().upper()
+    # 被动替代：本条被 <标准号> 代替/替代 → 本条是旧版，会被废止（须等替代标准真正生效）
+    m_passive = re.search(r"(?:被|由)\s*[《]?\s*(" + STD_PAT + r")\s*(?:代替|替代)", text)
+    if not m_passive:
+        m_passive = re.search(r"(?:被|由)\s*[《]?\s*(" + STD_PAT2 + r")\s*(?:代替|替代)", text)
+    # 兜底"被代替标准：X"这类字段式写法
+    if not m_passive:
+        m_passive = re.search(r"(?:被代替标准|被替代标准)\s*[《:：]?\s*(" + STD_PAT + ")", text)
+    if not m_passive:
+        m_passive = re.search(r"(?:被代替标准|被替代标准)\s*[《:：]?\s*(" + STD_PAT2 + ")", text)
+    passive_std = m_passive.group(1).strip().upper() if m_passive else ""
+    if passive_std and passive_std != replaces:
+        replaced = passive_std
+    # 状态判定顺序（关键）：先处理"被动替代(带生效日门槛)"，再处理"明确废止词"，
+    # 避免"被 X 代替但 X 尚未实施"被"被代替"字样误判为已废止。
     has_abolish_word = bool(re.search(
         r"(同时废止|予以废止|现予废止|被代替|停止施行|不再施行|明令废止|予以宣布废止|起废止|废止日期)", text))
-    if has_abolish_word:
+    if replaced:
+        # 被替代：须等替代标准真正生效才标已废止；替代标准尚未实施则旧版保持现行有效
+        nb_eff = _resolve_new_std_effective_date(replaced)
+        if nb_eff:
+            status = "已废止" if not (today and _ymd(nb_eff) > today) else "现行有效"
+        else:
+            # 声称被 X 替代，但 X 官方页取不到/不存在 → 无法核实，不据此判废止，
+            # 退回按实施日期判状态（多半仍现行有效），并标记待人工确认（禁止捏造替代关系）
+            status = "现行有效" if (today and eff and _ymd(eff) <= today) else ("即将实施" if eff else "")
+            replaced = ""          # 不写入无法核实的替代关系（禁止捏造）
+            _repl_unverified = True
+    elif has_abolish_word:
         status = "已废止"
-    elif replaced:
-        status = "已废止"          # 被替代 = 已废止（通用，不针对具体标准）
+    elif replaces:
+        # 主动替代他人 = 本条是现行有效的新版（不废止）
+        status = "现行有效" if (today and eff and _ymd(eff) <= today) else ("即将实施" if eff else "")
     else:
         if eff:
             status = "现行有效" if (today and _ymd(eff) <= today) else "即将实施"
         else:
             status = ""
-    # 废止日期：页面明写
+    # 废止日期：页面明写优先
     m_ab = re.search(r"(废止日期|自[^\n]{0,30}?起废止)[：:\s]*(\d{4})-(\d{2})-(\d{2})", text)
     if m_ab:
         abolish = f"{m_ab.group(2)}-{int(m_ab.group(3)):02d}-{int(m_ab.group(4)):02d}"
-    elif replaced and stdno:
-        # 被真实替代：废止日期 = 新标准实施日（确定性解析新标准官方页取实施日）
+    elif replaced and stdno and status == "已废止":
+        # 被真实替代且确已废止：废止日期 = 新标准实施日（确定性解析新标准官方页取实施日）
         nb = _resolve_new_std_effective_date(replaced)
         if nb:
             abolish = nb
     return {"effectiveDate": eff or "", "status": status,
-            "abolishDate": abolish, "replacedBy": replaced}
+            "abolishDate": abolish, "replacedBy": replaced,
+            "_repl_unverified": _repl_unverified}
 
 
 def reconcile_conclusions(change, target, table, today):
@@ -858,6 +888,12 @@ def reconcile_conclusions(change, target, table, today):
                                   f"官方页未能核实字段「{fld}」（{gv}），请人工确认")
             else:
                 change[fld] = ""               # 无声称或与清单一致 → 清空，避免伪变更
+    # 6-b) 替代关系无法核实（编造/取不到官方页）：标记待人工确认，且不写入未核实的替代标准号
+    if derived.get("_repl_unverified"):
+        change["_unverified"] = True
+        change.setdefault("_unverified_reason",
+                          "声称被某标准替代，但替代标准官方页取不到/无法核实，替代关系未采纳，请人工确认")
+        change["replacedBy"] = ""   # 清空无法核实的替代关系，禁止把编造/未核实的标准号写进清单
     change["_verified"] = True
     change["_derived"] = derived
     print(f"  [结论抽取] 《{change.get('name')}》实施日={derived.get('effectiveDate') or '-'} "
@@ -994,6 +1030,13 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - **fromValues 必须如实核对清单当前 status**：status 字段严禁凭记忆填写；若你没在清单里看到该字段的当前值，就如实写 ""，不要猜"已废止"或"现行有效"。把现行有效误写成已废止，会与清单矛盾被丢弃。
 - **update / abolish 不带可验证官方链接不得提交**：你为某条目提供的 source_url 必须能在官方域名下打开（正文页）；打不开、是搜索页/列表页、或你没给链接的 update/abolish 提案，系统会整条丢弃——与其白生成一条被丢，不如不生成。
 - **note 与 diffs 必须自洽**：你声称改了什么，系统就以实际差异为准；若 note 写"由X改为Y"而 X==Y 且清单并无此变化，系统判定为表述与事实不符，直接丢弃。
+
+【十四、禁止输出自相矛盾的变更（最高优先级，输出前必自检）】
+- 你输出的每一条 change，其 note 里**绝对不能**出现「由X改为Y」且 X 与 Y 完全相同（例如「由已废止改为已废止」「由现行有效改为现行有效」「由 GB/T X-2018 改为 GB/T X-2018」）。这本身就是事实错误——"改了"又"没变"自相矛盾，系统会整条丢弃，你真正查到的有用变更也会一起丢掉。
+- **输出前自检（必做）**：在写出任何「由X改为Y」之前，先比对 X 与 Y。若 X==Y，说明该字段本次**根本没变化**，立刻**整句删除**，不要写它。
+- 若 fromValues 里你填的"当前状态"与你要设的 status 相同，说明 status 没变，note 里就**不要写**任何"状态由…改为…"。
+- 若你发现某条目本次其实没有任何字段真正变化（所有字段的新旧值都相同），就**不要输出这条 change**——没有变化就别动（见【九】）。
+- 这条是硬禁令：与其生成一条必被丢弃的自相矛盾提案，不如直接不输出该条。
 """
 
 
@@ -1130,16 +1173,32 @@ def _parse_std_full(s):
     return (_norm_fam(m.group(1)), m.group(2), m.group(3))
 
 
+def _stdno_in_replace_clause(text, m):
+    """该标准号是否出现在『X 代替/替代 Y』（主动/被动替代）语境里——即它是被替代的旧版号，
+    不是页面主体。出现在这种语境里的不同年份同族号，不应判为张冠李戴。"""
+    pre = text[max(0, m.start() - 8):m.start()]
+    post = text[m.end():m.end() + 6]
+    return ("代替" in pre or "替代" in pre or "代替" in post or "替代" in post)
+
+
 def _source_version_mismatch(text, target_stdno):
     """依据来源页面是否用『其它版本』的标准号改动本条（张冠李戴）。
-    例：本条 GB/T 4288-2018，来源页却标注 GB/T 4288-2025 → 返回 True。"""
+    例：本条 GB/T 4288-2018，来源页却以 GB/T 4288-2025 为主体 → 返回 True。
+    但页面"本标准代替 GB/T 22239-2008"（主动替代旧版）里的旧版号属替代语境，不算张冠李戴。"""
     t = _parse_std_full(target_stdno)
     if not t:
         return False
+    has_target_subject = False
+    for m in _STD_FULL_RE.finditer(text or ""):
+        fam = _norm_fam(m.group(1))
+        if fam == t[0] and m.group(2) == t[1] and m.group(3) == t[2]:
+            if not _stdno_in_replace_clause(text, m):
+                has_target_subject = True
     for m in _STD_FULL_RE.finditer(text or ""):
         fam = _norm_fam(m.group(1))
         if fam == t[0] and m.group(2) == t[1] and m.group(3) != t[2]:
-            return True
+            if not _stdno_in_replace_clause(text, m) and not has_target_subject:
+                return True
     return False
 
 
@@ -1680,29 +1739,33 @@ def apply_change(table, all_items, change, domain_id, today):
 
     if action == "abolish":
         old_status = target.get("status", "")
+        new_status = norm_status(change.get("status")) or "已废止"
         abolish_date = change.get("abolishDate", "") or target.get("abolishDate", "")
         replaced_by = (change.get("replacedBy") or "").strip()
-        if replaced_by:
-            # 通用废止—替代规则：官方写明被XX替代时，备注须写明"由XX替代"
-            remark = f"由 {replaced_by} 替代。废止标准不提供标准文本阅读服务。"
-        else:
-            remark = clean_remark(change, is_abolish=True)
-        set_fields = {"status": "已废止", "abolishDate": abolish_date, "remark": remark}
-        # 应用
-        target["status"] = "已废止"
-        if abolish_date:
-            target["abolishDate"] = abolish_date
-        target["remark"] = remark
-        return {"kind": "abolish", "name": name, "category": label, "table": table,
-                "targetId": tid, "newRecord": None, "setFields": set_fields,
-                "display": {"diffs": [{"field": "状态", "from": old_status, "to": "已废止"}],
-                            "link": target.get("link", ""), "source": target.get(src_field, ""),
-                            "sourceUrl": (change.get("source_url") or "").strip(),
-                            "reason": _build_reason_from_diffs(
-                                [{"field": "状态", "from": old_status, "to": "已废止"}]
-                                + ([{"field": "被替代", "from": "（无）", "to": replaced_by}] if replaced_by else []),
-                                change.get("source_url") or ""),
-                            "_glm_note": str(change.get("note") or "")}}
+        if new_status == "已废止":
+            if replaced_by:
+                # 通用废止—替代规则：官方写明被XX替代时，备注须写明"由XX替代"
+                remark = f"由 {replaced_by} 替代。废止标准不提供标准文本阅读服务。"
+            else:
+                remark = clean_remark(change, is_abolish=True)
+            set_fields = {"status": "已废止", "abolishDate": abolish_date, "remark": remark}
+            # 应用
+            target["status"] = "已废止"
+            if abolish_date:
+                target["abolishDate"] = abolish_date
+            target["remark"] = remark
+            return {"kind": "abolish", "name": name, "category": label, "table": table,
+                    "targetId": tid, "newRecord": None, "setFields": set_fields,
+                    "display": {"diffs": [{"field": "状态", "from": old_status, "to": "已废止"}],
+                                "link": target.get("link", ""), "source": target.get(src_field, ""),
+                                "sourceUrl": (change.get("source_url") or "").strip(),
+                                "reason": _build_reason_from_diffs(
+                                    [{"field": "状态", "from": old_status, "to": "已废止"}]
+                                    + ([{"field": "被替代", "from": "（无）", "to": replaced_by}] if replaced_by else []),
+                                    change.get("source_url") or ""),
+                                "_glm_note": str(change.get("note") or "")}}
+        # 经官方页核实，该标准尚未到废止时机（如替代标准尚未实施 / 替代关系无法核实）
+        # → 不执行废止，保持现行有效；若有新的被替代关系则落到下方 update 逻辑仅记录该关系。
 
     # update
     set_fields = {}

@@ -18,6 +18,7 @@ PAGE_DATE = "2026-03-01"
 
 _page_text = {}      # url -> 正文
 _resolved = {}       # stdNo -> 解析结果
+_resolved_link = {}  # stdNo -> 按号解析出的官方链接（供 _resolve_new_std_effective_date 桩用）
 _calls = {"resolve_openstd": []}
 
 
@@ -26,6 +27,17 @@ def _stub_network():
     M.probe_link = lambda u, timeout=10: True
     M.fetch_text = lambda u, timeout=10, max_bytes=150000: _page_text.get(u)
     M.is_dead_page = lambda t: False
+    # 官方页正文：走桩字典，避免真实联网（使结论抽取可离线复现）
+    M.domestic_fetch = lambda u, timeout=12: (_page_text.get(u), "stub")
+    # 按标准号解析官方链接：仅对 _resolved_link 中显式配置的标准号做受控返回，
+    # 其余一律回退到真实函数（保留"复用现有链接"等原有路径，不破坏其它用例）。
+    _real_resolve_link = M.resolve_link_for_entry
+    def fake_resolve_link(entry, table):
+        key = ((entry or {}).get("stdNo") or (entry or {}).get("name") or "").strip()
+        if key in _resolved_link:
+            return _resolved_link[key]
+        return _real_resolve_link(entry, table)
+    M.resolve_link_for_entry = fake_resolve_link
 
     def fake_resolve_openstd(std_no, retries=1, max_detail_checks=6):
         _calls["resolve_openstd"].append(std_no)
@@ -251,6 +263,80 @@ def main():
     good_j = ("被替代关系" in reason_j) and ("已废止改为已废止" not in reason_j)
     print(f"[{'PASS' if good_j else 'FAIL'}] J display.reason 由 diffs 生成：{reason_j!r}")
     results.append(good_j)
+
+    # ── 用例 K：方向判定（主动"本标准代替X"=本条是新版，绝不据此判已废止）──
+    # 页面"本标准代替 GB/T 22239-2008"→2019 是现行有效的新版；GLM 却误报 status=已废止。
+    # 修复后：官方页抽取结论应以"主动代替"识别为现行有效，覆盖 GLM 的已废止草稿。
+    _page_text.clear()
+    _page_text[GOV] = ("GB/T 22239-2019 信息安全技术 网络安全等级保护基本要求 "
+                       "实施日期：2019-12-01 本标准代替 GB/T 22239-2008")
+    tgt_k = {"id": "S0010", "name": "信息安全技术 网络安全等级保护基本要求",
+             "stdNo": "GB/T 22239-2019", "link": GOV,
+             "effectiveDate": "2019-12-01", "status": "现行有效", "publisher": "SAC"}
+    chg_k = {"action": "update", "name": "信息安全技术 网络安全等级保护基本要求",
+             "stdNo": "GB/T 22239-2019", "source_url": GOV, "link": GOV,
+             "effectiveDate": "2019-12-01", "status": "已废止",
+             "fromValues": {"effectiveDate": "2019-12-01", "status": "现行有效"},
+             "note": "更新到2024版，状态由现行有效改为已废止"}
+    chg_k = M.reconcile_conclusions(chg_k, tgt_k, "standards", TODAY)
+    k_status_ok = (chg_k.get("status") == "现行有效")
+    ok_k, reasons_k, discard_k = M.check_change("standards", chg_k, tgt_k, TODAY)
+    k_pass = k_status_ok and (not discard_k) and ok_k
+    print(f"[{'PASS' if k_pass else 'FAIL'}] K 方向判定：页面'本标准代替2008'(主动)→2019仍现行有效不误判已废止 (status={chg_k.get('status')})")
+    results.append(k_pass)
+
+    # ── 用例 L：替代标准尚未实施 → 旧版保持现行有效（不提前判已废止）──
+    # 旧版 GB/T 19606-2004 被 GB/T 19606-2024 代替，但 2024 版实施日 2026-09-01 > 今天(2026-08-11)。
+    # 修复后：经 _resolve_new_std_effective_date 取到新标准实施日，判定旧版暂不能废止，保持现行有效。
+    HC = "BAFB1A5B0B0B1C4D2E3F4A5B6C7D8E9F"
+    NEW_LINK_L = "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=" + HC
+    _resolved_link.clear()
+    _resolved_link["GB/T 19606-2024"] = {"link": NEW_LINK_L, "verified": True, "method": "openstd", "reason": "桩"}
+    _page_text.clear()
+    _page_text[NEW_LINK_L] = "GB/T 19606-2024 声功率级 实施日期：2026-09-01"
+    _page_text[GOV] = ("GB/T 19606-2004 声功率级 实施日期：2005-01-01 "
+                       "被 GB/T 19606-2024 代替")
+    tgt_l = {"id": "S0011", "name": "GB/T 19606-2004 声功率级",
+             "stdNo": "GB/T 19606-2004", "link": GOV,
+             "effectiveDate": "2005-01-01", "status": "现行有效", "publisher": "SAC"}
+    chg_l = {"action": "abolish", "name": "GB/T 19606-2004 声功率级",
+             "stdNo": "GB/T 19606-2004", "source_url": GOV, "link": GOV,
+             "effectiveDate": "2005-01-01", "status": "已废止",
+             "replacedBy": "GB/T 19606-2024",
+             "fromValues": {"effectiveDate": "2005-01-01", "status": "现行有效"},
+             "note": "被 GB/T 19606-2024 替代，状态由现行有效改为已废止"}
+    chg_l = M.reconcile_conclusions(chg_l, tgt_l, "standards", TODAY)
+    l_status_ok = (chg_l.get("status") == "现行有效")
+    ok_l, reasons_l, discard_l = M.check_change("standards", chg_l, tgt_l, TODAY)
+    l_pass = l_status_ok and (not discard_l)
+    print(f"[{'PASS' if l_pass else 'FAIL'}] L 替代标准未实施：旧版保持现行有效 (status={chg_l.get('status')})")
+    results.append(l_pass)
+
+    # ── 用例 M：编造的替代标准无法核实 → 不判已废止、不写入假标准号 ──
+    # 页面称"被 GB/T 22239-2024 代替"，但 2024 版官方页取不到（_resolved_link 未配置）→ 无法核实。
+    # 修复后：退回按实施日期判状态(现行有效)、清空 replacedBy(禁止捏造)、标 _unverified 待人工确认。
+    _resolved_link.clear()   # GB/T 22239-2024 未配置 → _resolve_new_std_effective_date 返回 ""
+    _page_text.clear()
+    _page_text[GOV] = ("GB/T 22239-2019 等级保护基本要求 实施日期：2019-12-01 "
+                       "被 GB/T 22239-2024 代替")
+    tgt_m = {"id": "S0012", "name": "信息安全技术 网络安全等级保护基本要求",
+             "stdNo": "GB/T 22239-2019", "link": GOV,
+             "effectiveDate": "2019-12-01", "status": "现行有效", "publisher": "SAC"}
+    chg_m = {"action": "update", "name": "信息安全技术 网络安全等级保护基本要求",
+             "stdNo": "GB/T 22239-2019", "source_url": GOV, "link": GOV,
+             "effectiveDate": "2019-12-01", "status": "已废止",
+             "replacedBy": "GB/T 22239-2024",
+             "fromValues": {"effectiveDate": "2019-12-01", "status": "现行有效"},
+             "note": "被 GB/T 22239-2024 替代，状态由现行有效改为已废止"}
+    chg_m = M.reconcile_conclusions(chg_m, tgt_m, "standards", TODAY)
+    m_status_ok = (chg_m.get("status") == "现行有效")
+    m_repl_dropped = (not (chg_m.get("replacedBy") or "").strip())
+    m_unverified = bool(chg_m.get("_unverified"))
+    ok_m, reasons_m, discard_m = M.check_change("standards", chg_m, tgt_m, TODAY)
+    m_pass = m_status_ok and m_repl_dropped and (not discard_m)
+    print(f"[{'PASS' if m_pass else 'FAIL'}] M 编造替代标准：无法核实→不判已废止、不写假号 "
+          f"(status={chg_m.get('status')}, replacedBy={chg_m.get('replacedBy')!r}, 待人工={m_unverified})")
+    results.append(m_pass)
 
     print("\n===== 汇总 =====")
     print(f"通过 {sum(1 for x in results if x)} / {len(results)}")
