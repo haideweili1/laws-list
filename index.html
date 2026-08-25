@@ -944,13 +944,24 @@ async function applyProposals(){
       const detail=(d.diffs&&d.diffs.length)?d.diffs.map(x=>x.field+" "+(x.from||"空")+"→"+(x.to||"空")).join("；"):(d.reason||"");
       return {type:c.type,name:c.name,category:c.category||"",detail:detail};
     })};
+  // 方案A：应用记录写入「手动记录」(edits.log)，带真实点击时刻 → 变更记录面板按时间倒序排最上面
+  const appliedLog = applied.map((c, i) => {
+    const tbl = c.table;
+    const recId = c.type === "add" ? (c.newRecord && c.newRecord.id) : c.targetId;
+    const op = c.type === "add" ? "add" : "edit";
+    const diff = (c.display && c.display.diffs || []).map(x => ({ f: x.field, old: x.from, new: x.to }));
+    return { key: keyOf(tbl, recId) + "_apply_" + Date.now() + "_" + i, table: tbl, recId: recId, name: c.name, ts: Date.now(), op: op, diff: diff.length ? diff : null };
+  });
   try{
     const r=await fetch(SYNC_PROXY+"/apply-proposed",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({data:nd,summary:summary,remaining:remaining,
-        discarded:(PROPOSALS.discarded||[]),generatedAt:PROPOSALS.generatedAt||today})});
+        discarded:(PROPOSALS.discarded||[]),generatedAt:PROPOSALS.generatedAt||today, appliedLog:appliedLog})});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){ if(btn)btn.disabled=false; setPropSt("err","写入失败："+(j.message||"请稍后再试")); return; }
     DATA=nd;
+    // 方案A：把应用记录同步进本地 edits.log（带真实点击时刻），立即在「变更记录」面板排最上面，无需刷新页面
+    appliedLog.forEach(e=>{ if(e&&e.key&&!edits.log.some(x=>x.key===e.key)) edits.log.push(e); });
+    trimLog(); saveLS(LS_LOG, edits.log);
     $("#lastUpdated").textContent=DATA.lastUpdated||"-";
     buildFilterOptions(); renderLaws(); renderStandards();
     const keepDc=PROPOSALS.discarded||[];
