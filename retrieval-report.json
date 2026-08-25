@@ -4,7 +4,7 @@
   "counts": {
     "ok_可直接应用": 0,
     "discard_丢弃": 0,
-    "status_switch_状态切换": 1
+    "status_switch_状态切换": 0
   },
   "discard_breakdown": {},
   "discarded_items": [],
