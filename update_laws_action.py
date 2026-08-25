@@ -726,6 +726,31 @@ def norm_status(s):
             "已废止": "已废止"}.get(s, s)
 
 
+def _is_retrieval_target(item, today):
+    """决定某条目本轮是否需要喂给 GLM 主动检索变更（通用规则，不硬编码任何标准号/日期）。
+
+    返回 False 的条目：仍保留在 all_items（去重基准，避免 GLM 当新增 add 回来），
+    只是不进 build_existing_block（即不主动提示 GLM 去查它的变更）。
+
+    排除规则（对应"清单已标注好、无需每周重查"的诉求）：
+      1) 已废止：无需再查废止状态。
+      2) 已标注被替代且尚未到废止时机（replacedBy 非空、当前仍非已废止）：
+         替代关系已标好，旧版状态切换交给 apply_status_rules 到期自动处理，本轮不查。
+      3) 即将实施且无被替代关系（新标准等待生效）：不查变更，到期由系统自动转现行有效。
+    """
+    st = norm_status(item.get("status", ""))
+    if st == "已废止":
+        return False
+    rb = (item.get("replacedBy") or "").strip()
+    if rb and st != "已废止":
+        # 已被替代、等待替代标准实施 → 不主动检索
+        return False
+    if st == "即将实施" and not rb:
+        # 新标准等待生效 → 不主动检索
+        return False
+    return True
+
+
 # ===== 根因修复：结论抽取器（GLM 只当检索员，结论 100% 由代码从官方页确定性抽取）=====
 def _resolve_new_std_effective_date(new_stdno):
     """被替代标准的真实废止日 = 替代它的新标准实施日（确定性解析新标准官方页取实施日）。取不到返回空字符串。"""
@@ -1037,23 +1062,37 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 若 fromValues 里你填的"当前状态"与你要设的 status 相同，说明 status 没变，note 里就**不要写**任何"状态由…改为…"。
 - 若你发现某条目本次其实没有任何字段真正变化（所有字段的新旧值都相同），就**不要输出这条 change**——没有变化就别动（见【九】）。
 - 这条是硬禁令：与其生成一条必被丢弃的自相矛盾提案，不如直接不输出该条。
+
+【十五、本轮不主动检索的条目（你必须严格遵守，不要输出针对它们的任何 change）】
+系统已按通用规则把以下三类条目排除在本轮检索范围之外（你不会在「当前清单已有条目」里看到它们），但以防你凭记忆生成，现明确告知：
+- 状态已为「已废止」的条目：无需再查废止，不要输出 update / abolish。
+- 已标注「被XX替代」（replacedBy 非空）且当前仍非「已废止」的条目：清单已标好替代关系，旧版状态切换由系统到期自动处理，本轮不查。
+- 状态为「即将实施」且无被替代关系的条目（新标准等待生效）：不查变更，到期由系统自动转现行有效。
+若你擅自对以上三类条目输出 update / abolish，系统会直接整条丢弃，你真正查到的有用变更也会一起丢掉。请只针对「现行有效且未被替代」的条目检索变更。
+注意：fromValues 里的"当前状态/实施日期"必须和你在该条目「★当前状态★」处看到的值【逐字一致】，不准改写、不准凭记忆改成别的。
 """
 
 
 def build_existing_block(items, table):
     """把清单已有条目的关键字段全部摊开给模型看（名称/实施日期/状态/部门/是否已有链接）。
-    这是「旧值核对」这道质检关卡的基准，模型再也不能说『原清单未标注』。"""
+    这是「旧值核对」这道质检关卡的基准，模型再也不能说『原清单未标注』。
+    注意：本函数仅接收『本轮主动检索目标』（_is_retrieval_target 过滤后）的条目。
+    当前状态用 ★…★ 醒目标注，并单独列出被替代关系，便于模型准确填写 fromValues（逐字抄）。"""
     lines = []
     for it in items:
         src = it.get("dept") if table == "laws" else it.get("publisher")
         no = ("｜标准号=" + (it.get("stdNo") or "")) if table != "laws" else ""
+        status = it.get("status") or "(空)"
+        rb = (it.get("replacedBy") or "").strip()
+        rb_hint = f"｜★被替代={rb}★" if rb else ""
         lines.append(
             f"- {it.get('name','')}{no}"
             f"｜id={it.get('id','')}"
             f"｜实施日期={it.get('effectiveDate') or '(空)'}"
-            f"｜状态={it.get('status') or '(空)'}"
+            f"｜★当前状态={status}★"          # 醒目标注当前状态，模型 fromValues 须逐字抄此值
             f"｜部门={src or '(空)'}"
             f"｜正文链接={'已有' if (it.get('link') or '').strip() else '缺失'}"
+            f"{rb_hint}"
         )
     return "\n".join(lines) or "（暂无）"
 
@@ -2242,6 +2281,15 @@ def main():
             items = proposed_standards
             text = STANDARDS_TEXT
             all_items = proposed_standards
+        # 检索范围过滤（通用，不硬编码具体标准号）：已废止 / 被替代未实施 / 即将实施 三类
+        # 不主动喂给 GLM 检索（清单已标注好，状态切换由 apply_status_rules 到期自动处理）。
+        # 注意：all_items 仍保持全量，作为去重基准，避免 GLM 把已排除条目当新增 add 回来。
+        items = [it for it in items if _is_retrieval_target(it, today)]
+        # 低消耗：本域过滤后已无主动检索目标，则跳过本次 GLM 调用（省 token）。
+        if not items:
+            print(f"  跳过检索（{label}）：当前无主动检索目标"
+                  f"（已废止/被替代未实施/即将实施 均不查）")
+            continue
         # 把已有条目的全字段摊给模型（名称/实施日期/状态/部门/是否已有链接），
         # 它才有据可依，也才能被「旧值核对」这道关卡验证。
         existing_block = build_existing_block(items, table)

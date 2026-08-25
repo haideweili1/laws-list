@@ -338,6 +338,25 @@ def main():
           f"(status={chg_m.get('status')}, replacedBy={chg_m.get('replacedBy')!r}, 待人工={m_unverified})")
     results.append(m_pass)
 
+    # ── 用例 N：检索范围过滤 _is_retrieval_target（通用规则，不硬编码标准号）──
+    # 验证四类判定：已废止/被替代未实施/即将实施 不进检索；现行有效未被替代 进检索。
+    n_cases = [
+        ("已废止→不检索", {"status": "已废止", "replacedBy": ""}, False),
+        ("被替代未实施(现行有效+replacedBy)→不检索",
+         {"status": "现行有效", "replacedBy": "GB/T 19606-2024"}, False),
+        ("即将实施无被替代→不检索", {"status": "即将实施", "replacedBy": ""}, False),
+        ("现行有效未被替代→检索", {"status": "现行有效", "replacedBy": ""}, True),
+        ("现行有效但replacedBy非空→不检索",
+         {"status": "现行有效", "replacedBy": "GB/T 4288-2025"}, False),
+    ]
+    n_pass = True
+    for title, item, expect in n_cases:
+        got = M._is_retrieval_target(item, TODAY)
+        ok = (got == expect)
+        n_pass = n_pass and ok
+        print(f"[{'PASS' if ok else 'FAIL'}] N 检索范围过滤：{title} (got={got}, expect={expect})")
+    results.append(n_pass)
+
     print("\n===== 汇总 =====")
     print(f"通过 {sum(1 for x in results if x)} / {len(results)}")
     if all(results):
