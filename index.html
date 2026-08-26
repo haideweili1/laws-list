@@ -106,36 +106,6 @@
 .cl-meta{color:var(--muted);font-size:12px;margin-bottom:2px}
 .cl-entry ul{margin:4px 0 0;padding-left:18px}
 .old{color:var(--bad)} .new{color:var(--ok)}
-/* 待确认更新（自动检索提案闸门） */
-.prop-card{margin:10px 22px 0;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 14px}
-.prop-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-weight:600}
-.prop-acts{display:flex;gap:8px;flex-wrap:wrap}
-.prop-tip{font-weight:400;font-size:12px;color:#92400e;margin-top:4px}
-.prop-list{margin-top:8px;max-height:440px;overflow:auto}
-.prop-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed #fde68a;align-items:flex-start}
-.prop-item:last-child{border-bottom:none}
-.prop-item input[type=checkbox]{margin-top:4px;width:16px;height:16px;flex:none;cursor:pointer}
-.prop-main{flex:1;font-size:13px;line-height:1.6;min-width:0;word-break:break-word}
-.prop-title{font-weight:600}
-.pt{display:inline-block;padding:1px 7px;border-radius:8px;font-size:11px;margin-right:6px}
-.pt.add{background:#dcfce7;color:#15803d}
-.pt.update{background:#dbeafe;color:#1d4ed8}
-.pt.abolish{background:#fee2e2;color:#b91c1c}
-.pt.status_switch{background:#ede9fe;color:#6d28d9}
-.pt.reject{background:#fee2e2;color:#b91c1c}
-.pt.discard{background:#e2e8f0;color:#475569}
-.prop-diff{margin:3px 0 0;padding-left:18px}
-.prop-diff li{font-size:12px}
-.prop-sub{font-size:12px;color:var(--muted);word-break:break-all}
-/* 两栏：左＝通过质检可直接应用；右＝自动丢弃（无依据/死链/编造，只看不写，供核对检索质量） */
-.prop-cols{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
-.prop-col{flex:1 1 380px;min-width:0}
-.prop-col-h{font-weight:600;font-size:13px;padding-bottom:6px;border-bottom:2px solid #fcd34d;margin-bottom:4px}
-.prop-col-h.rj{border-bottom-color:#fca5a5}
-.prop-col-h .prop-tip{display:inline;margin:0}
-.prop-empty{font-size:12px;color:var(--muted);padding:10px 0}
-.rj-reason{margin:3px 0 0;padding-left:18px}
-.rj-reason li{font-size:12px;color:#b91c1c}
 .batchbar{display:flex;gap:10px;align-items:center;padding:8px 22px;background:#eff6ff;border-bottom:1px solid var(--line);flex-wrap:wrap}
   .batchbar.hidden{display:none}
   .batchbar .btn[disabled]{opacity:.5;cursor:not-allowed}
@@ -175,7 +145,6 @@
   <div class="head-actions">
     <button class="btn" id="syncBtn" onclick="manualSync()"><span class="ico"></span>同步</button>
     <button class="btn" id="retrieveBtn" onclick="triggerRetrieve()"><span class="ico"></span><span class="btn-label">自动检索</span></button>
-    <a class="btn" href="retrieval-report.html" target="_blank" rel="noopener">查看检索报告</a>
   </div>
 </header>
 
@@ -191,30 +160,6 @@
   <div id="retrieveStatus" class="cc-status"></div>
 </div>
 
-<!-- 待确认更新：自动检索只出提案，必须逐条勾选确认后才写入清单 -->
-<div class="prop-card" id="proposalCard" style="display:none">
-  <div class="prop-head">
-    <span>待确认更新 <span id="propCount" class="prop-tip"></span></span>
-    <span class="prop-acts">
-      <button class="btn sm" onclick="toggleAllProposals(true)">全选</button>
-      <button class="btn sm" onclick="toggleAllProposals(false)">全不选</button>
-      <button class="btn sm pri" id="propApplyBtn" onclick="applyProposals()">确认应用选中项</button>
-      <button class="btn sm" id="propDiscardBtn" onclick="discardProposals()">全部忽略</button>
-    </span>
-  </div>
-  <div class="prop-tip">自动检索结果<b>不会自动改数据</b>。左栏是已通过 7 道自动质检、建议应用的条目，请核对后勾选；右栏是系统<b>自动丢弃</b>的条目（已确认无依据/死链/编造），<b>不会写入清单</b>，供你核对检索质量、确认没有把好条目误删。</div>
-  <div class="prop-cols">
-    <div class="prop-col">
-      <div class="prop-col-h">✅ 可直接应用 <span id="propCountL" class="prop-tip"></span></div>
-      <div class="prop-list" id="propList"></div>
-    </div>
-    <div class="prop-col">
-      <div class="prop-col-h dc">🗑️ 自动丢弃（无依据/死链/编造） <span id="propCountR" class="prop-tip"></span></div>
-      <div class="prop-list" id="propDiscardList"></div>
-    </div>
-  </div>
-  <div class="cc-status" id="propStatus"></div>
-</div>
 
 <!-- 法律法规视图 -->
 <section id="view-laws">
@@ -405,8 +350,6 @@ async function init(){
   const bt=document.getElementById("backTop");
   window.addEventListener("scroll",()=>{ if(bt) bt.classList.toggle("show", window.scrollY>400); },{passive:true});
   renderChangePreview();
-  // 待确认更新（自动检索提案）：有提案才显示面板
-  loadProposals();
   // 子分类Tab
   const subs=["全部","质量","环境与职业健康","信息安全","反恐"];
   $("#lawSubTabs").innerHTML=subs.map(s=>`<button class="${s==='全部'?'active':''}" data-s="${s}" onclick="switchSub('${s}')">${s}</button>`).join("");
@@ -762,18 +705,11 @@ async function triggerRetrieve(){
           clearInterval(timer);
           btn.classList.remove('running','loading'); btn.disabled=false; if(lbl)lbl.textContent='自动检索';
           if(sj.runConclusion==='success'){
-            // 草稿模式：检索只产出提案，不会改动清单；这里拉取提案供逐条确认
-            setSt('ok','✅ 检索完成，正在拉取待确认更新…');
-            let n=await loadProposals();
-            if(n) setSt('ok','✅ 检索完成：产出 '+n+' 条待确认更新，请在下方『待确认更新』逐条核对后勾选应用');
-            else setSt('ok','✅ 检索完成：暂未取到提案（页面同步约需 1 分钟，稍后会自动重试）');
-            // Pages 重建有延迟，延时再取一次
-            setTimeout(async()=>{
-              const m=await loadProposals();
-              if(m&&!n) setSt('ok','✅ 检索完成：产出 '+m+' 条待确认更新，请在下方逐条核对后勾选应用');
-              else if(!m&&!n) setSt('ok','✅ 检索完成：本次无需变更（无提案）');
-            },30000);
+            // 自动应用模式：检索已直接改写 data.json 并生成 update-summary.json，这里刷新变更记录面板
+            setSt('ok','✅ 检索完成，已自动应用本次变更（约 1 分钟后清单数据线上生效）');
             renderChangePreview();
+            // Pages 重建有延迟，延时再拉一次最新摘要
+            setTimeout(()=>{ renderChangePreview(); },30000);
           }else{
             setSt('err','⚠️ 本次检索未成功（'+(sj.runConclusion||'未知')+'），请查看 Actions 日志');
           }
@@ -796,211 +732,6 @@ async function triggerRetrieve(){
   }
 }
 
-/* ---------- 待确认更新（自动检索提案闸门） ---------- */
-let PROPOSALS=null;
-const PROP_TYPE={add:"新增",update:"更新",abolish:"废止",status_switch:"状态切换"};
-async function loadProposals(){
-  const card=document.getElementById("proposalCard"); if(!card)return 0;
-  let p=null;
-  try{ const r=await fetch("proposed-changes.json?t="+Date.now(),{cache:"no-store"}); if(r.ok)p=await r.json(); }catch(e){}
-  const nOk=(p&&Array.isArray(p.changes))?p.changes.length:0;
-  const nDc=(p&&Array.isArray(p.discarded))?p.discarded.length:0;
-  // 只要「可应用」或「自动丢弃」任一非空就展示面板（人工复核栏已删除）
-  PROPOSALS=(nOk||nDc)?p:null;
-  if(!PROPOSALS){ card.style.display="none"; return 0; }
-  if(!Array.isArray(PROPOSALS.changes))PROPOSALS.changes=[];
-  if(!Array.isArray(PROPOSALS.discarded))PROPOSALS.discarded=[];
-  card.style.display="";
-  renderProposals();
-  return nOk;
-}
-function propSummaryLine(c){
-  // 新增条目没有 diffs，改为展示新记录的关键字段，便于核对
-  const r=c.newRecord||{};
-  const f=[];
-  if(r.stdNo)f.push("标准号 "+r.stdNo);
-  if(r.docNumber)f.push("文号 "+r.docNumber);
-  if(r.dept||r.publisher)f.push("发布 "+(r.dept||r.publisher));
-  if(r.effectiveDate)f.push("实施日期 "+r.effectiveDate);
-  if(r.status)f.push("状态 "+r.status);
-  if(r.remark)f.push("备注 "+r.remark);
-  return f.length?('<ul class="prop-diff">'+f.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>"):"";
-}
-// 核准时清空明显的编造链接（防御：即便后端漏拦，也不把假链接写进清单）
-// 仅拦「一眼假」：非 http、openstd 无/假 hcno、占位符、示例域名；绝不误伤真实官方深链。
-function hcnoLooksFake(h){
-  if(!h||h.length!==32)return true;
-  if(/^(.)\1+$/.test(h))return true;            // 全同字符
-  if(/(.)\1{3,}/.test(h))return true;           // 含≥4连续相同字符
-  const blocks={};                              // 8 位块重复≥3 次（如 FFB7A8B3 重复）
-  for(let i=0;i+8<=h.length;i+=8){const b=h.substr(i,8);blocks[b]=(blocks[b]||0)+1;}
-  for(const k in blocks){ if(k && blocks[k]>=3) return true; }
-  return false;
-}
-function clearFakeLink(rec){
-  if(!rec||typeof rec!=="object")return;
-  const lk=(rec.link||"").trim();
-  if(!lk)return;
-  let fake=false;
-  if(!/^https?:\/\//i.test(lk)) fake=true;
-  else if(lk.indexOf("openstd.samr.gov.cn")>=0){
-    const m=lk.match(/hcno=([0-9A-Fa-f]+)/i);
-    if(hcnoLooksFake(m?m[1]:"")) fake=true;
-  }
-  if(/YYYY|example\.com|占位|placeholder|test\./i.test(lk)) fake=true;
-  if(fake){
-    rec.link="";
-    const old=(rec.remark||"").trim();
-    rec.remark = old.indexOf("官方链接待补")<0
-      ? (old?old+"（官方链接待补，系统自动清空编造链接）":"（官方链接待补）")
-      : old;
-  }
-}
-function renderProposals(){
-  const box=document.getElementById("propList"); if(!box||!PROPOSALS)return;
-  box.innerHTML=PROPOSALS.changes.map((c,i)=>{
-    const d=c.display||{};
-    const tbl=c.table==="standards"?"标准":"法规";
-    const diffs=(d.diffs||[]).map(x=>'<li>'+esc(x.field)+'：<span class="old">'+(esc(x.from)||"（空）")+'</span> → <span class="new">'+(esc(x.to)||"（空）")+'</span></li>').join("");
-    const body=diffs?('<ul class="prop-diff">'+diffs+"</ul>"):propSummaryLine(c);
-    const reason=d.reason?'<div class="prop-sub">理由：'+esc(d.reason)+"</div>":"";
-    const lk=d.link||(c.newRecord&&c.newRecord.link)||"";
-    const link=lk?'<div class="prop-sub">原文链接：<a href="'+esc(lk)+'" target="_blank" rel="noopener">'+esc(lk)+"</a></div>":'<div class="prop-sub">原文链接：<span class="old">无</span></div>';
-    const src=(d.source||d.sourceUrl)?('<div class="prop-sub">依据：'+esc(d.source||"")+(d.sourceUrl?' <a href="'+esc(d.sourceUrl)+'" target="_blank" rel="noopener">'+esc(d.sourceUrl)+"</a>":"")+"</div>"):'<div class="prop-sub">依据：<span class="old">未提供来源</span></div>';
-    return '<div class="prop-item"><input type="checkbox" data-i="'+i+'" onchange="updatePropCount()"><div class="prop-main">'
-      +'<div class="prop-title"><span class="pt '+esc(c.type)+'">'+(PROP_TYPE[c.type]||esc(c.type))+"</span>["+tbl+"] 《"+esc(c.name)+"》 <span class=\"muted\">"+esc(c.category||"")+"</span></div>"
-      +body+reason+link+src+"</div></div>";
-  }).join("")||'<div class="prop-empty">本次没有通过质检的可应用条目。</div>';
-  renderDiscarded();
-  updatePropCount();
-}
-// 自动丢弃的条目：已确认无依据/死链/编造，只展示不勾选，供核对检索质量（确认没把好条目误删）
-function renderDiscarded(){
-  const box=document.getElementById("propDiscardList"); if(!box)return;
-  const list=(PROPOSALS&&Array.isArray(PROPOSALS.discarded))?PROPOSALS.discarded:[];
-  if(!list.length){ box.innerHTML='<div class="prop-empty">本次没有自动丢弃的条目。</div>'; return; }
-  box.innerHTML=list.map(r=>{
-    const tbl=(r.table==="standards")?"标准":"法规";
-    const act={add:"想新增",update:"想更新",abolish:"想废止"}[r.action]||esc(r.action||"");
-    const reason=r.reason?'<ul class="rj-reason"><li>'+esc(r.reason)+"</li></ul>":"";
-    const su=r.sourceUrl?'<div class="prop-sub">它给的依据：<a href="'+esc(r.sourceUrl)+'" target="_blank" rel="noopener">'+esc(r.sourceUrl)+"</a></div>":'<div class="prop-sub">它给的依据：<span class="old">未提供</span></div>';
-    return '<div class="prop-item"><div class="prop-main">'
-      +'<div class="prop-title"><span class="pt discard">已丢弃</span>['+tbl+'] 《'+esc(r.name||"")+'》 <span class="muted">'+esc(r.category||"")+"　"+act+"</span></div>"
-      +reason+su+"</div></div>";
-  }).join("");
-}
-function updatePropCount(){
-  const boxes=[...document.querySelectorAll("#propList input[type=checkbox]")];
-  const n=boxes.filter(x=>x.checked).length;
-  const nDc=(PROPOSALS&&Array.isArray(PROPOSALS.discarded))?PROPOSALS.discarded.length:0;
-  const el=document.getElementById("propCount");
-  if(el)el.textContent="（可应用 "+boxes.length+" 条／自动丢弃 "+nDc+" 条"+(PROPOSALS&&PROPOSALS.generatedAt?("，检索于 "+PROPOSALS.generatedAt):"")+"）";
-  const l=document.getElementById("propCountL");
-  if(l)l.textContent="共 "+boxes.length+" 条，已选 "+n+" 条";
-  const rr=document.getElementById("propCountR");
-  if(rr)rr.textContent="共 "+nDc+" 条（不会写入清单）";
-}
-function toggleAllProposals(checked){
-  document.querySelectorAll("#propList input[type=checkbox]").forEach(x=>{x.checked=!!checked;});
-  updatePropCount();
-}
-function setPropSt(cls,txt){ const s=document.getElementById("propStatus"); if(!s)return; s.className="cc-status"+(cls?" "+cls:""); s.textContent=txt||""; }
-async function applyProposals(){
-  if(!PROPOSALS)return;
-  const picks=[...document.querySelectorAll("#propList input[type=checkbox]")].filter(x=>x.checked).map(x=>PROPOSALS.changes[+x.dataset.i]).filter(Boolean);
-  if(!picks.length){ toast("请先勾选要应用的条目"); return; }
-  if(!confirm("确认把选中的 "+picks.length+" 条更新写入清单？未勾选的条目不会写入。")) return;
-  const btn=document.getElementById("propApplyBtn"); if(btn)btn.disabled=true;
-  setPropSt("running","正在写入…");
-  const nd=JSON.parse(JSON.stringify(DATA));
-  nd.laws=Array.isArray(nd.laws)?nd.laws:[]; nd.standards=Array.isArray(nd.standards)?nd.standards:[];
-  const applied=[],skipped=[];
-  for(const c of picks){
-    const arr=c.table==="standards"?nd.standards:nd.laws;
-    if(c.type==="add"){
-      const rec=c.newRecord;
-      if(!rec||!rec.name){ skipped.push(c.name+"（提案缺少记录内容）"); continue; }
-      if(arr.some(r=>r.id===rec.id)||arr.some(r=>(r.name||"").trim()===(rec.name||"").trim())){ skipped.push(c.name+"（清单中已存在同名条目）"); continue; }
-      clearFakeLink(rec);   // 核准时清空 GLM 给的编造链接（防御兜底）
-      arr.push(rec);
-    }else{
-      if(!c.targetId||!c.setFields){ skipped.push(c.name+"（提案缺少目标或字段）"); continue; }
-      const rec=arr.find(r=>r.id===c.targetId);
-      if(!rec){ skipped.push(c.name+"（找不到对应条目）"); continue; }
-      Object.assign(rec,c.setFields);
-      clearFakeLink(rec);   // 核准时清空编造链接（防御兜底）
-    }
-    applied.push(c);
-  }
-  if(!applied.length){ if(btn)btn.disabled=false; setPropSt("err","没有可应用的条目："+skipped.join("；")); return; }
-  const today=new Date().toISOString().slice(0,10);
-  nd.lastUpdated=today;
-  const remaining=PROPOSALS.changes.filter(c=>applied.indexOf(c)<0);
-  const cnt=(t)=>applied.filter(c=>c.type===t).length;
-  const summary={updatedAt:new Date().toISOString(),hasUpdates:true,
-    counts:{added:cnt("add"),updated:cnt("update"),abolished:cnt("abolish"),statusSwitched:cnt("status_switch")},
-    changes:applied.map(c=>{
-      const d=c.display||{};
-      const detail=(d.diffs&&d.diffs.length)?d.diffs.map(x=>x.field+" "+(x.from||"空")+"→"+(x.to||"空")).join("；"):(d.reason||"");
-      return {type:c.type,name:c.name,category:c.category||"",detail:detail};
-    })};
-  try{
-    const r=await fetch(SYNC_PROXY+"/apply-proposed",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({data:nd,summary:summary,remaining:remaining,
-        discarded:(PROPOSALS.discarded||[]),generatedAt:PROPOSALS.generatedAt||today})});
-    const j=await r.json().catch(()=>({}));
-    if(!r.ok){ if(btn)btn.disabled=false; setPropSt("err","写入失败："+(j.message||"请稍后再试")); return; }
-    DATA=nd;
-    $("#lastUpdated").textContent=DATA.lastUpdated||"-";
-    buildFilterOptions(); renderLaws(); renderStandards();
-    const keepDc=PROPOSALS.discarded||[];
-    PROPOSALS=(remaining.length||keepDc.length)?Object.assign({},PROPOSALS,{changes:remaining,discarded:keepDc}):null;
-    if(PROPOSALS){ renderProposals(); }
-    else { const card=document.getElementById("proposalCard"); if(card)card.style.display="none"; }
-    setPropSt("ok","✅ 已应用 "+applied.length+" 条"+(skipped.length?("，跳过 "+skipped.length+" 条："+skipped.join("；")):"")+"。变更记录已即时显示；清单数据约 1 分钟后线上生效。");
-    toast("已应用 "+applied.length+" 条更新");
-    renderChangePreview(summary);
-  }catch(e){ setPropSt("err","写入失败："+e.message+"。请勿重复点击，先刷新页面确认是否已生效。"); }
-  finally{ if(btn)btn.disabled=false; }
-}
-// 直连 GitHub 公共接口核对文件是否真的已被删除（不需要令牌，且不受 Pages 缓存延迟影响）
-async function proposalFileGone(){
-  try{
-    const r=await fetch("https://api.github.com/repos/haideweili1/laws-list/contents/proposed-changes.json?t="+Date.now(),{cache:"no-store"});
-    return r.status===404;
-  }catch(e){ return false; }
-}
-function closeProposalCard(msg){
-  PROPOSALS=null;
-  const card=document.getElementById("proposalCard"); if(card)card.style.display="none";
-  if(msg)toast(msg);
-}
-async function discardProposals(){
-  if(!PROPOSALS)return;
-  const total=(PROPOSALS.changes||[]).length+(PROPOSALS.discarded||[]).length;
-  if(!confirm("确认丢弃本次全部 "+total+" 条提案（含自动丢弃项）？清单数据不会有任何改动。")) return;
-  const btn=document.getElementById("propDiscardBtn"); if(btn)btn.disabled=true;
-  setPropSt("running","正在清理提案…");
-  try{
-    const r=await fetch(SYNC_PROXY+"/apply-proposed",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({discardOnly:true})});
-    const j=await r.json().catch(()=>({}));
-    if(!r.ok){ setPropSt("err","清理失败："+(j.message||"请稍后再试")); return; }
-    closeProposalCard("已丢弃本次提案");
-    setPropSt("ok","✅ 已丢弃本次提案，清单数据未改动。");
-  }catch(e){
-    // 自愈：云函数可能已执行完但响应超时（旧版就是这样报 Failed to fetch 的）。
-    // 直接问 GitHub 文件还在不在，在就是真失败，不在就是已经成功了。
-    setPropSt("running","响应超时，正在核对后台是否已清理…");
-    if(await proposalFileGone()){
-      closeProposalCard("已丢弃本次提案");
-      setPropSt("ok","✅ 后台已清理完成（前端响应超时，已自动核对）。清单数据未改动。");
-    }else{
-      setPropSt("err","清理失败："+e.message+"。请稍等 10 秒后再点一次『全部忽略』。");
-    }
-  }
-  finally{ if(btn)btn.disabled=false; }
-}
 
 /* ---------- 变更记录（手动+自动合并） ---------- */
 async function renderChangePreview(overrideAuto){
