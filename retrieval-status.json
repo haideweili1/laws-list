@@ -1,11 +1,4 @@
 {
-  "status": "no_change",
-  "updatedAt": "2026-08-25T14:21:03",
-  "counts": {
-    "added": 0,
-    "updated": 0,
-    "abolished": 0,
-    "statusSwitched": 0,
-    "discarded": 0
-  }
+  "status": "running",
+  "updatedAt": "2026-08-26T03:46:43"
 }
