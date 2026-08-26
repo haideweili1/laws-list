@@ -1,18 +1,11 @@
 {
-  "updatedAt": "2026-08-25",
-  "hasUpdates": true,
+  "updatedAt": "2026-08-26",
+  "hasUpdates": false,
   "counts": {
     "added": 0,
-    "updated": 0,
     "abolished": 0,
-    "statusSwitched": 1
+    "updated": 0,
+    "statusSwitched": 0
   },
-  "changes": [
-    {
-      "type": "status_switch",
-      "name": "生产设备安全卫生设计总则GB5083-99",
-      "category": "laws",
-      "detail": "状态 现行有效→已废止"
-    }
-  ]
+  "changes": []
 }
