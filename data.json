@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-31",
+  "lastUpdated": "2026-09-07",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -7447,12 +7447,12 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2005-08-01",
-      "status": "现行有效",
+      "status": "已废止",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=A7F4223722F84EFC3421AE7E2B6E074C",
       "region": "",
       "id": "S0086",
-      "remark": "即将被 GB/T 19606-2024 替代（新标准实施日期 2026-09-01）",
-      "abolishDate": ""
+      "remark": "由 GB/T 19606-2024 替代。废止标准不提供标准文本阅读服务。",
+      "abolishDate": "2026-09-01"
     },
     {
       "name": "IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求",
@@ -8331,7 +8331,7 @@
       "stdType": "国家标准",
       "publisher": "国家标准化管理委员会",
       "effectiveDate": "2026-09-01",
-      "status": "即将实施",
+      "status": "现行有效",
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=9E694A86CF9AB7D112069910B37DD217",
       "region": "",
       "id": "S0154",

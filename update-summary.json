@@ -1,11 +1,24 @@
 {
-  "updatedAt": "2026-08-31",
-  "hasUpdates": false,
+  "updatedAt": "2026-09-07",
+  "hasUpdates": true,
   "counts": {
     "added": 0,
     "abolished": 0,
     "updated": 0,
-    "statusSwitched": 0
+    "statusSwitched": 2
   },
-  "changes": []
+  "changes": [
+    {
+      "type": "status_switch",
+      "name": "GB 19606-2004 家用和类似用途电器噪声限值",
+      "category": "standards",
+      "detail": "状态：现行有效 → 已废止"
+    },
+    {
+      "type": "status_switch",
+      "name": "GB/T 19606-2024 家用和类似用途电器噪声限值",
+      "category": "standards",
+      "detail": "状态：即将实施 → 现行有效"
+    }
+  ]
 }
