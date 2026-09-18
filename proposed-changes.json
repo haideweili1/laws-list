@@ -2,37 +2,61 @@
   "generatedAt": "2026-09-18",
   "draftMode": true,
   "counts": {
-    "added": 0,
-    "updated": 1,
+    "added": 1,
+    "updated": 0,
     "abolished": 0,
     "statusSwitched": 0,
-    "discarded": 1
+    "discarded": 3
   },
   "changes": [
     {
       "id": "c1",
-      "type": "update",
+      "type": "add",
       "table": "laws",
-      "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "name": "企业知识产权合规管理体系 要求",
       "category": "质量",
-      "targetId": "L0129",
-      "newRecord": null,
-      "setFields": {
-        "remark": "采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2025-09 发布新版 ISO 9001:2025；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）"
+      "targetId": "L0406",
+      "newRecord": {
+        "name": "企业知识产权合规管理体系 要求",
+        "docNumber": "",
+        "dept": "国家市场监督管理总局",
+        "effectiveDate": "",
+        "status": "现行有效",
+        "domains": [
+          "质量"
+        ],
+        "category": "质量",
+        "link": "",
+        "region": "全国",
+        "id": "L0406",
+        "remark": "",
+        "abolishDate": "",
+        "adopted": false,
+        "copyrightNote": ""
       },
+      "setFields": null,
       "display": {
         "diffs": [
           {
-            "field": "备注",
-            "from": "由 GB/T 19001-2023 替代。废止标准不提供标准文本阅读服务。",
-            "to": "采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2025-09 发布新版 ISO 9001:2025；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）"
+            "field": "name",
+            "from": "",
+            "to": "企业知识产权合规管理体系 要求"
+          },
+          {
+            "field": "dept",
+            "from": "",
+            "to": "国家市场监督管理总局"
+          },
+          {
+            "field": "status",
+            "from": "",
+            "to": "现行有效"
           }
         ],
-        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
+        "link": "",
         "source": "国家市场监督管理总局",
-        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
-        "reason": "备注→采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2025-09 发布新版 ISO 9001:2025；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）",
-        "_glm_note": "依据 ISO 官网页面 https://www.iso.org/standard/9001：ISO 9001:2025 状态为 Published、发布时间 2025-09；清单内本条目采用的是 ISO 9001:2015，故旧版仍现行有效、仅提示采标新版。"
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=6C9E44962BB8DD0AEF329110DB456C14",
+        "reason": "新增标准（链接已清空待补，请核准后再补官方链接）"
       }
     }
   ],
@@ -41,10 +65,32 @@
       "id": "d1",
       "type": "discard",
       "table": "laws",
-      "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "name": "产品质量监督抽查管理暂行办法",
       "category": null,
-      "action": "update",
-      "reason": "官方页未标注实施日期，无法自动填写；理由里说改实施日期，实际却没给出日期",
+      "action": "add",
+      "reason": "官方页超时/无法读取，所称变更无法自动核实，请人工点开确认；依据来源确认失效（HTTP 404），多半是编造的链接：https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2019/art_8a2220c06d5e9c66016d5f0d6b0b0063.html；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d2",
+      "type": "discard",
+      "table": "laws",
+      "name": "消费品召回管理暂行规定",
+      "category": null,
+      "action": "add",
+      "reason": "官方页未能核实字段「effectiveDate」（2020-01-01），请人工确认；依据来源确认失效（HTTP 404），多半是编造的链接：https://www.samr.gov.cn/xxgk/zhengce/202001/t20200106_310424.html；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d3",
+      "type": "discard",
+      "table": "laws",
+      "name": "实施强制管理的计量器具目录",
+      "category": null,
+      "action": "add",
+      "reason": "官方页未能核实字段「effectiveDate」（2020-09-29），请人工确认；依据来源确认失效（HTTP 404），多半是编造的链接：https://www.samr.gov.cn/zw/gg/202009/t20200929_322378.html；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "sourceUrl": "",
       "proposed": {}
     }
