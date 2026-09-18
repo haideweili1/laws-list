@@ -1,0 +1,6 @@
+{
+  "model": "glm-4.5-air",
+  "domain": "质量",
+  "draft_mode": true,
+  "_note": "模型档位对比测试用临时配置：draft_mode=true 表示只出报告、不写入正式清单。测试结束请删除本文件。"
+}

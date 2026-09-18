@@ -48,6 +48,36 @@ PROPOSED_DATA_PATH = os.path.join(ROOT, "proposed-data.json")
 REPORT_PATH = os.path.join(ROOT, "retrieval-report.json")
 REPORT_MD_PATH = os.path.join(ROOT, "retrieval-report.md")
 
+# ===== 运行参数临时覆盖（免改工作流即可切换 模型/域/试跑；测完删掉本文件即恢复默认）=====
+# 背景：若 GitHub 令牌没有 workflow 权限，就无法改动 .github/workflows/ 来加入参；
+#       此时可用仓库根目录的 runtime-config.json 传参。
+# 优先级：真实环境变量 > runtime-config.json > 脚本内置默认值。
+def _apply_runtime_overrides():
+    p = os.path.join(ROOT, "runtime-config.json")
+    if not os.path.exists(p):
+        return
+    try:
+        with open(p, encoding="utf-8") as f:
+            cfg = json.load(f) or {}
+    except Exception as e:
+        print("  读取 runtime-config.json 失败（忽略）:", e)
+        return
+    _map = (("model", "MODEL"), ("domain", "DOMAIN"),
+            ("draft_mode", "DRAFT_MODE"), ("draft", "DRAFT_MODE"))
+    _applied = []
+    for k, env in _map:
+        if k not in cfg or (os.environ.get(env) or "").strip():
+            continue                     # 真实环境变量优先，不被文件顶掉
+        v = cfg[k]
+        s = ("true" if v else "false") if isinstance(v, bool) else str(v)
+        os.environ[env] = s
+        _applied.append(f"{env}={s}")
+    if _applied:
+        print("  [运行参数覆盖] runtime-config.json 生效：" + "，".join(_applied))
+
+
+_apply_runtime_overrides()
+
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
 
@@ -2699,6 +2729,15 @@ def main():
         ("laws", "反恐"),
         ("standards", "standards"),
     ]
+    # 可选：只跑某一个域（供低消耗的模型档位对比测试用）；DOMAIN 留空 = 照旧全量 5 个域
+    _only = (os.environ.get("DOMAIN") or "").strip()
+    if _only:
+        _labels = [CATEGORY_NAMES.get(c, c) for _, c in targets]
+        targets = [t for t in targets
+                   if t[1] == _only or CATEGORY_NAMES.get(t[1], t[1]) == _only
+                   or (t[0] == "standards" and _only in ("standards", "产品标准"))]
+        print(f"  [DOMAIN] 仅检索「{_only}」：命中 {len(targets)} 个域"
+              f"（可选：{' / '.join(_labels)}）")
     summary_changes = []
     run_errors = []  # 本轮各域检索出错（含异常/超时），写入报告便于诊断"0/0/0 是真无变化还是 GLM 调失败"
     intl_checks = []  # 采标父本核查台账（规则十六：模型逐条"原样抄录"官网字段），写入报告便于核对它到底查没查
