@@ -2011,7 +2011,7 @@
       "docNumber": "",
       "dept": "国家市场监督管理总局",
       "effectiveDate": "2015-09-22",
-      "status": "现行有效",
+      "status": "已废止",
       "domains": [
         "质量"
       ],
@@ -2019,7 +2019,7 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
       "region": "",
       "id": "L0129",
-      "remark": "由 GB/T 19001-2023 替代。废止标准不提供标准文本阅读服务。",
+      "remark": "采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2022-09 发布新版 ISO 9001:2022；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）",
       "abolishDate": ""
     },
     {
