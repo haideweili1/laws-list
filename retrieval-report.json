@@ -3,72 +3,52 @@
   "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
     "ok_可直接应用": 1,
-    "discard_丢弃": 13,
+    "discard_丢弃": 8,
     "status_switch_状态切换": 0
   },
   "discard_breakdown": {
-    "旧值核对不符（未看清单）": 4,
-    "其它": 9
+    "旧值核对不符（未看清单）": 5,
+    "其它": 2,
+    "无来源且系统也解析不到（须落地 name_query/cfsa）": 1
   },
   "discarded_items": [
     {
       "name": "中华人民共和国安全生产法",
       "table": "laws",
       "action": "update",
-      "reason": "声称原日期是「2014-12-01」，清单里其实是「2021-09-01」",
+      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国安全生产法（2021年6月10日修订）），请人工确认；声称原日期是「2014-12-01」，清单里其实是「2021-09-01」",
       "proposed": {}
     },
     {
       "name": "中华人民共和国环境保护法",
       "table": "laws",
       "action": "update",
-      "reason": "官方页未标注实施日期，无法自动填写；声称原日期是「1989-12-29」，清单里其实是「2015-01-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
+      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国环境保护法（2022年12月30日修订）），请人工确认；声称原状态是「现行有效」，清单里其实是「已废止」",
       "proposed": {}
     },
     {
       "name": "中华人民共和国水污染防治法",
       "table": "laws",
       "action": "update",
-      "reason": "声称原日期是「2017-06-27」，清单里其实是「2008-06-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
+      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国水污染防治法（2021年12月24日修订）），请人工确认；声称原日期是「2017-06-27」，清单里其实是「2008-06-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
       "proposed": {}
     },
     {
       "name": "中华人民共和国大气污染防治法",
       "table": "laws",
       "action": "update",
-      "reason": "声称原日期是「2015-08-29」，清单里其实是「2016-01-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
+      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国大气污染防治法（2021年12月24日修订）），请人工确认；声称原日期是「2015-08-29」，清单里其实是「2016-01-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
+      "proposed": {}
+    },
+    {
+      "name": "中华人民共和国固体废物污染环境防治法",
+      "table": "laws",
+      "action": "update",
+      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国固体废物污染环境防治法（2022年12月30日修订）），请人工确认；声称原日期是「2016-12-02」，清单里其实是「2020-09-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
       "proposed": {}
     },
     {
       "name": "中华人民共和国认证认可条例",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国网络安全法",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "数据安全法",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "个人信息保护法",
       "table": "laws",
       "action": "update",
       "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
@@ -82,90 +62,40 @@
       "proposed": {}
     },
     {
-      "name": "关键信息基础设施安全保护条例",
+      "name": "算法推荐/深度合成管理规定",
       "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "网络数据安全管理条例",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "信息安全技术 网络安全等级保护基本要求",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
+      "action": "add",
+      "reason": "官方页未能核实字段「effectiveDate」（2025-08-20），请人工确认；依据来源确认失效（HTTP 404），多半是编造的链接：http://www.cac.gov.cn/2025-08/20/content_5674124.htm；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "proposed": {}
     }
   ],
   "auto_resolved_links": [
     {
-      "name": "中华人民共和国安全生产法",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://policy.mofcom.gov.cn/claw/clawContent.shtml?id=90353",
-      "glmGave": "http://www.gov.cn/zhengce/content/2023-11/29/content_5876487.htm",
-      "claimConfirmed": true,
-      "detail": "链接由系统按官方渠道自动解析补正，且实施日期 2002-11-01 与官方页正文一致（实施日期按官方页正文补为 2002-11-01）"
-    },
-    {
-      "name": "中华人民共和国环境保护法",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk06/202401/t20240120_1075466.shtml",
-      "glmGave": "http://www.gov.cn/zhengce/content/2022-12/30/content_5869346.htm",
-      "claimConfirmed": false,
-      "detail": "官方页未标注实施日期，无法自动填写"
-    },
-    {
-      "name": "中华人民共和国水污染防治法",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/ywgz/fgbz/fl/200802/t20080229_118802.shtml",
-      "glmGave": "http://www.gov.cn/zhengce/content/2021-12/24/content_5864346.htm",
-      "claimConfirmed": true,
-      "detail": "链接由系统按官方渠道自动解析补正，且实施日期 2008-06-01 与官方页正文一致（实施日期按官方页正文补为 2008-06-01）"
-    },
-    {
-      "name": "中华人民共和国大气污染防治法",
-      "table": "laws",
-      "action": "update",
-      "method": "reuse_existing",
-      "link": "https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/ywgz/fgbz/fl/201811/t20181113_673567.shtml",
-      "glmGave": "http://www.gov.cn/zhengce/content/2021-12/24/content_5864346.htm",
-      "claimConfirmed": true,
-      "detail": "链接由系统按官方渠道自动解析补正，且实施日期 2016-01-01 与官方页正文一致（实施日期按官方页正文补为 2016-01-01）"
-    },
-    {
-      "name": "GB/T 4706.32-2024热泵、空调器和除湿机的特殊要求",
+      "name": "GB/T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
       "table": "standards",
       "action": "update",
       "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=9A7443F55DBCDA172ED125A068E8009E",
-      "glmGave": "http://www.sast.org.cn/n622/n625/n627/n629/c_6296486.htm",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C365EC4C87F48E8618D216AF27DBDE8D",
+      "glmGave": "http://www.sac.gov.cn/n117610/n117643/c5696445/index.html",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
     }
   ],
-  "auto_resolved_count": 5,
+  "auto_resolved_count": 1,
   "quality_metrics": {
     "fake_abolish": 0,
     "publish_date_misfill": 0,
-    "dup_rereport": 11,
+    "dup_rereport": 21,
     "cross_file": 0
   },
   "retrieval_errors": [
     {
       "label": "环境与职业健康",
-      "error": "模型输出被截断，已抢救出前 4 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
+      "error": "模型输出被截断，已抢救出前 5 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
+    },
+    {
+      "label": "质量",
+      "error": "模型输出被截断，已抢救出前 8 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
     },
     {
       "label": "信息安全",
@@ -174,25 +104,55 @@
   ],
   "intl_parent_checks": [
     {
-      "entry": "中华人民共和国认证认可条例",
-      "intlNo": "ISO/IEC 17065:2012",
-      "result": "查到新版 ISO/IEC 17065:2012（发布 2012-06-01）",
-      "evidence_url": "http://www.iso.org/standard/61036.html",
-      "label": "质量"
+      "entry": "GB/T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
+      "intlNo": "IEC 60335-2-34",
+      "page_designation": "IEC 60335-2-34:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/65589.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015",
+      "intlNo": "ISO 14001",
+      "label": "环境与职业健康",
+      "source": "无可核实证据",
+      "evidence_url": "",
+      "result": "未取得官网版本证据（不据此下任何结论）"
+    },
+    {
+      "entry": "ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南",
+      "intlNo": "ISO 14064-3-2019",
+      "label": "环境与职业健康",
+      "source": "无可核实证据",
+      "evidence_url": "",
+      "result": "未取得官网版本证据（不据此下任何结论）"
+    },
+    {
+      "entry": "ISO14064-1-2018 温室气体 第一部分 组织层上对温室气体排放和清除的量化和报告的规范及指南",
+      "intlNo": "ISO 14064-1-2018",
+      "label": "环境与职业健康",
+      "source": "无可核实证据",
+      "evidence_url": "",
+      "result": "未取得官网版本证据（不据此下任何结论）"
     },
     {
       "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
-      "intlNo": "ISO/IEC 9002:2017",
-      "result": "查到新版 ISO/IEC 9002:2017（发布 2017-07-01）",
-      "evidence_url": "http://www.iso.org/standard/61036.html",
-      "label": "质量"
+      "intlNo": "ISO 9002",
+      "label": "质量",
+      "source": "无可核实证据",
+      "evidence_url": "",
+      "result": "未取得官网版本证据（不据此下任何结论）"
     },
     {
-      "entry": "GB/T 4706.32-2024热泵、空调器和除湿机的特殊要求",
-      "intlNo": "IEC 60335-2-31",
-      "result": "查到新版 IEC 60335-2-31:2023（发布 2023-07-01）",
-      "evidence_url": "http://www.iso.org/standard/71884.html",
-      "label": "产品标准"
+      "entry": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "intlNo": "ISO 9001",
+      "label": "质量",
+      "source": "无可核实证据",
+      "evidence_url": "",
+      "result": "未取得官网版本证据（不据此下任何结论）"
     }
   ]
 }
