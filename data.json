@@ -7881,7 +7881,8 @@
       "region": "",
       "id": "S0119",
       "remark": "该标准采用了ISO、IEC等国际国外组织的标准，由于涉及版权保护问题，本系统暂不提供在线阅读服务。",
-      "abolishDate": ""
+      "abolishDate": "",
+      "replacedBy": "GB/T 4706.32-2025"
     },
     {
       "name": "EN 60335-2-40: 2003 + A11: 2004 + A12: 2005 + A1: 2006 + A2: 2009 + A13: 2012 Particular requirements for electrical heat pumps, air-conditioners and dehumidifiers",

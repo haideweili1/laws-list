@@ -1,11 +1,18 @@
 {
   "updatedAt": "2026-09-18",
-  "hasUpdates": false,
+  "hasUpdates": true,
   "counts": {
     "added": 0,
     "abolished": 0,
-    "updated": 0,
+    "updated": 1,
     "statusSwitched": 0
   },
-  "changes": []
+  "changes": [
+    {
+      "type": "update",
+      "name": "GB/T 4706.32-2024热泵、空调器和除湿机的特殊要求",
+      "category": "产品标准",
+      "detail": "新增被替代关系：GB/T 4706.32-2025"
+    }
+  ]
 }
