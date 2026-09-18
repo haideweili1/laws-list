@@ -1376,7 +1376,14 @@ def build_prompt(target_label, domain_text, existing_names):
 
 {COMMON_RULES}
 
-请返回 JSON（无变更则 changes 为空数组）。每条 change 字段：
+请返回 JSON。**字段顺序有硬性要求：第一个字段必须是 intl_parent_checks（父本核查台账），第二个字段才是 changes**——务必按此顺序，这样即使你的答复过长被截断，台账也不会丢。
+
+  "intl_parent_checks": [
+    {{"entry": "清单条目名称（原样抄）", "intlNo": "该条目里的国际标准编号", "page_designation": "官网标题里的标准号+年份，如 ISO 9001:2026（原样照抄）", "page_status": "官网 Status 值，如 Published（原样照抄；没有就空字符串）", "page_pubdate": "官网 Publication date 值，如 2026-09（原样照抄；没有就空字符串）", "evidence_url": "你实际打开的官网页面链接（原样复制；打不开就空字符串）", "result": "一句话说明你查到什么，如「官网页打不开」或「官网当前版本页即此」"}}
+  ]
+（本域清单里若没有任何含国际标准编号的条目，intl_parent_checks 给空数组 []。严禁在这里下「是否已出新版」的结论。）
+
+然后 changes（无变更则 changes 为空数组）。每条 change 字段：
 {{
   "action": "add | update | abolish",
   "name": "全称",
@@ -1399,12 +1406,6 @@ def build_prompt(target_label, domain_text, existing_names):
   "replacedBy": "替代本标准的法规/标准名称或编号（仅当官方写明被XX替代时填；否则空字符串）",
   "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
-
-另外，在 JSON 根部再给一个字段（供系统按【十六】做父本新旧版本判定：务必逐字照抄官网，不要自己判断）：
-  "intl_parent_checks": [
-    {{"entry": "清单条目名称（原样抄）", "intlNo": "该条目里的国际标准编号", "page_designation": "官网标题里的标准号+年份，如 ISO 9001:2026（原样照抄）", "page_status": "官网 Status 值，如 Published（原样照抄；没有就空字符串）", "page_pubdate": "官网 Publication date 值，如 2026-09（原样照抄；没有就空字符串）", "evidence_url": "你实际打开的官网页面链接（原样复制；打不开就空字符串）", "result": "一句话说明你查到什么，如「官网页打不开」或「官网当前版本页即此」"}}
-  ]
-本域清单里若没有任何含国际标准编号的条目，intl_parent_checks 给空数组 []。严禁在这里下「是否已出新版」的结论。
 
 重要：effectiveDate / status / abolishDate / replacedBy 这四个结论字段你【必须输出为空字符串 ""】，不要填写、不要推测——系统会依据 source_url 官方页确定性抽取并覆盖，你填了也不会被采用，只会白占输出长度。再强调一次：这四个字段一律写成 ""。
 为节省篇幅（输出过长会被截断，导致整域结果作废）：action="update" 的条目只输出 action / name / fromValues / note 这 4 个必备字段，再加你有把握的 source_url / source_hint / remark / replacedBy；其余字段（table / stdNo / docNumber / domains / category / source / link / effectiveDate / status / abolishDate / adopted / copyrightNote）一律不要在 update 条目里出现，系统会沿用清单原值。action="add" 仍按上面的完整字段输出。
@@ -1451,17 +1452,13 @@ def _repair_json_text(s):
     return t
 
 
-def _salvage_truncated_json(text):
-    """模型输出被截断时，尽量抢救出 changes 数组里【已完整】的对象：
-    只丢尾部那条残缺的，不因尾部截断丢掉整域结果。抢救出的对象仍要过全部质检关卡。
-    无可用结果时返回 None。"""
-    m = re.search(r'"changes"\s*:\s*\[', text)
+def _salvage_array_objects(text, key):
+    """从（可能被截断的）文本里抢救出 `"key": [ ... ]` 数组中【已完整】的对象。"""
+    m = re.search(r'"' + re.escape(key) + r'"\s*:\s*\[', text)
     if not m:
-        return None
+        return []
     dec = json.JSONDecoder()
-    out = []
-    i = m.end()
-    n = len(text)
+    out, i, n = [], m.end(), len(text)
     while i < n:
         j = i
         while j < n and text[j] in " \t\r\n":
@@ -1480,7 +1477,20 @@ def _salvage_truncated_json(text):
         if isinstance(obj, dict):
             out.append(obj)
         i = j + end
-    return {"changes": out, "_salvaged": True} if out else None
+    return out
+
+
+def _salvage_truncated_json(text):
+    """模型输出被截断时，尽量抢救出【已完整】的 changes 与 intl_parent_checks 对象：
+    只丢尾部残缺的那条，不因尾部截断把整域结果作废。抢救出的对象仍要过全部质检关卡。"""
+    changes = _salvage_array_objects(text, "changes")
+    checks = _salvage_array_objects(text, "intl_parent_checks")
+    if not changes and not checks:
+        return None
+    res = {"changes": changes, "_salvaged": True}
+    if checks:
+        res["intl_parent_checks"] = checks
+    return res
 
 
 def parse_model_json(raw):
