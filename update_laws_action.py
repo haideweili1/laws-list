@@ -1217,7 +1217,9 @@ def build_prompt(target_label, domain_text, existing_names):
   ]
 本域清单里若没有任何含国际标准编号的条目，intl_parent_checks 给空数组 []。
 
-重要：effectiveDate / status / abolishDate / replacedBy 这四个结论字段你【不必填写】（直接留空字符串 ""），系统会依据你提供的 source_url 官方页确定性抽取并覆盖，不会采用你生成的值。你只需：① 确保 source_url 是你 web_search 真实返回的官方页链接（原样复制，绝不自造 URL）；② 在 note 里尽量引用官方页原文；③ fromValues 仍须如实填写清单当前值（旧值核对基准）。
+重要：effectiveDate / status / abolishDate / replacedBy 这四个结论字段你【必须输出为空字符串 ""】，不要填写、不要推测——系统会依据 source_url 官方页确定性抽取并覆盖，你填了也不会被采用，只会白占输出长度。再强调一次：这四个字段一律写成 ""。
+为节省篇幅（输出过长会被截断，导致整域结果作废）：action="update" 的条目只输出 action / name / fromValues / note 这 4 个必备字段，再加你有把握的 source_url / source_hint / remark / replacedBy；其余字段（table / stdNo / docNumber / domains / category / source / link / effectiveDate / status / abolishDate / adopted / copyrightNote）一律不要在 update 条目里出现，系统会沿用清单原值。action="add" 仍按上面的完整字段输出。
+你只需：① 确保 source_url 是你 web_search 真实返回的官方页链接（原样复制，绝不自造 URL）；② 在 note 里尽量引用官方页原文；③ fromValues 仍须如实填写清单当前值（旧值核对基准）。
 
 注意：action=update / abolish 时 fromValues 必填且必须与上面清单一字不差，否则整条拒收。
 只输出 JSON，不要额外说明文字。"""
@@ -1260,9 +1262,41 @@ def _repair_json_text(s):
     return t
 
 
+def _salvage_truncated_json(text):
+    """模型输出被截断时，尽量抢救出 changes 数组里【已完整】的对象：
+    只丢尾部那条残缺的，不因尾部截断丢掉整域结果。抢救出的对象仍要过全部质检关卡。
+    无可用结果时返回 None。"""
+    m = re.search(r'"changes"\s*:\s*\[', text)
+    if not m:
+        return None
+    dec = json.JSONDecoder()
+    out = []
+    i = m.end()
+    n = len(text)
+    while i < n:
+        j = i
+        while j < n and text[j] in " \t\r\n":
+            j += 1
+        if j >= n or text[j] == "]":
+            break
+        if text[j] == ",":
+            i = j + 1
+            continue
+        if text[j] != "{":
+            break
+        try:
+            obj, end = dec.raw_decode(text[j:])
+        except Exception:
+            break          # 撞上被截断的那条 → 到此为止
+        if isinstance(obj, dict):
+            out.append(obj)
+        i = j + end
+    return {"changes": out, "_salvaged": True} if out else None
+
+
 def parse_model_json(raw):
-    """解析模型返回：先严格解析；失败则做保守修复再解析；仍失败则抛出（附原始片段便于诊断）。
-    只接受「对象」（本管线的输出永远是带 changes 的对象）；拿到数组/片段一律视为失败。"""
+    """解析模型返回，逐级降级：严格解析 → 保守修复 → 截断抢救 → 抛错（附原始片段便于诊断）。
+    只接受「对象」（本管线输出永远是带 changes 的对象）；拿到数组/片段一律视为失败。"""
     text = extract_json(raw)
     first_err = None
     for cand in (text, _repair_json_text(text)):
@@ -1274,6 +1308,9 @@ def parse_model_json(raw):
             continue
         if isinstance(obj, dict):
             return obj
+    salv = _salvage_truncated_json(text)
+    if salv:
+        return salv
     _n = len(raw or "")
     _snip = raw if _n <= 700 else (raw[:350] + " ……[中略]…… " + raw[-350:])
     raise ValueError(f"JSON 解析失败（{first_err}）；原始返回长度={_n}；原始片段：{_snip}")
@@ -2494,6 +2531,9 @@ def main():
         _rs = (result.get("summary") or "").strip()
         if _rs.startswith("检索出错"):
             run_errors.append({"label": label, "error": _rs})
+        if result.get("_salvaged"):
+            run_errors.append({"label": label,
+                               "error": f"模型输出被截断，已抢救出前 {len(changes)} 条完整变更（仅丢弃尾部残缺条目，未整域作废）"})
         # 采标父本核查台账：收集 GLM 回报的"国际父本是否已出新版"，供报告核对它是否真的查了
         for _ck in (result.get("intl_parent_checks") or []):
             if isinstance(_ck, dict):
