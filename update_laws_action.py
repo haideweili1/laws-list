@@ -1215,10 +1215,20 @@ def extract_json(text):
     m = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
     if m:
         text = m.group(1).strip()
+    # 优先：用 raw_decode 取首个完整 JSON 对象/数组（容忍尾部闲聊/多 JSON 块/代码围栏）
+    for start in (text.find("{"), text.find("[")):
+        if start == -1:
+            continue
+        try:
+            _obj, end = json.JSONDecoder().raw_decode(text[start:])
+            return text[start:start + end]
+        except Exception:
+            pass
+    # 兜底：首 { 到尾 }
     s = text.find("{")
     e = text.rfind("}")
-    if s != -1 and e != -1:
-        text = text[s:e + 1]
+    if s != -1 and e > s:
+        return text[s:e + 1]
     return text
 
 
