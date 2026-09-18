@@ -13,7 +13,7 @@
 
 依赖环境变量：
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
-  MODEL            (可选)  模型名，默认 glm-4-plus（智谱最强模型，事实准确性明显优于 air）
+  MODEL            (可选)  模型名，默认 glm-4-flash（永久免费；事实核对足够，需高质感可设 MODEL=glm-4-plus 覆盖）
   DRAFT_MODE       (可选)  true(默认)=只出提案不动数据；false=直写 data.json
   SYNC_PROXY       (可选)  国内腾讯云 SCF 代理地址（含 https://）。配置后，链接核验改由
                       广州境内 SCF 执行，消除 GitHub 境外 runner 访问国内官网超时造成的误杀；
@@ -2347,7 +2347,7 @@ def main():
         print("缺少 zhipuai 库，请先执行: pip install zhipuai")
         sys.exit(1)
 
-    model = os.environ.get("MODEL") or "glm-4-plus"
+    model = os.environ.get("MODEL") or "glm-4-flash"
     client = ZhipuAI(api_key=api_key)
     write_running_status()
 
