@@ -2,37 +2,111 @@
   "generatedAt": "2026-09-18",
   "effective_model": "glm-4.7",
   "domain_filter": "质量",
-  "mode": "自动写入",
+  "mode": "试跑（只出报告，未写入清单）",
   "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
-    "ok_可直接应用": 0,
-    "discard_丢弃": 0,
+    "ok_可直接应用": 2,
+    "discard_丢弃": 6,
     "status_switch_状态切换": 0
   },
-  "discard_breakdown": {},
-  "discarded_items": [],
+  "discard_breakdown": {
+    "无来源且系统也解析不到（须落地 name_query/cfsa）": 3,
+    "其它": 3
+  },
+  "discarded_items": [
+    {
+      "name": "产品质量监督抽查管理暂行办法",
+      "table": "laws",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增；没有说明改了什么、依据是什么",
+      "proposed": {}
+    },
+    {
+      "name": "计量器具新产品管理办法",
+      "table": "laws",
+      "action": "abolish",
+      "reason": "官方页未能核实字段「abolishDate」（2020-11-01），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "proposed": {}
+    },
+    {
+      "name": "中国强制检定的工作计量器具明细目录",
+      "table": "laws",
+      "action": "abolish",
+      "reason": "官方页未能核实字段「abolishDate」（2021-01-01），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "proposed": {}
+    },
+    {
+      "name": "实施强制管理的计量器具目录",
+      "table": "laws",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增；没有说明改了什么、依据是什么",
+      "proposed": {}
+    },
+    {
+      "name": "消费品召回管理暂行规定",
+      "table": "laws",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增；没有说明改了什么、依据是什么",
+      "proposed": {}
+    },
+    {
+      "name": "企业知识产权管理规范（GB/T 29490-2013）",
+      "table": "laws",
+      "action": "abolish",
+      "reason": "官方页未能核实字段「abolishDate」（2024-01-01），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "proposed": {}
+    }
+  ],
   "auto_resolved_links": [],
   "auto_resolved_count": 0,
   "quality_metrics": {
-    "fake_abolish": 0,
+    "fake_abolish": 3,
     "publish_date_misfill": 0,
-    "dup_rereport": 0,
+    "dup_rereport": 3,
     "cross_file": 0
   },
-  "retrieval_errors": [
-    {
-      "label": "质量",
-      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1302\",\"message\":\"您的账户已达到速率限制，请您控制请求频率\"}}"
-    }
-  ],
+  "retrieval_errors": [],
   "intl_parent_checks": [
+    {
+      "entry": "质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015",
+      "intlNo": "ISO 9000:2015",
+      "page_designation": "ISO 9000:2015",
+      "page_status": "Published",
+      "page_pubdate": "2015-09",
+      "evidence_url": "",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
+      "intlNo": "ISO/TS 9002:2016",
+      "page_designation": "ISO/TS 9002:2016",
+      "page_status": "Published",
+      "page_pubdate": "2016-11",
+      "evidence_url": "",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "管理体系审核指南 GB/T 19011-2021",
+      "intlNo": "ISO 19011:2021",
+      "page_designation": "ISO 19011:2021",
+      "page_status": "Published",
+      "page_pubdate": "2021-07",
+      "evidence_url": "",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
     {
       "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
       "intlNo": "ISO 9002",
       "label": "质量",
-      "source": "无可核实证据",
-      "evidence_url": "",
-      "result": "未取得官网版本证据（不据此下任何结论）"
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/9002",
+      "result": "官网当前版本 ISO/TS 9002:2016，未高于条目采用的 2016 版（不生成变更）"
     }
   ]
 }
