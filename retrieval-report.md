@@ -17,4 +17,8 @@
 - 跨文件废止命中（越多越好）：**0**
 
 ## 检索出错（异常/超时，导致该域 changes 为空；用于区分『真无变化』与『GLM 调用失败』）
-- 《产品标准》：检索出错: Expecting value: line 1 column 1 (char 0)
+- 《环境与职业健康》：检索出错: Expecting ',' delimiter: line 87 column 6 (char 2735)
+- 《质量》：检索出错: Expecting ',' delimiter: line 102 column 6 (char 2977)
+- 《信息安全》：检索出错: Expecting ',' delimiter: line 117 column 6 (char 2903)
+- 《反恐》：检索出错: Expecting ',' delimiter: line 152 column 6 (char 4497)
+- 《产品标准》：检索出错: Expecting ',' delimiter: line 77 column 6 (char 2486)
