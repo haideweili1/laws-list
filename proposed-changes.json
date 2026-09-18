@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-09-18",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 1,
+    "abolished": 0,
+    "statusSwitched": 0,
+    "discarded": 1
+  },
+  "changes": [
+    {
+      "id": "c1",
+      "type": "update",
+      "table": "laws",
+      "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "category": "质量",
+      "targetId": "L0129",
+      "newRecord": null,
+      "setFields": {
+        "remark": "采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2025-09 发布新版 ISO 9001:2025；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "备注",
+            "from": "由 GB/T 19001-2023 替代。废止标准不提供标准文本阅读服务。",
+            "to": "采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2025-09 发布新版 ISO 9001:2025；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）"
+          }
+        ],
+        "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
+        "source": "国家市场监督管理总局",
+        "sourceUrl": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
+        "reason": "备注→采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2025-09 发布新版 ISO 9001:2025；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）",
+        "_glm_note": "依据 ISO 官网页面 https://www.iso.org/standard/9001：ISO 9001:2025 状态为 Published、发布时间 2025-09；清单内本条目采用的是 ISO 9001:2015，故旧版仍现行有效、仅提示采标新版。"
+      }
+    }
+  ],
+  "discarded": [
+    {
+      "id": "d1",
+      "type": "discard",
+      "table": "laws",
+      "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "category": null,
+      "action": "update",
+      "reason": "官方页未标注实施日期，无法自动填写；理由里说改实施日期，实际却没给出日期",
+      "sourceUrl": "",
+      "proposed": {}
+    }
+  ]
+}
