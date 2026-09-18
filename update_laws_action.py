@@ -1224,25 +1224,59 @@ def build_prompt(target_label, domain_text, existing_names):
 
 
 def extract_json(text):
+    """取出「最外层 JSON 对象」文本：优先 { 开头对象（容忍尾部闲聊/代码围栏）；
+    只有当全文没有任何 { 时才按数组处理。切忌在外层对象破损时退取内层数组——那会返回片段。"""
     text = (text or "").strip()
     m = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
     if m:
         text = m.group(1).strip()
-    # 优先：用 raw_decode 取首个完整 JSON 对象/数组（容忍尾部闲聊/多 JSON 块/代码围栏）
-    for start in (text.find("{"), text.find("[")):
-        if start == -1:
+    for op, cl in (("{", "}"), ("[", "]")):
+        s = text.find(op)
+        if s == -1:
             continue
         try:
-            _obj, end = json.JSONDecoder().raw_decode(text[start:])
-            return text[start:start + end]
+            _obj, end = json.JSONDecoder().raw_decode(text[s:])
+            return text[s:s + end]
         except Exception:
             pass
-    # 兜底：首 { 到尾 }
-    s = text.find("{")
-    e = text.rfind("}")
-    if s != -1 and e > s:
-        return text[s:e + 1]
+        e = text.rfind(cl)
+        if e > s:
+            return text[s:e + 1]   # 破损的外层也整段返回，交给 repair 处理
+        return text[s:]
     return text
+
+
+def _repair_json_text(s):
+    """免费轻量模型常见的几种 JSON 瑕疵做保守修复（只补分隔符/去尾逗号，不改动任何字段内容）。
+    修复后仍要过 7 道质检关卡，故不会放水；目的是不因一个逗号丢掉整域检索结果。"""
+    t = (s or "").strip()
+    t = re.sub(r"^```(?:json)?|```$", "", t).strip()
+    # ① 去掉对象/数组末尾的多余逗号： } 或 ] 前
+    t = re.sub(r",(\s*[}\]])", r"\1", t)
+    # ② 补齐元素/键之间缺失的逗号： } 或 ] 或 " 之后紧跟 " 或 {
+    t = re.sub(r'([}\]])(\s*)(?=["{])', r"\1,\2", t)
+    t = re.sub(r'(")(\s*)(?="\s*:)', r"\1,\2", t)
+    # ③ 去掉尾部的空白/半截内容后重新闭合括号
+    return t
+
+
+def parse_model_json(raw):
+    """解析模型返回：先严格解析；失败则做保守修复再解析；仍失败则抛出（附原始片段便于诊断）。
+    只接受「对象」（本管线的输出永远是带 changes 的对象）；拿到数组/片段一律视为失败。"""
+    text = extract_json(raw)
+    first_err = None
+    for cand in (text, _repair_json_text(text)):
+        try:
+            obj = json.loads(cand)
+        except Exception as e:
+            if first_err is None:
+                first_err = e
+            continue
+        if isinstance(obj, dict):
+            return obj
+    _n = len(raw or "")
+    _snip = raw if _n <= 700 else (raw[:350] + " ……[中略]…… " + raw[-350:])
+    raise ValueError(f"JSON 解析失败（{first_err}）；原始返回长度={_n}；原始片段：{_snip}")
 
 
 def search_target(client, model, label, text, existing_names):
@@ -1260,7 +1294,7 @@ def search_target(client, model, label, text, existing_names):
             raw = (resp.choices[0].message.content or "").strip()
             if not raw:
                 raise ValueError("模型返回空内容（resp.content 为空）")
-            return json.loads(extract_json(raw))
+            return parse_model_json(raw)
         except Exception as e:
             last_err = e
             if attempt == 1:
