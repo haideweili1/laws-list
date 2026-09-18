@@ -19,23 +19,23 @@
   "retrieval_errors": [
     {
       "label": "环境与职业健康",
-      "error": "检索出错: Expecting ',' delimiter: line 87 column 6 (char 2735)"
+      "error": "检索出错: JSON 解析失败（Expecting ',' delimiter: line 87 column 6 (char 2735)）；原始返回长度=3020；原始片段：```json\n{\n  \"changes\": [\n    {\n      \"action\": \"update\",\n      \"name\": \"中华人民共和国安全生产法\",\n      \"table\": \"laws\",\n      \"domains\": [\"环境\", \"职业健康安全\"],\n      \"category\": \"安全\",\n      \"source\": \"中国政府网\",\n      \"link\": \"https://www.gov.cn/zhengce/content/2021-06/01/content_5646986.htm\",\n      \"effectiveDate\": \"2021-06-01\",\n      \"status\": \"现行有效\",\n      \"fromV ……[中略]…… /content_158698.htm\",\n      \"note\": \"《中华人民共和国劳动合同法》自2007年6月29日起施行。\"\n    },\n    {\n      \"action\": \"update\",\n      \"name\": \"工伤保险条例\",\n      \"table\": \"laws\",\n      \"domains\": [\"职业健康安全\"],\n      \"category\": \"安全\",\n      \"source\": \"中国政府网\",\n      \"link\": \"https://www.gov.cn/zhengce/content/2011-01/01/content_183798.htm\",\n      \"effectiveDate\": \"2011-01-01\","
     },
     {
       "label": "质量",
-      "error": "检索出错: Expecting ',' delimiter: line 102 column 6 (char 2977)"
+      "error": "检索出错: JSON 解析失败（Expecting ',' delimiter: line 102 column 6 (char 2977)）；原始返回长度=3130；原始片段：```json\n{\n  \"changes\": [\n    {\n      \"action\": \"update\",\n      \"name\": \"中华人民共和国认证认可条例\",\n      \"table\": \"laws\",\n      \"stdNo\": \"\",\n      \"docNumber\": \"\",\n      \"domains\": [\"质量\"],\n      \"category\": \"质量\",\n      \"source\": \"国务院\",\n      \"link\": \"https://www.gov.cn/zhengce/content/2023-07/20/content_5866484.htm\",\n      \"effectiveDate\": \"2023-07-20\",\n      ……[中略]……      },\n      \"source_url\": \"https://www.gov.cn/zhengce/content/2021-03/01/content_5637950.htm\",\n      \"source_hint\": \"\",\n      \"replacedBy\": \"\",\n      \"note\": \"根据国务院官网，排污许可管理条例于2021年3月1日发布，状态为现行有效。\"\n    },\n    {\n      \"action\": \"update\",\n      \"name\": \"中华人民共和国节约能源法\",\n      \"table\": \"laws\",\n      \"stdNo\": \"\",\n      \"docNumber\": \"\",\n      \"domains\":"
     },
     {
       "label": "信息安全",
-      "error": "检索出错: Expecting ',' delimiter: line 117 column 6 (char 2903)"
+      "error": "检索出错: JSON 解析失败（Expecting ',' delimiter: line 117 column 6 (char 2903)）；原始返回长度=3226；原始片段：```json\n{\n  \"changes\": [\n    {\n      \"action\": \"update\",\n      \"name\": \"中华人民共和国网络安全法\",\n      \"table\": \"laws\",\n      \"domains\": [\"信息安全\"],\n      \"category\": \"信息安全\",\n      \"source\": \"全国人大常委会\",\n      \"link\": \"空字符串\",\n      \"effectiveDate\": \"2026-01-01\",\n      \"status\": \"即将实施\",\n      \"abolishDate\": \"\",\n      \"adopted\": false,\n      \"copyrightNote\": \"\",\n  ……[中略]…… 保护条例自2021年9月1日起施行，目前状态为现行有效。\"\n    },\n    {\n      \"action\": \"update\",\n      \"name\": \"网络数据安全管理条例\",\n      \"table\": \"laws\",\n      \"domains\": [\"信息安全\"],\n      \"category\": \"信息安全\",\n      \"source\": \"国务院\",\n      \"link\": \"空字符串\",\n      \"effectiveDate\": \"2025-01-01\",\n      \"status\": \"现行有效\",\n      \"abolishDate\": \"\",\n      \"adopted\": false,\n      \"copyrightNote\":"
     },
     {
       "label": "反恐",
-      "error": "检索出错: Expecting ',' delimiter: line 152 column 6 (char 4497)"
+      "error": "检索出错: JSON 解析失败（Expecting ',' delimiter: line 152 column 6 (char 4493)）；原始返回长度=5013；原始片段：```json\n{\n  \"changes\": [\n    {\n      \"action\": \"update\",\n      \"name\": \"中华人民共和国进出口商品检验法\",\n      \"table\": \"laws\",\n      \"stdNo\": \"\",\n      \"docNumber\": \"\",\n      \"domains\": [\"反恐与供应链安全\", \"进出口相关\"],\n      \"category\": \"反恐\",\n      \"source\": \"全国人大常委会\",\n      \"link\": \"https://www.gov.cn/zhengce/content/2022-12/30/content_5796484.htm\",\n      \"effectiveDate\" ……[中略]……  \"进出口相关\"],\n      \"category\": \"反恐\",\n      \"source\": \"国务院\",\n      \"link\": \"https://www.gov.cn/zhengce/content/2002-01/01/content_2826482.htm\",\n      \"effectiveDate\": \"2002-01-01\",\n      \"status\": \"现行有效\",\n      \"abolishDate\": \"\",\n      \"adopted\": false,\n      \"copyrightNote\": \"\",\n      \"remark\": \"\",\n      \"fromValues\": {\n        \"effectiveDate\": \"2002"
     },
     {
       "label": "产品标准",
-      "error": "检索出错: Expecting ',' delimiter: line 77 column 6 (char 2486)"
+      "error": "检索出错: JSON 解析失败（Expecting ',' delimiter: line 77 column 6 (char 2486)）；原始返回长度=2637；原始片段：```json\n{\n  \"changes\": [\n    {\n      \"action\": \"update\",\n      \"name\": \"GB/T 4706.32-2024家用和类似用途电器的安全 热泵、空调器和除湿机的特殊要求\",\n      \"table\": \"standards\",\n      \"stdNo\": \"GB/T 4706.32-2024\",\n      \"docNumber\": \"\",\n      \"domains\": [\"环境\"],\n      \"category\": \"质量\",\n      \"source\": \"国家标准化管理委员会\",\n      \"link\": \"https://openstd.samr.gov.cn/newGbInfo?hcno=5F6C01 ……[中略]…… ce_url\": \"https://openstd.samr.gov.cn/newGbInfo?hcno=5F6C015E5F6C015E5F6C015E5F6C015E\",\n      \"source_hint\": \"\",\n      \"replacedBy\": \"\",\n      \"note\": \"更新实施日期和状态，依据是国家标准化管理委员会发布的GB/T 4706.27-2024标准文本。\"\n    },\n    {\n      \"action\": \"update\",\n      \"name\": \"GB/T 4706.22-2024家用和类似用途电器的安全 驻立式电灶、灶台、烤箱及类似用途器具的特殊要求\",\n      \"table\": \"standards\",\n      \"std"
     }
   ],
   "intl_parent_checks": []
