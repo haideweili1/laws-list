@@ -1,26 +1,40 @@
 {
   "generatedAt": "2026-09-18",
+  "effective_model": "glm-4.5-air",
+  "domain_filter": "质量",
+  "mode": "自动写入",
   "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
-    "ok_可直接应用": 0,
+    "ok_可直接应用": 1,
     "discard_丢弃": 0,
     "status_switch_状态切换": 0
   },
   "discard_breakdown": {},
   "discarded_items": [],
-  "auto_resolved_links": [],
-  "auto_resolved_count": 0,
+  "auto_resolved_links": [
+    {
+      "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "table": "laws",
+      "action": "abolish",
+      "method": "reuse_existing",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
+      "glmGave": "https://www.gov.cn/zhengce/zhengceku/2023-12/29/content_6917120.htm",
+      "claimConfirmed": false,
+      "detail": "官方页未标注实施日期，无法自动填写"
+    }
+  ],
+  "auto_resolved_count": 1,
   "quality_metrics": {
     "fake_abolish": 0,
     "publish_date_misfill": 0,
-    "dup_rereport": 2,
+    "dup_rereport": 1,
     "cross_file": 0
   },
   "retrieval_errors": [],
   "intl_parent_checks": [
     {
-      "entry": "质量管理体系 基本原理和术语GB/T 19000-2016/ISO/9000:2015",
-      "intlNo": "ISO/9000:2015",
+      "entry": "质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015",
+      "intlNo": "ISO 9000:2015",
       "page_designation": "ISO 9000:2015",
       "page_status": "Published",
       "page_pubdate": "2015-09",
@@ -30,7 +44,7 @@
       "source": "GLM 回报（原始抄录）"
     },
     {
-      "entry": "质量管理体系 业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
+      "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
       "intlNo": "ISO/TS 9002:2016",
       "page_designation": "ISO/TS 9002:2016",
       "page_status": "Published",
@@ -46,7 +60,7 @@
       "page_designation": "ISO 9001:2015",
       "page_status": "Published",
       "page_pubdate": "2015-09",
-      "evidence_url": "https://www.iso.org/standard/65691.html",
+      "evidence_url": "https://www.iso.org/standard/65696.html",
       "result": "官网当前版本页即此",
       "label": "质量",
       "source": "GLM 回报（原始抄录）"
