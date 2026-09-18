@@ -17,8 +17,4 @@
 - 跨文件废止命中（越多越好）：**0**
 
 ## 检索出错（异常/超时，导致该域 changes 为空；用于区分『真无变化』与『GLM 调用失败』）
-- 《环境与职业健康》：检索出错: Extra data: line 17 column 4 (char 514)
-- 《质量》：检索出错: Extra data: line 25 column 4 (char 685)
-- 《信息安全》：检索出错: Extra data: line 23 column 4 (char 558)
-- 《反恐》：检索出错: Extra data: line 25 column 4 (char 692)
 - 《产品标准》：检索出错: Expecting value: line 1 column 1 (char 0)

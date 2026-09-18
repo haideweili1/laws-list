@@ -18,22 +18,6 @@
   },
   "retrieval_errors": [
     {
-      "label": "环境与职业健康",
-      "error": "检索出错: Extra data: line 17 column 4 (char 514)"
-    },
-    {
-      "label": "质量",
-      "error": "检索出错: Extra data: line 25 column 4 (char 685)"
-    },
-    {
-      "label": "信息安全",
-      "error": "检索出错: Extra data: line 23 column 4 (char 558)"
-    },
-    {
-      "label": "反恐",
-      "error": "检索出错: Extra data: line 25 column 4 (char 692)"
-    },
-    {
       "label": "产品标准",
       "error": "检索出错: Expecting value: line 1 column 1 (char 0)"
     }
