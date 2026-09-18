@@ -15,5 +15,27 @@
     "publish_date_misfill": 0,
     "dup_rereport": 0,
     "cross_file": 0
-  }
+  },
+  "retrieval_errors": [
+    {
+      "label": "环境与职业健康",
+      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1113\",\"message\":\"余额不足或无可用资源包,请充值。\"}}"
+    },
+    {
+      "label": "质量",
+      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1113\",\"message\":\"余额不足或无可用资源包,请充值。\"}}"
+    },
+    {
+      "label": "信息安全",
+      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1113\",\"message\":\"余额不足或无可用资源包,请充值。\"}}"
+    },
+    {
+      "label": "反恐",
+      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1113\",\"message\":\"余额不足或无可用资源包,请充值。\"}}"
+    },
+    {
+      "label": "产品标准",
+      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1113\",\"message\":\"余额不足或无可用资源包,请充值。\"}}"
+    }
+  ]
 }
