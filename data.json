@@ -1599,8 +1599,9 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1",
       "region": "",
       "id": "L0101",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "采标新版：采用的国际标准 ISO/IEC 27005:2011 已于 2011-12 发布新版 2011；中国修订计划 计划号 下达 2011-12，状态：正在起草",
+      "abolishDate": "",
+      "replacedBy": "GB/T 20984-2023"
     },
     {
       "name": "《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024",
@@ -1647,8 +1648,9 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3F4",
       "region": "",
       "id": "L0104",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "采标新版：采用的国际标准 ISO/IEC 27035:2011 已于 2011-12 发布新版 2011；中国修订计划 计划号 下达 2011-12，状态：正在起草",
+      "abolishDate": "",
+      "replacedBy": "GB/T 20986-2024"
     },
     {
       "name": "《中华人民共和国密码法》",
@@ -1840,8 +1842,9 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
       "region": "",
       "id": "L0404",
-      "remark": "",
-      "abolishDate": ""
+      "remark": "采标新版：采用的国际标准 ISO/IEC 27001:2013 已于 2013-12 发布新版 2013；中国修订计划 计划号 下达 2013-12，状态：正在起草",
+      "abolishDate": "",
+      "replacedBy": "GB/T 4288-2023"
     },
     {
       "name": "中华人民共和国宪法",
@@ -1984,7 +1987,7 @@
       "link": "http://gd.cma.gov.cn/zqsqxj/zwgk_3106/202310/P020231007567825277825.pdf",
       "region": "",
       "id": "L0127",
-      "remark": "",
+      "remark": "采标新版：采用的国际标准 ISO/9000:2015 已于 2020-12 发布新版；中国修订计划 计划号 下达，状态：正在起草",
       "abolishDate": ""
     },
     {

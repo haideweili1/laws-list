@@ -2,114 +2,276 @@
   "generatedAt": "2026-09-18",
   "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
-    "ok_可直接应用": 1,
-    "discard_丢弃": 8,
+    "ok_可直接应用": 4,
+    "discard_丢弃": 1,
     "status_switch_状态切换": 0
   },
   "discard_breakdown": {
-    "旧值核对不符（未看清单）": 5,
-    "其它": 2,
     "无来源且系统也解析不到（须落地 name_query/cfsa）": 1
   },
   "discarded_items": [
     {
-      "name": "中华人民共和国安全生产法",
+      "name": "环境管理体系 要求及使用指南GB/T24001-2016 /ISO14001:2015",
       "table": "laws",
       "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国安全生产法（2021年6月10日修订）），请人工确认；声称原日期是「2014-12-01」，清单里其实是「2021-09-01」",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国环境保护法",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国环境保护法（2022年12月30日修订）），请人工确认；声称原状态是「现行有效」，清单里其实是「已废止」",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国水污染防治法",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国水污染防治法（2021年12月24日修订）），请人工确认；声称原日期是「2017-06-27」，清单里其实是「2008-06-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国大气污染防治法",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国大气污染防治法（2021年12月24日修订）），请人工确认；声称原日期是「2015-08-29」，清单里其实是「2016-01-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国固体废物污染环境防治法",
-      "table": "laws",
-      "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（中华人民共和国固体废物污染环境防治法（2022年12月30日修订）），请人工确认；声称原日期是「2016-12-02」，清单里其实是「2020-09-01」；声称原状态是「现行有效」，清单里其实是「已废止」",
-      "proposed": {}
-    },
-    {
-      "name": "中华人民共和国认证认可条例",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "密码法",
-      "table": "laws",
-      "action": "update",
-      "reason": "理由声称『由现行有效改为现行有效』但二者相同且清单并无此字段变化，GLM 表述与事实不符",
-      "proposed": {}
-    },
-    {
-      "name": "算法推荐/深度合成管理规定",
-      "table": "laws",
-      "action": "add",
-      "reason": "官方页未能核实字段「effectiveDate」（2025-08-20），请人工确认；依据来源确认失效（HTTP 404），多半是编造的链接：http://www.cac.gov.cn/2025-08/20/content_5674124.htm；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
+      "reason": "依据来源确认失效（HTTP 403），多半是编造的链接：https://www.iso.org/standard/64914.html；系统按官方渠道自动解析也未取到真实链接（无对应解析源，留空待补）",
       "proposed": {}
     }
   ],
   "auto_resolved_links": [
     {
-      "name": "GB/T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
-      "table": "standards",
+      "name": "质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015",
+      "table": "laws",
       "action": "update",
       "method": "reuse_existing",
-      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C365EC4C87F48E8618D216AF27DBDE8D",
-      "glmGave": "http://www.sac.gov.cn/n117610/n117643/c5696445/index.html",
+      "link": "http://gd.cma.gov.cn/zqsqxj/zwgk_3106/202310/P020231007567825277825.pdf",
+      "glmGave": "https://www.iso.org/standard/63502.html",
+      "claimConfirmed": false,
+      "detail": "官方页未标注实施日期，无法自动填写"
+    },
+    {
+      "name": "《信息安全技术 网络安全等级保护基本要求》GB/T 4288-2019",
+      "table": "laws",
+      "action": "update",
+      "method": "reuse_existing",
+      "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=BAFB47E8874764186BDB7865E8344DAF",
+      "glmGave": "https://www.iso.org/standard/61789.html",
+      "claimConfirmed": false,
+      "detail": "官方页未标注实施日期，无法自动填写"
+    },
+    {
+      "name": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "table": "laws",
+      "action": "update",
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=FDA38AB7D08A715C6B6D69DFDEABB2C0",
+      "glmGave": "https://www.iso.org/standard/61789.html",
+      "claimConfirmed": false,
+      "detail": "官方页未标注实施日期，无法自动填写"
+    },
+    {
+      "name": "《信息安全技术 网络安全事件分类分级指南》GB/T 20986-2023",
+      "table": "laws",
+      "action": "update",
+      "method": "openstd",
+      "link": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=CAE2104B8F1370E0D6E9BA4F43022157",
+      "glmGave": "https://www.iso.org/standard/61789.html",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
     }
   ],
-  "auto_resolved_count": 1,
+  "auto_resolved_count": 4,
   "quality_metrics": {
     "fake_abolish": 0,
     "publish_date_misfill": 0,
-    "dup_rereport": 21,
+    "dup_rereport": 2,
     "cross_file": 0
   },
   "retrieval_errors": [
     {
-      "label": "环境与职业健康",
-      "error": "模型输出被截断，已抢救出前 5 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
-    },
-    {
       "label": "质量",
-      "error": "模型输出被截断，已抢救出前 8 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
+      "error": "模型输出被截断，已抢救出前 1 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
     },
     {
-      "label": "信息安全",
-      "error": "模型输出被截断，已抢救出前 7 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
+      "label": "产品标准",
+      "error": "模型输出被截断，已抢救出前 0 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
     }
   ],
   "intl_parent_checks": [
     {
-      "entry": "GB/T 4706.26-2024家用和类似用途电器的安全 离心式脱水机的特殊要求",
-      "intlNo": "IEC 60335-2-34",
-      "page_designation": "IEC 60335-2-34:2020",
+      "entry": "环境管理体系 要求及使用指南GB/T24001-2016 /ISO14001:2015",
+      "intlNo": "ISO14001:2015",
+      "page_designation": "ISO 14001:2015",
       "page_status": "Published",
       "page_pubdate": "2020-09",
-      "evidence_url": "https://www.iso.org/standard/65589.html",
+      "evidence_url": "https://www.iso.org/standard/64914.html",
+      "result": "官网当前版本页即此",
+      "label": "环境与职业健康",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015",
+      "intlNo": "ISO/9000:2015",
+      "page_designation": "ISO/9000:2015",
+      "page_status": "Published",
+      "page_pubdate": "2020-12",
+      "evidence_url": "https://www.iso.org/standard/63502.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
+      "intlNo": "ISO/TS 9002:2016",
+      "page_designation": "ISO/TS 9002:2016",
+      "page_status": "Published",
+      "page_pubdate": "2020-12",
+      "evidence_url": "https://www.iso.org/standard/63503.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "intlNo": "ISO9001:2015",
+      "page_designation": "ISO9001:2015",
+      "page_status": "Published",
+      "page_pubdate": "2015-09",
+      "evidence_url": "https://www.iso.org/standard/63501.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "管理体系审核指南 GB/T 19011-2021",
+      "intlNo": "ISO/IEC 19011:2021",
+      "page_designation": "ISO/IEC 19011:2021",
+      "page_status": "Published",
+      "page_pubdate": "2021-12",
+      "evidence_url": "https://www.iso.org/standard/71889.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "中华人民共和国计量法实施细则",
+      "intlNo": "ISO/IEC 17025:2017",
+      "page_designation": "ISO/IEC 17025:2017",
+      "page_status": "Published",
+      "page_pubdate": "2017-11",
+      "evidence_url": "https://www.iso.org/standard/63504.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "网络安全技术 信息系统灾难恢复规范（GB/T 20988-2025）",
+      "intlNo": "ISO/IEC 27035:2011",
+      "page_designation": "ISO/IEC 27035:2011",
+      "page_status": "Published",
+      "page_pubdate": "2011-11",
+      "evidence_url": "https://www.iso.org/standard/63505.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 22080-2025 网络安全技术 信息安全管理体系 要求",
+      "intlNo": "ISO/IEC 27001:2013",
+      "page_designation": "ISO/IEC 27001:2013",
+      "page_status": "Published",
+      "page_pubdate": "2013-10",
+      "evidence_url": "https://www.iso.org/standard/63506.html",
+      "result": "官网当前版本页即此",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "《信息安全技术 网络安全等级保护基本要求》GB/T 4288-2019",
+      "intlNo": "ISO/IEC 27001:2013",
+      "page_designation": "ISO/IEC 27001:2013",
+      "page_status": "Published",
+      "page_pubdate": "2013-10",
+      "evidence_url": "https://www.iso.org/standard/61789.html",
+      "result": "官网当前版本页即此",
+      "label": "信息安全",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "intlNo": "ISO/IEC 27005:2011",
+      "page_designation": "ISO/IEC 27005:2011",
+      "page_status": "Published",
+      "page_pubdate": "2011-12",
+      "evidence_url": "https://www.iso.org/standard/61789.html",
+      "result": "官网当前版本页即此",
+      "label": "信息安全",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "《信息安全技术 网络安全事件分类分级指南》GB/T 20986-2023",
+      "intlNo": "ISO/IEC 27035:2011",
+      "page_designation": "ISO/IEC 27035:2011",
+      "page_status": "Published",
+      "page_pubdate": "2011-12",
+      "evidence_url": "https://www.iso.org/standard/61789.html",
+      "result": "官网当前版本页即此",
+      "label": "信息安全",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.1-2024 家用和类似用途电器的安全第1部分：通用要求",
+      "intlNo": "IEC 60335-1",
+      "page_designation": "IEC 60335-1:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.24-2024家用和类似用途电器的安全洗衣机的特殊要求",
+      "intlNo": "IEC 60335-2-24",
+      "page_designation": "IEC 60335-2-24:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.21-2024家用和类似用途电器的安全 微波炉，包括组合型微波炉的特殊要求",
+      "intlNo": "IEC 60335-2-25",
+      "page_designation": "IEC 60335-2-25:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.14-2024家用和类似用途电器的安全 烤架、面包片烘烤器及类似用途便携式烹饪器具的特殊要求",
+      "intlNo": "IEC 60335-2-9",
+      "page_designation": "IEC 60335-2-9:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.20-2024 家用和类似用途电器的安全 滚筒式干衣机的特殊要求",
+      "intlNo": "IEC 60335-2-11",
+      "page_designation": "IEC 60335-2-11:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.13-2024 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+      "intlNo": "IEC 60335-2-24",
+      "page_designation": "IEC 60335-2-24:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本页即此",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "GB/T 4706.22-2024 家用和类似用途电器的安全 驻立式电灶、灶台、烤箱及类似用途器具的特殊要求",
+      "intlNo": "IEC 60335-2-6",
+      "page_designation": "IEC 60335-2-6:2020",
+      "page_status": "Published",
+      "page_pubdate": "2020-09",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
       "result": "官网当前版本页即此",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
@@ -118,9 +280,9 @@
       "entry": "环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015",
       "intlNo": "ISO 14001",
       "label": "环境与职业健康",
-      "source": "无可核实证据",
-      "evidence_url": "",
-      "result": "未取得官网版本证据（不据此下任何结论）"
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/14001",
+      "result": "官网当前版本 ISO 14001:2015，未高于条目采用的 2015 版（不生成变更）"
     },
     {
       "entry": "ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南",
@@ -142,17 +304,81 @@
       "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
       "intlNo": "ISO 9002",
       "label": "质量",
-      "source": "无可核实证据",
-      "evidence_url": "",
-      "result": "未取得官网版本证据（不据此下任何结论）"
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/9002",
+      "result": "官网当前版本 ISO/TS 9002:2016，未高于条目采用的 2016 版（不生成变更）"
     },
     {
       "entry": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
       "intlNo": "ISO 9001",
       "label": "质量",
-      "source": "无可核实证据",
-      "evidence_url": "",
-      "result": "未取得官网版本证据（不据此下任何结论）"
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/9001",
+      "result": "官网当前版本 ISO9001:2015，未高于条目采用的 2015 版（不生成变更）"
+    },
+    {
+      "entry": "《信息安全技术-信息安全风险评估方法》GB/T 20984-2022",
+      "intlNo": "ISO 27005",
+      "label": "信息安全",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/27005",
+      "result": "官网当前版本 ISO/IEC 27005:2011，未高于条目采用的 2011 版（不生成变更）"
+    },
+    {
+      "entry": "《信息安���技术网络安全事件分类分级指南》GB/T 20986-2023",
+      "intlNo": "ISO 27035",
+      "label": "信息安全",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/27035",
+      "result": "官网当前版本 ISO/IEC 27035:2011，未高于条目采用的 2011 版（不生成变更）"
+    },
+    {
+      "entry": "信息安全技术 网络安全等级保护基本要求",
+      "intlNo": "ISO 27001",
+      "label": "信息安全",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/27001",
+      "result": "官网当前版本 ISO/IEC 27001:2013，未高于条目采用的 2013 版（不生成变更）"
+    },
+    {
+      "entry": "IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求",
+      "intlNo": "IEC 60335-1",
+      "label": "",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本 IEC 60335-1:2020；年份缺失或条目未标注采用年份，无法比较"
+    },
+    {
+      "entry": "IEC 60335-2-6  家用和类似用途电气的安全第2-6部分：固定式电灶、灶台、烤炉及类似用途器具的特殊要求",
+      "intlNo": "IEC 60335-2-6",
+      "label": "",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本 IEC 60335-2-6:2020；年份缺失或条目未标注采用年份，无法比较"
+    },
+    {
+      "entry": "IEC 60335-2-9  家用和类似用途电气的安全家用和类似用途电器的安全第2-9部分：烤架、焙烤装置和类似的便携式烹饪设施的特殊要求",
+      "intlNo": "IEC 60335-2-9",
+      "label": "",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本 IEC 60335-2-9:2020；年份缺失或条目未标注采用年份，无法比较"
+    },
+    {
+      "entry": "IEC 60335-2-25  家用和类似用途电器的安全微波炉的特殊要求",
+      "intlNo": "IEC 60335-2-25",
+      "label": "",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本 IEC 60335-2-25:2020；年份缺失或条目未标注采用年份，无法比较"
+    },
+    {
+      "entry": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+      "intlNo": "IEC 60335-2-24",
+      "label": "",
+      "source": "模型原样抄录官网字段（代码判定）",
+      "evidence_url": "https://www.iso.org/standard/61036.html",
+      "result": "官网当前版本 IEC 60335-2-24:2020；年份缺失或条目未标注采用年份，无法比较"
     }
   ]
 }
