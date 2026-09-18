@@ -1,0 +1,6 @@
+{
+  "test_models": ["glm-4.6v", "glm-4.7", "glm-4.5-air"],
+  "domain": "质量",
+  "draft_mode": true,
+  "_note": "模型档位对比测试临时配置（第 3 轮：新增 glm-4.6v；4.5-air/4.7 在清单回滚后重测以取得干净数据）。draft_mode=true 只出报告、不写入正式清单。测试结束后必须删除本文件。"
+}
