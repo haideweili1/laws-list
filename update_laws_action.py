@@ -78,6 +78,21 @@ def _apply_runtime_overrides():
 
 _apply_runtime_overrides()
 
+# 生效模型（环境变量 > runtime-config.json > 内置默认）。写进报告，便于对照不同档位的产出。
+DEFAULT_MODEL = "glm-4-flash"
+EFFECTIVE_MODEL = (os.environ.get("MODEL") or "").strip() or DEFAULT_MODEL
+
+
+def _load_test_models():
+    """读取 runtime-config.json 里的 test_models（模型档位对比测试用）；没有则返回 []。"""
+    p = os.path.join(ROOT, "runtime-config.json")
+    try:
+        with open(p, encoding="utf-8") as f:
+            cfg = json.load(f) or {}
+    except Exception:
+        return []
+    return [str(x).strip() for x in (cfg.get("test_models") or []) if str(x).strip()]
+
 # ===== 闸门：默认草稿模式（只出提案，不动数据）=====
 DRAFT_MODE = os.environ.get("DRAFT_MODE", "true").lower() not in ("0", "false", "no")
 
@@ -2549,6 +2564,9 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
     discard_breakdown = _tally_reasons(discarded, lambda d: d.get("reason", ""))
     report = {
         "generatedAt": today,
+        "effective_model": EFFECTIVE_MODEL,
+        "domain_filter": (os.environ.get("DOMAIN") or "").strip(),
+        "mode": ("试跑（只出报告，未写入清单）" if DRAFT_MODE else "自动写入"),
         "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
         "counts": counts,
         "discard_breakdown": discard_breakdown,
@@ -2580,6 +2598,8 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
     try:
         lines = []
         lines.append(f"# 自动检索质检报告（{today}）\n")
+        lines.append(f"> 模型：**{EFFECTIVE_MODEL}** ｜ 检索域：**{(os.environ.get('DOMAIN') or '').strip() or '全部 5 个域'}**"
+                     f" ｜ 模式：**{'试跑（未写入清单）' if DRAFT_MODE else '自动写入'}**\n")
         lines.append("> 测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降下面 discard 的分类，可应用才会变多。\n")
         lines.append("## 计数")
         lines.append(f"- 可直接应用（左栏）：**{counts['ok_可直接应用']}**")
@@ -2694,7 +2714,7 @@ def main():
         print("缺少 zhipuai 库，请先执行: pip install zhipuai")
         sys.exit(1)
 
-    model = os.environ.get("MODEL") or "glm-4-flash"
+    model = EFFECTIVE_MODEL
     client = ZhipuAI(api_key=api_key)
     write_running_status()
 
@@ -2985,7 +3005,33 @@ def main():
                      REPORT_PATH, REPORT_MD_PATH], f"chore: 检索success {today}")
 
 
+def _run_model_comparison(models):
+    """模型档位对比测试：逐个模型起子进程各跑一轮，并把报告另存为 retrieval-report-<模型>.json/.md。
+    本函数只做调度，不直接改清单（配合 runtime-config.json 的 draft_mode=true 使用）。"""
+    import shutil
+    for m in models:
+        print(f"\n===== [对比测试] 模型 {m} =====")
+        env = dict(os.environ)
+        env["MODEL"] = m
+        env["_MODEL_TEST_CHILD"] = "1"          # 防止子进程再触发对比循环
+        r = subprocess.run([sys.executable, os.path.abspath(__file__)], env=env)
+        safe = re.sub(r"[^0-9A-Za-z._-]", "_", m)
+        for src, dst in ((REPORT_PATH, os.path.join(ROOT, f"retrieval-report-{safe}.json")),
+                         (REPORT_MD_PATH, os.path.join(ROOT, f"retrieval-report-{safe}.md"))):
+            try:
+                if os.path.exists(src):
+                    shutil.copyfile(src, dst)
+                    print(f"  [对比测试] 报告另存：{os.path.basename(dst)}")
+            except Exception as e:
+                print(f"  [对比测试] 另存失败 {dst}: {e}")
+        print(f"  [对比测试] {m} 子进程退出码={r.returncode}")
+
+
 if __name__ == "__main__":
+    _tm = [] if os.environ.get("_MODEL_TEST_CHILD") else _load_test_models()
+    if _tm:
+        _run_model_comparison(_tm)
+        sys.exit(0)
     try:
         main()
     except SystemExit:
