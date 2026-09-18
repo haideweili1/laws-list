@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-09-18",
+  "effective_model": "glm-4.6",
+  "domain_filter": "质量",
+  "mode": "自动写入",
+  "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
+  "counts": {
+    "ok_可直接应用": 0,
+    "discard_丢弃": 0,
+    "status_switch_状态切换": 0
+  },
+  "discard_breakdown": {},
+  "discarded_items": [],
+  "auto_resolved_links": [],
+  "auto_resolved_count": 0,
+  "quality_metrics": {
+    "fake_abolish": 0,
+    "publish_date_misfill": 0,
+    "dup_rereport": 0,
+    "cross_file": 0
+  },
+  "retrieval_errors": [
+    {
+      "label": "质量",
+      "error": "检索出错: Error code: 429, with error text {\"error\":{\"code\":\"1113\",\"message\":\"余额不足或无可用资源包,请充值。\"}}"
+    }
+  ],
+  "intl_parent_checks": [
+    {
+      "entry": "质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016",
+      "intlNo": "ISO 9002",
+      "label": "质量",
+      "source": "无可核实证据",
+      "evidence_url": "",
+      "result": "未取得官网版本证据（不据此下任何结论）"
+    }
+  ]
+}
