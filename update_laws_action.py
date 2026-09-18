@@ -1133,12 +1133,19 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 注意：fromValues 里的"当前状态/实施日期"必须和你在该条目「★当前状态★」处看到的值【逐字一致】，不准改写、不准凭记忆改成别的。
 
 【十六、采标标准须核查国际父本新版（通用规则，不得硬编码具体标准号）】
-- 若某条目的名称或 remark 含有国际标准编号（如 ISO 9001、IEC 61010、EN 60335 等），说明它采用国际标准。你必须额外去该国际标准化组织官网（iso.org / iec.ch / cen.eu 等，均为官方白名单域名）web_search 一次："该国际标准是否已发布更新的版本？"
-- 若查到国际父本已有更新的【已发布】版本（例如 ISO 9001:2015 → ISO 9001:2026，国际标准发布日即生效日）：
-  1) 对清单里这条【现行有效】的旧条目，做 action="update"：status 保持"现行有效"（不要标已废止——ISO 新版有约 3 年过渡期、且中国对应的 GB/T 尚未发布替代版，旧版此时仍有效）；把 remark 改为类型D（采标新版），写明国际新版编号与发布日、以及中国修订计划号/下达日/状态（只填确有依据的，缺的省略）；
-  2) source_url 填该国际标准的官方新版发布页（iso.org 等白名单内域名、web_search 真实返回的链接）；中国修订计划可用 source_hint 给定位线索（如"国家标准修订计划 20264412-T-469"）。
-  3) 若中国对应的新版 GB/T 也【已发布且有实施日期】，则另用 action="add" 把该新版 GB/T 加进清单（按正常 add 规则）；旧版是否翻"已废止"由系统按日期驱动自动处理，你不必手动标。
-- 若国际父本没有更新的已发布版本，不要对这条输出任何 change。
+- 识别：凡条目的名称或 remark 里出现国际标准编号（形如 ISO + 数字、IEC + 数字、EN + 数字），即说明该条目采用国际标准，本条即触发「父本核查」。必须逐条执行，不得跳过，也不得以"中国尚无公告"为由略过——中国采标标准的修订往往滞后于国际父本，只查中国公告一定会漏。
+- 检索式（把 <国际标准号> 原样替换为该条目里真实出现的那个编号，禁止套用任何示例编号；按发布机构选官方域名：ISO→iso.org、IEC→iec.ch、欧洲标准→cen.eu，均为官方白名单域名）：
+  1) `site:<机构官网域名> <国际标准号>`
+  2) `site:<机构官网域名> <国际标准号> new edition`
+  3) `<国际标准号> 新版 发布 <当前年份>`
+  至少执行前两条，一律以 web_search 真实返回的页面为准。
+- 判定与产出：
+  - 若查到国际父本已有更新的【已发布】版本（国际标准以发布日为生效日）：
+    1) 对清单里这条【现行有效】的旧条目做 action="update"：status 保持"现行有效"（不要标已废止——国际新版通常有约 3 年过渡期，且中国对应的 GB/T 尚未发布替代版时旧版仍有效）；remark 改为类型D（采标新版），写明国际新版编号与发布日，以及中国修订计划号/下达日/状态（只填确有官方依据的字段，查不到的省略，不要编造日期）；
+    2) source_url 填该国际标准官方新版发布页（白名单域名、web_search 真实返回的链接）；中国修订计划用 source_hint 给定位线索（写「国家标准修订计划 <计划号>」这类线索，绝不自造 URL）。
+    3) 若中国对应的新版 GB/T 也【已发布且有实施日期】，则另用 action="add" 把该新版 GB/T 加进清单（按正常 add 规则）；旧版是否翻"已废止"由系统按日期驱动自动处理，你不必手动标。
+  - 若未查到更新的已发布版本：不要对这条输出任何 change。
+- 【必须回报核查台账】本规则触发的每一条目，无论查到与否，都要在输出 JSON 根部的 intl_parent_checks 数组里逐条登记（格式见下方字段说明）。这是系统判断「你到底查了没」的唯一凭据，漏登记视为未执行本规则。
 - 本规则为通用规则：适用于所有含国际标准编号的条目，不限于某一项标准。
 """
 
@@ -1204,6 +1211,12 @@ def build_prompt(target_label, domain_text, existing_names):
   "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
 
+另外，在 JSON 根部再给一个字段（用于核查你是否真的按【十六】执行了国际父本核查）：
+  "intl_parent_checks": [
+    {{"entry": "清单条目名称（原样抄）", "intlNo": "该条目里的国际标准编号", "result": "查到新版 <编号>（发布 YYYY-MM-DD） | 未查到更新的已发布版本", "evidence_url": "据以判断的官方页链接（web_search 真实返回；没有就空字符串）"}}
+  ]
+本域清单里若没有任何含国际标准编号的条目，intl_parent_checks 给空数组 []。
+
 重要：effectiveDate / status / abolishDate / replacedBy 这四个结论字段你【不必填写】（直接留空字符串 ""），系统会依据你提供的 source_url 官方页确定性抽取并覆盖，不会采用你生成的值。你只需：① 确保 source_url 是你 web_search 真实返回的官方页链接（原样复制，绝不自造 URL）；② 在 note 里尽量引用官方页原文；③ fromValues 仍须如实填写清单当前值（旧值核对基准）。
 
 注意：action=update / abolish 时 fromValues 必填且必须与上面清单一字不差，否则整条拒收。
@@ -1234,19 +1247,29 @@ def extract_json(text):
 
 def search_target(client, model, label, text, existing_names):
     prompt = build_prompt(label, text, existing_names)
-    try:
-        resp = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            tools=[{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
-            temperature=0,
-        )
-        return json.loads(extract_json(resp.choices[0].message.content))
-    except Exception as e:
-        import traceback as _tb
-        print(f"  [{label}] 检索出错: {e}")
-        _tb.print_exc()
-        return {"changes": [], "summary": f"检索出错: {e}"}
+    last_err = None
+    # 通用重试：模型偶发返回空内容 / 非 JSON（轻量模型尤其常见），重试一次可消除"假零"。
+    for attempt in (1, 2):
+        try:
+            resp = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                tools=[{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
+                temperature=0,
+            )
+            raw = (resp.choices[0].message.content or "").strip()
+            if not raw:
+                raise ValueError("模型返回空内容（resp.content 为空）")
+            return json.loads(extract_json(raw))
+        except Exception as e:
+            last_err = e
+            if attempt == 1:
+                print(f"  [{label}] 第 1 次调用/解析失败：{e} —— 重试一次")
+                continue
+    import traceback as _tb
+    print(f"  [{label}] 检索出错: {last_err}")
+    _tb.print_exc()
+    return {"changes": [], "summary": f"检索出错: {last_err}"}
 
 
 def _contains_ok(short, long_):
@@ -2213,7 +2236,7 @@ def _tally_reasons(items, reason_getter):
     return dict(c)
 
 
-def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None, run_errors=None):
+def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None, run_errors=None, intl_parent_checks=None):
     """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让高价值更新都进左栏』的瞄准镜。
     只产出报告文件，绝不改动 data.json。"""
     if metrics is None:
@@ -2246,6 +2269,8 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
         },
         # 检索出错（异常/超时）：写入报告，便于区分"真无变化"与"GLM 调失败"
         "retrieval_errors": run_errors or [],
+        # 采标父本核查台账（规则十六）：GLM 对每个含国际标准编号条目的"查到/未查到"回报
+        "intl_parent_checks": intl_parent_checks or [],
     }
     try:
         with open(REPORT_PATH, "w", encoding="utf-8") as f:
@@ -2282,6 +2307,15 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
             lines.append("\n## 丢弃条目明细")
             for d in discarded:
                 lines.append(f"- 《{d.get('name')}》：{d.get('reason', '')}{_fmt_prop(d.get('proposed'))}")
+        if intl_parent_checks:
+            lines.append("\n## 采标父本核查台账（规则十六：GLM 回报『国际父本是否已出新版』）")
+            lines.append("- 读法：「查到新版」却没出现在上方左栏 = 该条被质检丢弃或去重跳过，需人工看一眼；本段整段缺失 = GLM 未执行规则十六（通用规则未落地）。")
+            for c in intl_parent_checks:
+                lines.append(
+                    f"- 【{c.get('label', '')}】《{c.get('entry', '')}》"
+                    f"｜国际号={c.get('intlNo', '') or '(空)'}"
+                    f"｜{c.get('result', '') or '(空)'}"
+                    f"｜依据={c.get('evidence_url', '') or '(空)'}")
         if run_errors:
             lines.append("\n## 检索出错（异常/超时，导致该域 changes 为空；用于区分『真无变化』与『GLM 调用失败』）")
             for e in run_errors:
@@ -2394,6 +2428,7 @@ def main():
     ]
     summary_changes = []
     run_errors = []  # 本轮各域检索出错（含异常/超时），写入报告便于诊断"0/0/0 是真无变化还是 GLM 调失败"
+    intl_checks = []  # 采标父本核查台账（规则十六：GLM 逐条回报"国际父本是否已出新版"），写入报告便于验证它到底查没查
     for k in _METRICS:  # 每轮检索重置质量测量计数器
         _METRICS[k] = 0
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失/硬伤矛盾）：直接丢弃，收集以便报告计数
@@ -2425,6 +2460,12 @@ def main():
         _rs = (result.get("summary") or "").strip()
         if _rs.startswith("检索出错"):
             run_errors.append({"label": label, "error": _rs})
+        # 采标父本核查台账：收集 GLM 回报的"国际父本是否已出新版"，供报告核对它是否真的查了
+        for _ck in (result.get("intl_parent_checks") or []):
+            if isinstance(_ck, dict):
+                _ck = dict(_ck)
+                _ck.setdefault("label", label)
+                intl_checks.append(_ck)
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
         _su = [(ch.get("source_url") or "").strip() for ch in changes]
         _su = [u for u in _su if u and domain_ok(u) and url_shape_ok(u)]
@@ -2455,7 +2496,8 @@ def main():
                     summary_changes.append(r3)
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
-    write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS, run_errors=run_errors)
+    write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS, run_errors=run_errors,
+                           intl_parent_checks=intl_checks)
     print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 自动丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
