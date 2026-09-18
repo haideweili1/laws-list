@@ -1,0 +1,137 @@
+{
+  "generatedAt": "2026-09-18",
+  "draftMode": true,
+  "counts": {
+    "added": 0,
+    "updated": 0,
+    "abolished": 2,
+    "statusSwitched": 0,
+    "discarded": 6
+  },
+  "changes": [
+    {
+      "id": "c1",
+      "type": "abolish",
+      "table": "laws",
+      "name": "产品质量国家监督抽查管理办法",
+      "category": "质量",
+      "targetId": "L0007",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止",
+        "abolishDate": "2020-01-01",
+        "remark": "由 产品质量监督抽查管理暂行办法 替代。废止标准不提供标准文本阅读服务。"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "现行有效",
+            "to": "已废止"
+          }
+        ],
+        "link": "https://www.gov.cn/gongbao/content/2020/content_5477315.htm",
+        "source": "工业和信息化部",
+        "sourceUrl": "https://www.gov.cn/gongbao/content/2020/content_5477315.htm",
+        "reason": "状态变为「已废止」；新增被替代关系：产品质量监督抽查管理暂行办法",
+        "_glm_note": "被《产品质量监督抽查管理暂行办法》替代，于2020-01-01废止。"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "abolish",
+      "table": "laws",
+      "name": "缺陷消费品召回管理规定",
+      "category": "质量",
+      "targetId": "L0137",
+      "newRecord": null,
+      "setFields": {
+        "status": "已废止",
+        "abolishDate": "2020-01-01",
+        "remark": "由 消费品召回管理暂行规定 替代。废止标准不提供标准文本阅读服务。"
+      },
+      "display": {
+        "diffs": [
+          {
+            "field": "状态",
+            "from": "现行有效",
+            "to": "已废止"
+          }
+        ],
+        "link": "https://www.gov.cn/gongbao/content/2020/content_5480492.htm",
+        "source": "国务院",
+        "sourceUrl": "https://www.gov.cn/gongbao/content/2020/content_5480492.htm",
+        "reason": "状态变为「已废止」；新增被替代关系：消费品召回管理暂行规定",
+        "_glm_note": "被《消费品召回管理暂行规定》替代，于2020-01-01废止。"
+      }
+    }
+  ],
+  "discarded": [
+    {
+      "id": "d1",
+      "type": "discard",
+      "table": "laws",
+      "name": "产品质量监督抽查管理暂行办法",
+      "category": null,
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增；没有说明改了什么、依据是什么",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d2",
+      "type": "discard",
+      "table": "laws",
+      "name": "计量器具新产品管理办法",
+      "category": null,
+      "action": "abolish",
+      "reason": "官方页未能核实字段「abolishDate」（2020-11-01），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d3",
+      "type": "discard",
+      "table": "laws",
+      "name": "中国强制检定的工作计量器具明细目录",
+      "category": null,
+      "action": "abolish",
+      "reason": "官方页未能核实字段「abolishDate」（2021-01-01），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d4",
+      "type": "discard",
+      "table": "laws",
+      "name": "实施强制管理的计量器具目录",
+      "category": null,
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增；没有说明改了什么、依据是什么",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d5",
+      "type": "discard",
+      "table": "laws",
+      "name": "消费品召回管理暂行规定",
+      "category": null,
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增；没有说明改了什么、依据是什么",
+      "sourceUrl": "",
+      "proposed": {}
+    },
+    {
+      "id": "d6",
+      "type": "discard",
+      "table": "laws",
+      "name": "企业知识产权管理规范（GB/T 29490-2013）",
+      "category": null,
+      "action": "abolish",
+      "reason": "官方页未能核实字段「abolishDate」（2024-01-01），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "sourceUrl": "",
+      "proposed": {}
+    }
+  ]
+}
