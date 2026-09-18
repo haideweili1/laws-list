@@ -1060,7 +1060,8 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 类型A（采标）：该标准采用国际标准时，remark 必须原样照抄官网版权原话（"暂不提供在线阅读服务"或"仅提供在线阅读服务"）。无官网原话不得写。
 - 类型B（食安待补）：食安国标(GB 4806.x / GB 31604.x)因官方反爬无法自动取链接时，remark 写「【官方链接待替换】cfsa.net.cn官方直链待用户手动补充」。
 - 类型C（即将被替代）：旧版仍现行有效、但有新版即将实施时，remark 写"即将被 XX 替代（新标准实施日期 YYYY-MM-DD）"。
-- 除上述三类外，remark 一律留空。禁止写"新增法规，属于XX领域""由XX发布"等废话。
+- 类型D（采标新版）：旧版仍现行有效、但所采用的国际标准已发布新版（或已立项修订）时，remark 写"采标新版：采用的国际标准 XX 已于 YYYY-MM-DD 发布新版 YY（将等同/修改采用）；中国修订计划 计划号 下达 YYYY-MM-DD，状态：正在起草/已发布"（只填确有官方依据的字段，查不到的省略，不要编造日期）。
+- 除上述四类外，remark 一律留空。禁止写"新增法规，属于XX领域""由XX发布"等废话。
 
 【五、状态与废止：以官方为准，状态与日期必须自洽】
 - status 只能取：现行有效 / 即将实施 / 已废止。
@@ -1130,6 +1131,15 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 - 状态为「即将实施」的条目（新标准等待生效）：不查变更，到期由系统自动转现行有效。
 若你擅自对以上三类条目输出 update / abolish，系统会直接整条丢弃，你真正查到的有用变更也会一起丢掉。请只针对「现行有效且未被替代」的条目检索变更。
 注意：fromValues 里的"当前状态/实施日期"必须和你在该条目「★当前状态★」处看到的值【逐字一致】，不准改写、不准凭记忆改成别的。
+
+【十六、采标标准须核查国际父本新版（通用规则，不得硬编码具体标准号）】
+- 若某条目的名称或 remark 含有国际标准编号（如 ISO 9001、IEC 61010、EN 60335 等），说明它采用国际标准。你必须额外去该国际标准化组织官网（iso.org / iec.ch / cen.eu 等，均为官方白名单域名）web_search 一次："该国际标准是否已发布更新的版本？"
+- 若查到国际父本已有更新的【已发布】版本（例如 ISO 9001:2015 → ISO 9001:2026，国际标准发布日即生效日）：
+  1) 对清单里这条【现行有效】的旧条目，做 action="update"：status 保持"现行有效"（不要标已废止——ISO 新版有约 3 年过渡期、且中国对应的 GB/T 尚未发布替代版，旧版此时仍有效）；把 remark 改为类型D（采标新版），写明国际新版编号与发布日、以及中国修订计划号/下达日/状态（只填确有依据的，缺的省略）；
+  2) source_url 填该国际标准的官方新版发布页（iso.org 等白名单内域名、web_search 真实返回的链接）；中国修订计划可用 source_hint 给定位线索（如"国家标准修订计划 20264412-T-469"）。
+  3) 若中国对应的新版 GB/T 也【已发布且有实施日期】，则另用 action="add" 把该新版 GB/T 加进清单（按正常 add 规则）；旧版是否翻"已废止"由系统按日期驱动自动处理，你不必手动标。
+- 若国际父本没有更新的已发布版本，不要对这条输出任何 change。
+- 本规则为通用规则：适用于所有含国际标准编号的条目，不限于某一项标准。
 """
 
 
@@ -1160,7 +1170,7 @@ def build_existing_block(items, table):
 def build_prompt(target_label, domain_text, existing_names):
     names_block = existing_names if isinstance(existing_names, str) else (
         "\n".join(f"- {n}" for n in existing_names) or "（暂无）")
-    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约两周内与【范围】相关的法规/标准变更。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
+    return f"""你是中国法律法规与标准检索助手，负责维护一份「家电制造业体系工程师使用的法规/标准清单」（data.json，含 laws 与 standards 两张表）。你将运行：使用 web_search 联网检索最近约一年内与【范围】相关的法规/标准变更（重点近一年内的新版发布 / 修订计划 / 草案；确有实据的更早变更也在范围内）。一切以官方文件/官网为唯一权威来源，不凭记忆或推断。
 
 ═══ 本次检索范围（{target_label}）═══
 {domain_text}
@@ -1223,7 +1233,9 @@ def search_target(client, model, label, text, existing_names):
         )
         return json.loads(extract_json(resp.choices[0].message.content))
     except Exception as e:
+        import traceback as _tb
         print(f"  [{label}] 检索出错: {e}")
+        _tb.print_exc()
         return {"changes": [], "summary": f"检索出错: {e}"}
 
 
@@ -1362,6 +1374,8 @@ def clean_remark(ch, is_food=False, is_abolish=False):
     if is_food and "官方链接待替换" in r:
         return r
     if "即将被" in r and "替代" in r:
+        return r
+    if "采标新版" in r:
         return r
     if "废止标准不提供标准文本阅读服务" in r:
         return r
@@ -1895,6 +1909,12 @@ def apply_change(table, all_items, change, domain_id, today):
         set_fields["adopted"] = bool(change.get("adopted"))
         diffs.append({"field": "采标标记", "from": str(target.get("adopted", "")),
                       "to": str(bool(change.get("adopted")))})
+    # 通用备注：采标新版 / 即将被替代 等说明类 remark（非版权原话）有变化则应用
+    if "remark" not in set_fields:
+        new_remark = clean_remark(change)
+        if new_remark and new_remark != (target.get("remark") or "").strip():
+            set_fields["remark"] = new_remark
+            diffs.append({"field": "备注", "from": target.get("remark", "") or "（无）", "to": new_remark})
     # 链接保护：仅当现有缺失/是首页时才用新链，且新链需探活
     # 【链接】只有通过三重校验(官方域名+正文形态+真实可访问)的新链接才允许写入；
     # 校验不过就宁可留空，绝不再用百度/站内搜索页顶替（那正是"链接不是正文"的老毛病）。
@@ -2183,7 +2203,7 @@ def _tally_reasons(items, reason_getter):
     return dict(c)
 
 
-def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None):
+def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None, run_errors=None):
     """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让高价值更新都进左栏』的瞄准镜。
     只产出报告文件，绝不改动 data.json。"""
     if metrics is None:
@@ -2214,6 +2234,8 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
             "dup_rereport": metrics["dup_rereport"],
             "cross_file": metrics["cross_file"],
         },
+        # 检索出错（异常/超时）：写入报告，便于区分"真无变化"与"GLM 调失败"
+        "retrieval_errors": run_errors or [],
     }
     try:
         with open(REPORT_PATH, "w", encoding="utf-8") as f:
@@ -2250,6 +2272,10 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
             lines.append("\n## 丢弃条目明细")
             for d in discarded:
                 lines.append(f"- 《{d.get('name')}》：{d.get('reason', '')}{_fmt_prop(d.get('proposed'))}")
+        if run_errors:
+            lines.append("\n## 检索出错（异常/超时，导致该域 changes 为空；用于区分『真无变化』与『GLM 调用失败』）")
+            for e in run_errors:
+                lines.append(f"- 《{e.get('label')}》：{e.get('error', '')}")
         with open(REPORT_MD_PATH, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
     except Exception as e:
@@ -2303,9 +2329,12 @@ def _already_done(table, all_items, ch):
     trb = (tgt.get("replacedBy") or "").strip()
     ce = _ymd(ch.get("effectiveDate"))
     te = _ymd(tgt.get("effectiveDate"))
-    # 想改的状态/替代/实施日期 与清单一致（或没提新值）→ 无实质变更 = 已做过
+    # 想改的状态/替代/实施日期 与清单一致（或没提新值）→ 再看 remark 是否也一致，都一致才算"已做过"
     if (not cs or cs == ts) and (not rb or rb == trb) and (not ce or ce == te):
-        return True
+        cr = (ch.get("remark") or "").strip()
+        tr = (tgt.get("remark") or "").strip()
+        if not cr or cr == tr:
+            return True
     return False
 
 
@@ -2354,6 +2383,7 @@ def main():
         ("standards", "standards"),
     ]
     summary_changes = []
+    run_errors = []  # 本轮各域检索出错（含异常/超时），写入报告便于诊断"0/0/0 是真无变化还是 GLM 调失败"
     for k in _METRICS:  # 每轮检索重置质量测量计数器
         _METRICS[k] = 0
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失/硬伤矛盾）：直接丢弃，收集以便报告计数
@@ -2382,6 +2412,9 @@ def main():
         print(f"检索：{label} ...")
         result = search_target(client, model, label, text, existing_block)
         changes = result.get("changes", []) or []
+        _rs = (result.get("summary") or "").strip()
+        if _rs.startswith("检索出错"):
+            run_errors.append({"label": label, "error": _rs})
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
         _su = [(ch.get("source_url") or "").strip() for ch in changes]
         _su = [u for u in _su if u and domain_ok(u) and url_shape_ok(u)]
@@ -2412,7 +2445,7 @@ def main():
                     summary_changes.append(r3)
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
-    write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS)
+    write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS, run_errors=run_errors)
     print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 自动丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
