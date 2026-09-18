@@ -15,3 +15,10 @@
 - 发布日期误填实施日期（本应归零）：**0**
 - 重复重报早已做过的变更（本应归零）：**0**
 - 跨文件废止命中（越多越好）：**0**
+
+## 检索出错（异常/超时，导致该域 changes 为空；用于区分『真无变化』与『GLM 调用失败』）
+- 《环境与职业健康》：检索出错: Error code: 429, with error text {"error":{"code":"1113","message":"余额不足或无可用资源包,请充值。"}}
+- 《质量》：检索出错: Error code: 429, with error text {"error":{"code":"1113","message":"余额不足或无可用资源包,请充值。"}}
+- 《信息安全》：检索出错: Error code: 429, with error text {"error":{"code":"1113","message":"余额不足或无可用资源包,请充值。"}}
+- 《反恐》：检索出错: Error code: 429, with error text {"error":{"code":"1113","message":"余额不足或无可用资源包,请充值。"}}
+- 《产品标准》：检索出错: Error code: 429, with error text {"error":{"code":"1113","message":"余额不足或无可用资源包,请充值。"}}
