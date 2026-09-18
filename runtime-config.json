@@ -1,6 +1,6 @@
 {
-  "test_models": ["glm-4.5-air", "glm-4.6", "glm-4.7", "glm-4.7-flash"],
+  "test_models": ["glm-4.5-air", "glm-4.7", "glm-4.7-flash"],
   "domain": "质量",
   "draft_mode": true,
-  "_note": "模型档位对比测试临时配置：逐个模型各跑一轮（只跑质量域），报告另存为 retrieval-report-<模型>.md/.json；draft_mode=true 保证不写入正式清单。测试结束后请删除本文件。"
+  "_note": "模型档位对比测试临时配置（第 2 轮：4.5-air 复测 + 4.7/4.7-flash 重试；4.6 因账号无额度暂不测）。draft_mode=true 保证只出报告、不写入正式清单。测试结束后必须删除本文件。"
 }

@@ -66,8 +66,11 @@ def _apply_runtime_overrides():
             ("draft_mode", "DRAFT_MODE"), ("draft", "DRAFT_MODE"))
     _applied = []
     for k, env in _map:
-        if k not in cfg or (os.environ.get(env) or "").strip():
-            continue                     # 真实环境变量优先，不被文件顶掉
+        if k not in cfg:
+            continue
+        # 说明：runtime-config.json 只在对比测试期间存在（测完即删），因此这里让【文件优先】，
+        # 否则工作流里硬写的 DRAFT_MODE=false 会把「试跑」覆盖掉，测试就会写入正式清单。
+        # 对比多个模型时也不要把 "model" 写进本文件（子进程用环境变量逐个传模型）。
         v = cfg[k]
         s = ("true" if v else "false") if isinstance(v, bool) else str(v)
         os.environ[env] = s
