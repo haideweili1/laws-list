@@ -646,6 +646,192 @@ def has_valid_official_link(url):
     return bool(u) and domain_ok(u) and url_shape_ok(u)
 
 
+# ===== 国际父本新版：代码确定性核查（不依赖模型的模糊检索）=====
+# 为什么要有这块：中国采标标准（如 GB/T 19001—2016/ISO9001:2015）的国际父本若已发布新版，
+# 中国对应的 GB/T 往往尚未发布替代版，此时旧版仍现行有效，但应提示使用者"采标新版"。
+# 这类判断必须精确核对国际官网，而免费轻量模型做不到（实测会把条目自己那个旧编号当成
+# "查到新版"、国际编号张冠李戴、甚至漏掉最该报的那一条），因此改由代码直查官网取硬结论。
+_INTL_DESIG_RE = re.compile(
+    r"\b(ISO|IEC|EN)(?:\s*/\s*(?:TS|TR|PAS|Guide|Amd|IEC|ISO))*\s*"
+    r"(\d{2,5}(?:\.\d+)?(?:[-\u2013]\d+)*)", re.I)
+
+# 各国际标准化组织的「当前版本页」构造规则（通用：按发布机构选官网，不写死任何具体标准号）
+# ISO 官网友好别名 = /standard/<标准号>；注意不能加 .html（加了会命中内部 id，串到另一份标准）
+# 实测提醒：iso.org 有 TLS 指纹级反爬，脚本直连会 403（连首页也 403，改请求头无效），
+# 因此代码直查只作为「首选尝试」，失败时回落到「模型原样抄录官网字段 + 代码判定」。
+_INTL_CATALOG = {
+    "ISO": lambda num: "https://www.iso.org/standard/" + str(num),
+}
+
+
+def _norm_code(s):
+    """归一化标准号串，仅保留小写字母数字，用于一致性比对（ISO 9001 == ISO9001 == iso 9001）。"""
+    return re.sub(r"[^0-9a-z]", "", (s or "").lower())
+
+
+def _intl_codes_in(text):
+    """从条目文本（名称/remark）里提取国际标准编号，去重保序。返回 [(body, number, 原文)]。"""
+    out, seen = [], set()
+    for m in _INTL_DESIG_RE.finditer(text or ""):
+        body, num = m.group(1).upper(), m.group(2)
+        if (body, num) in seen:
+            continue
+        seen.add((body, num))
+        out.append((body, num, m.group(0)))
+    return out
+
+
+def _intl_adopted_year(text, body, num):
+    """取条目里该国际标准被采用的版本年份（如 ISO9001:2015 → 2015）；取不到返回 None。"""
+    pat = (re.escape(body) + r"\s*/?\s*(?:TS\s*|TR\s*|IEC\s*|ISO\s*)?"
+           + re.escape(num) + r"\s*[:：]\s*(\d{4})")
+    m = re.search(pat, text or "", re.I)
+    return int(m.group(1)) if m else None
+
+
+def _desig_parts(s):
+    """解析国际标准号串 → (body, 前缀集合, number, year|None)。
+    例：'ISO/TS 9002:2016' → ('ISO', {'TS'}, '9002', 2016)；'ISO9001' → ('ISO', set(), '9001', None)。
+    前缀（TS/TR/PAS/IEC/ISO 等）必须参与比对：ISO/TS 9002 与 ISO/IEC 9002 是不同出版物。"""
+    m = re.search(r"\b(ISO|IEC|EN)((?:\s*/\s*(?:TS|TR|PAS|Guide|Amd|IEC|ISO))*)"
+                  r"\s*(\d{2,5}(?:\.\d+)?(?:[-\u2013]\d+)*)(?:\s*[:：]\s*(\d{4}))?", s or "", re.I)
+    if not m:
+        return None
+    pres = frozenset(p.upper() for p in re.findall(r"/\s*([A-Za-z]+)", m.group(2) or ""))
+    return (m.group(1).upper(), pres, m.group(3), (int(m.group(4)) if m.group(4) else None))
+
+
+def _intl_current_version(body, num, timeout=20):
+    """确定性查询该国际标准化组织官网，取该标准【当前版本】信息；查不到返回 None。
+    返回 {"designation","year","status","pubDate","edition","url"}。
+    铁律：页面标题里的标准号必须与请求号一致，否则视为未命中——宁可不报，不可错报。"""
+    maker = _INTL_CATALOG.get(body)
+    if not maker:
+        return None                      # 该机构官网规则未收录：不猜，交由模型侧规则处理
+    url = maker(num)
+    html = fetch_text(url, timeout=timeout, max_bytes=400000)
+    if not html or is_dead_page(html):
+        return None
+    m = re.search(r"<title[^>]*>\s*([A-Za-z]{2,6}(?:\s*/\s*[A-Za-z]{2,6})?\s*\d{2,5}"
+                  r"(?:\.\d+)?(?:[-\u2013]\d+)*)\s*[:：]\s*(\d{4})", html, re.I)
+    if not m:
+        return None
+    designation = re.sub(r"\s+", " ", m.group(1)).strip() + ":" + m.group(2)
+    year = int(m.group(2))
+    want = re.sub(r"[^0-9a-z]", "", (body + num).lower())
+    got = re.sub(r"[^0-9a-z]", "", designation.lower())
+    if want not in got:
+        return None                      # 串页保护：抓到的不是我们要核对的那份标准
+    flat = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
+    st = re.search(r"Status\s*[:：]?\s*([A-Za-z][A-Za-z /]{2,25}?)\s*"
+                   r"(?:Publication date|Stage|Edition|Number of pages|$)", flat)
+    pd = re.search(r"Publication date\s*[:：]?\s*(\d{4}-\d{2})", flat)
+    ed = re.search(r"Edition\s*[:：]?\s*(\d{1,2})", flat)
+    return {
+        "designation": designation,
+        "year": year,
+        "status": (st.group(1).strip() if st else ""),
+        "pubDate": (pd.group(1) if pd else ""),
+        "edition": (ed.group(1) if ed else ""),
+        "url": url,
+    }
+
+
+def _intl_evidence(body, num, model_index, cache, max_lookups):
+    """取该国际标准【当前版本】的证据。优先代码直查官网；失败则回落用模型「原样抄录」的官网字段。
+    返回 {"designation","year","status","pubDate","edition","url","source"} 或 None。"""
+    key = (body, num)
+    if key in cache:
+        return cache[key]
+    ev = None
+    if len(cache) < max_lookups:
+        cur = _intl_current_version(body, num)      # 可能因反爬（iso.org 403）返回 None
+        if cur:
+            ev = dict(cur, source="代码直查官网")
+    if ev is None:
+        ck = model_index.get(key)
+        p = _desig_parts((ck or {}).get("page_designation") or "")
+        if ck and p:
+            ev = {
+                "designation": str(ck.get("page_designation") or "").strip(),
+                "year": p[3],
+                "status": str(ck.get("page_status") or "").strip(),
+                "pubDate": str(ck.get("page_pubdate") or "").strip(),
+                "edition": "",
+                "url": str(ck.get("evidence_url") or "").strip(),
+                "source": "模型原样抄录官网字段（代码判定）",
+            }
+    cache[key] = ev
+    return ev
+
+
+def intl_parent_decisions(entries, model_ledger=None, max_lookups=20):
+    """国际父本新版判定：**新旧版本的比较与变更生成一律由代码做**，模型只允许「原样抄录官网字段」。
+    这样可把两类模型幻觉直接消灭：① 抄录到的标准号必须与条目里的编号一致（否则丢弃）；
+    ② 抄录的年份必须【大于】条目采用的年份（"把条目自己那个旧编号当新版"因此不可能成立）。
+    entries 应已按检索范围过滤（现行有效且未被替代）。返回 (changes, ledger)。"""
+    model_index = {}
+    for ck in (model_ledger or []):
+        if not isinstance(ck, dict):
+            continue
+        p = _desig_parts(ck.get("page_designation") or "")
+        if p:
+            model_index[(p[0], p[2])] = ck
+    changes, ledger, cache = [], [], {}
+    for it in entries:
+        text = " ".join([str(it.get("name") or ""), str(it.get("remark") or "")])
+        cat = it.get("category") or ""
+        for body, num, raw in _intl_codes_in(text):
+            key = (body, num)
+            if body not in _INTL_CATALOG and key not in model_index:
+                continue      # 既无法直查、模型也没抄录：不查不猜，避免造出误导性台账
+            ev = _intl_evidence(body, num, model_index, cache, max_lookups)
+            base = {"entry": it.get("name") or "", "intlNo": f"{body} {num}", "label": cat,
+                    "source": (ev or {}).get("source") or "无可核实证据"}
+            adopted = _intl_adopted_year(text, body, num)
+            if not ev:
+                ledger.append(dict(base, evidence_url="",
+                                   result="未取得官网版本证据（不据此下任何结论）"))
+                continue
+            # 一致性校验：机构、编号、前缀三者都要对得上（ISO/TS 9002 ≠ ISO/IEC 9002）
+            pe, pv = _desig_parts(raw), _desig_parts(ev["designation"])
+            if (not pe or not pv or pv[0] != body or pv[2] != num or pe[1] != pv[1]):
+                ledger.append(dict(base, evidence_url=ev["url"],
+                                   result=f"证据标准号「{ev['designation']}」与条目编号（{raw}）不一致，已丢弃"))
+                continue
+            year = pv[3] if pv[3] else ev["year"]
+            url = _INTL_CATALOG[body](num) if body in _INTL_CATALOG else (ev["url"] or "")
+            if not year or not adopted:
+                ledger.append(dict(base, evidence_url=url,
+                                   result=f"官网当前版本 {ev['designation']}；年份缺失或条目未标注采用年份，无法比较"))
+                continue
+            published = ("published" in (ev["status"] or "").lower()) or ("已发布" in (ev["status"] or ""))
+            if published and year > adopted:
+                oldver = f"{body} {num}:{adopted}"
+                ledger.append(dict(base, evidence_url=url,
+                                   result=f"查到新版 {ev['designation']}（发布 {ev['pubDate'] or '官网未标注'}）"
+                                          f"→ 已生成「采标新版」变更"))
+                changes.append({
+                    "action": "update",
+                    "name": it.get("name") or "",
+                    "fromValues": {"effectiveDate": it.get("effectiveDate") or "",
+                                   "status": it.get("status") or ""},
+                    "source_url": url,
+                    "remark": (f"采标新版：本条目采用的国际标准 {oldver} 已于 "
+                               f"{ev['pubDate'] or '（官网未标注发布日期）'} 发布新版 {ev['designation']}；"
+                               f"中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。"
+                               f"依据：{url}（官网状态：{ev['status'] or '未标注'}）"),
+                    "note": (f"依据 {body} 官网页面 {url}：{ev['designation']} 状态为 "
+                             f"{ev['status'] or '未标注'}、发布时间 {ev['pubDate'] or '未标注'}；"
+                             f"清单内本条目采用的是 {oldver}，故旧版仍现行有效、仅提示采标新版。"),
+                })
+            else:
+                ledger.append(dict(base, evidence_url=url,
+                                   result=f"官网当前版本 {ev['designation']}，未高于条目采用的 {adopted} 版"
+                                          f"（不生成变更）"))
+    return changes, ledger
+
+
 def _extract_effective_date(text):
     """从标准官方页正文里提取『实施日期』，返回 YYYY-MM-DD；取不到返回 None。
     覆盖多种官方写法：实施日期：YYYY-MM-DD / 实施日期：YYYY年M月D日 / 实施日期为YYYY-MM-DD /
@@ -1134,18 +1320,21 @@ COMMON_RULES = """（以下为所有检索通用的硬性要求，必须严格�
 
 【十六、采标标准须核查国际父本新版（通用规则，不得硬编码具体标准号）】
 - 识别：凡条目的名称或 remark 里出现国际标准编号（形如 ISO + 数字、IEC + 数字、EN + 数字），即说明该条目采用国际标准，本条即触发「父本核查」。必须逐条执行，不得跳过，也不得以"中国尚无公告"为由略过——中国采标标准的修订往往滞后于国际父本，只查中国公告一定会漏。
+- 你的任务只是【找到该国际标准的官网当前版本页，并原样抄录它上面写的字段】。新旧版本的比较由系统代码去做，你不要做判断。
 - 检索式（把 <国际标准号> 原样替换为该条目里真实出现的那个编号，禁止套用任何示例编号；按发布机构选官方域名：ISO→iso.org、IEC→iec.ch、欧洲标准→cen.eu，均为官方白名单域名）：
   1) `site:<机构官网域名> <国际标准号>`
   2) `site:<机构官网域名> <国际标准号> new edition`
   3) `<国际标准号> 新版 发布 <当前年份>`
   至少执行前两条，一律以 web_search 真实返回的页面为准。
-- 判定与产出：
-  - 若查到国际父本已有更新的【已发布】版本（国际标准以发布日为生效日）：
-    1) 对清单里这条【现行有效】的旧条目做 action="update"：status 保持"现行有效"（不要标已废止——国际新版通常有约 3 年过渡期，且中国对应的 GB/T 尚未发布替代版时旧版仍有效）；remark 改为类型D（采标新版），写明国际新版编号与发布日，以及中国修订计划号/下达日/状态（只填确有官方依据的字段，查不到的省略，不要编造日期）；
-    2) source_url 填该国际标准官方新版发布页（白名单域名、web_search 真实返回的链接）；中国修订计划用 source_hint 给定位线索（写「国家标准修订计划 <计划号>」这类线索，绝不自造 URL）。
-    3) 若中国对应的新版 GB/T 也【已发布且有实施日期】，则另用 action="add" 把该新版 GB/T 加进清单（按正常 add 规则）；旧版是否翻"已废止"由系统按日期驱动自动处理，你不必手动标。
-  - 若未查到更新的已发布版本：不要对这条输出任何 change。
-- 【必须回报核查台账】本规则触发的每一条目，无论查到与否，都要在输出 JSON 根部的 intl_parent_checks 数组里逐条登记（格式见下方字段说明）。这是系统判断「你到底查了没」的唯一凭据，漏登记视为未执行本规则。
+- 抄录要求（逐字段原样照抄官网页面，不要改写、不要翻译、不要补全、不要推测）：
+  - page_designation：官网页面标题里的标准号与年份，形如 `ISO 9001:2026`；带前缀的要照抄（如 `ISO/TS 9002:2016`）。
+  - page_status：官网 Status 字段值（如 Published / Withdrawn / Under development）。
+  - page_pubdate：官网 Publication date 字段值（如 2026-09）；查不到留空字符串。
+  - evidence_url：你实际打开的该官网页面链接（原样复制 web_search 返回的链接，绝不自造 URL）；打不开就留空。
+  - 若 iso.org 页面打不开（该站有反爬），可改抄该标准官方发布新闻页或该机构其它官方页面；仍拿不到就全部留空，并在 result 里写明「官网页打不开」。
+- 【严禁】自行输出 action="update" 的「采标新版」变更，也不要自行断言「已出新版 / 未出新版」——系统会按你抄录的字段做确定性比较后自动生成变更。你只管把字段抄准。
+- 中国侧信息（可选）：若你确实查到中国对应的新版 GB/T 已【发布且有实施日期】，照常规用 action="add" 加进清单；旧版状态由系统按日期自动处理。中国修订计划号写在台账 result 字段里即可，不必自己判定。
+- 【必须回报核查台账】本规则触发的每一条目都要在输出 JSON 根部的 intl_parent_checks 数组里逐条登记（逐个国际编号一条），漏登记视为未执行本规则。
 - 本规则为通用规则：适用于所有含国际标准编号的条目，不限于某一项标准。
 """
 
@@ -1211,11 +1400,11 @@ def build_prompt(target_label, domain_text, existing_names):
   "note": "变更说明：必须写明『哪个字段 由X 改为 Y，依据是官方哪份文件』，不许写空话"
 }}
 
-另外，在 JSON 根部再给一个字段（用于核查你是否真的按【十六】执行了国际父本核查）：
+另外，在 JSON 根部再给一个字段（供系统按【十六】做父本新旧版本判定：务必逐字照抄官网，不要自己判断）：
   "intl_parent_checks": [
-    {{"entry": "清单条目名称（原样抄）", "intlNo": "该条目里的国际标准编号", "result": "查到新版 <编号>（发布 YYYY-MM-DD） | 未查到更新的已发布版本", "evidence_url": "据以判断的官方页链接（web_search 真实返回；没有就空字符串）"}}
+    {{"entry": "清单条目名称（原样抄）", "intlNo": "该条目里的国际标准编号", "page_designation": "官网标题里的标准号+年份，如 ISO 9001:2026（原样照抄）", "page_status": "官网 Status 值，如 Published（原样照抄；没有就空字符串）", "page_pubdate": "官网 Publication date 值，如 2026-09（原样照抄；没有就空字符串）", "evidence_url": "你实际打开的官网页面链接（原样复制；打不开就空字符串）", "result": "一句话说明你查到什么，如「官网页打不开」或「官网当前版本页即此」"}}
   ]
-本域清单里若没有任何含国际标准编号的条目，intl_parent_checks 给空数组 []。
+本域清单里若没有任何含国际标准编号的条目，intl_parent_checks 给空数组 []。严禁在这里下「是否已出新版」的结论。
 
 重要：effectiveDate / status / abolishDate / replacedBy 这四个结论字段你【必须输出为空字符串 ""】，不要填写、不要推测——系统会依据 source_url 官方页确定性抽取并覆盖，你填了也不会被采用，只会白占输出长度。再强调一次：这四个字段一律写成 ""。
 为节省篇幅（输出过长会被截断，导致整域结果作废）：action="update" 的条目只输出 action / name / fromValues / note 这 4 个必备字段，再加你有把握的 source_url / source_hint / remark / replacedBy；其余字段（table / stdNo / docNumber / domains / category / source / link / effectiveDate / status / abolishDate / adopted / copyrightNote）一律不要在 update 条目里出现，系统会沿用清单原值。action="add" 仍按上面的完整字段输出。
@@ -2379,12 +2568,15 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
             for d in discarded:
                 lines.append(f"- 《{d.get('name')}》：{d.get('reason', '')}{_fmt_prop(d.get('proposed'))}")
         if intl_parent_checks:
-            lines.append("\n## 采标父本核查台账（规则十六：GLM 回报『国际父本是否已出新版』）")
-            lines.append("- 读法：「查到新版」却没出现在上方左栏 = 该条被质检丢弃或去重跳过，需人工看一眼；本段整段缺失 = GLM 未执行规则十六（通用规则未落地）。")
+            lines.append("\n## 采标父本核查台账（规则十六：模型只抄录官网字段，新旧版本由系统代码判定）")
+            lines.append("- 读法：`来源`列区分「代码直查官网」（最权威）/「模型原样抄录官网字段（代码判定）」/「GLM 回报（原始抄录）」；"
+                         "带「已生成采标新版变更」的行应能在上方左栏找到对应条目，找不到即被质检丢弃或去重跳过。"
+                         "本段整段缺失 = 规则十六未被执行。")
             for c in intl_parent_checks:
                 lines.append(
                     f"- 【{c.get('label', '')}】《{c.get('entry', '')}》"
                     f"｜国际号={c.get('intlNo', '') or '(空)'}"
+                    f"｜来源={c.get('source', '') or '(未标注)'}"
                     f"｜{c.get('result', '') or '(空)'}"
                     f"｜依据={c.get('evidence_url', '') or '(空)'}")
         if run_errors:
@@ -2499,7 +2691,8 @@ def main():
     ]
     summary_changes = []
     run_errors = []  # 本轮各域检索出错（含异常/超时），写入报告便于诊断"0/0/0 是真无变化还是 GLM 调失败"
-    intl_checks = []  # 采标父本核查台账（规则十六：GLM 逐条回报"国际父本是否已出新版"），写入报告便于验证它到底查没查
+    intl_checks = []  # 采标父本核查台账（规则十六：模型逐条"原样抄录"官网字段），写入报告便于核对它到底查没查
+    intl_groups = {}  # {(table, cid): [参与父本核查的条目]}，供循环后由代码做确定性新旧版本判定
     for k in _METRICS:  # 每轮检索重置质量测量计数器
         _METRICS[k] = 0
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失/硬伤矛盾）：直接丢弃，收集以便报告计数
@@ -2534,12 +2727,15 @@ def main():
         if result.get("_salvaged"):
             run_errors.append({"label": label,
                                "error": f"模型输出被截断，已抢救出前 {len(changes)} 条完整变更（仅丢弃尾部残缺条目，未整域作废）"})
-        # 采标父本核查台账：收集 GLM 回报的"国际父本是否已出新版"，供报告核对它是否真的查了
+        # 采标父本核查台账：收集模型【原样抄录】的官网字段，交系统做确定性新旧版本判定
         for _ck in (result.get("intl_parent_checks") or []):
             if isinstance(_ck, dict):
                 _ck = dict(_ck)
                 _ck.setdefault("label", label)
+                _ck.setdefault("source", "GLM 回报（原始抄录）")
                 intl_checks.append(_ck)
+        # 记录本域参与父本核查的条目（现行有效且未被替代），供循环后做代码侧确定性判定
+        intl_groups.setdefault((table, cid), []).extend(items)
         # 0-c：把本域候选的来源链接一次性交国内 SCF 探测，消除境外超时误杀（SCF 不可用时自动回退）
         _su = [(ch.get("source_url") or "").strip() for ch in changes]
         _su = [u for u in _su if u and domain_ok(u) and url_shape_ok(u)]
@@ -2569,9 +2765,34 @@ def main():
                 for r3 in _scan_abolish_for_target(ch, res, proposed_laws, proposed_standards, today):
                     summary_changes.append(r3)
 
+    # —— 国际父本新版：由代码做确定性判定（模型只提供"原样抄录"的官网字段）——
+    # 这一步独立于模型的结论：编号必须一致、年份必须更高，才生成 type-D「采标新版」变更。
+    intl_code_ledger = []
+    for (_t, _cid), _its in intl_groups.items():
+        _all = proposed_laws if _t == "laws" else proposed_standards
+        _chs, _led = intl_parent_decisions(_its, model_ledger=intl_checks)
+        intl_code_ledger.extend(_led)
+        for _ch in _chs:
+            if _already_done(_t, _all, _ch):
+                print(f"    跳过（采标新版变更已在清单体现）：{_ch.get('name')}")
+                _METRICS["dup_rereport"] += 1
+                continue
+            _res = apply_change(_t, _all, _ch, _cid, today)
+            if not _res or _res.get("kind") == "skip":
+                if _res:
+                    print(f"    跳过（{_res.get('reason')}）：{_res.get('name')}")
+                continue
+            if _res.get("kind") == "discard":
+                discarded.append({"name": _res.get("name"), "action": _res.get("action", ""),
+                                  "table": _res.get("table", ""), "reason": _res.get("reason", "")})
+                print(f"    丢弃（{_res.get('reason')}）：{_res.get('name')}")
+                continue
+            summary_changes.append(_res)
+            print(f"    [{_res['kind']}] {_res['name']}（采标新版：{_res['display'].get('reason')}）")
+
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
     write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS, run_errors=run_errors,
-                           intl_parent_checks=intl_checks)
+                           intl_parent_checks=intl_checks + intl_code_ledger)
     print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 自动丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
