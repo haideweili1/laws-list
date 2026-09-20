@@ -82,7 +82,7 @@ def _apply_runtime_overrides():
 _apply_runtime_overrides()
 
 # 生效模型（环境变量 > runtime-config.json > 内置默认）。写进报告，便于对照不同档位的产出。
-DEFAULT_MODEL = "glm-4-flash"
+DEFAULT_MODEL = "glm-4-7"
 EFFECTIVE_MODEL = (os.environ.get("MODEL") or "").strip() or DEFAULT_MODEL
 
 
@@ -1836,6 +1836,51 @@ def _is_hard_reason(r):
     return True
 
 
+# ===== ⑦ 假"替代标准号"穿透闸门（2026-09-20 新增）=====
+# 背景：glm-4.5-air 曾把 GB/T 19001-2016 改「已废止」+remark「由 GB/T 19001-2023 替代」
+# （该号不存在）并写进正式清单——单靠"来源页形态+旧值核对+矛盾检测"拦不住（remark 像 openstd 官方话术）。
+# 修法（通用、不硬编码具体标准号）：任何变更声称"由/被 XX 替代"，XX 必须能在官方渠道
+# （openstd 按号解析）真实查到；查不到 → 整条丢弃。
+# 判定边界（避免误杀真变更、与既有"分诊自救"逻辑一致）：
+#   - 若官方页自身已声明该替代(_repl_unverified，即旧标准页明文"被 XX 代替"但新标准日期取不到)
+#     → 交既有逻辑降级人工复核（清空 replacedBy、标 _unverified），本闸不丢弃；
+#   - 仅当"官方页未支持该替代关系、但模型仍声称替代"时，才做 openstd 核验并可能丢弃；
+#   - 非 GB 国标(ISO/IEC/EN 等)openstd 无法核验 → 跳过本闸（交其它质检）；
+#   - openstd 因网络/超时取不到(非确证无此号) → 不硬丢弃，降级人工复核（宁可少报不可错报）。
+_REPL_CLAIM_RE = re.compile(
+    r"(?:由|被)\s*[《]?\s*(GB[/\s]?T?\s?\d+(?:\.\d+)*\s*-\s*\d{4})\s*(?:代替|替代)")
+
+
+def _gate_replacement_real(change):
+    """返回 (discard, reason)。仅当查到确凿的"编造替代号"时才 discard=True。"""
+    if change.get("_repl_unverified"):
+        return (False, "")          # 官方页已声明替代，仅新标准日期取不到 → 交既有逻辑降级人工复核
+    claims = []
+    rb = (change.get("replacedBy") or "").strip()
+    if rb:
+        claims.append(rb)
+    for m in _REPL_CLAIM_RE.finditer((change.get("remark") or "").strip()):
+        claims.append(m.group(1).strip())
+    seen, cands = set(), []
+    for c in claims:
+        if c and c not in seen:
+            seen.add(c)
+            cands.append(c)
+    if not cands:
+        return (False, "")
+    for cand in cands:
+        if not _GB_STD_RE.search(cand):
+            continue                # 非 GB 国标，无 openstd 可验 → 跳过本闸
+        res = resolve_openstd(cand)
+        if res.get("verified"):
+            continue                # 官方确能查到 → 真实替代关系，放行
+        reason = res.get("reason", "")
+        if "超时" in reason or "无返回" in reason or "海外" in reason:
+            return (False, f"声称替代标准「{cand}」官方页暂时无法自动核实（{reason}），请人工确认")
+        return (True, f"声称「由 {cand} 替代」但 openstd 官方按号查不到该标准（{reason}），疑似编造替代关系，整条丢弃")
+    return (False, "")
+
+
 def check_change(table, change, target, today):
     """7 道质检关卡。返回 (是否通过, 未通过原因列表, 是否直接丢弃)。
     - 通过(ok=True)：进「可直接应用」（人工在可应用面板点开确认后应用）。
@@ -1861,6 +1906,13 @@ def check_change(table, change, target, today):
                 discard = True
         if discard:
             return (False, reasons, True)
+
+    # ⑦ 假"替代标准号"穿透闸门：声称"由/被 XX 替代"必须能在 openstd 查到 XX（详见 _gate_replacement_real）
+    _gr_disc, _gr_reason = _gate_replacement_real(change)
+    if _gr_disc:
+        reasons.append(_gr_reason)
+        discard = True
+        return (False, reasons, True)
 
     # 人工复核栏已删除（用户确认）：结论无法从官方页核实(_unverified)属『软提示』，
     # 不再单列待核实栏——放行「可应用」并随附理由（如"请人工点开确认"），

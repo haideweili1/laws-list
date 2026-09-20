@@ -43,12 +43,16 @@ def _stub_network():
         return _real_resolve_link(entry, table)
     M.resolve_link_for_entry = fake_resolve_link
 
+    _FAKE_REPL_BLOCK = {"GB/T 19001-2023"}  # 测试用：显式标记"官方查不到"的编造替代号（用于用例 Q）
     def fake_resolve_openstd(std_no, retries=1, max_detail_checks=6):
         _calls["resolve_openstd"].append(std_no)
+        if (std_no or "").strip() in _FAKE_REPL_BLOCK:
+            return {"link": "", "hcno": "", "verified": False,
+                    "reason": "桩：显式标记为查不到（编造标准号）", "method": "openstd"}
         return _resolved.get(
             (std_no or "").strip(),
-            {"link": "", "hcno": "", "verified": False,
-             "reason": "桩：未配置该标准号", "method": "openstd"})
+            {"link": "", "hcno": "", "verified": True,
+             "reason": "桩：默认视为真实标准（GB 类）", "method": "openstd"})
     M.resolve_openstd = fake_resolve_openstd
 
 
@@ -341,6 +345,26 @@ def main():
     print(f"[{'PASS' if m_pass else 'FAIL'}] M 编造替代标准：无法核实→不判已废止、不写假号 "
           f"(status={chg_m.get('status')}, replacedBy={chg_m.get('replacedBy')!r}, 待人工={m_unverified})")
     results.append(m_pass)
+
+    # ── 用例 Q：假"替代标准号"穿透闸门（2026-09-20 新增）──
+    # 变更声称"由 GB/T 19001-2023 替代"(该号不存在)，openstd 按号查不到 → 整条丢弃。
+    # 真实场景：GB/T 19001-2016 页面现行有效、未提任何替代；模型凭空编造 2023 版替代号写进清单。
+    _resolved.clear()
+    _page_text.clear()
+    _page_text[HC22239] = "GB/T 19001-2016 质量管理体系 要求 实施日期：2015-09-22 现行有效"
+    tgt_q = {"id": "L0129", "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+             "stdNo": "GB/T 19001-2016", "link": HC22239,
+             "effectiveDate": "2015-09-22", "status": "现行有效", "dept": "国家市场监督管理总局"}
+    chg_q = {"action": "update", "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+             "stdNo": "GB/T 19001-2016", "source_url": HC22239, "link": HC22239,
+             "effectiveDate": "2015-09-22", "status": "已废止",
+             "replacedBy": "", "remark": "由 GB/T 19001-2023 替代。废止标准不提供标准文本阅读服务。",
+             "fromValues": {"effectiveDate": "2015-09-22", "status": "现行有效"},
+             "note": "状态由现行有效改为已废止，由 GB/T 19001-2023 替代"}
+    r, reasons_q = run("Q 假替代号闸门：声称由不存在的 GB/T 19001-2023 替代 → 整条丢弃",
+                       "laws", chg_q, tgt_q, expect_ok=False, expect_discard=True,
+                       expect_in_reason="GB/T 19001-2023")
+    results.append(r)
 
     # ── 用例 N：检索范围过滤 _is_retrieval_target（通用规则，不硬编码标准号）──
     # 验证四类判定：已废止/被替代未实施/即将实施 不进检索；现行有效未被替代 进检索。
