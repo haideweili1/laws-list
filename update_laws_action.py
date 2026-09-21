@@ -13,7 +13,8 @@
 
 依赖环境变量：
   ZHIPU_API_KEY  (必填)  在 https://open.bigmodel.cn 免费申请的 API Key
-  MODEL            (可选)  模型名，默认 glm-4-flash（永久免费；事实核对足够，需高质感可设 MODEL=glm-4-plus 覆盖）
+  MODEL            (可选)  模型名，默认 glm-4.7（智谱官方编码为点号，写成 glm-4-7 会报「模型不存在」；
+                   如需更省钱可设 MODEL=glm-4-flash，但后者读不了 ISO/IEC 官网）
   DRAFT_MODE       (可选)  true(默认)=只出提案不动数据；false=直写 data.json
   SYNC_PROXY       (可选)  国内腾讯云 SCF 代理地址（含 https://）。配置后，链接核验改由
                       广州境内 SCF 执行，消除 GitHub 境外 runner 访问国内官网超时造成的误杀；
@@ -82,7 +83,7 @@ def _apply_runtime_overrides():
 _apply_runtime_overrides()
 
 # 生效模型（环境变量 > runtime-config.json > 内置默认）。写进报告，便于对照不同档位的产出。
-DEFAULT_MODEL = "glm-4-7"
+DEFAULT_MODEL = "glm-4.7"
 EFFECTIVE_MODEL = (os.environ.get("MODEL") or "").strip() or DEFAULT_MODEL
 
 

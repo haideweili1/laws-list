@@ -41,7 +41,7 @@ git push -u origin main
 2. 进入仓库 **Settings → Secrets and variables → Actions → Secrets → New repository secret**
 3. Name 填 `ZHIPU_API_KEY`，Value 粘贴刚申请的 Key，保存
 
-（可选）仓库 **Settings → Secrets and variables → Actions → Variables** 里可加变量 `MODEL`，值填 `glm-4`（默认即此；如需更省钱可改 `glm-4-air`，如需更强模型可改 `glm-4-plus`）。
+（可选）仓库 **Settings → Secrets and variables → Actions → Variables** 里可加变量 `MODEL`，默认 `glm-4.7`（注意是**点号**，写成 `glm-4-7` 会报「模型不存在」导致整轮检索空跑）；如需更省钱可改 `glm-4-flash`（但读不了 ISO/IEC 官网）。
 
 ### 4. 让它跑起来
 - **自动**：每周一北京时间 9 点自动运行（已配置 cron）
