@@ -609,17 +609,33 @@ function fieldDiff(oldR,newR,table){
 }
 
 /* ---------- 云端协同（best-effort） ---------- */
+/* 云端读取：三路互为备份，取时间戳最新的那份。
+   前两路是公开静态文件（免令牌、免费、国内可达）；第三路走腾讯云代理（需令牌，实时无缓存）。
+   只要任一可达，所有设备就能看到同一份最新数据——不再出现「每人看到的都不一样」。 */
+const CLOUD_STATIC=[
+  "https://cdn.jsdelivr.net/gh/haideweili1/laws-list@main/user-edits.json",
+  "https://haideweili1.github.io/laws-list/user-edits.json"
+];
+async function _fetchCloudOne(url,isApi){
+  const u=url+(url.indexOf("?")>=0?"&":"?")+"t="+Date.now();
+  const r=await fetch(u,{cache:"no-store"});
+  if(!r.ok) return null;
+  let c=await r.json();
+  // SCF 的 GET 返回 GitHub API 格式(content 为 base64 编码的原 JSON)，需解码
+  if(isApi && c && c.content){ const bin=atob(c.content.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); c=JSON.parse(new TextDecoder('utf-8').decode(bytes)); }
+  // 只认带 ts 的现版结构；旧版(带 version 无 ts)或空文件直接跳过，避免污染
+  if(!c || typeof c!=="object" || !c.ts) return null;
+  return c;
+}
 async function loadCloud(){
-  // 读取走腾讯云 SCF 函数接口（实时读 GitHub，无 CDN 缓存，国内100%可达）；写才走 SCF 代理(POST)
   try{
-    const r=await fetch(SYNC_PROXY+"/user-edits.json?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok){ updateSyncUI(); return; }
-    let c=await r.json();
-    // SCF 的 GET 返回 GitHub API 格式(content 为 base64 编码的原 JSON)，需解码
-    if(c && c.content){ const bin=atob(c.content.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); c=JSON.parse(new TextDecoder('utf-8').decode(bytes)); }
+    const jobs=CLOUD_STATIC.map(u=>_fetchCloudOne(u,false));
+    if(SYNC_PROXY) jobs.push(_fetchCloudOne(SYNC_PROXY+"/user-edits.json",true));
+    const rs=await Promise.all(jobs.map(p=>p.catch(()=>null)));
+    let c=null;
+    for(const x of rs){ if(x && (!c || x.ts>c.ts)) c=x; }
+    if(!c){ updateSyncUI(); return; }
     const ts=c.ts||0;
-    // 兼容：旧版云端文件(带 version/changeLog，无 ts)结构与现版不同，直接合并会污染数据，故跳过
-    if(!c.ts && c.version){ updateSyncUI(); return; }
     // 覆盖：取较新
     for(const k in (c.overrides||{})){ if(!edits.overrides[k]||ts> (edits._ts||0)) edits.overrides[k]=c.overrides[k]; }
     edits.deleted=[...new Set([...edits.deleted,...(c.deleted||[])])];
@@ -648,6 +664,8 @@ async function pushCloud(){
     // 非成功：把服务端返回的错误信息带出来，便于前端如实提示（不再假成功）
     let msg="同步失败(HTTP "+r.status+")";
     try{ const j=await r.json(); if(j&&j.message)msg=j.message; }catch(e){}
+    // 令牌失效是最常见的写入失败原因，翻成人话，避免误以为是网络故障
+    if(r.status===401||r.status===403) msg="云端写入失败：同步代理的授权已失效（需管理员更新令牌）。你的改动已存在本机，其他人暂时看不到";
     return msg;
   }catch(e){ return "网络错误："+e.message; }
 }
