@@ -2607,7 +2607,8 @@ def _tally_reasons(items, reason_getter):
     return dict(c)
 
 
-def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None, run_errors=None, intl_parent_checks=None):
+def write_retrieval_report(summary_changes, discarded, switched, today, metrics=None, run_errors=None,
+                           intl_parent_checks=None, all_domains_failed=False, attempted_domains=0):
     """测量仪表：每轮检索产出结构化质检报告，作为『训练 GLM 让高价值更新都进左栏』的瞄准镜。
     只产出报告文件，绝不改动 data.json。"""
     if metrics is None:
@@ -2643,6 +2644,9 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
         },
         # 检索出错（异常/超时）：写入报告，便于区分"真无变化"与"GLM 调失败"
         "retrieval_errors": run_errors or [],
+        # 全域失败标记：本轮所有调用过的域都失败时为真（此时清单与「数据更新时间」都不会被改动）
+        "all_domains_failed": bool(all_domains_failed),
+        "attempted_domains": attempted_domains,
         # 采标父本核查台账（规则十六）：GLM 对每个含国际标准编号条目的"查到/未查到"回报
         "intl_parent_checks": intl_parent_checks or [],
     }
@@ -2654,6 +2658,14 @@ def write_retrieval_report(summary_changes, discarded, switched, today, metrics=
     try:
         lines = []
         lines.append(f"# 自动检索质检报告（{today}）\n")
+        # 全域失败时把告警顶到最前面：否则"计数全是 0"看起来就像"查过了没有变化"，
+        # 而实际是整轮检索根本没跑成（模型名写错 / Key 失效 / 网络不通都会是这个样子）。
+        if all_domains_failed:
+            lines.append("\n## ⚠ 本轮检索全域失败，下方计数全部作废\n")
+            lines.append(f"**{attempted_domains} 个检索域全部调用失败**，本次没有任何一个域拿到有效结果。\n")
+            lines.append("- 清单内容与「数据更新时间」**均未改动**（不是「检索过了没变化」）。\n")
+            lines.append("- 常见原因：模型名写错（智谱官方编码如 `glm-4.7`，写成 `glm-4-7` 会报模型不存在）／API Key 失效或欠费／网络不通。\n")
+            lines.append("- 修完之后重跑一次，先看最下方「检索出错」一栏是否清零。\n")
         lines.append(f"> 模型：**{EFFECTIVE_MODEL}** ｜ 检索域：**{(os.environ.get('DOMAIN') or '').strip() or '全部 5 个域'}**"
                      f" ｜ 模式：**{'试跑（未写入清单）' if DRAFT_MODE else '自动写入'}**\n")
         lines.append("> 测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降下面 discard 的分类，可应用才会变多。\n")
@@ -2820,6 +2832,7 @@ def main():
     intl_groups = {}  # {(table, cid): [参与父本核查的条目]}，供循环后由代码做确定性新旧版本判定
     for k in _METRICS:  # 每轮检索重置质量测量计数器
         _METRICS[k] = 0
+    _attempted_domains = 0  # 真正调用过模型的域数（"无检索目标而跳过"的域不计入）
     discarded = []  # 确属垃圾（无依据/死链/非官方/理由缺失/硬伤矛盾）：直接丢弃，收集以便报告计数
     for table, cid in targets:
         if table == "laws":
@@ -2845,6 +2858,7 @@ def main():
         label = CATEGORY_NAMES.get(cid, cid)
         print(f"检索：{label} ...")
         result = search_target(client, model, label, text, existing_block)
+        _attempted_domains += 1  # 本域确实调用了模型
         changes = result.get("changes", []) or []
         _rs = (result.get("summary") or "").strip()
         if _rs.startswith("检索出错"):
@@ -2916,8 +2930,16 @@ def main():
             print(f"    [{_res['kind']}] {_res['name']}（采标新版：{_res['display'].get('reason')}）")
 
     # —— 测量仪表：每轮产出质检报告（训练闭环瞄准镜，不碰 data.json）——
+    # 全域失败判定：调用过的域全都以"检索出错"告终（模型输出被截断而抢救成功的部分不算失败，
+    # 因为它确实拿到了内容）。判据通用，不含任何具体域名或错误码。
+    _hard_errors = [e for e in run_errors if str(e.get("error", "")).startswith("检索出错")]
+    ALL_DOMAINS_FAILED = _attempted_domains > 0 and len(_hard_errors) >= _attempted_domains
+    if ALL_DOMAINS_FAILED:
+        print(f"\n⚠ 本轮 {len(_hard_errors)}/{_attempted_domains} 个域检索全部失败："
+              f"清单与「数据更新时间」保持原样，不伪装成『检索过了没有变化』")
     write_retrieval_report(summary_changes, discarded, switched, today, metrics=_METRICS, run_errors=run_errors,
-                           intl_parent_checks=intl_checks + intl_code_ledger)
+                           intl_parent_checks=intl_checks + intl_code_ledger,
+                           all_domains_failed=ALL_DOMAINS_FAILED, attempted_domains=_attempted_domains)
     print(f"  已写出 retrieval-report.json / .md（可直接应用 {len(summary_changes)} / 自动丢弃 {len(discarded)}）")
 
     # —— 组装提案 / 摘要 ——
@@ -3024,7 +3046,12 @@ def main():
 
     # —— 非草稿模式：直写 data.json（未来放开用）——
     data = proposed
-    data["lastUpdated"] = today
+    # 「数据更新时间」= 网页顶部那个日期。全域失败时绝不刷新它：
+    # 否则一轮空跑会被读成"检索过了、这一次没有变化"，问题被彻底藏起来。
+    if ALL_DOMAINS_FAILED:
+        print(f"  保持 lastUpdated = {data.get('lastUpdated')}（本轮检索全域失败，不刷新）")
+    else:
+        data["lastUpdated"] = today
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -3040,25 +3067,37 @@ def main():
                     + [{"type": "status_switch", "name": s["name"], "category": s["table"],
                         "detail": f"状态：{s['from']} → {s['to']}"} for s in switched],
     }
-    try:
-        with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
-            json.dump(summary, f, ensure_ascii=False, indent=2)
-        print(f"  已写出 update-summary.json（hasUpdates={summary['hasUpdates']}）")
-    except Exception as e:
-        print(f"  写出 update-summary.json 失败：{e}")
+    if ALL_DOMAINS_FAILED:
+        # 不覆盖变更记录：否则网页「最近变更」会被一条空的"最新自动检索"顶掉，看不出检索其实失败了
+        print("  检索全域失败：不覆盖 update-summary.json（网页保留上一次的有效记录）")
+    else:
+        try:
+            with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
+                json.dump(summary, f, ensure_ascii=False, indent=2)
+            print(f"  已写出 update-summary.json（hasUpdates={summary['hasUpdates']}）")
+        except Exception as e:
+            print(f"  写出 update-summary.json 失败：{e}")
 
     prev_data = get_prev_data_from_git()
     reconcile_user_overrides(prev_data, data)
 
     total = len(summary_changes) + len(switched)
-    print(f"\n本次共处理 {total} 条，lastUpdated -> {today}")
+    if ALL_DOMAINS_FAILED:
+        print(f"\n本次检索全域失败（{len(_hard_errors)}/{_attempted_domains} 个域），清单未做实质更新，"
+              f"lastUpdated 保持 {data.get('lastUpdated')}")
+    else:
+        print(f"\n本次共处理 {total} 条，lastUpdated -> {today}")
     try:
         with open(RETRIEVAL_STATUS_PATH, "w", encoding="utf-8") as f:
-            json.dump({"status": "success", "updatedAt": now_iso(), "lastUpdated": today}, f, ensure_ascii=False, indent=2)
+            json.dump({"status": ("failure" if ALL_DOMAINS_FAILED else "success"),
+                       "updatedAt": now_iso(), "lastUpdated": data.get("lastUpdated")},
+                      f, ensure_ascii=False, indent=2)
     except Exception as e:
-        print("  写入 success 状态失败（可忽略）:", e)
+        print("  写入状态失败（可忽略）:", e)
     git_commit_push([DATA_PATH, SUMMARY_PATH, RETRIEVAL_STATUS_PATH,
-                     REPORT_PATH, REPORT_MD_PATH], f"chore: 检索success {today}")
+                     REPORT_PATH, REPORT_MD_PATH],
+                    (f"chore: 检索失败 {today}（{len(_hard_errors)}/{_attempted_domains} 个域调用失败，清单未更新）"
+                     if ALL_DOMAINS_FAILED else f"chore: 检索success {today}"))
 
 
 def _run_model_comparison(models):
