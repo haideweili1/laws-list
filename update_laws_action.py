@@ -31,6 +31,7 @@ import traceback
 import urllib.request
 import urllib.parse
 import ssl
+import time
 from datetime import date, datetime
 from collections import Counter
 
@@ -38,6 +39,14 @@ try:
     from zhipuai import ZhipuAI
 except ImportError:
     ZhipuAI = None  # 本地离线自检时可缺；生产环境(GitHub Actions)必装，main() 会校验
+
+# GitHub Actions 里 stdout 是管道，Python 默认块缓冲（攒满 8KB 才落盘）。
+# 一旦外层把任务判超时杀掉，缓冲区连同日志一起丢失，屏幕上只剩「启动成功」，
+# 看不出卡在第几个域。这里开启行缓冲，日志随打随见。
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+except Exception:
+    pass
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(ROOT, "data.json")
@@ -85,6 +94,16 @@ _apply_runtime_overrides()
 # 生效模型（环境变量 > runtime-config.json > 内置默认）。写进报告，便于对照不同档位的产出。
 DEFAULT_MODEL = "glm-4.7"
 EFFECTIVE_MODEL = (os.environ.get("MODEL") or "").strip() or DEFAULT_MODEL
+
+# 单次模型调用的「读取」超时上限（秒）。
+# 智谱 SDK 自带默认值是 httpx.Timeout(timeout=300.0, connect=8.0)，且内部自动重试 3 次
+# （已用实际安装的 zhipuai 2.1.5.20250825 包核实）。glm-4.7 属深度思考模型、又开着联网检索，
+# 单个域一次完整调用常常超过 300 秒：到达上限后被切断 → SDK 内部再重试 3 次 →
+# 一个域就能拖掉十几分钟，五个域累加必然撞上工作流的整体时限。
+# 因此这里显式放宽到 15 分钟（够一次完整深搜），并关掉 SDK 内部重试：
+# 超时就是超时，按本域调用失败处理，脚本自带的「重试一次」已经兜底。
+MODEL_READ_TIMEOUT_SEC = int(os.environ.get("MODEL_READ_TIMEOUT") or 900)
+MODEL_MAX_RETRIES = 0   # 关掉 SDK 内部重试，避免超时被悄悄放大成 4 倍
 
 
 def _load_test_models():
@@ -2783,7 +2802,15 @@ def main():
         sys.exit(1)
 
     model = EFFECTIVE_MODEL
-    client = ZhipuAI(api_key=api_key)
+    # 显式设定超时/重试（理由见 MODEL_READ_TIMEOUT_SEC 处注释）：不放任 SDK 默认值的内部重试把超时悄悄放大数倍。
+    try:
+        import httpx as _httpx
+        client = ZhipuAI(api_key=api_key,
+                         timeout=_httpx.Timeout(timeout=MODEL_READ_TIMEOUT_SEC, connect=10.0),
+                         max_retries=MODEL_MAX_RETRIES)
+    except Exception as _e:
+        print(f"  自定义超时参数未生效（{_e}），退回 SDK 默认超时 {300} 秒")
+        client = ZhipuAI(api_key=api_key)
     write_running_status()
 
     try:
@@ -2857,7 +2884,10 @@ def main():
         existing_block = build_existing_block(items, table)
         label = CATEGORY_NAMES.get(cid, cid)
         print(f"检索：{label} ...")
+        _t_domain = time.time()
         result = search_target(client, model, label, text, existing_block)
+        _secs = int(time.time() - _t_domain)
+        print(f"    {label} 调用结束，用时 {_secs} 秒（{len(result.get('changes') or [])} 条原始变更）")
         _attempted_domains += 1  # 本域确实调用了模型
         changes = result.get("changes", []) or []
         _rs = (result.get("summary") or "").strip()
