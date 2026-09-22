@@ -105,6 +105,10 @@ EFFECTIVE_MODEL = (os.environ.get("MODEL") or "").strip() or DEFAULT_MODEL
 MODEL_READ_TIMEOUT_SEC = int(os.environ.get("MODEL_READ_TIMEOUT") or 900)
 MODEL_MAX_RETRIES = 0   # 关掉 SDK 内部重试，避免超时被悄悄放大成 4 倍
 
+# 「最近变更」叠加保留条数上限（网页把 update-summary.json 当一条「自动」记录展示）。
+# 语义：每轮检索的变更叠加在上面、最新的排最前。设上限只为防止文件无限膨胀。
+SUMMARY_MAX_CHANGES = int(os.environ.get("SUMMARY_MAX_CHANGES") or 120)
+
 
 def _load_test_models():
     """读取 runtime-config.json 里的 test_models（模型档位对比测试用）；没有则返回 []。"""
@@ -3085,6 +3089,38 @@ def main():
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+    # ── 变更记录叠加（新变更排最前） ───────────────────────────────
+    # 网页「最近变更」把本文件当作一条「自动」记录展示，约定语义是：
+    # 每轮检索的变更叠加在上面、最新的排最前。此前脚本是整份重写，
+    # 上一轮（以及人工核定写入的）变更会被整份顶掉 —— 这里恢复叠加。
+    # counts 仍只统计本轮检索；条数上限防止文件无限膨胀。
+    def _prev_changes():
+        try:
+            with open(SUMMARY_PATH, "r", encoding="utf-8") as f:
+                old = json.load(f) or {}
+            return [c for c in (old.get("changes") or []) if isinstance(c, dict)]
+        except Exception:
+            return []   # 首次运行 / 文件损坏：从空开始，不打断主流程
+
+    def _merge_changes(this_run, prev_run, limit):
+        """本轮在前、旧记录在后；按 类型+名称+说明 去重（同一变更不重复占位）。"""
+        seen, out = set(), []
+        for c in list(this_run) + list(prev_run):
+            if not isinstance(c, dict):
+                continue
+            k = (str(c.get("type", "")), str(c.get("name", "")), str(c.get("detail", "")))
+            if k in seen:
+                continue
+            seen.add(k)
+            out.append(c)
+            if len(out) >= limit:
+                break
+        return out
+
+    _cur_changes = [{"type": c["kind"], "name": c["name"], "category": c["category"],
+                     "detail": c["display"].get("reason", "")} for c in summary_changes]
+    _cur_changes += [{"type": "status_switch", "name": s["name"], "category": s["table"],
+                      "detail": f"状态：{s['from']} → {s['to']}"} for s in switched]
     summary = {
         "updatedAt": today,
         "hasUpdates": (len(summary_changes) + len(switched)) > 0,
@@ -3092,10 +3128,7 @@ def main():
                    "abolished": sum(1 for c in summary_changes if c["kind"] == "abolish"),
                    "updated": sum(1 for c in summary_changes if c["kind"] == "update"),
                    "statusSwitched": len(switched)},
-        "changes": [{"type": c["kind"], "name": c["name"], "category": c["category"],
-                     "detail": c["display"].get("reason", "")} for c in summary_changes]
-                    + [{"type": "status_switch", "name": s["name"], "category": s["table"],
-                        "detail": f"状态：{s['from']} → {s['to']}"} for s in switched],
+        "changes": _merge_changes(_cur_changes, _prev_changes(), SUMMARY_MAX_CHANGES),
     }
     if ALL_DOMAINS_FAILED:
         # 不覆盖变更记录：否则网页「最近变更」会被一条空的"最新自动检索"顶掉，看不出检索其实失败了
@@ -3104,7 +3137,8 @@ def main():
         try:
             with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
                 json.dump(summary, f, ensure_ascii=False, indent=2)
-            print(f"  已写出 update-summary.json（hasUpdates={summary['hasUpdates']}）")
+            print(f"  已写出 update-summary.json（本轮 {len(_cur_changes)} 条，"
+                  f"叠加后共 {len(summary['changes'])} 条，上限 {SUMMARY_MAX_CHANGES}）")
         except Exception as e:
             print(f"  写出 update-summary.json 失败：{e}")
 
