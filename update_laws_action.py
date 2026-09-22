@@ -2228,25 +2228,6 @@ def apply_change(table, all_items, change, domain_id, today):
         # 确属垃圾（无依据/死链/非官方/理由缺失）：直接丢弃，不污染任何面板
         return {"kind": "discard", "name": name, "action": action, "table": table,
                 "reason": "；".join(reasons), "proposed": _proposed_summary(change)}
-    if action == "add":
-        # 软未过（多为链接问题，但内容可能真实）→ 仍作为可勾选的「新增」提案交人工核准。
-        # make_new_record 内部只用 url_trusted 通过的链接；未通过则 link 自动留空待补，
-        # 因此核准写入时绝不会把 GLM 编的假链接写进清单（等级保护基本要求这类即此情形）。
-        if _name_match(name, all_items):
-            return {"kind": "skip", "name": name, "reason": "已存在（近义去重）"}
-        new_id = next_id(table, all_items)
-        rec = make_new_record(table, name, change, domain_id, today, new_id, is_food=is_food)
-        disp = {
-            "diffs": [{"field": f, "from": "", "to": str(rec.get(f, ""))}
-                      for f in (("name", "docNumber", "dept", "effectiveDate", "status", "link", "remark")
-                                if table == "laws" else ("name", "stdNo", "publisher", "effectiveDate", "status", "link", "remark"))
-                      if rec.get(f)],
-            "link": rec.get("link", ""), "source": rec.get("dept" if table == "laws" else "publisher", ""),
-            "sourceUrl": (change.get("source_url") or "").strip(),
-            "reason": (change.get("note") or "新增") + "（链接已清空待补，请核准后再补官方链接）",
-        }
-        return {"kind": "add", "name": name, "category": label, "table": table,
-                "targetId": str(new_id), "newRecord": rec, "setFields": None, "display": disp}
     if not ok:
         return {"kind": "discard", "name": name, "category": label, "table": table,
                 "action": action, "reasons": reasons,
