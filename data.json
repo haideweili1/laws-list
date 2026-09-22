@@ -6365,60 +6365,6 @@
       "remark": "替代 GB/T 6441-1986（全部代替）；归口应急管理部",
       "abolishDate": "",
       "stdNo": "GB 6441-2025"
-    },
-    {
-      "name": "GB/T 43697-2024 数据安全技术 数据分类分级规则",
-      "docNumber": "",
-      "dept": "国家市场监督管理总局、国家标准化管理委员会",
-      "effectiveDate": "",
-      "status": "现行有效",
-      "domains": [
-        "信息安全"
-      ],
-      "category": "信息安全",
-      "link": "",
-      "region": "全国",
-      "id": "L0407",
-      "remark": "",
-      "abolishDate": "",
-      "adopted": false,
-      "copyrightNote": ""
-    },
-    {
-      "name": "GB/T 42461-2023 信息安全技术 网络安全漏洞管理规范",
-      "docNumber": "",
-      "dept": "国家市场监督管理总局、国家标准化管理委员会",
-      "effectiveDate": "",
-      "status": "现行有效",
-      "domains": [
-        "信息安全"
-      ],
-      "category": "信息安全",
-      "link": "",
-      "region": "全国",
-      "id": "L0408",
-      "remark": "",
-      "abolishDate": "",
-      "adopted": false,
-      "copyrightNote": ""
-    },
-    {
-      "name": "GB/T 43269-2023 信息安全技术 网络安全应急能力评估准则",
-      "docNumber": "",
-      "dept": "国家市场监督管理总局、国家标准化管理委员会",
-      "effectiveDate": "",
-      "status": "现行有效",
-      "domains": [
-        "信息安全"
-      ],
-      "category": "信息安全",
-      "link": "",
-      "region": "全国",
-      "id": "L0409",
-      "remark": "",
-      "abolishDate": "",
-      "adopted": false,
-      "copyrightNote": ""
     }
   ],
   "standards": [
