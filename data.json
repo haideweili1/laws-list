@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-22",
+  "lastUpdated": "2026-09-23",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -2420,7 +2420,8 @@
       "region": "",
       "id": "L0154",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "replacedBy": "产业结构调整指导目录（2024年本）"
     },
     {
       "name": "国家危险废物名录",
@@ -2932,7 +2933,8 @@
       "region": "",
       "id": "L0186",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "replacedBy": "排污许可管理办法"
     },
     {
       "name": "国家税务总局广东省地方税务局环境保护税核定征收管理办法",
@@ -7940,7 +7942,7 @@
       "link": "https://cdn.standards.iteh.ai/samples/67812/f129a7c2339648bb82e13fe61641c601/SIST-EN-IEC-61000-3-2-2019-A1-2021.pdf",
       "region": "",
       "id": "S0122",
-      "remark": "受版权保护，仅提供官方商店/出版信息页（非全文），无法免费获取全文。",
+      "remark": "采标新版：本条目采用的国际标准 IEC 61000-3-2:2019 已于 2024-08 发布新版 IEC 61000-3-2:2024；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://webstore.iec.ch/en/publication/67897（官网状态：Published）",
       "abolishDate": ""
     },
     {
