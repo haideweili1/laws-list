@@ -1,90 +1,83 @@
-# 自动检索质检报告（2026-09-23）
+# 自动检索质检报告（2026-09-28）
 
 > 模型：**glm-4.7** ｜ 检索域：**全部 5 个域** ｜ 模式：**自动写入**
 
 > 测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降下面 discard 的分类，可应用才会变多。
 
 ## 计数
-- 可直接应用（左栏）：**3**
-- 自动丢弃（右栏）：**8**
+- 可直接应用（左栏）：**5**
+- 自动丢弃（右栏）：**7**
 - 状态切换：**0**
 
 ## 自动丢弃「为什么被丢」分类（训练瞄准镜）
-- 其它：6
-- 无来源且系统也解析不到（须落地 name_query/cfsa）：2
+- 无来源且系统也解析不到（须落地 name_query/cfsa）：6
+- 其它：1
 
 ## 质量测量（Step⑤：推送后直接看这 4 个数是否下降）
-- 伪废止·无依据直接丢弃（本应归零）：**2**
+- 伪废止·无依据直接丢弃（本应归零）：**0**
 - 发布日期误填实施日期（本应归零）：**0**
-- 重复重报早已做过的变更（本应归零）：**13**
+- 重复重报早已做过的变更（本应归零）：**24**
 - 跨文件废止命中（越多越好）：**0**
 
 ## 系统自动补正链接的条目（分诊自救，GLM 不必再编 URL）
-- 《产业结构调整指导目录（2019年本）》[reuse_existing]：GLM 原本给的是 https://www.ndrc.gov.cn/xxgk/zcfb/jsh/202410/t20241012_1394396.html → 系统解析到 https://zfxxgk.ndrc.gov.cn/upload/images/20220/202201016404836.docx｜内容待人工确认
-- 《排污许可管理办法（试行）》[reuse_existing]：GLM 原本给的是 https://www.mee.gov.cn/zcwj/gz/qt/202405/t20240523_1043367.html → 系统解析到 https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/gzk/gz/202112/P020211211608232129807.pdf｜内容待人工确认
+- 《IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求》[reuse_existing]：GLM 原本给的是 https://webstore.iec.ch/en/publication/81927 → 系统解析到 https://webstore.iec.ch/publication/1566｜内容待人工确认
+- 《IEC 60730-1 家用和类似用途的电自动控制器》[reuse_existing]：GLM 原本给的是 https://webstore.iec.ch/en/publication/81627 → 系统解析到 https://webstore.iec.ch/en/publication/66089｜内容待人工确认
+- 《IEC 61058-1 电器开关.第1部分：一般要求标准》[reuse_existing]：GLM 原本给的是 https://webstore.iec.ch/en/publication/80427 → 系统解析到 https://webstore.iec.ch/en/publication/25468｜内容待人工确认
 
 ## 丢弃条目明细
-- 《广东省实施〈中华人民共和国环境噪声污染防治法〉办法》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）
-- 《GB13690-2009 化学品分类和危险性公示 通则》：声称「由 GB 30000.1-2024 化学品分类和标签规范 第1部分：通则 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃
-- 《污水综合排放标准GB8978-1996（1999修订）》：声称「由 GB 8978-2024 污水综合排放标准 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃
-- 《大气污染物综合排放标准GB16297-1996》：声称「由 GB 16297-2024 大气污染物综合排放标准 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃
-- 《广东省固体废物污染环境防治条例（2022年修正）》：官方页未能核实字段「replacedBy」（广东省固体废物污染环境防治条例（2024年修正）），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）
-- 《广东省大气污染防治条例（2022年修正）》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）
-- 《广东省环境保护条例（2022年修正）》：官方页未能核实字段「replacedBy」（广东省环境保护条例（2024年修正）），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）
-- 《《饮食业油烟排放标准》GB18483-2001》：声称「由 GB 18483-2024 饮食业油烟排放标准 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃
+- 《GB 13690-2009 化学品分类和危险性公示 通则》：声称「由 GB 30000.1-2024 化学品分类和标签规范 第1部分：通则 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃
+- 《互联网信息服务算法推荐管理规定》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增
+- 《互联网信息服务深度合成管理规定》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增
+- 《网络安全审查办法》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增
+- 《数据出境安全评估办法》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增
+- 《个人信息保护合规审计管理办法》：没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增
+- 《EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission》：依据来源确认失效（HTTP 404），多半是编造的链接：https://webstore.iec.ch/en/publication/82012；系统按官方渠道自动解析也未取到真实链接（无对应解析源，留空待补）
 
 ## 采标父本核查台账（规则十六：模型只抄录官网字段，新旧版本由系统代码判定）
 - 读法：`来源`列区分「代码直查官网」（最权威）/「模型原样抄录官网字段（代码判定）」/「GLM 回报（原始抄录）」；带「已生成采标新版变更」的行应能在上方左栏找到对应条目，找不到即被质检丢弃或去重跳过。本段整段缺失 = 规则十六未被执行。
-- 【环境与职业健康】《环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015》｜国际号=ISO14001:2015｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 14001:2015仍为Published状态，未发布新版｜依据=https://www.iso.org/standard/60857.html
-- 【环境与职业健康】《ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南》｜国际号=ISO14064-3:2019｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 14064-3:2019仍为Published状态，未发布新版｜依据=https://www.iso.org/standard/38704.html
-- 【环境与职业健康】《ISO14064-1-2018 温室气体 第一部分 组织层上对温室气体排放和清除的量化和报告的规范及指南》｜国际号=ISO14064-1:2018｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 14064-1:2018仍为Published状态，未发布新版｜依据=https://www.iso.org/standard/38381.html
-- 【环境与职业健康】《职业健康安全管理体系 要求GB/T 45001-2020》｜国际号=ISO45001:2018｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 45001:2018仍为Published状态，未发布新版｜依据=https://www.iso.org/standard/63787.html
-- 【环境与职业健康】《RoHS指令2011/65/EU》｜国际号=2011/65/EU｜来源=GLM 回报（原始抄录）｜欧盟指令非ISO/IEC/CEN标准，不适用iso.org/iec.ch/cen.eu官网核查规则｜依据=(空)
-- 【环境与职业健康】《REACH法规》｜国际号=(空)｜来源=GLM 回报（原始抄录）｜REACH法规无ISO/IEC国际标准编号，不触发父本核查｜依据=(空)
-- 【质量】《质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015》｜国际号=ISO 9000:2015｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 9000:2015仍为Published状态，未发布新版｜依据=https://www.iso.org/standard/45481.html
-- 【质量】《质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016》｜国际号=ISO/TS 9002:2016｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO/TS 9002:2016仍为Published状态，未发布新版｜依据=https://www.iso.org/standard/61965.html
-- 【质量】《质量管理体系 要求GB/T 19001—2016/ISO9001:2015》｜国际号=ISO 9001:2015｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 9001:2015仍为Published状态；ISO 9001:2026已在清单L0406中｜依据=https://www.iso.org/standard/62085.html
-- 【质量】《质量管理体系 要求 ISO 9001:2026》｜国际号=ISO 9001:2026｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO 9001:2026状态为Under development，尚未正式发布｜依据=https://www.iso.org/standard/85630.html
-- 【信息安全】《《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024》｜国际号=ISO/IEC 27002｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO/IEC 27002:2022 为最新Published版本｜依据=https://www.iso.org/standard/75653.html
-- 【信息安全】《《信息技术安全技术信息安全事件管理 第1部分：事件管理原理》GB/T 20985-2017》｜国际号=ISO/IEC 27035-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO/IEC 27035-1:2016 为最新Published版本｜依据=https://www.iso.org/standard/62029.html
-- 【产品标准】《EN 60335-1:2012 + A11:2014 + A13:2017 + A1:2019 + A14:2019 + A2:2019 + A15:2021+A16：2023 General requirements》｜国际号=EN 60335-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，A16:2023为最新修订｜依据=https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258964,25,71157
-- 【产品标准】《EN 60335-2-9:2003 +A13: 2010 +AC: 2012+A11:2023》｜国际号=EN 60335-2-9｜来源=GLM 回报（原始抄录）｜官网当前版本页即此｜依据=https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1260150,25,71157
-- 【产品标准】《EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers》｜国际号=EN 60335-2-24｜来源=GLM 回报（原始抄录）｜官网页打不开，基于已知信息记录｜依据=https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258964,25,71157
-- 【产品标准】《IEC 60335-2-25:2024  家用和类似用途电器的安全微波炉的特殊要求》｜国际号=IEC 60335-2-25｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，2024版已发布｜依据=https://webstore.iec.ch/en/publication/67890
-- 【产品标准】《IEC 60705:2024  家用微波炉性能测试方法》｜国际号=IEC 60705｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，2024版已发布｜依据=https://webstore.iec.ch/en/publication/67891
-- 【产品标准】《IEC 60335-2-7:2024    家用和类似用途电气的安全 洗衣机的特殊要求》｜国际号=IEC 60335-2-7｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，2024版已发布｜依据=https://webstore.iec.ch/en/publication/67892
-- 【产品标准】《IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求》｜国际号=IEC 60335-2-4｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，2023版已发布｜依据=https://webstore.iec.ch/en/publication/67893
-- 【产品标准】《IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求》｜国际号=IEC 60335-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，2020版仍为最新Published版｜依据=https://webstore.iec.ch/en/publication/67894
-- 【产品标准】《IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求》｜国际号=IEC 60335-2-24｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，2020版仍为最新Published版｜依据=https://webstore.iec.ch/en/publication/67895
-- 【产品标准】《EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission》｜国际号=IEC CISPR 14-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此｜依据=https://webstore.iec.ch/en/publication/67896
-- 【产品标准】《EN IEC 61000-3-2:2019+A1:2021》｜国际号=IEC 61000-3-2｜来源=GLM 回报（原始抄录）｜IEC 61000-3-2:2024新版已于2024-08发布｜依据=https://webstore.iec.ch/en/publication/67897
-- 【产品标准】《EN 61000-3-3:2013+A1:2019+A2:2021 电压波动和闪烁的限制》｜国际号=IEC 61000-3-3｜来源=GLM 回报（原始抄录）｜IEC 61000-3-3:2024新版已于2024-08发布｜依据=https://webstore.iec.ch/en/publication/67898
-- 【产品标准】《EN IEC 55014-2:2021  Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 2: Immunity - Product family standard》｜国际号=IEC CISPR 14-2｜来源=GLM 回报（原始抄录）｜官网当前版本页即此｜依据=https://webstore.iec.ch/en/publication/67899
-- 【产品标准】《IEC 60730-1 家用和类似用途的电自动控制器》｜国际号=IEC 60730-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此｜依据=https://webstore.iec.ch/en/publication/67900
-- 【产品标准】《IEC 61058-1 电器开关.第1部分：一般要求标准》｜国际号=IEC 61058-1｜来源=GLM 回报（原始抄录）｜IEC 61058-1:2023新版已于2023-07发布｜依据=https://webstore.iec.ch/en/publication/67901
-- 【产品标准】《IEC 61558-2-6  一般用途安全隔离变压器的特殊要求》｜国际号=IEC 61558-2-6｜来源=GLM 回报（原始抄录）｜IEC 61558-2-6:2023新版已于2023-09发布｜依据=https://webstore.iec.ch/en/publication/67902
-- 【产品标准】《IEC 61770   与总水管连接的电气器具 避免软管组件的反虹吸和失效标准》｜国际号=IEC 61770｜来源=GLM 回报（原始抄录）｜IEC 61770:2024新版已于2024-02发布｜依据=https://webstore.iec.ch/en/publication/67903
-- 【产品标准】《UL 60335-2-24:2022 Ed.3，CSA C22.2#60335-2-24:2022 Ed.3》｜国际号=UL 60335-2-24｜来源=GLM 回报（原始抄录）｜官网当前版本页即此｜依据=https://standardscatalog.ul.com/standards/en/60335_2_24
-- 【产品标准】《UL 60335-1:2020 Ed.6/ CSA C22.2 No.60335-1:2020 Ed.6，》｜国际号=UL 60335-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此｜依据=https://standardscatalog.ul.com/standards/en/60335_1
+- 【环境与职业健康】《环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015》｜国际号=ISO 14001:2015｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2015版，未发布新版｜依据=https://www.iso.org/standard/60857.html
+- 【环境与职业健康】《ISO14064-1-2018 温室气体 第一部分 组织层上对温室气体排放和清除的量化和报告的规范及指南》｜国际号=ISO 14064-1:2018｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2018版，未发布新版｜依据=https://www.iso.org/standard/66479.html
+- 【环境与职业健康】《ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南》｜国际号=ISO 14064-3:2019｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2019版，未发布新版｜依据=https://www.iso.org/standard/66481.html
+- 【质量】《质量管理体系  基本原理和术语GB/T 19000-2016/ISO/9000:2015》｜国际号=ISO 9000:2015｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2015版，未发布新版｜依据=https://www.iso.org/standard/45481.html
+- 【质量】《质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016》｜国际号=ISO/TS 9002:2016｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2016版，未发布新版｜依据=https://www.iso.org/standard/66355.html
+- 【质量】《质量管理体系 要求GB/T 19001—2016/ISO9001:2015》｜国际号=ISO 9001:2015｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2015版；ISO 9001:2026已在清单L0406中｜依据=https://www.iso.org/standard/62042.html
+- 【质量】《质量管理体系 要求 ISO 9001:2026》｜国际号=ISO 9001:2026｜来源=GLM 回报（原始抄录）｜官网状态为Under development，尚未正式发布｜依据=https://www.iso.org/standard/91994.html
+- 【质量】《管理体系审核指南 GB/T 19011-2021》｜国际号=ISO 19011:2018｜来源=GLM 回报（原始抄录）｜官网当前版本仍为2018版，未发布新版｜依据=https://www.iso.org/standard/70260.html
+- 【信息安全】《《IDT信息技术安全技术信息安全控制实践指南》GB/T 22081-2024》｜国际号=ISO/IEC 27002｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO/IEC 27002:2022 Published 2022-02，GB/T 22081-2024 已等同采用此版｜依据=https://www.iso.org/standard/75653.html
+- 【信息安全】《《信息技术安全技术信息安全事件管理 第1部分：事件管理原理》GB/T 20985-2017》｜国际号=ISO/IEC 27035-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，ISO/IEC 27035-1:2016 Published 2016-11，GB/T 20985-2017 已等同采用此版｜依据=https://www.iso.org/standard/61429.html
+- 【产品标准】《EN 60335-1:2012 + A11:2014 + A13:2017 + A1:2019 + A14:2019 + A2:2019 + A15:2021+A16：2023 General requirements》｜国际号=EN 60335-1｜来源=GLM 回报（原始抄录）｜CENELEC官网可查EN 60335-1系列最新修订为A16:2023，清单已含｜依据=https://www.cenelec.eu/dyn/www/f?p=104:110:11318018209010::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258961,25,EN%2060335-1:2012
+- 【产品标准】《EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019》｜国际号=EN 60335-2-7｜来源=GLM 回报（原始抄录）｜官网页打不开，基于IEC 60335-2-7:2024已发布，EN侧预计将跟进｜依据=(空)
+- 【产品标准】《EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers》｜国际号=EN 60335-2-24｜来源=GLM 回报（原始抄录）｜官网页打不开，清单已含至A11:2022｜依据=(空)
+- 【产品标准】《IEC 60335-2-25:2024  家用和类似用途电器的安全微波炉的特殊要求》｜国际号=IEC 60335-2-25｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，IEC 60335-2-25:2024已发布，清单已含｜依据=https://webstore.iec.ch/en/publication/81458
+- 【产品标准】《IEC 60705:2024  家用微波炉性能测试方法》｜国际号=IEC 60705｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，IEC 60705:2024已发布，清单已含｜依据=https://webstore.iec.ch/en/publication/81889
+- 【产品标准】《IEC 60335-2-7:2024    家用和类似用途电气的安全 洗衣机的特殊要求》｜国际号=IEC 60335-2-7｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，IEC 60335-2-7:2024已发布，清单已含｜依据=https://webstore.iec.ch/en/publication/80612
+- 【产品标准】《IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求》｜国际号=IEC 60335-2-4｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，IEC 60335-2-4:2023已发布，清单已含｜依据=https://webstore.iec.ch/en/publication/80227
+- 【产品标准】《IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求》｜国际号=IEC 60335-1｜来源=GLM 回报（原始抄录）｜官网当前版本页即此，IEC 60335-1:2020+AMD1:2020+AMD2:2022仍为最新Published版本｜依据=https://webstore.iec.ch/en/publication/61818
+- 【产品标准】《EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission》｜国际号=IEC CISPR 14-1｜来源=GLM 回报（原始抄录）｜IEC CISPR 14-1:2024已于2024-09发布新版，EN侧尚未同步，清单EN版本为2021｜依据=https://webstore.iec.ch/en/publication/82012
+- 【产品标准】《EN IEC 55014-2:2021  Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 2: Immunity - Product family standard》｜国际号=IEC CISPR 14-2｜来源=GLM 回报（原始抄录）｜官网当前版本IEC CISPR 14-2:2015+AMD1:2019，无更新版本｜依据=https://webstore.iec.ch/en/publication/65390
+- 【产品标准】《EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)》｜国际号=IEC 61000-3-2｜来源=GLM 回报（原始抄录）｜IEC 61000-3-2:2018+AMD2:2024已于2024-11发布，EN侧尚未同步｜依据=https://webstore.iec.ch/en/publication/82330
+- 【产品标准】《EN 61000-3-3:2013+A1:2019+A2:2021 Electromagnetic compatibility (EMC) - Part 3-3: Limits》｜国际号=IEC 61000-3-3｜来源=GLM 回报（原始抄录）｜官网当前版本即此，无更新版本｜依据=https://webstore.iec.ch/en/publication/68549
+- 【产品标准】《IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求》｜国际号=IEC 60335-2-24｜来源=GLM 回报（原始抄录）｜IEC 60335-2-24:2024已于2024-11发布新版，清单条目为2020版｜依据=https://webstore.iec.ch/en/publication/81927
+- 【产品标准】《IEC 60730-1 家用和类似用途的电自动控制器》｜国际号=IEC 60730-1｜来源=GLM 回报（原始抄录）｜IEC 60730-1:2023+AMD1:2024已于2024-06发布，清单条目为2022版｜依据=https://webstore.iec.ch/en/publication/81627
+- 【产品标准】《IEC 61058-1 电器开关.第1部分：一般要求标准》｜国际号=IEC 61058-1｜来源=GLM 回报（原始抄录）｜IEC 61058-1:2023已于2023-07发布，清单条目为2016版｜依据=https://webstore.iec.ch/en/publication/80427
+- 【产品标准】《UL 60335-2-24:2022 Ed.3，CSA C22.2#60335-2-24:2022 Ed.3》｜国际号=UL 60335-2-24｜来源=GLM 回报（原始抄录）｜官网页打不开，UL标准需在ulstandards.ul.com查询｜依据=(空)
 - 【环境与职业健康】《环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015》｜国际号=ISO 14001｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 ISO 14001:2015，未高于条目采用的 2015 版（不生成变更）｜依据=https://www.iso.org/standard/14001
 - 【环境与职业健康】《ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南》｜国际号=ISO 14064-3-2019｜来源=无可核实证据｜未取得官网版本证据（不据此下任何结论）｜依据=(空)
 - 【环境与职业健康】《ISO14064-1-2018 温室气体 第一部分 组织层上对温室气体排放和清除的量化和报告的规范及指南》｜国际号=ISO 14064-1-2018｜来源=无可核实证据｜未取得官网版本证据（不据此下任何结论）｜依据=(空)
 - 【质量】《质量管理体系  业绩改进指南GB/T 19002-2018/ ISO/TS 9002:2016》｜国际号=ISO 9002｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 ISO/TS 9002:2016，未高于条目采用的 2016 版（不生成变更）｜依据=https://www.iso.org/standard/9002
 - 【质量】《质量管理体系 要求GB/T 19001—2016/ISO9001:2015》｜国际号=ISO 9001｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 ISO 9001:2026，未高于条目采用的 2015 版（不生成变更）｜依据=https://www.iso.org/standard/9001
 - 【质量】《质量管理体系 要求 ISO 9001:2026》｜国际号=ISO 9001｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 ISO 9001:2026，未高于条目采用的 2026 版（不生成变更）｜依据=https://www.iso.org/standard/9001
-- 【】《EN 60335-2-9:2003 +A13: 2010 +AC: 2012+A11:2023》｜国际号=EN 60335-2-9｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 EN 60335-2-9:2003/A11:2023，未高于条目采用的 2003 版（不生成变更）｜依据=https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1260150,25,71157
-- 【】《EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers》｜国际号=EN 60335-2-24｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 EN 60335-2-24:2010/A11:2022，未高于条目采用的 2010 版（不生成变更）｜依据=https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258964,25,71157
-- 【】《IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求》｜国际号=IEC 60335-1｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-1:2020；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67894
-- 【】《IEC 60335-2-25:2024  家用和类似用途电器的安全微波炉的特殊要求》｜国际号=IEC 60335-2-25｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-25:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/67890
-- 【】《IEC 60705:2024  家用微波炉性能测试方法》｜国际号=IEC 60705｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60705:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/67891
-- 【】《IEC 60730-1 家用和类似用途的电自动控制器》｜国际号=IEC 60730-1｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60730-1:2022；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67900
-- 【】《IEC 61058-1 电器开关.第1部分：一般要求标准》｜国际号=IEC 61058-1｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 61058-1:2023；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67901
-- 【】《IEC 61558-2-6  一般用途安全隔离变压器的特殊要求》｜国际号=IEC 61558-2-6｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 61558-2-6:2023；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67902
-- 【】《IEC 61770   与总水管连接的电气器具 避免软管组件的反虹吸和失效标准》｜国际号=IEC 61770｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 61770:2024；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67903
-- 【】《IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求》｜国际号=IEC 60335-2-4｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-4:2023；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67893
-- 【】《IEC 60335-2-7:2024    家用和类似用途电气的安全 洗衣机的特殊要求》｜国际号=IEC 60335-2-7｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-7:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/67892
-- 【】《EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)》｜国际号=IEC 61000-3-2｜来源=模型原样抄录官网字段（代码判定）｜查到新版 IEC 61000-3-2:2024（发布 2024-08）→ 已生成「采标新版」变更｜依据=https://webstore.iec.ch/en/publication/67897
-- 【】《IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求》｜国际号=IEC 60335-2-24｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-24:2020；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/67895
+- 【】《EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019》｜国际号=EN 60335-2-7｜来源=模型原样抄录官网字段（代码判定）｜查到新版 EN 60335-2-7:2019（发布 2019-10）→ 已生成「采标新版」变更｜依据=(空)
+- 【】《EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers》｜国际号=EN 60335-2-24｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 EN 60335-2-24:2010/A11:2022，未高于条目采用的 2010 版（不生成变更）｜依据=(空)
+- 【】《IEC 60335-1  家用和类似用途电器的安全第一部分：通用要求》｜国际号=IEC 60335-1｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-1:2020；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/61818
+- 【】《IEC 60335-2-25:2024  家用和类似用途电器的安全微波炉的特殊要求》｜国际号=IEC 60335-2-25｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-25:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/81458
+- 【】《IEC 60705:2024  家用微波炉性能测试方法》｜国际号=IEC 60705｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60705:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/81889
+- 【】《IEC 60730-1 家用和类似用途的电自动控制器》｜国际号=IEC 60730-1｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60730-1:2023+AMD1:2024，未高于条目采用的 2023 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/81627
+- 【】《IEC 61058-1 电器开关.第1部分：一般要求标准》｜国际号=IEC 61058-1｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 61058-1:2023，未高于条目采用的 2023 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/80427
+- 【】《IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求》｜国际号=IEC 60335-2-4｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-4:2023；年份缺失或条目未标注采用年份，无法比较｜依据=https://webstore.iec.ch/en/publication/80227
+- 【】《IEC 60335-2-7:2024    家用和类似用途电气的安全 洗衣机的特殊要求》｜国际号=IEC 60335-2-7｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-7:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/80612
+- 【】《EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)》｜国际号=IEC 61000-3-2｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 61000-3-2:2018+AMD1:2020+AMD2:2024，未高于条目采用的 2019 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/82330
+- 【】《IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求》｜国际号=IEC 60335-2-24｜来源=模型原样抄录官网字段（代码判定）｜官网当前版本 IEC 60335-2-24:2024，未高于条目采用的 2024 版（不生成变更）｜依据=https://webstore.iec.ch/en/publication/81927
 
 ## 检索出错（异常/超时，导致该域 changes 为空；用于区分『真无变化』与『GLM 调用失败』）
-- 《信息安全》：模型输出被截断，已抢救出前 1 条完整变更（仅丢弃尾部残缺条目，未整域作废）
+- 《质量》：模型输出被截断，已抢救出前 0 条完整变更（仅丢弃尾部残缺条目，未整域作废）

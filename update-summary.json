@@ -1,13 +1,43 @@
 {
-  "updatedAt": "2026-09-23",
+  "updatedAt": "2026-09-28",
   "hasUpdates": true,
   "counts": {
     "added": 0,
     "abolished": 0,
-    "updated": 3,
+    "updated": 5,
     "statusSwitched": 0
   },
   "changes": [
+    {
+      "type": "update",
+      "name": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+      "category": "产品标准",
+      "detail": "备注→采标新版：采用的国际标准 IEC 60335-2-24 已于 2024-11-29 发布新版 IEC 60335-2-24:2024（将等同采用）；中国修订计划暂未查到下达"
+    },
+    {
+      "type": "update",
+      "name": "IEC 60730-1 家用和类似用途的电自动控制器",
+      "category": "产品标准",
+      "detail": "备注→采标新版：采用的国际标准 IEC 60730-1 已于 2024-06-28 发布新版 IEC 60730-1:2023+AMD1:2024（将等同采用）；中国修订计划暂未查到下达"
+    },
+    {
+      "type": "update",
+      "name": "IEC 61058-1 电器开关.第1部分：一般要求标准",
+      "category": "产品标准",
+      "detail": "备注→采标新版：采用的国际标准 IEC 61058-1 已于 2023-07-21 发布新版 IEC 61058-1:2023（将等同采用）；中国修订计划暂未查到下达"
+    },
+    {
+      "type": "update",
+      "name": "EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)",
+      "category": "产品标准",
+      "detail": "备注→采标新版：采用的国际标准 IEC 61000-3-2 已于 2024-11-22 发布新版 IEC 61000-3-2:2018+AMD2:2024（将等同采用）；EN侧尚未同步发布"
+    },
+    {
+      "type": "update",
+      "name": "EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019",
+      "category": "产品标准",
+      "detail": "备注→采标新版：本条目采用的国际标准 EN 60335-2-7:2003 已于 2019-10 发布新版 EN 60335-2-7:2019；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：（官网状态：Published）"
+    },
     {
       "type": "update",
       "name": "产业结构调整指导目录（2019年本）",

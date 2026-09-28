@@ -1,109 +1,112 @@
 {
-  "generatedAt": "2026-09-23",
+  "generatedAt": "2026-09-28",
   "effective_model": "glm-4.7",
   "domain_filter": "",
   "mode": "自动写入",
   "note": "测量仪表：左栏(可直接应用)应尽量多、右栏(自动丢弃)应只剩真垃圾。逐类压降 discard_breakdown 里的软提示占比，可应用才会变多。",
   "counts": {
-    "ok_可直接应用": 3,
-    "discard_丢弃": 8,
+    "ok_可直接应用": 5,
+    "discard_丢弃": 7,
     "status_switch_状态切换": 0
   },
   "discard_breakdown": {
-    "无来源且系统也解析不到（须落地 name_query/cfsa）": 2,
-    "其它": 6
+    "其它": 1,
+    "无来源且系统也解析不到（须落地 name_query/cfsa）": 6
   },
   "discarded_items": [
     {
-      "name": "广东省实施〈中华人民共和国环境噪声污染防治法〉办法",
-      "table": "laws",
-      "action": "update",
-      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）",
-      "proposed": {}
-    },
-    {
-      "name": "GB13690-2009 化学品分类和危险性公示 通则",
+      "name": "GB 13690-2009 化学品分类和危险性公示 通则",
       "table": "laws",
       "action": "update",
       "reason": "声称「由 GB 30000.1-2024 化学品分类和标签规范 第1部分：通则 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃",
       "proposed": {}
     },
     {
-      "name": "污水综合排放标准GB8978-1996（1999修订）",
+      "name": "互联网信息服务算法推荐管理规定",
       "table": "laws",
-      "action": "update",
-      "reason": "声称「由 GB 8978-2024 污水综合排放标准 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "proposed": {}
     },
     {
-      "name": "大气污染物综合排放标准GB16297-1996",
+      "name": "互联网信息服务深度合成管理规定",
       "table": "laws",
-      "action": "update",
-      "reason": "声称「由 GB 16297-2024 大气污染物综合排放标准 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "proposed": {}
     },
     {
-      "name": "广东省固体废物污染环境防治条例（2022年修正）",
+      "name": "网络安全审查办法",
       "table": "laws",
-      "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（广东省固体废物污染环境防治条例（2024年修正）），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "proposed": {}
     },
     {
-      "name": "广东省大气污染防治条例（2022年修正）",
+      "name": "数据出境安全评估办法",
       "table": "laws",
-      "action": "update",
-      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "proposed": {}
     },
     {
-      "name": "广东省环境保护条例（2022年修正）",
+      "name": "个人信息保护合规审计管理办法",
       "table": "laws",
-      "action": "update",
-      "reason": "官方页未能核实字段「replacedBy」（广东省环境保护条例（2024年修正）），请人工确认；官方页正文未出现「废止/代替」等字样，所称废止/替代无任何可核实依据，直接丢弃（不提出）",
+      "action": "add",
+      "reason": "没有提供依据来源网址（source_url）；系统按官方渠道自动解析也未取到真实链接（无号法规按名称+部门查询待落地：留空待补）；该新增条目链接已留空待补，建议人工确认是否新增",
       "proposed": {}
     },
     {
-      "name": "《饮食业油烟排放标准》GB18483-2001",
-      "table": "laws",
+      "name": "EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission",
+      "table": "standards",
       "action": "update",
-      "reason": "声称「由 GB 18483-2024 饮食业油烟排放标准 替代」但 openstd 官方按号查不到该标准（详情页标准号与输入不符（hcno 取错或未在前6条内）），疑似编造替代关系，整条丢弃",
+      "reason": "依据来源确认失效（HTTP 404），多半是编造的链接：https://webstore.iec.ch/en/publication/82012；系统按官方渠道自动解析也未取到真实链接（无对应解析源，留空待补）",
       "proposed": {}
     }
   ],
   "auto_resolved_links": [
     {
-      "name": "产业结构调整指导目录（2019年本）",
-      "table": "laws",
+      "name": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+      "table": "standards",
       "action": "update",
       "method": "reuse_existing",
-      "link": "https://zfxxgk.ndrc.gov.cn/upload/images/20220/202201016404836.docx",
-      "glmGave": "https://www.ndrc.gov.cn/xxgk/zcfb/jsh/202410/t20241012_1394396.html",
+      "link": "https://webstore.iec.ch/publication/1566",
+      "glmGave": "https://webstore.iec.ch/en/publication/81927",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
     },
     {
-      "name": "排污许可管理办法（试行）",
-      "table": "laws",
+      "name": "IEC 60730-1 家用和类似用途的电自动控制器",
+      "table": "standards",
       "action": "update",
       "method": "reuse_existing",
-      "link": "https://big5.mee.gov.cn/gate/big5/www.mee.gov.cn/gzk/gz/202112/P020211211608232129807.pdf",
-      "glmGave": "https://www.mee.gov.cn/zcwj/gz/qt/202405/t20240523_1043367.html",
+      "link": "https://webstore.iec.ch/en/publication/66089",
+      "glmGave": "https://webstore.iec.ch/en/publication/81627",
+      "claimConfirmed": false,
+      "detail": "官方页未标注实施日期，无法自动填写"
+    },
+    {
+      "name": "IEC 61058-1 电器开关.第1部分：一般要求标准",
+      "table": "standards",
+      "action": "update",
+      "method": "reuse_existing",
+      "link": "https://webstore.iec.ch/en/publication/25468",
+      "glmGave": "https://webstore.iec.ch/en/publication/80427",
       "claimConfirmed": false,
       "detail": "官方页未标注实施日期，无法自动填写"
     }
   ],
-  "auto_resolved_count": 2,
+  "auto_resolved_count": 3,
   "quality_metrics": {
-    "fake_abolish": 2,
+    "fake_abolish": 0,
     "publish_date_misfill": 0,
-    "dup_rereport": 13,
+    "dup_rereport": 24,
     "cross_file": 0
   },
   "retrieval_errors": [
     {
-      "label": "信息安全",
-      "error": "模型输出被截断，已抢救出前 1 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
+      "label": "质量",
+      "error": "模型输出被截断，已抢救出前 0 条完整变更（仅丢弃尾部残缺条目，未整域作废）"
     }
   ],
   "all_domains_failed": false,
@@ -111,67 +114,34 @@
   "intl_parent_checks": [
     {
       "entry": "环境管理体系  要求及使用指南GB/T24001-2016 /ISO14001:2015",
-      "intlNo": "ISO14001:2015",
+      "intlNo": "ISO 14001:2015",
       "page_designation": "ISO 14001:2015",
       "page_status": "Published",
       "page_pubdate": "2015-09",
       "evidence_url": "https://www.iso.org/standard/60857.html",
-      "result": "官网当前版本页即此，ISO 14001:2015仍为Published状态，未发布新版",
-      "label": "环境与职业健康",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南",
-      "intlNo": "ISO14064-3:2019",
-      "page_designation": "ISO 14064-3:2019",
-      "page_status": "Published",
-      "page_pubdate": "2019-03",
-      "evidence_url": "https://www.iso.org/standard/38704.html",
-      "result": "官网当前版本页即此，ISO 14064-3:2019仍为Published状态，未发布新版",
+      "result": "官网当前版本仍为2015版，未发布新版",
       "label": "环境与职业健康",
       "source": "GLM 回报（原始抄录）"
     },
     {
       "entry": "ISO14064-1-2018 温室气体 第一部分 组织层上对温室气体排放和清除的量化和报告的规范及指南",
-      "intlNo": "ISO14064-1:2018",
+      "intlNo": "ISO 14064-1:2018",
       "page_designation": "ISO 14064-1:2018",
       "page_status": "Published",
       "page_pubdate": "2018-12",
-      "evidence_url": "https://www.iso.org/standard/38381.html",
-      "result": "官网当前版本页即此，ISO 14064-1:2018仍为Published状态，未发布新版",
+      "evidence_url": "https://www.iso.org/standard/66479.html",
+      "result": "官网当前版本仍为2018版，未发布新版",
       "label": "环境与职业健康",
       "source": "GLM 回报（原始抄录）"
     },
     {
-      "entry": "职业健康安全管理体系 要求GB/T 45001-2020",
-      "intlNo": "ISO45001:2018",
-      "page_designation": "ISO 45001:2018",
+      "entry": "ISO14064-3-2019 温室气体 第三部分 温室气体声明审定与核查的规范及指南",
+      "intlNo": "ISO 14064-3:2019",
+      "page_designation": "ISO 14064-3:2019",
       "page_status": "Published",
-      "page_pubdate": "2018-03",
-      "evidence_url": "https://www.iso.org/standard/63787.html",
-      "result": "官网当前版本页即此，ISO 45001:2018仍为Published状态，未发布新版",
-      "label": "环境与职业健康",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "RoHS指令2011/65/EU",
-      "intlNo": "2011/65/EU",
-      "page_designation": "",
-      "page_status": "",
-      "page_pubdate": "",
-      "evidence_url": "",
-      "result": "欧盟指令非ISO/IEC/CEN标准，不适用iso.org/iec.ch/cen.eu官网核查规则",
-      "label": "环境与职业健康",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "REACH法规",
-      "intlNo": "",
-      "page_designation": "",
-      "page_status": "",
-      "page_pubdate": "",
-      "evidence_url": "",
-      "result": "REACH法规无ISO/IEC国际标准编号，不触发父本核查",
+      "page_pubdate": "2019-04",
+      "evidence_url": "https://www.iso.org/standard/66481.html",
+      "result": "官网当前版本仍为2019版，未发布新版",
       "label": "环境与职业健康",
       "source": "GLM 回报（原始抄录）"
     },
@@ -182,7 +152,7 @@
       "page_status": "Published",
       "page_pubdate": "2015-09",
       "evidence_url": "https://www.iso.org/standard/45481.html",
-      "result": "官网当前版本页即此，ISO 9000:2015仍为Published状态，未发布新版",
+      "result": "官网当前版本仍为2015版，未发布新版",
       "label": "质量",
       "source": "GLM 回报（原始抄录）"
     },
@@ -192,8 +162,8 @@
       "page_designation": "ISO/TS 9002:2016",
       "page_status": "Published",
       "page_pubdate": "2016-12",
-      "evidence_url": "https://www.iso.org/standard/61965.html",
-      "result": "官网当前版本页即此，ISO/TS 9002:2016仍为Published状态，未发布新版",
+      "evidence_url": "https://www.iso.org/standard/66355.html",
+      "result": "官网当前版本仍为2016版，未发布新版",
       "label": "质量",
       "source": "GLM 回报（原始抄录）"
     },
@@ -203,8 +173,8 @@
       "page_designation": "ISO 9001:2015",
       "page_status": "Published",
       "page_pubdate": "2015-09",
-      "evidence_url": "https://www.iso.org/standard/62085.html",
-      "result": "官网当前版本页即此，ISO 9001:2015仍为Published状态；ISO 9001:2026已在清单L0406中",
+      "evidence_url": "https://www.iso.org/standard/62042.html",
+      "result": "官网当前版本仍为2015版；ISO 9001:2026已在清单L0406中",
       "label": "质量",
       "source": "GLM 回报（原始抄录）"
     },
@@ -214,8 +184,19 @@
       "page_designation": "ISO 9001:2026",
       "page_status": "Under development",
       "page_pubdate": "",
-      "evidence_url": "https://www.iso.org/standard/85630.html",
-      "result": "官网当前版本页即此，ISO 9001:2026状态为Under development，尚未正式发布",
+      "evidence_url": "https://www.iso.org/standard/91994.html",
+      "result": "官网状态为Under development，尚未正式发布",
+      "label": "质量",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "管理体系审核指南 GB/T 19011-2021",
+      "intlNo": "ISO 19011:2018",
+      "page_designation": "ISO 19011:2018",
+      "page_status": "Published",
+      "page_pubdate": "2018-07",
+      "evidence_url": "https://www.iso.org/standard/70260.html",
+      "result": "官网当前版本仍为2018版，未发布新版",
       "label": "质量",
       "source": "GLM 回报（原始抄录）"
     },
@@ -226,7 +207,7 @@
       "page_status": "Published",
       "page_pubdate": "2022-02",
       "evidence_url": "https://www.iso.org/standard/75653.html",
-      "result": "官网当前版本页即此，ISO/IEC 27002:2022 为最新Published版本",
+      "result": "官网当前版本页即此，ISO/IEC 27002:2022 Published 2022-02，GB/T 22081-2024 已等同采用此版",
       "label": "信息安全",
       "source": "GLM 回报（原始抄录）"
     },
@@ -236,8 +217,8 @@
       "page_designation": "ISO/IEC 27035-1:2016",
       "page_status": "Published",
       "page_pubdate": "2016-11",
-      "evidence_url": "https://www.iso.org/standard/62029.html",
-      "result": "官网当前版本页即此，ISO/IEC 27035-1:2016 为最新Published版本",
+      "evidence_url": "https://www.iso.org/standard/61429.html",
+      "result": "官网当前版本页即此，ISO/IEC 27035-1:2016 Published 2016-11，GB/T 20985-2017 已等同采用此版",
       "label": "信息安全",
       "source": "GLM 回报（原始抄录）"
     },
@@ -246,20 +227,20 @@
       "intlNo": "EN 60335-1",
       "page_designation": "EN IEC 60335-1:2012/A16:2023",
       "page_status": "Published",
-      "page_pubdate": "2023-08",
-      "evidence_url": "https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258964,25,71157",
-      "result": "官网当前版本页即此，A16:2023为最新修订",
+      "page_pubdate": "2023-12",
+      "evidence_url": "https://www.cenelec.eu/dyn/www/f?p=104:110:11318018209010::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258961,25,EN%2060335-1:2012",
+      "result": "CENELEC官网可查EN 60335-1系列最新修订为A16:2023，清单已含",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
     {
-      "entry": "EN 60335-2-9:2003 +A13: 2010 +AC: 2012+A11:2023",
-      "intlNo": "EN 60335-2-9",
-      "page_designation": "EN 60335-2-9:2003/A11:2023",
+      "entry": "EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019",
+      "intlNo": "EN 60335-2-7",
+      "page_designation": "EN 60335-2-7:2019",
       "page_status": "Published",
-      "page_pubdate": "2023-06",
-      "evidence_url": "https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1260150,25,71157",
-      "result": "官网当前版本页即此",
+      "page_pubdate": "2019-10",
+      "evidence_url": "",
+      "result": "官网页打不开，基于IEC 60335-2-7:2024已发布，EN侧预计将跟进",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -268,9 +249,9 @@
       "intlNo": "EN 60335-2-24",
       "page_designation": "EN 60335-2-24:2010/A11:2022",
       "page_status": "Published",
-      "page_pubdate": "2022-06",
-      "evidence_url": "https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258964,25,71157",
-      "result": "官网页打不开，基于已知信息记录",
+      "page_pubdate": "2022-09",
+      "evidence_url": "",
+      "result": "官网页打不开，清单已含至A11:2022",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -280,8 +261,8 @@
       "page_designation": "IEC 60335-2-25:2024",
       "page_status": "Published",
       "page_pubdate": "2024-07",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67890",
-      "result": "官网当前版本页即此，2024版已发布",
+      "evidence_url": "https://webstore.iec.ch/en/publication/81458",
+      "result": "官网当前版本页即此，IEC 60335-2-25:2024已发布，清单已含",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -291,8 +272,8 @@
       "page_designation": "IEC 60705:2024",
       "page_status": "Published",
       "page_pubdate": "2024-11",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67891",
-      "result": "官网当前版本页即此，2024版已发布",
+      "evidence_url": "https://webstore.iec.ch/en/publication/81889",
+      "result": "官网当前版本页即此，IEC 60705:2024已发布，清单已含",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -302,8 +283,8 @@
       "page_designation": "IEC 60335-2-7:2024",
       "page_status": "Published",
       "page_pubdate": "2024-01",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67892",
-      "result": "官网当前版本页即此，2024版已发布",
+      "evidence_url": "https://webstore.iec.ch/en/publication/80612",
+      "result": "官网当前版本页即此，IEC 60335-2-7:2024已发布，清单已含",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -313,8 +294,8 @@
       "page_designation": "IEC 60335-2-4:2023",
       "page_status": "Published",
       "page_pubdate": "2023-12",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67893",
-      "result": "官网当前版本页即此，2023版已发布",
+      "evidence_url": "https://webstore.iec.ch/en/publication/80227",
+      "result": "官网当前版本页即此，IEC 60335-2-4:2023已发布，清单已含",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -324,74 +305,74 @@
       "page_designation": "IEC 60335-1:2020",
       "page_status": "Published",
       "page_pubdate": "2020-09",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67894",
-      "result": "官网当前版本页即此，2020版仍为最新Published版",
-      "label": "产品标准",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
-      "intlNo": "IEC 60335-2-24",
-      "page_designation": "IEC 60335-2-24:2020",
-      "page_status": "Published",
-      "page_pubdate": "2020-09",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67895",
-      "result": "官网当前版本页即此，2020版仍为最新Published版",
+      "evidence_url": "https://webstore.iec.ch/en/publication/61818",
+      "result": "官网当前版本页即此，IEC 60335-1:2020+AMD1:2020+AMD2:2022仍为最新Published版本",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
     {
       "entry": "EN IEC 55014-1:2021 Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 1: Emission",
       "intlNo": "IEC CISPR 14-1",
-      "page_designation": "IEC CISPR 14-1:2020",
+      "page_designation": "IEC CISPR 14-1:2024",
       "page_status": "Published",
-      "page_pubdate": "2020-09",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67896",
-      "result": "官网当前版本页即此",
-      "label": "产品标准",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "EN IEC 61000-3-2:2019+A1:2021",
-      "intlNo": "IEC 61000-3-2",
-      "page_designation": "IEC 61000-3-2:2024",
-      "page_status": "Published",
-      "page_pubdate": "2024-08",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67897",
-      "result": "IEC 61000-3-2:2024新版已于2024-08发布",
-      "label": "产品标准",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "EN 61000-3-3:2013+A1:2019+A2:2021 电压波动和闪烁的限制",
-      "intlNo": "IEC 61000-3-3",
-      "page_designation": "IEC 61000-3-3:2024",
-      "page_status": "Published",
-      "page_pubdate": "2024-08",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67898",
-      "result": "IEC 61000-3-3:2024新版已于2024-08发布",
+      "page_pubdate": "2024-09",
+      "evidence_url": "https://webstore.iec.ch/en/publication/82012",
+      "result": "IEC CISPR 14-1:2024已于2024-09发布新版，EN侧尚未同步，清单EN版本为2021",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
     {
       "entry": "EN IEC 55014-2:2021  Electromagnetic compatibility - Requirements for household appliances, electric tools and similar apparatus - Part 2: Immunity - Product family standard",
       "intlNo": "IEC CISPR 14-2",
-      "page_designation": "IEC CISPR 14-2:2015",
+      "page_designation": "IEC CISPR 14-2:2015+AMD1:2019",
       "page_status": "Published",
-      "page_pubdate": "2015-09",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67899",
-      "result": "官网当前版本页即此",
+      "page_pubdate": "2019-05",
+      "evidence_url": "https://webstore.iec.ch/en/publication/65390",
+      "result": "官网当前版本IEC CISPR 14-2:2015+AMD1:2019，无更新版本",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "EN IEC 61000-3-2:2019+A1:2021 Electromagnetic compatibility (EMC) - Part 3-2: Limits - Limits for harmonic current emissions (equipment input current ≤16 A per phase)",
+      "intlNo": "IEC 61000-3-2",
+      "page_designation": "IEC 61000-3-2:2018+AMD1:2020+AMD2:2024",
+      "page_status": "Published",
+      "page_pubdate": "2024-11",
+      "evidence_url": "https://webstore.iec.ch/en/publication/82330",
+      "result": "IEC 61000-3-2:2018+AMD2:2024已于2024-11发布，EN侧尚未同步",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "EN 61000-3-3:2013+A1:2019+A2:2021 Electromagnetic compatibility (EMC) - Part 3-3: Limits",
+      "intlNo": "IEC 61000-3-3",
+      "page_designation": "IEC 61000-3-3:2013+AMD1:2019+AMD2:2021",
+      "page_status": "Published",
+      "page_pubdate": "2021-08",
+      "evidence_url": "https://webstore.iec.ch/en/publication/68549",
+      "result": "官网当前版本即此，无更新版本",
+      "label": "产品标准",
+      "source": "GLM 回报（原始抄录）"
+    },
+    {
+      "entry": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+      "intlNo": "IEC 60335-2-24",
+      "page_designation": "IEC 60335-2-24:2024",
+      "page_status": "Published",
+      "page_pubdate": "2024-11",
+      "evidence_url": "https://webstore.iec.ch/en/publication/81927",
+      "result": "IEC 60335-2-24:2024已于2024-11发布新版，清单条目为2020版",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
     {
       "entry": "IEC 60730-1 家用和类似用途的电自动控制器",
       "intlNo": "IEC 60730-1",
-      "page_designation": "IEC 60730-1:2022",
+      "page_designation": "IEC 60730-1:2023+AMD1:2024",
       "page_status": "Published",
-      "page_pubdate": "2022-09",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67900",
-      "result": "官网当前版本页即此",
+      "page_pubdate": "2024-06",
+      "evidence_url": "https://webstore.iec.ch/en/publication/81627",
+      "result": "IEC 60730-1:2023+AMD1:2024已于2024-06发布，清单条目为2022版",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -401,52 +382,19 @@
       "page_designation": "IEC 61058-1:2023",
       "page_status": "Published",
       "page_pubdate": "2023-07",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67901",
-      "result": "IEC 61058-1:2023新版已于2023-07发布",
-      "label": "产品标准",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "IEC 61558-2-6  一般用途安全隔离变压器的特殊要求",
-      "intlNo": "IEC 61558-2-6",
-      "page_designation": "IEC 61558-2-6:2023",
-      "page_status": "Published",
-      "page_pubdate": "2023-09",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67902",
-      "result": "IEC 61558-2-6:2023新版已于2023-09发布",
-      "label": "产品标准",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "IEC 61770   与总水管连接的电气器具 避免软管组件的反虹吸和失效标准",
-      "intlNo": "IEC 61770",
-      "page_designation": "IEC 61770:2024",
-      "page_status": "Published",
-      "page_pubdate": "2024-02",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67903",
-      "result": "IEC 61770:2024新版已于2024-02发布",
+      "evidence_url": "https://webstore.iec.ch/en/publication/80427",
+      "result": "IEC 61058-1:2023已于2023-07发布，清单条目为2016版",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
     {
       "entry": "UL 60335-2-24:2022 Ed.3，CSA C22.2#60335-2-24:2022 Ed.3",
       "intlNo": "UL 60335-2-24",
-      "page_designation": "UL 60335-2-24:2022",
+      "page_designation": "UL 60335-2-24",
       "page_status": "Published",
-      "page_pubdate": "2022",
-      "evidence_url": "https://standardscatalog.ul.com/standards/en/60335_2_24",
-      "result": "官网当前版本页即此",
-      "label": "产品标准",
-      "source": "GLM 回报（原始抄录）"
-    },
-    {
-      "entry": "UL 60335-1:2020 Ed.6/ CSA C22.2 No.60335-1:2020 Ed.6，",
-      "intlNo": "UL 60335-1",
-      "page_designation": "UL 60335-1:2020",
-      "page_status": "Published",
-      "page_pubdate": "2020",
-      "evidence_url": "https://standardscatalog.ul.com/standards/en/60335_1",
-      "result": "官网当前版本页即此",
+      "page_pubdate": "",
+      "evidence_url": "",
+      "result": "官网页打不开，UL标准需在ulstandards.ul.com查询",
       "label": "产品标准",
       "source": "GLM 回报（原始抄录）"
     },
@@ -499,19 +447,19 @@
       "result": "官网当前版本 ISO 9001:2026，未高于条目采用的 2026 版（不生成变更）"
     },
     {
-      "entry": "EN 60335-2-9:2003 +A13: 2010 +AC: 2012+A11:2023",
-      "intlNo": "EN 60335-2-9",
+      "entry": "EN 60335-2-7:2003+ A1: 2004+ A2: 2006 +A11: 2010+A1-2013:2016+A2:2019",
+      "intlNo": "EN 60335-2-7",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1260150,25,71157",
-      "result": "官网当前版本 EN 60335-2-9:2003/A11:2023，未高于条目采用的 2003 版（不生成变更）"
+      "evidence_url": "",
+      "result": "查到新版 EN 60335-2-7:2019（发布 2019-10）→ 已生成「采标新版」变更"
     },
     {
       "entry": "EN 60335-2-24:2010 + A1:2019 + A2:2019 + A11:2020+ A11:2022  Particular requirements for refrigerating appliances, ice-cream appliances and ice-makers",
       "intlNo": "EN 60335-2-24",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://www.cenelec.eu/dyn/www/f?p=104:110:3736588490::::FSP_ORG_ID,FSP_LANG_ID,FSP_PROJECT:1258964,25,71157",
+      "evidence_url": "",
       "result": "官网当前版本 EN 60335-2-24:2010/A11:2022，未高于条目采用的 2010 版（不生成变更）"
     },
     {
@@ -519,7 +467,7 @@
       "intlNo": "IEC 60335-1",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67894",
+      "evidence_url": "https://webstore.iec.ch/en/publication/61818",
       "result": "官网当前版本 IEC 60335-1:2020；年份缺失或条目未标注采用年份，无法比较"
     },
     {
@@ -527,7 +475,7 @@
       "intlNo": "IEC 60335-2-25",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67890",
+      "evidence_url": "https://webstore.iec.ch/en/publication/81458",
       "result": "官网当前版本 IEC 60335-2-25:2024，未高于条目采用的 2024 版（不生成变更）"
     },
     {
@@ -535,7 +483,7 @@
       "intlNo": "IEC 60705",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67891",
+      "evidence_url": "https://webstore.iec.ch/en/publication/81889",
       "result": "官网当前版本 IEC 60705:2024，未高于条目采用的 2024 版（不生成变更）"
     },
     {
@@ -543,39 +491,23 @@
       "intlNo": "IEC 60730-1",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67900",
-      "result": "官网当前版本 IEC 60730-1:2022；年份缺失或条目未标注采用年份，无法比较"
+      "evidence_url": "https://webstore.iec.ch/en/publication/81627",
+      "result": "官网当前版本 IEC 60730-1:2023+AMD1:2024，未高于条目采用的 2023 版（不生成变更）"
     },
     {
       "entry": "IEC 61058-1 电器开关.第1部分：一般要求标准",
       "intlNo": "IEC 61058-1",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67901",
-      "result": "官网当前版本 IEC 61058-1:2023；年份缺失或条目未标注采用年份，无法比较"
-    },
-    {
-      "entry": "IEC 61558-2-6  一般用途安全隔离变压器的特殊要求",
-      "intlNo": "IEC 61558-2-6",
-      "label": "",
-      "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67902",
-      "result": "官网当前版本 IEC 61558-2-6:2023；年份缺失或条目未标注采用年份，无法比较"
-    },
-    {
-      "entry": "IEC 61770   与总水管连接的电气器具 避免软管组件的反虹吸和失效标准",
-      "intlNo": "IEC 61770",
-      "label": "",
-      "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67903",
-      "result": "官网当前版本 IEC 61770:2024；年份缺失或条目未标注采用年份，无法比较"
+      "evidence_url": "https://webstore.iec.ch/en/publication/80427",
+      "result": "官网当前版本 IEC 61058-1:2023，未高于条目采用的 2023 版（不生成变更）"
     },
     {
       "entry": "IEC 60335-2-4    家用和类似用途电器的安全 离心式脱水机的特殊要求",
       "intlNo": "IEC 60335-2-4",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67893",
+      "evidence_url": "https://webstore.iec.ch/en/publication/80227",
       "result": "官网当前版本 IEC 60335-2-4:2023；年份缺失或条目未标注采用年份，无法比较"
     },
     {
@@ -583,7 +515,7 @@
       "intlNo": "IEC 60335-2-7",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67892",
+      "evidence_url": "https://webstore.iec.ch/en/publication/80612",
       "result": "官网当前版本 IEC 60335-2-7:2024，未高于条目采用的 2024 版（不生成变更）"
     },
     {
@@ -591,16 +523,16 @@
       "intlNo": "IEC 61000-3-2",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67897",
-      "result": "查到新版 IEC 61000-3-2:2024（发布 2024-08）→ 已生成「采标新版」变更"
+      "evidence_url": "https://webstore.iec.ch/en/publication/82330",
+      "result": "官网当前版本 IEC 61000-3-2:2018+AMD1:2020+AMD2:2024，未高于条目采用的 2019 版（不生成变更）"
     },
     {
       "entry": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
       "intlNo": "IEC 60335-2-24",
       "label": "",
       "source": "模型原样抄录官网字段（代码判定）",
-      "evidence_url": "https://webstore.iec.ch/en/publication/67895",
-      "result": "官网当前版本 IEC 60335-2-24:2020；年份缺失或条目未标注采用年份，无法比较"
+      "evidence_url": "https://webstore.iec.ch/en/publication/81927",
+      "result": "官网当前版本 IEC 60335-2-24:2024，未高于条目采用的 2024 版（不生成变更）"
     }
   ]
 }
