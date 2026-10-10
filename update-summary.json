@@ -1,13 +1,25 @@
 {
-  "updatedAt": "2026-09-28",
+  "updatedAt": "2026-10-10",
   "hasUpdates": true,
   "counts": {
-    "added": 0,
+    "added": 1,
     "abolished": 0,
-    "updated": 5,
+    "updated": 1,
     "statusSwitched": 0
   },
   "changes": [
+    {
+      "type": "add",
+      "name": "企业知识产权管理规范 GB/T 29490-2023",
+      "category": "质量",
+      "detail": "GB/T 29490-2023发布，替代清单中GB/T 29490-2013（L0141），为知识产权管理规范新版国标"
+    },
+    {
+      "type": "update",
+      "name": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",
+      "category": "产品标准",
+      "detail": "备注→采标新版：采用的国际标准 IEC 60335-2-24 已于 2024-04 发布新版 IEC 60335-2-24:2024(Ed8.0)"
+    },
     {
       "type": "update",
       "name": "IEC 60335-2-24 家用和类似用途电器的安全 制冷器具、冰淇淋机和制冰机的特殊要求",

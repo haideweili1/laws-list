@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-28",
+  "lastUpdated": "2026-10-10",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -6367,6 +6367,24 @@
       "remark": "替代 GB/T 6441-1986（全部代替）；归口应急管理部",
       "abolishDate": "",
       "stdNo": "GB 6441-2025"
+    },
+    {
+      "name": "企业知识产权管理规范 GB/T 29490-2023",
+      "docNumber": "",
+      "dept": "国家市场监督管理总局",
+      "effectiveDate": "",
+      "status": "现行有效",
+      "domains": [
+        "质量"
+      ],
+      "category": "质量",
+      "link": "",
+      "region": "全国",
+      "id": "L0407",
+      "remark": "",
+      "abolishDate": "",
+      "adopted": false,
+      "copyrightNote": ""
     }
   ],
   "standards": [
@@ -8007,7 +8025,7 @@
       "link": "https://webstore.iec.ch/publication/1566",
       "region": "",
       "id": "S0127",
-      "remark": "采标新版：采用的国际标准 IEC 60335-2-24 已于 2024-11-29 发布新版 IEC 60335-2-24:2024（将等同采用）；中国修订计划暂未查到下达",
+      "remark": "采标新版：采用的国际标准 IEC 60335-2-24 已于 2024-04 发布新版 IEC 60335-2-24:2024(Ed8.0)",
       "abolishDate": ""
     },
     {
