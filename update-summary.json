@@ -1,13 +1,37 @@
 {
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-12",
   "hasUpdates": true,
   "counts": {
-    "added": 1,
+    "added": 0,
     "abolished": 0,
-    "updated": 1,
+    "updated": 4,
     "statusSwitched": 0
   },
   "changes": [
+    {
+      "type": "update",
+      "name": "产品质量国家监督抽查管理办法",
+      "category": "质量",
+      "detail": "实施日期更新为 2020-01-01；新增被替代关系：产品质量监督抽查管理办法"
+    },
+    {
+      "type": "update",
+      "name": "计量器具新产品管理办法",
+      "category": "质量",
+      "detail": "新增被替代关系：计量器具新产品管理办法（2024修订）"
+    },
+    {
+      "type": "update",
+      "name": "缺陷消费品召回管理规定",
+      "category": "质量",
+      "detail": "实施日期更新为 2020-01-01；新增被替代关系：缺陷消费品召回管理办法"
+    },
+    {
+      "type": "update",
+      "name": "质量管理体系 要求GB/T 19001—2016/ISO9001:2015",
+      "category": "质量",
+      "detail": "备注→采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2026-09 发布新版 ISO 9001:2026；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）"
+    },
     {
       "type": "add",
       "name": "企业知识产权管理规范 GB/T 29490-2023",

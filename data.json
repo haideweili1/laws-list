@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-10",
+  "lastUpdated": "2026-10-12",
   "laws": [
     {
       "name": "中华人民共和国产品质量法",
@@ -101,7 +101,7 @@
       "name": "产品质量国家监督抽查管理办法",
       "docNumber": "",
       "dept": "工业和信息化部",
-      "effectiveDate": "2011-02-23",
+      "effectiveDate": "2020-01-01",
       "status": "现行有效",
       "domains": [
         "质量"
@@ -111,7 +111,8 @@
       "region": "",
       "id": "L0007",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "replacedBy": "产品质量监督抽查管理办法"
     },
     {
       "name": "计量器具新产品管理办法",
@@ -127,7 +128,8 @@
       "region": "",
       "id": "L0008",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "replacedBy": "计量器具新产品管理办法（2024修订）"
     },
     {
       "name": "中华人民共和国环境保护法",
@@ -2019,7 +2021,7 @@
       "link": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=8211B23BE58F6076946628F7E83CB1BC",
       "region": "",
       "id": "L0129",
-      "remark": "采标新版：采用的国际标准 ISO 9001:2026 已于 2026-09-16 发布（第6版）；中国修订计划 20264412-T-469，状态：正在起草",
+      "remark": "采标新版：本条目采用的国际标准 ISO 9001:2015 已于 2026-09 发布新版 ISO 9001:2026；中国对应国家标准尚未发布替代版，本条目在新版转换期内继续有效。依据：https://www.iso.org/standard/9001（官网状态：Published）",
       "abolishDate": ""
     },
     {
@@ -2154,7 +2156,7 @@
       "name": "缺陷消费品召回管理规定",
       "docNumber": "",
       "dept": "国务院",
-      "effectiveDate": "2016-01-01",
+      "effectiveDate": "2020-01-01",
       "status": "现行有效",
       "domains": [
         "质量"
@@ -2164,7 +2166,8 @@
       "region": "",
       "id": "L0137",
       "remark": "",
-      "abolishDate": ""
+      "abolishDate": "",
+      "replacedBy": "缺陷消费品召回管理办法"
     },
     {
       "name": "强制性产品认证管理规定",
